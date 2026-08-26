@@ -1,0 +1,125 @@
+"use client";
+
+import MemberEnquiry from "@/components/membership/memberEnquiry";
+import { useMemberEnquiry } from "./Hooks";
+
+const MemberEnquiryContainer = () => {
+  const {
+    loading,
+    getMemberListDataLoading,
+    form,
+    handleSubmit,
+    handleSearchMember,
+    handleSelectClick,
+    dialougeOpen,
+    setDialougeOpen,
+    membershipDetails,
+    depositActiveAccount,
+    depositClosedAccount,
+    depositType,
+    loanActiveAccount,
+    loanClosedAccount,
+    loanType,
+    ledgerFromDate,
+    ledgerToDate,
+    handleShowLedger,
+    showShareLedger,
+    setShowShareLedger,
+    shareLedgerHeaderData,
+    shareLedgerTableData,
+    totalRefund,
+    totalIssue,
+    shareUserName,
+    shareCurrentDate,
+    shareCurrentTime,
+    showLedgerDialog,
+    setShowLedgerDialog,
+    depositLedgerHeaderData,
+    depositLedgerTableData,
+    totalDeposit,
+    totalWithdrawn,
+    totalInterest,
+    depositUserName,
+    depositCurrentDate,
+    depositCurrentTime,
+    showLoanLedger,
+    setShowLoanLedger,
+    loanLedgerHeaderData,
+    loanLedgerTableData,
+    totalDisburse,
+    totalPrincipalRefund,
+    totalInterestRefund,
+    loanUserName,
+    loanCurrentDate,
+    loanCurrentTime,
+    getShareLedgerLoading,
+    getDepositLedgerLoading,
+    getLoanLedgerLoading,
+    currentMemberPage,
+    setCurrentMemberPage,
+    lastMemberPage,
+    selectedRadio,
+    setSelectedRadio,
+  } = useMemberEnquiry();
+
+  return (
+    <MemberEnquiry
+      loading={loading}
+      getMemberListDataLoading={getMemberListDataLoading}
+      form={form}
+      handleSubmit={handleSubmit}
+      handleSearchMember={handleSearchMember}
+      handleSelectClick={handleSelectClick}
+      dialougeOpen={dialougeOpen}
+      setDialougeOpen={setDialougeOpen}
+      membershipDetails={membershipDetails}
+      depositActiveAccount={depositActiveAccount}
+      depositClosedAccount={depositClosedAccount}
+      depositType={depositType}
+      loanActiveAccount={loanActiveAccount}
+      loanClosedAccount={loanClosedAccount}
+      loanType={loanType}
+      fromDate={ledgerFromDate}
+      toDate={ledgerToDate}
+      handleShowLedger={handleShowLedger}
+      showShareLedger={showShareLedger}
+      setShowShareLedger={setShowShareLedger}
+      shareLedgerHeaderData={shareLedgerHeaderData}
+      shareLedgerTableData={shareLedgerTableData}
+      totalRefund={totalRefund}
+      totalIssue={totalIssue}
+      shareUserName={shareUserName}
+      shareCurrentDate={shareCurrentDate}
+      shareCurrentTime={shareCurrentTime}
+      showLedgerDialog={showLedgerDialog}
+      setShowLedgerDialog={setShowLedgerDialog}
+      depositLedgerHeaderData={depositLedgerHeaderData}
+      depositLedgerTableData={depositLedgerTableData}
+      totalDeposit={totalDeposit}
+      totalWithdrawn={totalWithdrawn}
+      totalInterest={totalInterest}
+      depositUserName={depositUserName}
+      depositCurrentDate={depositCurrentDate}
+      depositCurrentTime={depositCurrentTime}
+      showLoanLedger={showLoanLedger}
+      setShowLoanLedger={setShowLoanLedger}
+      loanLedgerHeaderData={loanLedgerHeaderData}
+      loanLedgerTableData={loanLedgerTableData}
+      totalDisburse={totalDisburse}
+      totalPrincipalRefund={totalPrincipalRefund}
+      totalInterestRefund={totalInterestRefund}
+      loanUserName={loanUserName}
+      loanCurrentDate={loanCurrentDate}
+      loanCurrentTime={loanCurrentTime}
+      getShareLedgerLoading={getShareLedgerLoading}
+      getDepositLedgerLoading={getDepositLedgerLoading}
+      getLoanLedgerLoading={getLoanLedgerLoading}
+      currentMemberPage={currentMemberPage}
+      setCurrentMemberPage={setCurrentMemberPage}
+      lastMemberPage={lastMemberPage}
+      selectedRadio={selectedRadio}
+      setSelectedRadio={setSelectedRadio}
+    />
+  );
+};
+export default MemberEnquiryContainer;
