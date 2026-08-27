@@ -132,7 +132,7 @@ export const useMemberProfile = () => {
       ),
     email: yup.string().email("Invalid email"),
     address: yup.string().required("Permanent address is required"),
-    sameAsPermanent: yup.string().required("Select present address option"),
+    sameAsPermanent: yup.string().oneOf(["Y", "N"]).required(),
     presentAddress: yup.string().required("Present address is required"),
 
     stateId: yup

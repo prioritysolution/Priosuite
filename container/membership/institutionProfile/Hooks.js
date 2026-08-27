@@ -111,7 +111,7 @@ export const useInstitutionProfile = () => {
       .string()
       .required("Register address is required")
       .max(200, "Address must be at most 200 characters"),
-    sameAsRegister: yup.string().required("Select office address option"),
+    sameAsRegister: yup.string().oneOf(["Y", "N"]).required(),
     officeAddress: yup
       .string()
       .required("Office address is required")

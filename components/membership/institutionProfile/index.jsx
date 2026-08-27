@@ -6,7 +6,14 @@ import DropdownField from "../../../common/formFields/DropdownField";
 import RadioField from "../../../common/formFields/RadioField";
 import MemberSearchForm from "../../../common/forms/MemberSearchForm";
 import { Button } from "../../ui/button";
-import { Form, FormField } from "../../ui/form";
+import { Checkbox } from "../../ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "../../ui/form";
 import InputField from "../../../common/formFields/InputField";
 import { ScrollArea } from "../../ui/scroll-area";
 import { ClipLoader } from "react-spinners";
@@ -369,16 +376,19 @@ const InstitutionProfile = ({
                       control={form.control}
                       name="sameAsRegister"
                       render={({ field }) => (
-                        <RadioField
-                          label="Same as Register Address"
-                          value={field.value}
-                          onChange={field.onChange}
-                          options={[
-                            { value: "Y", label: "Yes" },
-                            { value: "N", label: "No" },
-                          ]}
-                          className="mt-0 w-auto"
-                        />
+                        <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Y"}
+                              onCheckedChange={(checked) =>
+                                field.onChange(checked ? "Y" : "N")
+                              }
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-medium text-slate-700 cursor-pointer">
+                            Same as Register Address
+                          </FormLabel>
+                        </FormItem>
                       )}
                     />
                   </div>

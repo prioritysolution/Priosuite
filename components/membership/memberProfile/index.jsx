@@ -7,6 +7,7 @@ import RadioField from "@/common/formFields/RadioField";
 import SearchDropdownField from "@/common/formFields/SearchDropdownField";
 import MemberSearchForm from "@/common/forms/MemberSearchForm";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -488,16 +489,19 @@ const MemberProfile = ({
                       control={form.control}
                       name="sameAsPermanent"
                       render={({ field }) => (
-                        <RadioField
-                          label="Same as Permanent Address"
-                          value={field.value}
-                          onChange={field.onChange}
-                          options={[
-                            { value: "Y", label: "Yes" },
-                            { value: "N", label: "No" },
-                          ]}
-                          className="mt-0 w-auto"
-                        />
+                        <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Y"}
+                              onCheckedChange={(checked) =>
+                                field.onChange(checked ? "Y" : "N")
+                              }
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-medium text-slate-700 cursor-pointer">
+                            Same as Permanent Address
+                          </FormLabel>
+                        </FormItem>
                       )}
                     />
                   </div>
