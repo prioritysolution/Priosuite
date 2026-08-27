@@ -122,12 +122,9 @@ const Login = ({
       </div>
 
       {/* ── Card ── */}
-      <div
-        className="relative z-10 w-full max-w-[380px] sm:max-w-[420px] bg-white/95 backdrop-blur-lg rounded-[16px] sm:rounded-[24px] shadow-xl sm:shadow-2xl border border-white/20 px-4 pt-5 pb-4 sm:px-8 sm:pt-9 sm:pb-7 mx-auto overflow-y-auto overscroll-contain"
-        style={{ maxHeight: "calc(100dvh - 1.5rem)" }}
-      >
+      <div className="relative z-10 w-full max-w-[380px] sm:max-w-[420px] bg-white/95 backdrop-blur-lg rounded-[16px] sm:rounded-[24px] shadow-xl sm:shadow-2xl border border-white/20 px-4 pt-5 pb-4 sm:px-8 sm:pt-8 sm:pb-6 mx-auto overflow-hidden">
         {/* Logo */}
-        <div className="flex justify-center items-center gap-2 mb-3 sm:mb-6">
+        <div className="flex justify-center items-center gap-2 mb-3 sm:mb-5">
           <Image
             src="/pristlogo.png"
             alt="PrioSuite"
@@ -149,24 +146,14 @@ const Login = ({
           </div>
         </div>
 
-        {/* Heading */}
-        <div className="text-center mt-2 sm:mt-4 mb-4 sm:mb-6">
-          <h2 className="text-[18px] sm:text-[20px] md:text-[22px] font-bold text-[#1a2e44]">
-            Welcome Back!
-          </h2>
-          <p className="text-[12px] sm:text-[13px] text-[#8a9ab0] mt-0.5 sm:mt-1">
-            Sign in to your account
-          </p>
-        </div>
-
         {/* Form */}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-3 sm:space-y-4"
+            className="w-full flex flex-col gap-2.5 sm:gap-3.5"
             autoComplete="off"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="w-full">
               <DropdownFieldNew
                 control={form.control}
                 name="language"
@@ -176,7 +163,9 @@ const Login = ({
                 optionLabelKey="Option_Value"
                 isRequired
               />
+            </div>
 
+            <div className="w-full">
               <DropdownFieldNew
                 control={form.control}
                 name="year_id"
@@ -188,25 +177,29 @@ const Login = ({
               />
             </div>
 
-            <InputField
-              control={form.control}
-              name="email"
-              label="User ID"
-              placeholder="User ID"
-              autoComplete="off"
-            />
+            <div className="w-full">
+              <InputField
+                control={form.control}
+                name="email"
+                label="User ID"
+                placeholder="User ID"
+                autoComplete="off"
+              />
+            </div>
 
-            <InputField
-              control={form.control}
-              name="password"
-              label="Password"
-              type="password"
-              placeholder="Password"
-              autoComplete="new-password"
-            />
+            <div className="w-full">
+              <InputField
+                control={form.control}
+                name="password"
+                label="Password"
+                type="password"
+                placeholder="Password"
+                autoComplete="new-password"
+              />
+            </div>
 
             {/* Forgot Password */}
-            <div className="flex justify-end pt-0.5 sm:pt-1">
+            <div className="flex justify-end">
               <Link
                 href="/forgotPassword"
                 className="text-[12px] sm:text-[13px] text-[#1769c2] font-medium hover:underline"
@@ -231,7 +224,7 @@ const Login = ({
         </Form>
 
         {/* Footer */}
-        <div className="text-center text-[10px] sm:text-[11px] text-[#b0bec8] mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-[#f0f4f8]">
+        <div className="text-center text-[10px] sm:text-[11px] text-[#b0bec8] mt-3 sm:mt-4 pt-3 border-t border-[#f0f4f8]">
           © {new Date().getFullYear()} Priority Solutions. All rights reserved.
         </div>
       </div>

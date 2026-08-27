@@ -25,3 +25,7 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+
+// admin@priosuite.in
+// admin
