@@ -59,7 +59,7 @@ const DepositLedger = ({
     }-${toDate && formatDateSafe(toDate, "dd-MM-yyyy")}`,
     pageStyle: `
       @page {
-        size: A4 portrait;
+        size: A4 landscape;
         margin: 0;
       }
       @media print {

@@ -168,58 +168,88 @@ input[type="number"]:focus::after {
     transform-origin: top left;
   }
 }
-/* ── Modern "Buttery" Scrollbar System ── */
+/* ── Visible, always-present scrollbars ── */
+:root {
+  --scrollbar-size: 12px;
+  --scrollbar-track: #e8eef5;
+  --scrollbar-thumb: #8fa3b8;
+  --scrollbar-thumb-hover: #5b738b;
+  --scrollbar-thumb-active: #00264d;
+}
+
+.dark {
+  --scrollbar-track: #1e293b;
+  --scrollbar-thumb: #64748b;
+  --scrollbar-thumb-hover: #94a3b8;
+  --scrollbar-thumb-active: #cbd5e1;
+}
+
+* {
+  scrollbar-width: auto;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--scrollbar-track);
+  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.3);
-  border-radius: 20px;
-  border: 1px solid transparent;
-  background-clip: content-box;
-  transition: all 0.3s ease;
+  background-color: var(--scrollbar-thumb);
+  border-radius: 8px;
+  border: 2px solid var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.5);
-  background-clip: content-box;
+  background-color: var(--scrollbar-thumb-hover);
 }
 
-/* Firefox Support */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-thumb-active);
 }
 
-/* Dark Mode Overrides for Global Scrollbar */
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
 }
 
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-/* Custom class for extra-smooth scrollbars if needed */
 .custom-scrollbar {
   scrollbar-gutter: stable;
-  scrollbar-width: thin;
+  scrollbar-width: auto;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
+
 .custom-scrollbar::-webkit-scrollbar {
-  height: 6px;
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.4);
-  border-radius: 4px;
+  background-color: var(--scrollbar-thumb);
+  border-radius: 8px;
+  border: 2px solid var(--scrollbar-track);
 }
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--scrollbar-track);
+}
+
+@media print {
+  * {
+    scrollbar-width: none !important;
+  }
+
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
 }
 
 /* ── Smooth Scrolling ── */

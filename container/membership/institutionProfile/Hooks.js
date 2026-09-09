@@ -39,6 +39,41 @@ import {
   getVillageUnderBlockData,
 } from "../../master/operationalArea/OperationalAreaReducer";
 
+const buildRegisterKeys = (item, fallback = {}) => ({
+  inst_add: item.inst_add || fallback.inst_add || "",
+  inst_state: item.stateId || fallback.inst_state || "",
+  inst_dist: item.districtId || fallback.inst_dist || "",
+  inst_block: item.blockId || fallback.inst_block || "",
+  inst_village: item.villageId || fallback.inst_village || "",
+  inst_police: item.policeStationId || fallback.inst_police || "",
+  inst_post: item.postOfficeId || fallback.inst_post || "",
+});
+
+const buildOfficeKeys = (item, fallback = {}, sameAsRegister, register) => {
+  if (sameAsRegister === "Y") {
+    return {
+      inst_off_add: register.inst_add,
+      inst_off_state: register.inst_state,
+      inst_off_dist: register.inst_dist,
+      inst_off_block: register.inst_block,
+      inst_off_village: register.inst_village,
+      inst_off_police: register.inst_police,
+      inst_off_post: register.inst_post,
+    };
+  }
+
+  return {
+    inst_off_add: item.officeAddress || fallback.inst_off_add || "",
+    inst_off_state: item.officeStateId || fallback.inst_off_state || "",
+    inst_off_dist: item.officeDistrictId || fallback.inst_off_dist || "",
+    inst_off_block: item.officeBlockId || fallback.inst_off_block || "",
+    inst_off_village: item.officeVillageId || fallback.inst_off_village || "",
+    inst_off_police:
+      item.officePoliceStationId || fallback.inst_off_police || "",
+    inst_off_post: item.officePostOfficeId || fallback.inst_off_post || "",
+  };
+};
+
 export const useInstitutionProfile = () => {
   const dispatch = useDispatch();
 
@@ -387,27 +422,24 @@ export const useInstitutionProfile = () => {
 
   const postInstitutionProfileApiCall = async (item) => {
     console.log("postInstitutionProfileAPI item=", item);
+    const register = buildRegisterKeys(item);
+    const office = buildOfficeKeys(
+      item,
+      {},
+      item.sameAsRegister,
+      register,
+    );
     let data = {
       inst_no: item.inst_no,
       inst_name: item.inst_name,
       inst_dob: format(item.inst_dob, "yyyy-MM-dd"),
       inst_ben: item.inst_ben,
       inst_mob: item.inst_mob,
-      inst_add: item.inst_add,
-      inst_state: item.stateId,
-      inst_dist: item.districtId,
-      inst_block: item.blockId,
-      inst_village: item.villageId,
-      inst_police: item.policeStationId,
-      inst_post: item.postOfficeId,
+      ...register,
       same_as_reg: item.sameAsRegister,
-      inst_off_add: item.officeAddress,
-      inst_off_state: item.officeStateId,
-      inst_off_dist: item.officeDistrictId,
-      inst_off_block: item.officeBlockId,
-      inst_off_village: item.officeVillageId,
-      inst_off_police: item.officePoliceStationId,
-      inst_off_post: item.officePostOfficeId,
+      ...office,
+      register,
+      office,
       branch_id: item.branch_id,
       org_id: item.org_id,
       doc_no: item.int_doc,
@@ -436,25 +468,59 @@ export const useInstitutionProfile = () => {
   // work is pending
   const updateInstitutionProfileApiCall = async (item) => {
     console.log("updateInstitutionProfileApiCall item=", item);
+    const register = buildRegisterKeys(item, {
+      inst_add: updateInstitutionData?.Cust_Add,
+      inst_state: updateInstitutionData?.Cust_State,
+      inst_dist: updateInstitutionData?.Cust_Dist,
+      inst_block: updateInstitutionData?.Cust_Blk,
+      inst_village: updateInstitutionData?.Cust_Vill,
+      inst_police: updateInstitutionData?.Cust_Police,
+      inst_post: updateInstitutionData?.Cust_Post,
+    });
+    const office = buildOfficeKeys(
+      item,
+      {
+        inst_off_add:
+          updateInstitutionData?.Cust_Off_Add ||
+          updateInstitutionData?.Off_Add ||
+          updateInstitutionData?.Inst_Off_Add,
+        inst_off_state:
+          updateInstitutionData?.Cust_Off_State ||
+          updateInstitutionData?.Off_State ||
+          updateInstitutionData?.Inst_Off_State,
+        inst_off_dist:
+          updateInstitutionData?.Cust_Off_Dist ||
+          updateInstitutionData?.Off_Dist ||
+          updateInstitutionData?.Inst_Off_Dist,
+        inst_off_block:
+          updateInstitutionData?.Cust_Off_Blk ||
+          updateInstitutionData?.Off_Blk ||
+          updateInstitutionData?.Inst_Off_Blk,
+        inst_off_village:
+          updateInstitutionData?.Cust_Off_Vill ||
+          updateInstitutionData?.Off_Vill ||
+          updateInstitutionData?.Inst_Off_Vill,
+        inst_off_police:
+          updateInstitutionData?.Cust_Off_Police ||
+          updateInstitutionData?.Off_Police ||
+          updateInstitutionData?.Inst_Off_Police,
+        inst_off_post:
+          updateInstitutionData?.Cust_Off_Post ||
+          updateInstitutionData?.Off_Post ||
+          updateInstitutionData?.Inst_Off_Post,
+      },
+      item.sameAsRegister,
+      register,
+    );
     let data = {
       inst_id: updateInstitutionData.Id,
       inst_name: item.inst_name,
       inst_dob: format(item.inst_dob, "yyyy-MM-dd"),
-      inst_add: item.inst_add,
-      inst_state: item.stateId,
-      inst_dist: item.districtId,
-      inst_block: item.blockId,
-      inst_village: item.villageId,
-      inst_police: item.policeStationId,
-      inst_post: item.postOfficeId,
+      ...register,
       same_as_reg: item.sameAsRegister,
-      inst_off_add: item.officeAddress,
-      inst_off_state: item.officeStateId,
-      inst_off_dist: item.officeDistrictId,
-      inst_off_block: item.officeBlockId,
-      inst_off_village: item.officeVillageId,
-      inst_off_police: item.officePoliceStationId,
-      inst_off_post: item.officePostOfficeId,
+      ...office,
+      register,
+      office,
       inst_ben: item.inst_ben,
       branch_id: item.branch_id,
       org_id: item.org_id,

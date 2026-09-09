@@ -85,14 +85,15 @@ const PreviewModal = ({
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const pages = chunkPages(ledgerTableData);
+  const pages = chunkPages(ledgerTableData || []);
 
   return (
     <div className="w-[210mm]" ref={printRef}>
       {pages.map((pageRows, pageIndex) => (
         <div
           key={pageIndex}
-          className="w-full h-[297mm] py-2 px-1 text-center mb-4 flex flex-col justify-between scale-[.97]"
+          data-print-page="true"
+          className="w-full h-[297mm] py-2 px-1 text-center flex flex-col justify-between bg-white overflow-hidden print:break-after-page"
         >
           {/* Org Header Only on First Page */}
           <div className=" text-xs flex flex-col gap-1 uppercase mb-1">

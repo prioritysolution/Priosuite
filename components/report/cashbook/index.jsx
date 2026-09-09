@@ -29,7 +29,9 @@ import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { useState } from "react";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
+import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
 
 const Cashbook = ({
   loading,
@@ -54,6 +56,7 @@ const Cashbook = ({
   const [pdfLoading, setPdfLoading] = useState(false);
 
   const printRef = useRef(null);
+  const printHostRef = useRef(null);
   const printVoucherRef = useRef(null);
 
   const generatePrint = useReactToPrint({
@@ -72,39 +75,106 @@ const Cashbook = ({
     (state) => state?.daybook?.voucherDetails,
   );
 
+  const waitNextFrame = () =>
+    new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    );
+
   const handleDownloadPDF = async () => {
     const element = printRef.current;
-    if (!element) return;
+    const host = printHostRef.current;
+
+    if (!element) {
+      toast.error("Nothing to download. Please generate the report first.");
+      return;
+    }
+
+    const hasData =
+      (ledgerTableReceiptData && ledgerTableReceiptData.length > 0) ||
+      (ledgerTablePaymentData && ledgerTablePaymentData.length > 0) ||
+      !!cashBalanceData;
+
+    if (!hasData) {
+      toast.error("No cashbook data to download.");
+      return;
+    }
+
+    const prevHostStyle = host?.getAttribute("style") || "";
 
     try {
       setPdfLoading(true);
-      const isLandscape = true;
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF(isLandscape ? "l" : "p", "mm", "a4");
-      const imgWidth = isLandscape ? 297 : 210;
-      const pageHeight = isLandscape ? 210 : 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
 
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 15) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+      if (host) {
+        host.setAttribute(
+          "style",
+          "position:fixed;left:0;top:0;width:297mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
+        );
       }
-      pdf.save(`Cashbook-${toDate}.pdf`);
+      await waitNextFrame();
+
+      const pageNodes = Array.from(
+        element.querySelectorAll("[data-print-page='true']"),
+      );
+      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
+
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+      const pageWidth = 297;
+      const pageHeight = 210;
+      let pagesAdded = 0;
+
+      for (let i = 0; i < pagesToCapture.length; i += 1) {
+        const pageEl = pagesToCapture[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 1.25,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+          scrollX: 0,
+          scrollY: 0,
+          onclone: (clonedDoc) => {
+            clonedDoc.querySelectorAll("*").forEach((node) => {
+              if (!(node instanceof HTMLElement)) return;
+              node.style.overflow = "visible";
+              node.style.boxShadow = "none";
+            });
+          },
+        });
+
+        if (!canvas?.width || !canvas?.height) continue;
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const renderHeight = Math.min(imgHeight, pageHeight);
+
+        if (pagesAdded > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, renderHeight);
+        pagesAdded += 1;
+      }
+
+      if (pagesAdded < 1) {
+        toast.error("Failed to capture report for PDF.");
+        return;
+      }
+
+      pdf.save(`Cashbook-${toDate || "report"}.pdf`);
+      toast.success("PDF downloaded");
     } catch (error) {
       console.error("Error downloading PDF:", error);
+      toast.error(
+        error?.message
+          ? `Failed to download PDF: ${error.message}`
+          : "Failed to download PDF",
+      );
     } finally {
+      if (host) host.setAttribute("style", prevHostStyle);
       setPdfLoading(false);
     }
   };
@@ -209,23 +279,30 @@ const Cashbook = ({
                     <HiMiniPrinter />
                   </div>
                   <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
                       if (loading || pdfLoading) return;
-                      if (
-                        ledgerTableReceiptData?.length > 0 ||
-                        ledgerTablePaymentData?.length > 0 ||
-                        cashBalanceData
-                      )
+                      handleDownloadPDF();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        if (loading || pdfLoading) return;
                         handleDownloadPDF();
+                      }
                     }}
                     className={cn(
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
-                        "cursor-not-allowed bg-gray-400 ": loading || pdfLoading || !(
-                          ledgerTableReceiptData?.length > 0 ||
-                          ledgerTablePaymentData?.length > 0 ||
-                          cashBalanceData
-                        ),
+                        "cursor-not-allowed bg-gray-400 ":
+                          loading ||
+                          pdfLoading ||
+                          !(
+                            ledgerTableReceiptData?.length > 0 ||
+                            ledgerTablePaymentData?.length > 0 ||
+                            cashBalanceData
+                          ),
                       },
                     )}
                   >
@@ -569,19 +646,34 @@ const Cashbook = ({
         </DialogContent>
       </Dialog>
 
-      <div style={{ position: "absolute", top: "-10000px", left: "-10000px" }}>
-        <PreviewModal
-          printRef={printRef}
-          ledgerTableReceiptData={ledgerTableReceiptData}
-          ledgerTablePaymentData={ledgerTablePaymentData}
-          denomData={denomData}
-          // generatePDF={generatePrint}
-          toDate={toDate}
-          totalReceived={totalReceived}
-          totalPayment={totalPayment}
-          cashBalanceData={cashBalanceData}
-        />
-      </div>
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={printHostRef}
+            aria-hidden
+            style={{
+              position: "fixed",
+              left: "-10000px",
+              top: 0,
+              width: "297mm",
+              background: "#ffffff",
+              pointerEvents: "none",
+              zIndex: -1,
+            }}
+          >
+            <PreviewModal
+              printRef={printRef}
+              ledgerTableReceiptData={ledgerTableReceiptData || []}
+              ledgerTablePaymentData={ledgerTablePaymentData || []}
+              denomData={denomData || []}
+              toDate={toDate}
+              totalReceived={totalReceived}
+              totalPayment={totalPayment}
+              cashBalanceData={cashBalanceData}
+            />
+          </div>,
+          document.body,
+        )}
 
       <div className="hidden">
         <PreviewVoucher

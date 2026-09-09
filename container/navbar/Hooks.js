@@ -1,9 +1,69 @@
 "use client";
-import { useState } from "react";
-import { postLogoutAPI } from "./NavbarApis";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { getBranchListAPI, postLogoutAPI } from "./NavbarApis";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Cookies from "@/utils/secureCookieHelper";
+import getCookieData from "@/utils/getCookieData";
+
+const COOKIE_OPTIONS = {
+  expires: 7,
+  secure: true,
+  sameSite: "Strict",
+  path: "/",
+};
+
+export const useNavbarBranch = () => {
+  const [branchOptions, setBranchOptions] = useState([]);
+  const [branchLoading, setBranchLoading] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState("");
+
+  useEffect(() => {
+    const orgId = getCookieData("orgId");
+    const branchId = getCookieData("userBranchId");
+    setSelectedBranch(branchId ? String(branchId) : "");
+
+    if (!orgId) return;
+
+    const loadBranches = async () => {
+      setBranchLoading(true);
+      try {
+        const res = await getBranchListAPI(orgId, branchId || "");
+        const list = res?.details || res?.Data || [];
+        setBranchOptions(Array.isArray(list) ? list : []);
+      } catch (error) {
+        console.error(error);
+        setBranchOptions([]);
+      } finally {
+        setBranchLoading(false);
+      }
+    };
+
+    loadBranches();
+  }, []);
+
+  const handleBranchChange = (value) => {
+    const nextValue = value === null || value === undefined ? "" : String(value);
+    setSelectedBranch(nextValue);
+    Cookies.set("userBranchId", nextValue, COOKIE_OPTIONS);
+
+    const match = branchOptions.find(
+      (item) => String(item?.Id ?? item?.id ?? "") === nextValue,
+    );
+    if (match?.Branch_Name) {
+      Cookies.set("userBranchName", match.Branch_Name, COOKIE_OPTIONS);
+    }
+  };
+
+  return {
+    branchOptions,
+    branchLoading,
+    selectedBranch,
+    handleBranchChange,
+  };
+};
 
 export const useLogout = () => {
   const router = useRouter();
@@ -71,5 +131,82 @@ export const useLogout = () => {
   return {
     logoutLoading,
     postLogoutApiCall,
+  };
+};
+
+const flattenDashboardMenus = (data = []) => {
+  const items = [];
+
+  data.forEach((section) => {
+    const group = section?.title || "";
+
+    if (section?.path) {
+      items.push({
+        label: section.title,
+        group,
+        href: section.path,
+      });
+    }
+
+    (section?.childLinks || []).forEach((child) => {
+      const href = child?.Page_Allies;
+      if (!href) return;
+      items.push({
+        label: child.Menue_Name,
+        group,
+        href,
+      });
+    });
+  });
+
+  return items;
+};
+
+export const useNavbarSearch = () => {
+  const router = useRouter();
+  const sidebarData = useSelector((state) => state?.sidebar?.sidebarData) || [];
+
+  const searchForm = useForm({
+    defaultValues: { search: "" },
+  });
+
+  const searchValue = searchForm.watch("search");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const menuItems = useMemo(
+    () => flattenDashboardMenus(sidebarData),
+    [sidebarData],
+  );
+
+  const suggestions = useMemo(() => {
+    const query = String(searchValue || "")
+      .trim()
+      .toLowerCase();
+    if (!query) return [];
+
+    return menuItems
+      .filter(
+        (item) =>
+          item.label?.toLowerCase().includes(query) ||
+          item.group?.toLowerCase().includes(query),
+      )
+      .slice(0, 12);
+  }, [menuItems, searchValue]);
+
+  const handleSelectSuggestion = (item) => {
+    if (!item?.href) return;
+    searchForm.setValue("search", "");
+    setShowSuggestions(false);
+    router.push(item.href);
+  };
+
+  return {
+    searchForm,
+    searchValue,
+    suggestions,
+    showSuggestions,
+    setShowSuggestions,
+    handleSelectSuggestion,
+    hasMenuData: menuItems.length > 0,
   };
 };

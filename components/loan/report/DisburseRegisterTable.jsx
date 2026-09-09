@@ -21,7 +21,7 @@ const DisburseRegisterTable = ({
   handleShowLedger,
 }) => {
   return (
-    <Table>
+    <Table className="min-w-[1000px] whitespace-nowrap">
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
           <TableHead className=" text-center">Sl No.</TableHead>

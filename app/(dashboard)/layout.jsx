@@ -165,7 +165,7 @@ const DashboardLayout = ({ children }) => {
         <NavbarContainer onMenuToggle={() => setSidebarOpen((prev) => !prev)} />
 
         {/* Scrollable main content — ONLY this scrolls, not the page */}
-        <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-gray-50">
+        <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-gray-50 custom-scrollbar">
           <div className="w-full h-full min-h-0 p-2 sm:p-4">{children}</div>
         </main>
 

@@ -6,9 +6,10 @@ import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import { cn } from "@/lib/utils";
 
 const ScrollArea = React.forwardRef(
-  ({ className, children, ...props }, ref) => (
+  ({ className, children, type = "auto", ...props }, ref) => (
     <ScrollAreaPrimitive.Root
       ref={ref}
+      type={type}
       className={cn("relative overflow-hidden", className)}
       {...props}
     >
@@ -28,16 +29,16 @@ const ScrollBar = React.forwardRef(
       ref={ref}
       orientation={orientation}
       className={cn(
-        "flex touch-none select-none transition-all duration-300 ease-in-out",
+        "flex touch-none select-none z-20 bg-[#e8eef5]/80",
         orientation === "vertical" &&
-          "h-full w-2 border-l border-l-transparent p-[1px] hover:w-2.5",
+          "h-full w-3 border-l border-l-transparent p-[2px]",
         orientation === "horizontal" &&
-          "h-2 flex-col border-t border-t-transparent p-[1px] hover:h-2.5",
+          "h-3 flex-col border-t border-t-transparent p-[2px]",
         className
       )}
       {...props}
     >
-      <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-border/50 transition-colors duration-200 hover:bg-border active:bg-foreground/50" />
+      <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-[#8fa3b8] hover:bg-[#5b738b] active:bg-[#00264d]" />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>
   )
 );

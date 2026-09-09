@@ -64,12 +64,12 @@ const PreviewModal = ({
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const PAGE_ROWS = 14;
+  const PAGE_ROWS = 11;
 
   const paginateWithFooterCheck = (data) => {
     const pages = [];
     let serial = 1;
-    let remaining = [...data];
+    let remaining = Array.isArray(data) ? [...data] : [];
 
     while (remaining.length > 0) {
       const chunk = remaining.slice(0, PAGE_ROWS);
@@ -99,10 +99,11 @@ const PreviewModal = ({
         return (
           <div
             key={pageIndex}
-            className="w-full h-[210mm]  text-center py-2 px-1 relative scale-[.98]"
+            data-print-page="true"
+            className="w-full h-[210mm] flex flex-col text-center py-2 px-1 bg-white overflow-hidden"
           >
             {/* Header */}
-            <div className=" text-xs flex flex-col gap-1 uppercase mb-1">
+            <div className="shrink-0 text-xs flex flex-col gap-1 uppercase mb-1">
               <p>{orgName}</p>
               <p>{branchName}</p>
               <p>{address}</p>
@@ -113,46 +114,46 @@ const PreviewModal = ({
             </div>
 
             {/* Two tables side by side */}
-            <div className="flex w-full border border-black">
+            <div className="flex-1 min-h-0 flex flex-col w-full">
+              <div className="flex w-full">
               {[leftPageData, rightPageData].map((tableData, tableIndex) => (
-                <div key={tableIndex} className="w-1/2 ">
-                  <Table className="w-full  text-[11px] overflow-hidden">
+                <div key={tableIndex} className="w-1/2">
+                  <Table className="w-full border-collapse text-[11px] table-fixed">
                     {((tableIndex === 0 &&
                       pageIndex <= leftTablePages.length - 1) ||
                       leftTablePages.length === 0 ||
                       (tableIndex === 1 &&
                         pageIndex <= rightTablePages.length - 1) ||
                       rightTablePages.length === 0) && (
-                      <TableHeader>
-                        <TableRow className=" border-black  h-[40px] ">
+                      <TableHeader className="[&_tr]:border-b-0">
+                        <TableRow className="border-0 hover:bg-transparent">
                           <TableHead
                             rowSpan={2}
-                            className=" border border-black text-black p-0 text-center w-[30px]"
+                            className="border border-black text-black !h-auto p-1 text-center align-middle w-[36px] font-semibold whitespace-normal"
                           >
                             V. NO.
                           </TableHead>
                           <TableHead
                             rowSpan={2}
-                            className=" border-black text-black p-0 border  text-center"
+                            className="border border-black text-black !h-auto p-1 text-center align-middle font-semibold whitespace-normal"
                           >
                             PARTICULARS
                           </TableHead>
-
                           <TableHead
                             colSpan={3}
-                            className=" border-black  border text-black p-0 text-center h-[40px]"
+                            className="border border-black text-black !h-[28px] p-1 text-center align-middle font-semibold"
                           >
                             {tableIndex === 0 ? "RECEIPTS" : "PAYMENTS"}
                           </TableHead>
                         </TableRow>
-                        <TableRow className="h-[40px]">
-                          <TableHead className="border border-black text-black p-0 text-center w-[100px] h-[40px]">
+                        <TableRow className="border-0 hover:bg-transparent">
+                          <TableHead className="border border-black text-black !h-[28px] p-1 text-center align-middle w-[18%] font-semibold">
                             CASH
                           </TableHead>
-                          <TableHead className="border border-black text-black  p-0 border-l text-center w-[100px] h-[40px]">
+                          <TableHead className="border border-black text-black !h-[28px] p-1 text-center align-middle w-[18%] font-semibold">
                             TRANSFER
                           </TableHead>
-                          <TableHead className="border border-black text-black p-0 border-l text-center w-[100px] h-[40px]">
+                          <TableHead className="border border-black text-black !h-[28px] p-1 text-center align-middle w-[18%] font-semibold">
                             TOTAL
                           </TableHead>
                         </TableRow>
@@ -160,78 +161,81 @@ const PreviewModal = ({
                     )}
                     <TableBody>
                       {tableData.map((data, index) => (
-                        <TableRow key={index} className="h-[40px]">
-                          <TableCell className="border border-black p-0 h-[40px]">
+                        <TableRow
+                          key={index}
+                          className="border-0 hover:bg-transparent"
+                        >
+                          <TableCell className="border border-black p-1 text-center align-middle whitespace-normal">
                             {data?.Vouch_No}
                           </TableCell>
-                          <TableCell className="border border-black p-0 h-[40px]">
+                          <TableCell className="border border-black px-1 py-1 text-left align-middle whitespace-normal break-words leading-tight">
                             {data?.Particular}
                           </TableCell>
-                          <TableCell className="border border-black p-0 h-[40px]">
+                          <TableCell className="border border-black p-1 text-right align-middle whitespace-nowrap">
                             {data?.Cash}
                           </TableCell>
-                          <TableCell className="border border-black p-0 h-[40px]">
+                          <TableCell className="border border-black p-1 text-right align-middle whitespace-nowrap">
                             {data?.Transfer}
                           </TableCell>
-                          <TableCell className="border border-black p-0 h-[40px]">
+                          <TableCell className="border border-black p-1 text-right align-middle whitespace-nowrap">
                             {data?.Total}
                           </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                     {/* Footer (3 rows) */}
-                    <TableFooter className="font-normal">
+                    <TableFooter className="font-normal bg-white border-0 [&>tr]:border-0">
                       {tableIndex === 0 &&
                       (pageIndex === leftTablePages.length - 1 ||
                         leftTablePages.length === 0) ? (
                         <>
-                          <TableRow className="bg-white h-[40px]">
+                          <TableRow className="bg-white border-0 hover:bg-transparent">
                             <TableCell
                               colSpan={2}
-                              className="font-medium border border-black p-0"
+                              className="font-medium border border-black p-1 text-left"
                             >
                               Total
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {totalCashReceived}
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {totalTranferReceived}
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {totalReceived}
                             </TableCell>
                           </TableRow>
-                          <TableRow className="bg-white  h-[40px]">
+                          <TableRow className="bg-white border-0 hover:bg-transparent">
                             <TableCell
                               colSpan={2}
-                              className="font-medium border border-black p-0"
+                              className="font-medium border border-black p-1 text-left"
                             >
                               Opening Balance
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {cashBalanceData && cashBalanceData?.Opening}
                             </TableCell>
-                            <TableCell className=" border border-black p-0"></TableCell>
-                            <TableCell className=" border border-black p-0"></TableCell>
+                            <TableCell className="border border-black p-1"></TableCell>
+                            <TableCell className="border border-black p-1"></TableCell>
                           </TableRow>
-                          <TableRow className="bg-white  h-[40px]">
+                          <TableRow className="bg-white border-0 hover:bg-transparent">
                             <TableCell
                               colSpan={2}
-                              className="font-medium border border-black p-0"
+                              className="font-medium border border-black p-1 text-left"
                             >
                               Grand Total
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {parseFloat(totalCashReceived) +
                                 (cashBalanceData && cashBalanceData.Opening
                                   ? parseFloat(cashBalanceData.Opening)
                                   : 0)}
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {totalTranferReceived}
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {parseFloat(totalReceived) +
                                 (cashBalanceData && cashBalanceData.Opening
                                   ? parseFloat(cashBalanceData.Opening)
@@ -243,53 +247,53 @@ const PreviewModal = ({
                         (pageIndex === rightTablePages.length - 1 ||
                           rightTablePages.length === 0) ? (
                         <>
-                          <TableRow className="bg-white  h-[40px]">
+                          <TableRow className="bg-white border-0 hover:bg-transparent">
                             <TableCell
                               colSpan={2}
-                              className="font-medium border border-black p-0"
+                              className="font-medium border border-black p-1 text-left"
                             >
                               Total
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {totalCashPayment}
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {totalTranferPayment}
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {totalPayment}
                             </TableCell>
                           </TableRow>
-                          <TableRow className="bg-white  h-[40px]">
+                          <TableRow className="bg-white border-0 hover:bg-transparent">
                             <TableCell
                               colSpan={2}
-                              className="font-medium border border-black p-0"
+                              className="font-medium border border-black p-1 text-left"
                             >
                               Closing Balance
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {cashBalanceData && cashBalanceData?.Closing}
                             </TableCell>
-                            <TableCell className=" border border-black p-0"></TableCell>
-                            <TableCell className=" border border-black p-0"></TableCell>
+                            <TableCell className="border border-black p-1"></TableCell>
+                            <TableCell className="border border-black p-1"></TableCell>
                           </TableRow>
-                          <TableRow className="bg-white  h-[40px]">
+                          <TableRow className="bg-white border-0 hover:bg-transparent">
                             <TableCell
                               colSpan={2}
-                              className="font-medium border border-black p-0"
+                              className="font-medium border border-black p-1 text-left"
                             >
                               Grand Total
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {parseFloat(totalCashPayment) +
                                 (cashBalanceData && cashBalanceData.Closing
                                   ? parseFloat(cashBalanceData.Closing)
                                   : 0)}
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {totalTranferPayment}
                             </TableCell>
-                            <TableCell className=" border border-black p-0">
+                            <TableCell className="border border-black p-1 text-right">
                               {parseFloat(totalPayment) +
                                 (cashBalanceData && cashBalanceData.Closing
                                   ? parseFloat(cashBalanceData.Closing)
@@ -304,23 +308,25 @@ const PreviewModal = ({
                   </Table>
                 </div>
               ))}
+              </div>
+              {pageIndex ===
+                Math.max(leftTablePages.length, rightTablePages.length, 1) -
+                  1 && (
+                <p className="shrink-0 h-8 border-t border-black w-full text-[11px] flex justify-end items-center px-2 bg-white">
+                  Closing Balance In Words:{" "}
+                  {cashBalanceData?.Closing &&
+                  parseFloat(cashBalanceData.Closing) > 0
+                    ? `Rupees ${convertToWords(
+                        Number(cashBalanceData.Closing),
+                      )} Only`
+                    : "Zero"}
+                </p>
+              )}
             </div>
-            {pageIndex ===
-              Math.max(leftTablePages.length, rightTablePages.length, 1) -
-                1 && (
-              <p className="h-8 border border-t-0 border-black w-full text-[11px] flex self-end justify-end items-center px-2">
-                Closing Balance In Words:{" "}
-                {cashBalanceData?.Closing &&
-                parseFloat(cashBalanceData.Closing) > 0
-                  ? `Rupees ${convertToWords(
-                      Number(cashBalanceData.Closing),
-                    )} Only`
-                  : "Zero"}
-              </p>
-            )}
-            <div className=" w-full h-[30px] absolute bottom-2 left-0 flex items-end pb-1 justify-between px-2 text-xs">
+
+            <div className="shrink-0 w-full h-[28px] mt-2 flex items-center justify-between px-2 text-xs">
               <p className="text-nowrap">Generated By : {userName}</p>
-              <p className=" italic text-gray-600 text-nowrap">
+              <p className="italic text-nowrap" style={{ color: "#4b5563" }}>
                 This report is generated by PrioSuite.
               </p>
               <p className="text-nowrap">
@@ -330,8 +336,11 @@ const PreviewModal = ({
           </div>
         );
       })}
-      <div className="w-full h-[210mm] relative py-5 scale-[.98]">
-        <div className="w-[350px] ml-20">
+      <div
+        data-print-page="true"
+        className="w-full h-[210mm] flex flex-col py-5 bg-white overflow-hidden"
+      >
+        <div className="flex-1 min-h-0 w-[350px] ml-20">
           <p className="text-[11px] text-center flex items-center justify-center h-[40px]">
             Physical Denomination
           </p>
@@ -353,7 +362,7 @@ const PreviewModal = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {denomData.map((denom, index) => (
+              {(denomData || []).map((denom, index) => (
                 <TableRow key={index} className="h-[40px]">
                   <TableCell className="border border-black p-0 text-center">
                     {index + 1}
@@ -380,7 +389,7 @@ const PreviewModal = ({
                 </TableCell>
                 <TableCell className="border border-black p-0 text-center"></TableCell>
                 <TableCell className="border border-black p-0 text-center">
-                  {denomData.reduce((total, current) => {
+                  {(denomData || []).reduce((total, current) => {
                     return total + parseFloat(current.Denom_Value || 0); // Add Denom_Value or 0 if it's undefined or null
                   }, 0)}
                 </TableCell>
@@ -388,9 +397,9 @@ const PreviewModal = ({
             </TableFooter>
           </Table>
         </div>
-        <div className=" w-full h-[30px] absolute bottom-2 left-0 flex items-end pb-1 justify-between px-2 text-xs">
+        <div className="shrink-0 w-full h-[28px] mt-auto flex items-center justify-between px-2 text-xs">
           <p className="text-nowrap">Generated By : {userName}</p>
-          <p className=" italic text-gray-600 text-nowrap">
+          <p className="italic text-nowrap" style={{ color: "#4b5563" }}>
             This report is generated by PrioSuite.
           </p>
           <p className="text-nowrap">

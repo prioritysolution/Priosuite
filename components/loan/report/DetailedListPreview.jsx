@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
+import { formatDateForDisplay } from "@/utils/dateHelpers";
 
 const PAGE_ROWS = 11;
 
@@ -30,14 +31,19 @@ const chunkPagesWithFooterLogic = (rows) => {
   });
 
   if (currentPage.length === maxRows) {
-    // Last page is full, move total row to new page
     pages.push(currentPage);
-    pages.push([]); // New page for total
+    pages.push([]);
   } else {
-    pages.push(currentPage); // Last page has room for total
+    pages.push(currentPage);
   }
 
   return pages;
+};
+
+const formatAmount = (value) => {
+  if (value == null || value === "") return "";
+  const numeric = Number(value);
+  return Number.isNaN(numeric) ? value : numeric.toFixed(2);
 };
 
 const DetailedListPreview = ({
@@ -89,7 +95,7 @@ const DetailedListPreview = ({
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const pages = chunkPagesWithFooterLogic(tableData);
+  const pages = chunkPagesWithFooterLogic(tableData || []);
 
   let globalSerialNo = 1;
 
@@ -100,7 +106,6 @@ const DetailedListPreview = ({
           key={pageIndex}
           className="w-full h-[210mm] text-center py-2 px-1 flex flex-col justify-between scale-[.98]"
         >
-          {/* Org Header Only on First Page */}
           <div className=" text-xs flex flex-col gap-1 uppercase mb-1">
             <p>{orgName}</p>
             <p>{branchName}</p>
@@ -113,156 +118,144 @@ const DetailedListPreview = ({
             </p>
           </div>
 
-          {/* Table */}
           <div className="flex-1 w-full">
             <Table className="w-full border-collapse border border-black text-[11px]">
-              {/* Main Header Every Page */}
               <TableHeader>
                 <TableRow className="h-[40px] border-black">
                   <TableHead
                     rowSpan={2}
-                    className="text-black p-0 border-black text-center w-[40px]"
+                    className="text-black p-0 border-black text-center w-[36px]"
                   >
-                    SL. NO.
+                    SL
                   </TableHead>
                   <TableHead
                     rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[80px]"
+                    className="text-black p-0 border-black border-l text-center w-[110px]"
                   >
-                    DATE
+                    Customer Name
                   </TableHead>
                   <TableHead
                     rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[100px]"
+                    className="text-black p-0 border-black border-l text-center w-[110px]"
                   >
-                    CUSTOMER NAME
+                    Guardian Name
                   </TableHead>
                   <TableHead
                     rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[100px]"
+                    className="text-black p-0 border-black border-l text-center w-[70px]"
                   >
-                    GUARDIAN NAME
+                    Account No
                   </TableHead>
                   <TableHead
                     rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[50px]"
+                    className="text-black p-0 border-black border-l text-center w-[70px]"
                   >
-                    ACC. NO.
+                    Loan Date
                   </TableHead>
                   <TableHead
                     rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center"
+                    className="text-black p-0 border-black border-l text-center w-[70px]"
                   >
-                    REF. AC. NO.
+                    Opening
                   </TableHead>
                   <TableHead
                     rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[90px]"
+                    className="text-black p-0 border-black border-l text-center w-[70px]"
                   >
-                    OPENING
-                  </TableHead>
-                  <TableHead
-                    rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[90px]"
-                  >
-                    DISBURSE
+                    Disburse
                   </TableHead>
                   <TableHead
                     colSpan={2}
                     className="text-black p-0 border-black border-l text-center h-[40px]"
                   >
-                    REPAYMENT
+                    Repayment
                   </TableHead>
                   <TableHead
                     colSpan={2}
                     className="text-black p-0 border-black border-l text-center h-[40px]"
                   >
-                    OUTSTANDING
+                    Outstanding
                   </TableHead>
                   <TableHead
                     colSpan={2}
                     className="text-black p-0 border-black border-l text-center h-[40px]"
                   >
-                    DUE INTEREST
+                    Outs. Interest
                   </TableHead>
                 </TableRow>
                 <TableRow className="h-[40px] border-black">
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px] h-[40px]">
-                    PRINCIPAL
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
+                    Principal
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[60px] h-[40px]">
-                    INTT.
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
+                    Interest
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px] h-[40px]">
-                    CURR. OUTS.
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
+                    Current
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px] h-[40px]">
-                    OD. OUTS.
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
+                    Overdue
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px] h-[40px]">
-                    CURR. INTT.
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
+                    Current
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px] h-[40px]">
-                    OD. INTT.
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
+                    Overdue
                   </TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
                 {pageRows.map((row, index) => (
-                  <TableRow key={index} className="bg-white h-[50px]">
+                  <TableRow key={row?.Acct_Id || index} className="bg-white h-[50px]">
                     <TableCell className="border border-black p-0 text-center">
                       {globalSerialNo++}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 text-center">
-                      {row?.Disb_Date && format(row?.Disb_Date, "dd-MM-yyyy")}
                     </TableCell>
                     <TableCell className="border border-black p-0 text-center">
                       {row?.Full_Name}
                     </TableCell>
                     <TableCell className="border border-black p-0 text-center">
-                      {row?.Relation_Name}
+                      {row?.Guardian_Name || row?.Relation_Name}
                     </TableCell>
                     <TableCell className="border border-black p-0 text-center">
                       {row?.Account_No}
                     </TableCell>
                     <TableCell className="border border-black p-0 text-center">
-                      {row?.Ref_Ac_No}
+                      {formatDateForDisplay(row?.Disb_Date)}
                     </TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Opening}
+                      {formatAmount(row?.Opening_Balance ?? row?.Opening)}
                     </TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Disb}
+                      {formatAmount(row?.Disb_Amt ?? row?.Disb)}
                     </TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Paid_Prn}
+                      {formatAmount(row?.Principal_Paid ?? row?.Paid_Prn)}
                     </TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Paid_Intt}
+                      {formatAmount(row?.Interest_Paid ?? row?.Paid_Intt)}
                     </TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Curr_Outs}
+                      {formatAmount(row?.Current_Principal ?? row?.Curr_Outs)}
                     </TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.OD_Outs}
+                      {formatAmount(row?.Overdue_Principal ?? row?.OD_Outs)}
                     </TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Curr_Intt}
+                      {formatAmount(row?.Current_Interest ?? row?.Curr_Intt)}
                     </TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.OD_Intt}
+                      {formatAmount(row?.Overdue_Interest ?? row?.OD_Intt)}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
 
-              {/* Only show total on last page */}
               {pageIndex === pages.length - 1 && (
                 <TableFooter>
                   <TableRow className="bg-white h-[50px]">
                     <TableCell
-                      colSpan={6}
+                      colSpan={5}
                       className="border border-black p-0 text-center"
                     >
                       Total
@@ -297,7 +290,6 @@ const DetailedListPreview = ({
             </Table>
           </div>
 
-          {/* Footer */}
           <div className="w-full h-[40px] mt-2 flex items-end justify-between text-xs relative">
             <p className="text-nowrap">Generated By: {userName}</p>
             <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">

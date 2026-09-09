@@ -102,7 +102,7 @@ const DepositLedgerPreview = ({
   let globalSerialNo = 1;
 
   return (
-    <div className="w-[220mm]" ref={printRef}>
+    <div className="w-[297mm]" ref={printRef}>
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -133,7 +133,7 @@ const DepositLedgerPreview = ({
       {pages.map((pageRows, pageIndex) => (
         <div
           key={pageIndex}
-          className="w-full h-[297mm] text-center py-2 px-1 flex flex-col justify-between scale-[.97]"
+          className="w-full h-[210mm] text-center py-2 px-1 flex flex-col justify-between"
         >
           {/* Org Header Only on First Page */}
           <div className="text-xs flex flex-col gap-1 uppercase mb-1">

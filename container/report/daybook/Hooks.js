@@ -117,13 +117,13 @@ export const useDaybook = () => {
         format(item.date, "yyyy-MM-dd"),
       );
       if (res.message === "Data Found") {
-        setLedgerTableReceiptData(res.details[0]?.Receipt_Data);
-        setLedgerTablePaymentData(res.details[0]?.Payment_Data);
+        setLedgerTableReceiptData(res.details[0]?.Receipt_Data || []);
+        setLedgerTablePaymentData(res.details[0]?.Payment_Data || []);
         setCashBalanceData({
           Opening: res.details[0].Opening_Cash,
           Closing: res.details[0].Closing_Cash,
         });
-        setDenomData(res.details[0]?.Denom_Data);
+        setDenomData(res.details[0]?.Denom_Data || []);
       } else {
         setLedgerTableReceiptData([]);
         setLedgerTablePaymentData([]);

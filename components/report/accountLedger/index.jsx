@@ -15,19 +15,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import { useReactToPrint } from "react-to-print";
 import PreviewModal from "./PreviewModal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
+import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
 
 const AccountLedger = ({
   loading,
@@ -46,6 +47,7 @@ const AccountLedger = ({
   totalCrAmount,
 }) => {
   const [showReportForm, setShowReportForm] = useState(true);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
@@ -56,48 +58,115 @@ const AccountLedger = ({
   );
 
   const printRef = useRef(null);
+  const printHostRef = useRef(null);
 
   const generatePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: `AccountLedger-${fromDate}-${toDate}`,
   });
 
-    const handleDownloadPDF = async () => {
+  const waitNextFrame = () =>
+    new Promise((resolve) => requestAnimationFrame(resolve));
+
+  const handleDownloadPDF = async () => {
     const element = printRef.current;
-    if (!element) return;
+    const host = printHostRef.current;
+
+    if (!element) {
+      toast.error("Nothing to download. Please generate the report first.");
+      return;
+    }
+
+    if (!(ledgerTableData && ledgerTableData.length > 0)) {
+      toast.error("No account ledger data to download.");
+      return;
+    }
+
+    const prevHostStyle = host?.getAttribute("style") || "";
 
     try {
-      const isLandscape = false;
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF(isLandscape ? "l" : "p", "mm", "a4");
-      const imgWidth = isLandscape ? 297 : 210;
-      const pageHeight = isLandscape ? 210 : 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
+      setPdfLoading(true);
 
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 15) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+      if (host) {
+        host.setAttribute(
+          "style",
+          "position:fixed;left:0;top:0;width:210mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
+        );
       }
-      pdf.save(`AccountLedger-${toDate}.pdf`);
+      await waitNextFrame();
+
+      const pageNodes = Array.from(
+        element.querySelectorAll("[data-print-page='true']"),
+      );
+      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
+
+      const captureOptions = {
+        scale: 1,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        imageTimeout: 0,
+        removeContainer: true,
+        foreignObjectRendering: false,
+      };
+
+      const BATCH_SIZE = 3;
+      const pageImages = [];
+
+      for (let i = 0; i < pagesToCapture.length; i += BATCH_SIZE) {
+        const batch = pagesToCapture.slice(i, i + BATCH_SIZE);
+        const batchResults = await Promise.all(
+          batch.map(async (pageEl) => {
+            const canvas = await html2canvas(pageEl, captureOptions);
+            if (!canvas?.width || !canvas?.height) return null;
+            return canvas.toDataURL("image/jpeg", 0.75);
+          }),
+        );
+        pageImages.push(...batchResults);
+      }
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+      const pageWidth = 210;
+      const pageHeight = 297;
+      let pagesAdded = 0;
+
+      for (let i = 0; i < pageImages.length; i += 1) {
+        const imgData = pageImages[i];
+        if (!imgData) continue;
+
+        if (pagesAdded > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, pageHeight);
+        pagesAdded += 1;
+      }
+
+      if (pagesAdded < 1) {
+        toast.error("Failed to capture report for PDF.");
+        return;
+      }
+
+      pdf.save(`AccountLedger-${toDate || "report"}.pdf`);
+      toast.success("PDF downloaded");
     } catch (error) {
       console.error("Error downloading PDF:", error);
+      toast.error(
+        error?.message
+          ? `Failed to download PDF: ${error.message}`
+          : "Failed to download PDF",
+      );
+    } finally {
+      if (host) host.setAttribute("style", prevHostStyle);
+      setPdfLoading(false);
     }
   };
 
   return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
+    <div className="w-full h-full flex justify-between  bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
         <Form {...form}>
           <form
@@ -129,72 +198,65 @@ const AccountLedger = ({
 
               <div
                 className={cn(
-                  "transition-all duration-300 ease-in-out grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-10 gap-x-10 gap-y-3 px-5",
+                  "transition-all duration-300 ease-in-out grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 px-3 sm:px-5",
                   showReportForm
-                    ? "max-h-[1000px] py-2"
-                    : "max-h-0 py-0 pointer-events-none opacity-0",
+                    ? "max-h-[1200px] py-3"
+                    : "max-h-0 py-0 pointer-events-none opacity-0 overflow-hidden",
                 )}
               >
-                <div className="xl:col-span-2">
-                  <DatePickerField
-                    control={form.control}
-                    name="fromDate"
-                    label="From Date"
-                    startYear={2000}
-                    endYear={2050}
-                  />
-                </div>
+                <DatePickerField
+                  control={form.control}
+                  name="fromDate"
+                  label="From Date"
+                  startYear={2000}
+                  endYear={2050}
+                />
 
-                <div className="xl:col-span-2">
-                  <DatePickerField
-                    control={form.control}
-                    name="toDate"
-                    label="To Date"
-                    startYear={2000}
-                    endYear={2050}
-                  />
-                </div>
+                <DatePickerField
+                  control={form.control}
+                  name="toDate"
+                  label="To Date"
+                  startYear={2000}
+                  endYear={2050}
+                />
 
-                <div className="xl:col-span-2">
-                  <FormField
-                    control={form.control}
-                    name="branch"
-                    render={({ field }) => (
-                      <DropdownField
-                        label="Branch"
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={branchData}
-                        optionLabelKey="Branch_Name" // Specify the key for label
-                        placeholder="Select branch"
-                        searchPlaceholder="Search branch..."
-                      />
-                    )}
-                  />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="branch"
+                  render={({ field }) => (
+                    <DropdownField
+                      label="Branch"
+                      value={field.value}
+                      onChange={field.onChange}
+                      options={branchData}
+                      optionLabelKey="Branch_Name"
+                      placeholder="Select branch"
+                      searchPlaceholder="Search branch..."
+                    />
+                  )}
+                />
 
-                <div className="xl:col-span-3">
-                  <FormField
-                    control={form.control}
-                    name="ledger"
-                    render={({ field }) => (
-                      <DropdownField
-                        label="Ledger"
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={ledgerData}
-                        optionLabelKey="Ledger_Name" // Specify the key for label
-                        placeholder="Select ledger"
-                        searchPlaceholder="Search ledger..."
-                      />
-                    )}
-                  />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="ledger"
+                  render={({ field }) => (
+                    <DropdownField
+                      label="Ledger"
+                      value={field.value}
+                      onChange={field.onChange}
+                      options={ledgerData}
+                      optionLabelKey="Ledger_Name"
+                      placeholder="Select ledger"
+                      searchPlaceholder="Search ledger..."
+                    />
+                  )}
+                />
 
-                <div className="w-full flex items-center gap-5 self-end">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 self-end w-full xl:w-auto">
                   <Button
+                    type="submit"
                     disabled={loading}
-                    className="w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center"
+                    className="shrink-0 w-10 h-10 p-0 text-xl text-white bg-primary rounded-md flex items-center justify-center"
                   >
                     {loading ? (
                       <ClipLoader
@@ -207,13 +269,15 @@ const AccountLedger = ({
                     )}
                   </Button>
                   <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
                       if (ledgerTableData?.length > 0) generatePrint();
                     }}
                     className={cn(
-                      "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
+                      "shrink-0 w-10 h-10 text-xl text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
-                        "cursor-not-allowed bg-gray-400 ": !(
+                        "cursor-not-allowed bg-gray-400": !(
                           ledgerTableData?.length > 0
                         ),
                       },
@@ -222,19 +286,38 @@ const AccountLedger = ({
                     <HiMiniPrinter />
                   </div>
                   <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
+                      if (loading || pdfLoading) return;
                       if (ledgerTableData?.length > 0) handleDownloadPDF();
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        if (loading || pdfLoading) return;
+                        if (ledgerTableData?.length > 0) handleDownloadPDF();
+                      }
+                    }}
                     className={cn(
-                      "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
+                      "shrink-0 w-10 h-10 text-xl text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
-                        "cursor-not-allowed bg-gray-400 ": !(
-                          ledgerTableData?.length > 0
-                        ),
+                        "cursor-not-allowed bg-gray-400":
+                          pdfLoading ||
+                          loading ||
+                          !(ledgerTableData?.length > 0),
                       },
                     )}
                   >
-                    <FiDownload />
+                    {pdfLoading ? (
+                      <ClipLoader
+                        color="#d7e6f4"
+                        size={20}
+                        speedMultiplier={0.7}
+                      />
+                    ) : (
+                      <FiDownload />
+                    )}
                   </div>
                 </div>
               </div>
@@ -432,18 +515,34 @@ const AccountLedger = ({
         </DialogContent>
       </Dialog>
 
-      <div style={{ position: "absolute", top: "-10000px", left: "-10000px" }}>
-        <PreviewModal
-          printRef={printRef}
-          ledgerTableData={ledgerTableData}
-          fromDate={fromDate}
-          toDate={toDate}
-          totalDebit={totalDebit}
-          totalCredit={totalCredit}
-          ledgerData={ledgerData}
-          ledgerId={ledgerId}
-        />
-      </div>
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={printHostRef}
+            aria-hidden
+            style={{
+              position: "fixed",
+              left: "-10000px",
+              top: 0,
+              width: "210mm",
+              background: "#ffffff",
+              pointerEvents: "none",
+              zIndex: -1,
+            }}
+          >
+            <PreviewModal
+              printRef={printRef}
+              ledgerTableData={ledgerTableData || []}
+              fromDate={fromDate}
+              toDate={toDate}
+              totalDebit={totalDebit}
+              totalCredit={totalCredit}
+              ledgerData={ledgerData}
+              ledgerId={ledgerId}
+            />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

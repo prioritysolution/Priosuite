@@ -10,7 +10,6 @@ import MemberQuickActions from "@/components/dashboard/MemberQuickActions";
 import MemberSummaryCards from "@/components/dashboard/MemberSummaryCards";
 import MemberTransactionTable from "@/components/dashboard/MemberTransactionTable";
 import PendingApprovals from "@/components/dashboard/PendingApprovals";
-import QuickActions from "@/components/dashboard/QuickActions";
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
 import StatsGrid from "@/components/dashboard/StatsGrid";
 import SystemAlerts from "@/components/dashboard/SystemAlerts";
@@ -93,30 +92,26 @@ const AdminDashboard = ({
               </h2>
             </div>
 
-            <div className="flex w-full flex-col gap-2 min-[480px]:flex-row min-[480px]:items-end lg:w-auto">
-              <div className="min-w-0 w-full min-[480px]:flex-1 lg:w-52">
-                <Form {...form}>
-                  <FormField
-                    control={form.control}
-                    name="branchName"
-                    render={({ field }) => (
-                      <DropdownField
-                        label="Branch"
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={openingLedgerBranchData}
-                        optionLabelKey="Branch_Name"
-                        placeholder="Select branch"
-                        searchPlaceholder="Search branch..."
-                        labeldisable={true}
-                        searchable={true}
-                      />
-                    )}
-                  />
-                </Form>
-              </div>
-
-              <QuickActions />
+            <div className="w-full min-w-0 sm:max-w-xs lg:w-52">
+              <Form {...form}>
+                <FormField
+                  control={form.control}
+                  name="branchName"
+                  render={({ field }) => (
+                    <DropdownField
+                      label="Branch"
+                      value={field.value}
+                      onChange={field.onChange}
+                      options={openingLedgerBranchData}
+                      optionLabelKey="Branch_Name"
+                      placeholder="Select branch"
+                      searchPlaceholder="Search branch..."
+                      labeldisable={true}
+                      searchable={true}
+                    />
+                  )}
+                />
+              </Form>
             </div>
           </div>
         </div>

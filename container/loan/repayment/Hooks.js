@@ -7,6 +7,7 @@ import { set, useForm, useWatch } from "react-hook-form";
 import getCookieData from "@/utils/getCookieData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { format } from "date-fns";
+import { formatDateForApi, formatDateForDisplay } from "@/utils/dateHelpers";
 import {
   getGuarranterSecurityAPI,
   getLoanAccountDetailsByAccountNoAPI,
@@ -126,8 +127,11 @@ export const useRepayment = () => {
     LastRepayInterest: yup.string().nullable(),
     currentDays: yup.string().nullable(),
     overdueDays: yup.string().nullable(),
+    currentAmount: yup.string().nullable(),
+    overdueAmount: yup.string().nullable(),
     currentInterest: yup.string().nullable(),
     overdueInterest: yup.string().nullable(),
+    totalInterest: yup.string().nullable(),
     prevDueInterest: yup.string().nullable(),
     demandPrincipal: yup.string().nullable(),
     repaymentDate: yup.string().nullable(),
@@ -192,8 +196,11 @@ export const useRepayment = () => {
       currentBalance: "",
       currentDays: "",
       overdueDays: "",
+      currentAmount: "",
+      overdueAmount: "",
       currentInterest: "",
       overdueInterest: "",
+      totalInterest: "",
       prevDueInterest: "",
       demandPrincipal: "",
       repaymentDate: null,
@@ -335,7 +342,7 @@ export const useRepayment = () => {
     let data = {
       acct_id: loanProduct.Acct_Id,
       mem_id: loanProduct.Mem_Id,
-      date: format(item.repaymentDate, "yyyy-MM-dd"),
+      date: formatDateForApi(item.repaymentDate),
       ref_vouch: item.refVouchNo ? item.refVouchNo : null,
       prn_amt: item.principalAmount || 0,
       intt_amt: item.interestAmount || 0,
@@ -397,6 +404,39 @@ export const useRepayment = () => {
     }
   };
 
+  const clearLoanAccountDetails = () => {
+    form.setValue("accountNo", "");
+    form.setValue("memberName", "");
+    form.setValue("gurdianName", "");
+    form.setValue("address", "");
+    form.setValue("mobile", "");
+    form.setValue("accountType", "");
+    form.setValue("disburseDate", "");
+    form.setValue("disburseAmount", "");
+    form.setValue("roi", "");
+    form.setValue("finalRepayDate", "");
+    form.setValue("repayMode", "");
+    form.setValue("installmentAmount", "");
+    form.setValue("lastRepayDate", "");
+    form.setValue("lastRepayPrincipal", "");
+    form.setValue("LastRepayInterest", "");
+    form.setValue("currentBalance", "");
+    form.setValue("currentDays", "");
+    form.setValue("overdueDays", "");
+    form.setValue("currentAmount", "");
+    form.setValue("overdueAmount", "");
+    form.setValue("currentInterest", "");
+    form.setValue("overdueInterest", "");
+    form.setValue("totalInterest", "");
+    form.setValue("prevDueInterest", "");
+    form.setValue("demandPrincipal", "");
+    form.setValue("principalAmount", "");
+    form.setValue("interestAmount", "");
+    setLoanProduct(null);
+    setVisibleBlock(false);
+    setShowLedger(false);
+  };
+
   const getLoanAccountDetailsByAccountNoApiCall = async (item) => {
     setLoading(true);
 
@@ -404,115 +444,62 @@ export const useRepayment = () => {
       const res = await getLoanAccountDetailsByAccountNoAPI(
         orgId,
         item.accountNo,
-        format(item.date, "yyyy-MM-dd"),
+        formatDateForApi(item.date),
       );
-      if (res.message === "Data Found") {
-        form.setValue("accountNo", res.details[0].Account_No || "");
-        form.setValue("memberName", res.details[0].Full_Name || "");
-        form.setValue("gurdianName", res.details[0].Relation_Name || "");
-        form.setValue("address", res.details[0].Address || "");
-        form.setValue("mobile", res.details[0].Cust_Mob || "");
-        form.setValue("accountType", res.details[0].Acct_Type || "");
-        form.setValue(
-          "disburseDate",
-          format(res.details[0].Disb_Date, "dd-MM-yyyy"),
-        );
-        form.setValue("disburseAmount", res.details[0].Disb_Amt || "");
-        form.setValue("roi", res.details[0].Roi || "");
-        form.setValue(
-          "finalRepayDate",
-          format(res.details[0].Repay_Within, "dd-MM-yyyy"),
-        );
-        form.setValue("repayMode", res.details[0].Repay_Mode || "");
-        form.setValue(
-          "installmentAmount",
-          res.details[0].Installment_Amt || "",
-        );
+      const row = res?.details?.[0];
+      if (res.message === "Data Found" && row && Number(row.Err_No) === 0) {
+        form.setValue("accountNo", row.Account_No || "");
+        form.setValue("memberName", row.Full_Name || "");
+        form.setValue("gurdianName", row.Relation_Name || "");
+        form.setValue("address", row.Address || "");
+        form.setValue("mobile", row.Cust_Mob || "");
+        form.setValue("accountType", row.Acct_Type || "");
+        form.setValue("disburseDate", formatDateForDisplay(row.Disb_Date));
+        form.setValue("disburseAmount", row.Disb_Amt || "");
+        form.setValue("roi", row.Roi || "");
+        form.setValue("finalRepayDate", formatDateForDisplay(row.Repay_Within));
+        form.setValue("repayMode", row.Repay_Mode || "");
+        form.setValue("installmentAmount", row.Installment_Amt || "");
         form.setValue(
           "lastRepayDate",
-          res.details[0].Last_Repay_Date === "1990-01-01"
+          row.Last_Repay_Date === "1990-01-01"
             ? ""
-            : format(res.details[0].Last_Repay_Date, "dd-MM-yyyy"),
+            : formatDateForDisplay(row.Last_Repay_Date),
         );
-        form.setValue("lastRepayPrincipal", res.details[0].Last_Prn_paid || "");
-        form.setValue("LastRepayInterest", res.details[0].Last_Intt_paid || "");
-        form.setValue("currentBalance", res.details[0].Balance || "");
-        form.setValue("currentDays", res.details[0].Curr_Days || "");
-        form.setValue("overdueDays", res.details[0].Od_Days || "");
-        form.setValue("currentInterest", res.details[0].Curr_Amt || "");
-        form.setValue("overdueInterest", res.details[0].Od_Amt || "");
-        form.setValue("prevDueInterest", res.details[0].Due_Intt || "");
-        form.setValue("demandPrincipal", res.details[0].Demand_Prn || "");
-        // form.setValue(
-        //   "principalAmount",
-        //   res.details[0].Demand_Prn &&
-        //     parseFloat(res.details[0].Demand_Prn) !== 0
-        //     ? res.details[0].Demand_Prn
-        //     : "",
-        // );
-        // form.setValue(
-        //   "interestAmount",
-        //   res.details[0].Tot_Intt && parseFloat(res.details[0].Tot_Intt) !== 0
-        //     ? res.details[0].Tot_Intt
-        //     : "",
-        // );
-        getDepositEcsAccountApiCall(orgId, res.details[0].Mem_Id);
-        setLoanProduct(res.details[0]);
+        form.setValue("lastRepayPrincipal", row.Last_Prn_paid || "");
+        form.setValue("LastRepayInterest", row.Last_Intt_paid || "");
+        form.setValue("currentBalance", row.Balance || "");
+        form.setValue("currentDays", row.Curr_Days ?? "");
+        form.setValue("overdueDays", row.Od_Days ?? "");
+        form.setValue("currentAmount", row.Curr_Amt || "");
+        form.setValue("overdueAmount", row.Od_Amt || "");
+        form.setValue("currentInterest", row.Curr_Intt || "");
+        form.setValue("overdueInterest", row.Od_Intt || "");
+        form.setValue("totalInterest", row.Tot_Intt || "");
+        form.setValue("prevDueInterest", row.Due_Intt || "");
+        form.setValue("demandPrincipal", row.Demand_Prn || "");
+        form.setValue(
+          "principalAmount",
+          row.Demand_Prn && parseFloat(row.Demand_Prn) !== 0
+            ? row.Demand_Prn
+            : "",
+        );
+        form.setValue(
+          "interestAmount",
+          row.Tot_Intt && parseFloat(row.Tot_Intt) !== 0 ? row.Tot_Intt : "",
+        );
+        getDepositEcsAccountApiCall(orgId, row.Mem_Id);
+        setLoanProduct(row);
         setVisibleBlock(true);
         setShowLedger(true);
       } else {
-        toast.error(res.details || res.message);
-        form.setValue("accountNo", "");
-        form.setValue("memberName", "");
-        form.setValue("gurdianName", "");
-        form.setValue("address", "");
-        form.setValue("mobile", "");
-        form.setValue("accountType", "");
-        form.setValue("disburseDate", "");
-        form.setValue("disburseAmount", "");
-        form.setValue("roi", "");
-        form.setValue("finalRepayDate", "");
-        form.setValue("repayMode", "");
-        form.setValue("installmentAmount", "");
-        form.setValue("lastRepayDate", "");
-        form.setValue("lastRepayPrincipal", "");
-        form.setValue("LastRepayInterest", "");
-        form.setValue("currentBalance", "");
-        form.setValue("currentDays", "");
-        form.setValue("overdueDays", "");
-        form.setValue("currentInterest", "");
-        form.setValue("overdueInterest", "");
-        setLoanProduct(null);
-        setVisibleBlock(true);
-        setVisibleBlock(false);
-        setShowLedger(false);
+        toast.error(row?.Message || res.details || res.message);
+        clearLoanAccountDetails();
       }
     } catch (error) {
       toast.error("Something went wrong");
       console.error(error);
-      form.setValue("accountNo", "");
-      form.setValue("memberName", "");
-      form.setValue("gurdianName", "");
-      form.setValue("address", "");
-      form.setValue("mobile", "");
-      form.setValue("accountType", "");
-      form.setValue("disburseDate", "");
-      form.setValue("disburseAmount", "");
-      form.setValue("roi", "");
-      form.setValue("finalRepayDate", "");
-      form.setValue("repayMode", "");
-      form.setValue("installmentAmount", "");
-      form.setValue("lastRepayDate", "");
-      form.setValue("lastRepayPrincipal", "");
-      form.setValue("LastRepayInterest", "");
-      form.setValue("currentBalance", "");
-      form.setValue("currentDays", "");
-      form.setValue("overdueDays", "");
-      form.setValue("currentInterest", "");
-      form.setValue("overdueInterest", "");
-      setLoanProduct(null);
-      setVisibleBlock(false);
-      setShowLedger(false);
+      clearLoanAccountDetails();
     } finally {
       setLoading(false);
     }

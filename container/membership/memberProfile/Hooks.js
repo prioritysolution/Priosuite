@@ -49,6 +49,41 @@ import {
   getMemberTypeData,
 } from "@/container/master/shareProduct/ShareProductReducer";
 
+const buildPermanentKeys = (item, fallback = {}) => ({
+  mem_add: item.address || fallback.mem_add || "",
+  mem_state: item.stateId || fallback.mem_state || "",
+  mem_dist: item.districtId || fallback.mem_dist || "",
+  mem_block: item.blockId || fallback.mem_block || "",
+  mem_village: item.villageId || fallback.mem_village || "",
+  mem_police: item.policeStationId || fallback.mem_police || "",
+  mem_post: item.postOfficeId || fallback.mem_post || "",
+});
+
+const buildPresentKeys = (item, fallback = {}, sameAsPermanent, permanent) => {
+  if (sameAsPermanent === "Y") {
+    return {
+      mem_pres_add: permanent.mem_add,
+      mem_pres_state: permanent.mem_state,
+      mem_pres_dist: permanent.mem_dist,
+      mem_pres_block: permanent.mem_block,
+      mem_pres_village: permanent.mem_village,
+      mem_pres_police: permanent.mem_police,
+      mem_pres_post: permanent.mem_post,
+    };
+  }
+
+  return {
+    mem_pres_add: item.presentAddress || fallback.mem_pres_add || "",
+    mem_pres_state: item.presentStateId || fallback.mem_pres_state || "",
+    mem_pres_dist: item.presentDistrictId || fallback.mem_pres_dist || "",
+    mem_pres_block: item.presentBlockId || fallback.mem_pres_block || "",
+    mem_pres_village: item.presentVillageId || fallback.mem_pres_village || "",
+    mem_pres_police:
+      item.presentPoliceStationId || fallback.mem_pres_police || "",
+    mem_pres_post: item.presentPostOfficeId || fallback.mem_pres_post || "",
+  };
+};
+
 export const useMemberProfile = () => {
   const dispatch = useDispatch();
 
@@ -442,6 +477,13 @@ export const useMemberProfile = () => {
 
   const postMemberProfileApiCall = async (item) => {
     console.log("postMemberProfileAPI item=", item);
+    const permanent = buildPermanentKeys(item);
+    const present = buildPresentKeys(
+      item,
+      {},
+      item.sameAsPermanent,
+      permanent,
+    );
     let data = {
       member_no: item.memberNo,
       mem_fst_name: item.firstName,
@@ -455,21 +497,11 @@ export const useMemberProfile = () => {
       mem_relig: item.religion,
       mem_mob: item.mobile,
       mem_mail: item.email,
-      mem_add: item.address,
-      mem_state: item.stateId,
-      mem_dist: item.districtId,
-      mem_block: item.blockId,
-      mem_village: item.villageId,
-      mem_police: item.policeStationId,
-      mem_post: item.postOfficeId,
+      ...permanent,
       same_as_per: item.sameAsPermanent,
-      mem_pres_add: item.presentAddress,
-      mem_pres_state: item.presentStateId,
-      mem_pres_dist: item.presentDistrictId,
-      mem_pres_block: item.presentBlockId,
-      mem_pres_village: item.presentVillageId,
-      mem_pres_police: item.presentPoliceStationId,
-      mem_pres_post: item.presentPostOfficeId,
+      ...present,
+      permanent,
+      present,
       mem_unit: item.unitId,
       mem_aadhar: item.aadhaarNo,
       mem_voter: item.voterId,
@@ -480,7 +512,7 @@ export const useMemberProfile = () => {
       branch_id: branchId,
       cust_type: item.memberType,
     };
-    console.log("postMemberProfileAPI data=", data);
+    // console.log("postMemberProfileAPI data=", data);
     setLoading(true);
     try {
       const res = await postMemberProfileAPI(data);
@@ -500,6 +532,29 @@ export const useMemberProfile = () => {
   };
 
   const updateMemberProfileApiCall = async (item) => {
+    const permanent = buildPermanentKeys(item, {
+      mem_add: updateMemberData?.Mem_Add || updateMemberData?.Cust_Add,
+      mem_state: updateMemberData?.Mem_State,
+      mem_dist: updateMemberData?.Mem_Dist,
+      mem_block: updateMemberData?.Mem_Blk,
+      mem_village: updateMemberData?.Mem_Vill,
+      mem_police: updateMemberData?.Mem_Police,
+      mem_post: updateMemberData?.Mem_Post,
+    });
+    const present = buildPresentKeys(
+      item,
+      {
+        mem_pres_add: updateMemberData?.Mem_Pres_Add,
+        mem_pres_state: updateMemberData?.Mem_Pres_State,
+        mem_pres_dist: updateMemberData?.Mem_Pres_Dist,
+        mem_pres_block: updateMemberData?.Mem_Pres_Blk,
+        mem_pres_village: updateMemberData?.Mem_Pres_Vill,
+        mem_pres_police: updateMemberData?.Mem_Pres_Police,
+        mem_pres_post: updateMemberData?.Mem_Pres_Post,
+      },
+      item.sameAsPermanent,
+      permanent,
+    );
     let data = {
       mem_id: updateMemberData.Id,
       member_no: item.memberNo,
@@ -514,22 +569,11 @@ export const useMemberProfile = () => {
       mem_relig: item.religion,
       mem_mob: item.mobile,
       mem_mail: item.email,
-      mem_add: item.address,
-      mem_state: item.stateId || updateMemberData.Mem_State,
-      mem_dist: item.districtId || updateMemberData.Mem_Dist,
-      mem_block: item.blockId || updateMemberData.Mem_Blk,
-      mem_village: item.villageId || updateMemberData.Mem_Vill,
-      mem_police: item.policeStationId || updateMemberData.Mem_Police,
-      mem_post: item.postOfficeId || updateMemberData.Mem_Post,
+      ...permanent,
       same_as_per: item.sameAsPermanent,
-      mem_pres_add: item.presentAddress,
-      mem_pres_state: item.presentStateId || updateMemberData.Mem_Pres_State,
-      mem_pres_dist: item.presentDistrictId || updateMemberData.Mem_Pres_Dist,
-      mem_pres_block: item.presentBlockId || updateMemberData.Mem_Pres_Blk,
-      mem_pres_village: item.presentVillageId || updateMemberData.Mem_Pres_Vill,
-      mem_pres_police:
-        item.presentPoliceStationId || updateMemberData.Mem_Pres_Police,
-      mem_pres_post: item.presentPostOfficeId || updateMemberData.Mem_Pres_Post,
+      ...present,
+      permanent,
+      present,
       mem_unit: item.unitId || updateMemberData.Mem_Unit,
       mem_aadhar: item.aadhaarNo,
       mem_voter: item.voterId,

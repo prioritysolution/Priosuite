@@ -12,18 +12,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Fragment, useRef } from "react";
+import { Fragment, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import { useReactToPrint } from "react-to-print";
 import PreviewModal from "./PreviewModal";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
+import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
 
 const PlAppropiation = ({
   loading,
@@ -36,47 +37,119 @@ const PlAppropiation = ({
   asOnDate,
 }) => {
   const [showReportForm, setShowReportForm] = useState(true);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
   const printRef = useRef(null);
+  const printHostRef = useRef(null);
 
   const generatePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: `PLAppropiation-${asOnDate}`,
   });
 
-    const handleDownloadPDF = async () => {
+  const hasReportData =
+    ledgerExpenditureTableData?.length > 0 ||
+    ledgerIncomeTableData?.length > 0;
+
+  const waitNextFrame = () =>
+    new Promise((resolve) => requestAnimationFrame(resolve));
+
+  const handleDownloadPDF = async () => {
     const element = printRef.current;
-    if (!element) return;
+    const host = printHostRef.current;
+
+    if (!element) {
+      toast.error("Nothing to download. Please generate the report first.");
+      return;
+    }
+
+    if (!hasReportData) {
+      toast.error("No P&L appropriation data to download.");
+      return;
+    }
+
+    const prevHostStyle = host?.getAttribute("style") || "";
 
     try {
-      const isLandscape = false;
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF(isLandscape ? "l" : "p", "mm", "a4");
-      const imgWidth = isLandscape ? 297 : 210;
-      const pageHeight = isLandscape ? 210 : 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
+      setPdfLoading(true);
 
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 15) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+      if (host) {
+        host.setAttribute(
+          "style",
+          "position:fixed;left:0;top:0;width:210mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
+        );
       }
-      pdf.save(`ProfitLoss-${toDate}.pdf`);
+      await waitNextFrame();
+
+      const pageNodes = Array.from(
+        element.querySelectorAll("[data-print-page='true']"),
+      );
+      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
+
+      const captureOptions = {
+        scale: 1,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        imageTimeout: 0,
+        removeContainer: true,
+        foreignObjectRendering: false,
+      };
+
+      const BATCH_SIZE = 3;
+      const pageImages = [];
+
+      for (let i = 0; i < pagesToCapture.length; i += BATCH_SIZE) {
+        const batch = pagesToCapture.slice(i, i + BATCH_SIZE);
+        const batchResults = await Promise.all(
+          batch.map(async (pageEl) => {
+            const canvas = await html2canvas(pageEl, captureOptions);
+            if (!canvas?.width || !canvas?.height) return null;
+            return canvas.toDataURL("image/jpeg", 0.75);
+          }),
+        );
+        pageImages.push(...batchResults);
+      }
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+      const pageWidth = 210;
+      const pageHeight = 297;
+      let pagesAdded = 0;
+
+      for (let i = 0; i < pageImages.length; i += 1) {
+        const imgData = pageImages[i];
+        if (!imgData) continue;
+
+        if (pagesAdded > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, pageHeight);
+        pagesAdded += 1;
+      }
+
+      if (pagesAdded < 1) {
+        toast.error("Failed to capture report for PDF.");
+        return;
+      }
+
+      pdf.save(`PLAppropiation-${asOnDate || "report"}.pdf`);
+      toast.success("PDF downloaded");
     } catch (error) {
       console.error("Error downloading PDF:", error);
+      toast.error(
+        error?.message
+          ? `Failed to download PDF: ${error.message}`
+          : "Failed to download PDF",
+      );
+    } finally {
+      if (host) host.setAttribute("style", prevHostStyle);
+      setPdfLoading(false);
     }
   };
 
@@ -159,44 +232,51 @@ const PlAppropiation = ({
                     )}
                   </Button>
                   <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
-                      if (
-                        ledgerExpenditureTableData?.length > 0 ||
-                        ledgerIncomeTableData?.length > 0
-                      )
-                        generatePrint();
+                      if (hasReportData) generatePrint();
                     }}
                     className={cn(
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
-                        "cursor-not-allowed bg-gray-400 ": !(
-                          ledgerExpenditureTableData?.length > 0 ||
-                          ledgerIncomeTableData?.length > 0
-                        ),
+                        "cursor-not-allowed bg-gray-400": !hasReportData,
                       },
                     )}
                   >
                     <HiMiniPrinter />
                   </div>
                   <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
-                      if (
-                        ledgerExpenditureTableData?.length > 0 ||
-                        ledgerIncomeTableData?.length > 0
-                      )
-                        handleDownloadPDF();
+                      if (loading || pdfLoading) return;
+                      if (hasReportData) handleDownloadPDF();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        if (loading || pdfLoading) return;
+                        if (hasReportData) handleDownloadPDF();
+                      }
                     }}
                     className={cn(
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
-                        "cursor-not-allowed bg-gray-400 ": !(
-                          ledgerExpenditureTableData?.length > 0 ||
-                          ledgerIncomeTableData?.length > 0
-                        ),
+                        "cursor-not-allowed bg-gray-400":
+                          pdfLoading || loading || !hasReportData,
                       },
                     )}
                   >
-                    <FiDownload />
+                    {pdfLoading ? (
+                      <ClipLoader
+                        color="#d7e6f4"
+                        size={20}
+                        speedMultiplier={0.7}
+                      />
+                    ) : (
+                      <FiDownload />
+                    )}
                   </div>
                 </div>
               </div>
@@ -322,16 +402,32 @@ const PlAppropiation = ({
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
-      <div style={{ position: "absolute", top: "-10000px", left: "-10000px" }}>
-        <PreviewModal
-          printRef={printRef}
-          ledgerTableExpenditureData={ledgerExpenditureTableData}
-          ledgerTableIncomeData={ledgerIncomeTableData}
-          totalExpenditure={totalExpenditure}
-          totalIncome={totalIncome}
-          asOnDate={asOnDate}
-        />
-      </div>
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={printHostRef}
+            aria-hidden
+            style={{
+              position: "fixed",
+              left: "-10000px",
+              top: 0,
+              width: "210mm",
+              background: "#ffffff",
+              pointerEvents: "none",
+              zIndex: -1,
+            }}
+          >
+            <PreviewModal
+              printRef={printRef}
+              ledgerTableExpenditureData={ledgerExpenditureTableData || []}
+              ledgerTableIncomeData={ledgerIncomeTableData || []}
+              totalExpenditure={totalExpenditure}
+              totalIncome={totalIncome}
+              asOnDate={asOnDate}
+            />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

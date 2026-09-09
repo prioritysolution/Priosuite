@@ -484,6 +484,42 @@ const Repayment = ({
 
                           <FormField
                             control={form.control}
+                            name="currentAmount"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Current Amount</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Enter current amount"
+                                    readOnly
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="overdueAmount"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Overdue Amount</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Enter overdue amount"
+                                    readOnly
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
                             name="currentInterest"
                             render={({ field }) => (
                               <FormItem>
@@ -527,6 +563,24 @@ const Repayment = ({
                                 <FormControl>
                                   <Input
                                     placeholder="Enter previous due interest"
+                                    readOnly
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="totalInterest"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Total Interest</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Enter total interest"
                                     readOnly
                                     {...field}
                                   />

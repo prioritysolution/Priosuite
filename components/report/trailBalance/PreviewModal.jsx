@@ -293,7 +293,8 @@ const PreviewModal = ({
       {liablitiesPages.map((liabilitiesPage, pageIndex) => (
         <div
           key={`liabilities-page-${pageIndex}`}
-          className="w-full h-[297mm] flex flex-col text-center py-2 px-1 print:break-after-page scale-[.97]"
+          data-print-page="true"
+          className="w-full h-[297mm] flex flex-col text-center py-2 px-1 bg-white overflow-hidden print:break-after-page"
         >
           {/* HEADER - SHOW ON EVERY PAGE */}
           <div className=" text-xs flex flex-col gap-1 uppercase mb-1">
@@ -327,16 +328,17 @@ const PreviewModal = ({
       {assetsPages.map((assetsPage, pageIndex) => (
         <div
           key={`assets-page-${pageIndex}`}
-          className="w-full h-[297mm] flex flex-col py-2 px-4 print:break-after-page page-break"
+          data-print-page="true"
+          className="w-full h-[297mm] flex flex-col py-2 px-1 bg-white overflow-hidden print:break-after-page"
         >
           <div className="flex-1">
             {/* Header */}
-            <div className="text-sm text-center flex flex-col h-[120px] justify-between uppercase">
+            <div className="text-xs text-center flex flex-col gap-1 uppercase mb-1">
               <p>{orgName}</p>
               <p>{branchName}</p>
               <p>{address}</p>
               <p>{regNo}</p>
-              <p className="text-lg">
+              <p className="text-sm">
                 Trial Balance From {fromDate} To {toDate}
               </p>
             </div>

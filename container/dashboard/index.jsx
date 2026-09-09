@@ -15,6 +15,10 @@ const DashboardContainer = () => {
   const branchId = getCookieData("userBranchId");
   const isMainDash = Number(getCookieData("Is_Main_Dash"));
 
+
+  // console.log("token=> ", token);
+  
+
   // Access beg_date from Redux store
   const begDate = useSelector((state) => state?.login?.beg_date);
 
@@ -47,7 +51,7 @@ const DashboardContainer = () => {
     }
   }, [orgId, branchId, token, isMainDash, dispatch]);
 
-  console.log("Begin Date from Redux:", begDate);
+  // console.log("Begin Date from Redux:", begDate);
 
   return (
     <Dashboard

@@ -27,23 +27,23 @@ const Sidebar = ({ loading, onClose }) => {
 
   const handlePriosuiteV2Click = () => {
     const cookies = document.cookie;
-    const cookieArray = cookies.split('; ');
+    const cookieArray = cookies.split("; ");
     const params = new URLSearchParams();
-    
-    cookieArray.forEach(cookie => {
-      const [key, ...rest] = cookie.split('=');
+
+    cookieArray.forEach((cookie) => {
+      const [key, ...rest] = cookie.split("=");
       if (key) {
         const trimmedKey = key.trim();
-        params.append(`priosuite_Ims_${trimmedKey}`, rest.join('=') || '');
+        params.append(`priosuite_Ims_${trimmedKey}`, rest.join("=") || "");
       }
     });
-    
-    const baseUrl = process.env.NEXT_PUBLIC_IMS_URL || 'http://localhost:3000';
+
+    const baseUrl = process.env.NEXT_PUBLIC_IMS_URL || "http://localhost:3000";
     const url = `${baseUrl}?${params.toString()}`;
     window.open(
       url,
-      '_blank',
-      'width=1200,height=800,left=100,top=100,resizable=yes,scrollbars=yes'
+      "_blank",
+      "width=1200,height=800,left=100,top=100,resizable=yes,scrollbars=yes",
     );
   };
 
@@ -78,7 +78,7 @@ const Sidebar = ({ loading, onClose }) => {
       </div>
 
       {/* ── Scrollable nav list ── */}
-      <ScrollArea className="flex-1 [&>[data-orientation=vertical]_.relative]:bg-white/20 [&>[data-orientation=vertical]_.relative]:hover:bg-white/40 [&>[data-orientation=vertical]]:w-1.5">
+      <ScrollArea className="flex-1 [&>[data-orientation=vertical]]:w-2.5 [&>[data-orientation=vertical]]:bg-white/10 [&>[data-orientation=vertical]_.relative]:bg-white/45 [&>[data-orientation=vertical]_.relative]:hover:bg-white/70">
         <nav className="py-3 px-2 space-y-1">
           {loading || !sidebarData || !sidebarData.length
             ? /* Loading skeletons */

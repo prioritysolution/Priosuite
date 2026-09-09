@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import getCookieData from "@/utils/getCookieData";
-import { format } from "date-fns";
+import { formatDateForApi } from "@/utils/dateHelpers";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -93,14 +93,15 @@ export const useLoanReport = () => {
     }
   };
 
-  const calculateTotal = (data, field) => {
+  const calculateTotal = (data, ...fields) => {
     return (
       data &&
       data.reduce((total, item) => {
-        const value = item[field];
-        // Convert value to number, treating null or empty as 0
-        const numericValue = value ? parseFloat(value) : 0;
-        return total + numericValue;
+        const raw = fields
+          .map((field) => item[field])
+          .find((value) => value != null && value !== "");
+        const numericValue = raw ? parseFloat(raw) : 0;
+        return total + (Number.isNaN(numericValue) ? 0 : numericValue);
       }, 0)
     );
   };
@@ -111,22 +112,38 @@ export const useLoanReport = () => {
   const totalMisAmount = calculateTotal(tableData, "Mis_Amt");
   const totalNetDisburse = calculateTotal(tableData, "Net_Disburse");
 
-  const totalPrn = calculateTotal(tableData, "Paid_Prn");
-  const totalIntt = calculateTotal(tableData, "Paid_Intt");
+  const totalPrn = calculateTotal(tableData, "Principal_Paid", "Paid_Prn");
+  const totalIntt = calculateTotal(tableData, "Interest_Paid", "Paid_Intt");
   const totalAmount = calculateTotal(tableData, "Tot_Amt");
 
-  const totalOpening = calculateTotal(tableData, "Opening");
-  const totalDisburse = calculateTotal(tableData, "Disb");
-  const totalCurrOuts = calculateTotal(tableData, "Curr_Outs");
-  const totalOdOuts = calculateTotal(tableData, "OD_Outs");
-  const totalCurrIntt = calculateTotal(tableData, "Curr_Intt");
-  const totalOdIntt = calculateTotal(tableData, "OD_Intt");
+  const totalOpening = calculateTotal(tableData, "Opening_Balance", "Opening");
+  const totalDisburse = calculateTotal(tableData, "Disb_Amt", "Disb");
+  const totalCurrOuts = calculateTotal(
+    tableData,
+    "Current_Principal",
+    "Curr_Outs",
+  );
+  const totalOdOuts = calculateTotal(
+    tableData,
+    "Overdue_Principal",
+    "OD_Outs",
+  );
+  const totalCurrIntt = calculateTotal(
+    tableData,
+    "Current_Interest",
+    "Curr_Intt",
+  );
+  const totalOdIntt = calculateTotal(
+    tableData,
+    "Overdue_Interest",
+    "OD_Intt",
+  );
 
   const getLoanReportDataApiCall = async (item) => {
     setLoading(true);
 
-    const postFromDate = item.fromDate && format(item.fromDate, "yyyy-MM-dd");
-    const postToDate = item.toDate && format(item.toDate, "yyyy-MM-dd");
+    const postFromDate = formatDateForApi(item.fromDate);
+    const postToDate = formatDateForApi(item.toDate);
 
     try {
       const res = await getLoanReportDataAPI(
@@ -138,19 +155,26 @@ export const useLoanReport = () => {
         item.productType,
       );
 
-      if (res.message === "Data Found") {
+      const list = Array.isArray(res?.data)
+        ? res.data
+        : Array.isArray(res?.details)
+          ? res.details
+          : [];
+      const isSuccess =
+        res?.success === true ||
+        res?.message === "Data Found" ||
+        (typeof res?.message === "string" &&
+          res.message.toLowerCase().includes("success"));
+
+      if (isSuccess && list.length) {
         if (item.reportType === "111") {
           let grandTotalPrincipal = 0;
           let grandTotalInterest = 0;
           let grandTotalAmount = 0;
 
-          // Safeguard against undefined or unexpected res and res.details
-          const details = res && Array.isArray(res.details) ? res.details : [];
-
-          const groupedData = details.reduce((acc, current) => {
+          const groupedData = list.reduce((acc, current) => {
             const lastGroup = acc[acc.length - 1];
 
-            // Ensure Deposit, Withdrawn, and Interest are numbers (default to 0 if not a valid number)
             const principal = isNaN(parseFloat(current.Paid_Prn))
               ? 0
               : parseFloat(current.Paid_Prn);
@@ -161,7 +185,7 @@ export const useLoanReport = () => {
               : parseFloat(current.Interest || current.Paid_Intt);
             const amount = isNaN(parseFloat(current.Tot_Amt))
               ? 0
-              : parseFloat(current.Tot_Amt); // Fixed typo: `Withdrwan` to `Withdrawn`
+              : parseFloat(current.Tot_Amt);
 
             if (
               lastGroup &&
@@ -170,18 +194,17 @@ export const useLoanReport = () => {
               lastGroup.transactions.push(current);
               lastGroup.subtotalPrincipal += principal;
               lastGroup.subtotalInterest += interest;
-              lastGroup.subtotalAmount += amount; // Make sure this line adds up correctly
+              lastGroup.subtotalAmount += amount;
             } else {
               acc.push({
                 date: current.Paid_Date,
                 transactions: [current],
                 subtotalPrincipal: principal,
                 subtotalInterest: interest,
-                subtotalAmount: amount, // Make sure withdrawn is initialized here
+                subtotalAmount: amount,
               });
             }
 
-            // Add to the grand total for all transactions
             grandTotalPrincipal += principal;
             grandTotalInterest += interest;
             grandTotalAmount += amount;
@@ -189,7 +212,6 @@ export const useLoanReport = () => {
             return acc;
           }, []);
 
-          // Append grand totals to the grouped data
           groupedData.push({
             isGrandTotal: true,
             grandTotalPrincipal,
@@ -199,7 +221,7 @@ export const useLoanReport = () => {
 
           setTableData(groupedData);
         } else {
-          setTableData(res.details);
+          setTableData(list);
         }
       } else {
         setTableData([]);
