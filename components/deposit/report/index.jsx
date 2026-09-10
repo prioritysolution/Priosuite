@@ -28,7 +28,9 @@ import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import DepositReceipt from "../deposit/DepositReceipt";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
+import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
 
 const DepositReport = ({
   loading,
@@ -64,6 +66,7 @@ const DepositReport = ({
   depositReceiptData,
 }) => {
   const [showReportForm, setShowReportForm] = useState(true);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
@@ -80,6 +83,7 @@ const DepositReport = ({
   const printClosingRegisterRef = useRef(null);
   const printDetailedListRef = useRef(null);
   const printInterestListRef = useRef(null);
+  const printHostRef = useRef(null);
 
   const generateOpeningRegisterPrint = useReactToPrint({
     contentRef: printOpeningRegisterRef,
@@ -116,55 +120,143 @@ const DepositReport = ({
     }-${toDate && format(toDate, "dd-MM-yyyy")}`,
   });
 
+  const formatReportDate = (value) =>
+    value ? format(value, "dd-MM-yyyy") : "";
+
+  const waitNextFrame = () =>
+    new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    );
+
   const handleDownloadPDF = async () => {
     let element = null;
-    let docTitle = "document";
+    let docTitle = "DepositReport";
+
     if (showData === "105") {
       element = printOpeningRegisterRef.current;
-      docTitle = `AcountOpeningRegister-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
+      docTitle = `AcountOpeningRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
     } else if (showData === "106") {
       element = printTransactionRegisterRef.current;
-      docTitle = `TransactionRegister-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
+      docTitle = `TransactionRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
     } else if (showData === "107") {
       element = printClosingRegisterRef.current;
-      docTitle = `AcountClosingRegister-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
+      docTitle = `AcountClosingRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
     } else if (showData === "108") {
       element = printDetailedListRef.current;
-      docTitle = `DetailedList-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
+      docTitle = `DetailedList-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
     } else if (showData === "109") {
       element = printInterestListRef.current;
-      docTitle = `InterestLedger-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
+      docTitle = `InterestLedger-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
     }
 
-    if (!element) return;
+    const host = printHostRef.current;
+
+    if (!element) {
+      toast.error("Nothing to download. Please generate the report first.");
+      return;
+    }
+
+    if (!(tableData?.length > 0)) {
+      toast.error("No deposit report data to download.");
+      return;
+    }
+
+    const isLandscape = showData !== "109";
+    const pageWidth = isLandscape ? 297 : 210;
+    const pageHeight = isLandscape ? 210 : 297;
+    const hostWidth = isLandscape ? "297mm" : "210mm";
+    const prevHostStyle = host?.getAttribute("style") || "";
 
     try {
-      const isLandscape = showData !== "109";
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF(isLandscape ? "l" : "p", "mm", "a4");
-      const imgWidth = isLandscape ? 297 : 210;
-      const pageHeight = isLandscape ? 210 : 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
+      setPdfLoading(true);
 
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 15) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+      if (host) {
+        host.setAttribute(
+          "style",
+          `position:fixed;left:0;top:0;width:${hostWidth};background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;`,
+        );
       }
+      await waitNextFrame();
+
+      const pageNodes = Array.from(
+        element.querySelectorAll("[data-print-page='true']"),
+      );
+      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
+
+      const pdf = new jsPDF({
+        orientation: isLandscape ? "landscape" : "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+      let pagesAdded = 0;
+
+      for (let i = 0; i < pagesToCapture.length; i += 1) {
+        const pageEl = pagesToCapture[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 1.25,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+          scrollX: 0,
+          scrollY: 0,
+          onclone: (clonedDoc) => {
+            clonedDoc.querySelectorAll("*").forEach((node) => {
+              if (!(node instanceof HTMLElement)) return;
+              const tag = node.tagName;
+              if (
+                [
+                  "TABLE",
+                  "THEAD",
+                  "TBODY",
+                  "TFOOT",
+                  "TR",
+                  "TH",
+                  "TD",
+                  "COL",
+                  "COLGROUP",
+                ].includes(tag)
+              ) {
+                return;
+              }
+              node.style.overflow = "visible";
+              node.style.boxShadow = "none";
+              node.style.transform = "none";
+            });
+          },
+        });
+
+        if (!canvas?.width || !canvas?.height) continue;
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const renderHeight = Math.min(imgHeight, pageHeight);
+
+        if (pagesAdded > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, renderHeight);
+        pagesAdded += 1;
+      }
+
+      if (pagesAdded < 1) {
+        toast.error("Failed to capture report for PDF.");
+        return;
+      }
+
       pdf.save(`${docTitle}.pdf`);
+      toast.success("PDF downloaded");
     } catch (error) {
       console.error("Error downloading PDF:", error);
+      toast.error(
+        error?.message
+          ? `Failed to download PDF: ${error.message}`
+          : "Failed to download PDF",
+      );
+    } finally {
+      if (host) host.setAttribute("style", prevHostStyle);
+      setPdfLoading(false);
     }
   };
 
@@ -265,6 +357,7 @@ const DepositReport = ({
                   </Button>
                   <div
                     onClick={() => {
+                      if (loading || pdfLoading) return;
                       if (tableData?.length > 0)
                         showData === "105"
                           ? generateOpeningRegisterPrint()
@@ -281,28 +374,48 @@ const DepositReport = ({
                     className={cn(
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
-                        "cursor-not-allowed bg-gray-400 ": !(
-                          tableData?.length > 0
-                        ),
+                        "cursor-not-allowed bg-gray-400 ":
+                          loading ||
+                          pdfLoading ||
+                          !(tableData?.length > 0),
                       },
                     )}
                   >
                     <HiMiniPrinter />
                   </div>
                   <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
-                      if (tableData?.length > 0) handleDownloadPDF();
+                      if (loading || pdfLoading) return;
+                      handleDownloadPDF();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        if (loading || pdfLoading) return;
+                        handleDownloadPDF();
+                      }
                     }}
                     className={cn(
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
-                        "cursor-not-allowed bg-gray-400 ": !(
-                          tableData?.length > 0
-                        ),
+                        "cursor-not-allowed bg-gray-400 ":
+                          loading ||
+                          pdfLoading ||
+                          !(tableData?.length > 0),
                       },
                     )}
                   >
-                    <FiDownload />
+                    {pdfLoading ? (
+                      <ClipLoader
+                        color="#d7e6f4"
+                        size={20}
+                        speedMultiplier={0.7}
+                      />
+                    ) : (
+                      <FiDownload />
+                    )}
                   </div>
                 </div>
               </div>
@@ -378,53 +491,69 @@ const DepositReport = ({
         ledgerTableData={ledgerTableData}
       />
 
-      <div style={{ position: "absolute", top: "-10000px", left: "-10000px" }}>
-        {showData === "105" ? (
-          <OpeningRegisterPreview
-            printRef={printOpeningRegisterRef}
-            tableData={tableData}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "106" ? (
-          <TransactionRegisterPreview
-            printRef={printTransactionRegisterRef}
-            tableData={tableData}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "107" ? (
-          <CloseRegisterPreview
-            printRef={printClosingRegisterRef}
-            tableData={tableData}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "108" ? (
-          <DetailedListPreview
-            printRef={printDetailedListRef}
-            tableData={tableData}
-            totalOpening={totalOpening}
-            totalDeposit={totalDeposit}
-            totalWithdrawn={totalWithdrawn}
-            totalClosing={totalClosing}
-            totalPaidIntt={totalPaidIntt}
-            totalDueIntt={totalDueIntt}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "109" ? (
-          <InterestListPreview
-            printRef={printInterestListRef}
-            tableData={tableData}
-            totalAmount={totalAmount}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : (
-          <></>
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={printHostRef}
+            aria-hidden
+            style={{
+              position: "fixed",
+              left: "-10000px",
+              top: 0,
+              width: showData === "109" ? "210mm" : "297mm",
+              background: "#ffffff",
+              pointerEvents: "none",
+              zIndex: -1,
+            }}
+          >
+            {showData === "105" ? (
+              <OpeningRegisterPreview
+                printRef={printOpeningRegisterRef}
+                tableData={tableData}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "106" ? (
+              <TransactionRegisterPreview
+                printRef={printTransactionRegisterRef}
+                tableData={tableData}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "107" ? (
+              <CloseRegisterPreview
+                printRef={printClosingRegisterRef}
+                tableData={tableData}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "108" ? (
+              <DetailedListPreview
+                printRef={printDetailedListRef}
+                tableData={tableData}
+                totalOpening={totalOpening}
+                totalDeposit={totalDeposit}
+                totalWithdrawn={totalWithdrawn}
+                totalClosing={totalClosing}
+                totalPaidIntt={totalPaidIntt}
+                totalDueIntt={totalDueIntt}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "109" ? (
+              <InterestListPreview
+                printRef={printInterestListRef}
+                tableData={tableData}
+                totalAmount={totalAmount}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : (
+              <></>
+            )}
+          </div>,
+          document.body,
         )}
-      </div>
 
       {showData === "106" ? (
         <DepositReceipt

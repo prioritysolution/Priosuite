@@ -207,14 +207,14 @@ const Sidebar = ({ loading, onClose }) => {
         </nav>
       </ScrollArea>
 
-      <div className="px-3 py-2 border-t border-white/10">
+      {/* <div className="px-3 py-2 border-t border-white/10">
         <button
           onClick={handlePriosuiteV2Click}
           className="w-full bg-[#14B8A6] text-white py-2 rounded-lg font-medium hover:bg-teal-600 transition-colors"
         >
           priosuite V2
         </button>
-      </div>
+      </div> */}
 
       {/* ── Bottom brand bar ── */}
       <div className="flex-shrink-0 border-t border-white/10 px-4 h-10 flex items-center">

@@ -1,13 +1,4 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
 import { formatDateForDisplay } from "@/utils/dateHelpers";
@@ -44,6 +35,22 @@ const formatAmount = (value) => {
   if (value == null || value === "") return "";
   const numeric = Number(value);
   return Number.isNaN(numeric) ? value : numeric.toFixed(2);
+};
+
+const cell = {
+  border: "1px solid #000",
+  padding: "4px 3px",
+  fontSize: "10px",
+  color: "#000",
+  background: "#fff",
+  verticalAlign: "middle",
+  wordBreak: "break-word",
+};
+
+const headCell = {
+  ...cell,
+  fontWeight: 600,
+  textAlign: "center",
 };
 
 const DetailedListPreview = ({
@@ -104,198 +111,173 @@ const DetailedListPreview = ({
       {pages.map((pageRows, pageIndex) => (
         <div
           key={pageIndex}
-          className="w-full h-[210mm] text-center py-2 px-1 flex flex-col justify-between scale-[.98]"
+          data-print-page="true"
+          className="box-border flex h-[210mm] w-full flex-col bg-white px-2 py-2"
         >
-          <div className=" text-xs flex flex-col gap-1 uppercase mb-1">
+          <div className="mb-2 flex flex-col gap-0.5 text-center text-xs uppercase">
             <p>{orgName}</p>
             <p>{branchName}</p>
             <p>{address}</p>
             <p>{regNo}</p>
-            <p className="text-sm">
+            <p className="text-sm normal-case">
               Loan Detailed List From{" "}
               {fromDate && format(fromDate, "dd-MM-yyyy")} To{" "}
               {toDate && format(toDate, "dd-MM-yyyy")}
             </p>
           </div>
 
-          <div className="flex-1 w-full">
-            <Table className="w-full border-collapse border border-black text-[11px]">
-              <TableHeader>
-                <TableRow className="h-[40px] border-black">
-                  <TableHead
-                    rowSpan={2}
-                    className="text-black p-0 border-black text-center w-[36px]"
-                  >
-                    SL
-                  </TableHead>
-                  <TableHead
-                    rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[110px]"
-                  >
-                    Customer Name
-                  </TableHead>
-                  <TableHead
-                    rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[110px]"
-                  >
-                    Guardian Name
-                  </TableHead>
-                  <TableHead
-                    rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[70px]"
-                  >
-                    Account No
-                  </TableHead>
-                  <TableHead
-                    rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[70px]"
-                  >
-                    Loan Date
-                  </TableHead>
-                  <TableHead
-                    rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[70px]"
-                  >
-                    Opening
-                  </TableHead>
-                  <TableHead
-                    rowSpan={2}
-                    className="text-black p-0 border-black border-l text-center w-[70px]"
-                  >
-                    Disburse
-                  </TableHead>
-                  <TableHead
-                    colSpan={2}
-                    className="text-black p-0 border-black border-l text-center h-[40px]"
-                  >
-                    Repayment
-                  </TableHead>
-                  <TableHead
-                    colSpan={2}
-                    className="text-black p-0 border-black border-l text-center h-[40px]"
-                  >
-                    Outstanding
-                  </TableHead>
-                  <TableHead
-                    colSpan={2}
-                    className="text-black p-0 border-black border-l text-center h-[40px]"
-                  >
-                    Outs. Interest
-                  </TableHead>
-                </TableRow>
-                <TableRow className="h-[40px] border-black">
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
-                    Principal
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
-                    Interest
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
-                    Current
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
-                    Overdue
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
-                    Current
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px] h-[40px]">
-                    Overdue
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "separate",
+              borderSpacing: 0,
+              tableLayout: "fixed",
+              background: "#fff",
+            }}
+          >
+            <colgroup>
+              <col style={{ width: "4%" }} />
+              <col style={{ width: "12%" }} />
+              <col style={{ width: "12%" }} />
+              <col style={{ width: "8%" }} />
+              <col style={{ width: "8%" }} />
+              <col style={{ width: "7%" }} />
+              <col style={{ width: "7%" }} />
+              <col style={{ width: "7%" }} />
+              <col style={{ width: "7%" }} />
+              <col style={{ width: "7%" }} />
+              <col style={{ width: "7%" }} />
+              <col style={{ width: "7%" }} />
+              <col style={{ width: "7%" }} />
+            </colgroup>
+            <thead>
+              <tr>
+                <th rowSpan={2} style={headCell}>
+                  SL
+                </th>
+                <th rowSpan={2} style={headCell}>
+                  Customer Name
+                </th>
+                <th rowSpan={2} style={headCell}>
+                  Guardian Name
+                </th>
+                <th rowSpan={2} style={headCell}>
+                  Account No
+                </th>
+                <th rowSpan={2} style={headCell}>
+                  Loan Date
+                </th>
+                <th rowSpan={2} style={headCell}>
+                  Opening
+                </th>
+                <th rowSpan={2} style={headCell}>
+                  Disburse
+                </th>
+                <th colSpan={2} style={headCell}>
+                  Repayment
+                </th>
+                <th colSpan={2} style={headCell}>
+                  Outstanding
+                </th>
+                <th colSpan={2} style={headCell}>
+                  Outs. Interest
+                </th>
+              </tr>
+              <tr>
+                <th style={headCell}>Principal</th>
+                <th style={headCell}>Interest</th>
+                <th style={headCell}>Current</th>
+                <th style={headCell}>Overdue</th>
+                <th style={headCell}>Current</th>
+                <th style={headCell}>Overdue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pageRows.map((row, index) => (
+                <tr key={row?.Acct_Id || index}>
+                  <td style={{ ...cell, textAlign: "center" }}>
+                    {globalSerialNo++}
+                  </td>
+                  <td style={{ ...cell, textAlign: "left" }}>
+                    {row?.Full_Name}
+                  </td>
+                  <td style={{ ...cell, textAlign: "left" }}>
+                    {row?.Guardian_Name || row?.Relation_Name}
+                  </td>
+                  <td style={{ ...cell, textAlign: "center" }}>
+                    {row?.Account_No}
+                  </td>
+                  <td style={{ ...cell, textAlign: "center" }}>
+                    {formatDateForDisplay(row?.Disb_Date)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right" }}>
+                    {formatAmount(row?.Opening_Balance ?? row?.Opening)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right" }}>
+                    {formatAmount(row?.Disb_Amt ?? row?.Disb)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right" }}>
+                    {formatAmount(row?.Principal_Paid ?? row?.Paid_Prn)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right" }}>
+                    {formatAmount(row?.Interest_Paid ?? row?.Paid_Intt)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right" }}>
+                    {formatAmount(row?.Current_Principal ?? row?.Curr_Outs)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right" }}>
+                    {formatAmount(row?.Overdue_Principal ?? row?.OD_Outs)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right" }}>
+                    {formatAmount(row?.Current_Interest ?? row?.Curr_Intt)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right" }}>
+                    {formatAmount(row?.Overdue_Interest ?? row?.OD_Intt)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            {pageIndex === pages.length - 1 && (
+              <tfoot>
+                <tr>
+                  <td colSpan={5} style={{ ...headCell, textAlign: "center" }}>
+                    Total
+                  </td>
+                  <td style={{ ...cell, textAlign: "right", fontWeight: 600 }}>
+                    {totalOpening?.toFixed(2)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right", fontWeight: 600 }}>
+                    {totalDisburse?.toFixed(2)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right", fontWeight: 600 }}>
+                    {totalPrn?.toFixed(2)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right", fontWeight: 600 }}>
+                    {totalIntt?.toFixed(2)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right", fontWeight: 600 }}>
+                    {totalCurrOuts?.toFixed(2)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right", fontWeight: 600 }}>
+                    {totalOdOuts?.toFixed(2)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right", fontWeight: 600 }}>
+                    {totalCurrIntt?.toFixed(2)}
+                  </td>
+                  <td style={{ ...cell, textAlign: "right", fontWeight: 600 }}>
+                    {totalOdIntt?.toFixed(2)}
+                  </td>
+                </tr>
+              </tfoot>
+            )}
+          </table>
 
-              <TableBody>
-                {pageRows.map((row, index) => (
-                  <TableRow key={row?.Acct_Id || index} className="bg-white h-[50px]">
-                    <TableCell className="border border-black p-0 text-center">
-                      {globalSerialNo++}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 text-center">
-                      {row?.Full_Name}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 text-center">
-                      {row?.Guardian_Name || row?.Relation_Name}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 text-center">
-                      {row?.Account_No}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 text-center">
-                      {formatDateForDisplay(row?.Disb_Date)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {formatAmount(row?.Opening_Balance ?? row?.Opening)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {formatAmount(row?.Disb_Amt ?? row?.Disb)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {formatAmount(row?.Principal_Paid ?? row?.Paid_Prn)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {formatAmount(row?.Interest_Paid ?? row?.Paid_Intt)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {formatAmount(row?.Current_Principal ?? row?.Curr_Outs)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {formatAmount(row?.Overdue_Principal ?? row?.OD_Outs)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {formatAmount(row?.Current_Interest ?? row?.Curr_Intt)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {formatAmount(row?.Overdue_Interest ?? row?.OD_Intt)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-
-              {pageIndex === pages.length - 1 && (
-                <TableFooter>
-                  <TableRow className="bg-white h-[50px]">
-                    <TableCell
-                      colSpan={5}
-                      className="border border-black p-0 text-center"
-                    >
-                      Total
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalOpening?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalDisburse?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalPrn?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalIntt?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalCurrOuts?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalOdOuts?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalCurrIntt?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalOdIntt?.toFixed(2)}
-                    </TableCell>
-                  </TableRow>
-                </TableFooter>
-              )}
-            </Table>
-          </div>
-
-          <div className="w-full h-[40px] mt-2 flex items-end justify-between text-xs relative">
-            <p className="text-nowrap">Generated By: {userName}</p>
-            <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">
+          <div className="mt-auto grid w-full grid-cols-3 items-end gap-2 pt-2 text-[10px]">
+            <p className="truncate text-left">Generated By: {userName}</p>
+            <p className="text-center italic text-gray-600">
               This report is generated by PrioSuite.
             </p>
-            <p className="text-nowrap">
+            <p className="whitespace-nowrap text-right">
               Generated On: {currentDate} {currentTime}
             </p>
           </div>

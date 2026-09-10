@@ -16,11 +16,15 @@ import { useReactToPrint } from "react-to-print";
 import DisburseRegisterPreview from "./DisburseRegisterPreview";
 import DetailedListPreview from "./DetailedListPreview";
 import { useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import RepaymentRegisterPreview from "./RepaymentRegisterPreview";
 import CollectionReceipt from "../repayment/CollectionReceipt";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas-pro";
+import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
 
 const LoanReport = ({
   loading,
@@ -62,6 +66,7 @@ const LoanReport = ({
   collectionReceiptData,
 }) => {
   const [showReportForm, setShowReportForm] = useState(true);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
@@ -78,6 +83,7 @@ const LoanReport = ({
   const printDisburseRegisterRef = useRef(null);
   const printRepaymentRegisterRef = useRef(null);
   const printDetailedListRef = useRef(null);
+  const printHostRef = useRef(null);
 
   const generateDisburseRegisterPrint = useReactToPrint({
     contentRef: printDisburseRegisterRef,
@@ -98,8 +104,140 @@ const LoanReport = ({
     }`,
   });
 
+  const formatReportDate = (value) =>
+    value ? format(value, "dd-MM-yyyy") : "";
+
+  const waitNextFrame = () =>
+    new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    );
+
+  const handleDownloadPDF = async () => {
+    let element = null;
+    let docTitle = "LoanReport";
+
+    if (showData === "110") {
+      element = printDisburseRegisterRef.current;
+      docTitle = `LoanDisburseRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
+    } else if (showData === "111") {
+      element = printRepaymentRegisterRef.current;
+      docTitle = `LoanRepaymentRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
+    } else if (showData === "112") {
+      element = printDetailedListRef.current;
+      docTitle = `LoanDetailedList-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
+    }
+
+    const host = printHostRef.current;
+
+    if (!element) {
+      toast.error("Nothing to download. Please generate the report first.");
+      return;
+    }
+
+    if (!(tableData?.length > 0)) {
+      toast.error("No loan report data to download.");
+      return;
+    }
+
+    const prevHostStyle = host?.getAttribute("style") || "";
+
+    try {
+      setPdfLoading(true);
+
+      if (host) {
+        host.setAttribute(
+          "style",
+          "position:fixed;left:0;top:0;width:297mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
+        );
+      }
+      await waitNextFrame();
+
+      const pageNodes = Array.from(
+        element.querySelectorAll("[data-print-page='true']"),
+      );
+      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
+
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+      const pageWidth = 297;
+      const pageHeight = 210;
+      let pagesAdded = 0;
+
+      for (let i = 0; i < pagesToCapture.length; i += 1) {
+        const pageEl = pagesToCapture[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 1.25,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+          scrollX: 0,
+          scrollY: 0,
+          onclone: (clonedDoc) => {
+            clonedDoc.querySelectorAll("*").forEach((node) => {
+              if (!(node instanceof HTMLElement)) return;
+              const tag = node.tagName;
+              if (
+                [
+                  "TABLE",
+                  "THEAD",
+                  "TBODY",
+                  "TFOOT",
+                  "TR",
+                  "TH",
+                  "TD",
+                  "COL",
+                  "COLGROUP",
+                ].includes(tag)
+              ) {
+                return;
+              }
+              node.style.overflow = "visible";
+              node.style.boxShadow = "none";
+              node.style.transform = "none";
+            });
+          },
+        });
+
+        if (!canvas?.width || !canvas?.height) continue;
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const renderHeight = Math.min(imgHeight, pageHeight);
+
+        if (pagesAdded > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, renderHeight);
+        pagesAdded += 1;
+      }
+
+      if (pagesAdded < 1) {
+        toast.error("Failed to capture report for PDF.");
+        return;
+      }
+
+      pdf.save(`${docTitle}.pdf`);
+      toast.success("PDF downloaded");
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      toast.error(
+        error?.message
+          ? `Failed to download PDF: ${error.message}`
+          : "Failed to download PDF",
+      );
+    } finally {
+      if (host) host.setAttribute("style", prevHostStyle);
+      setPdfLoading(false);
+    }
+  };
+
   return (
-    <div className="w-full h-full min-h-0 min-w-0 flex p-1 bg-[#fefefe] rounded-lg overflow-hidden">
+    <div className="w-full h-full min-h-0 min-w-0 flex p-1 bg-[#fefefe] rounded-lg">
       <div className="h-full min-h-0 min-w-0 flex flex-col items-stretch border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
         {/* Form stays fixed — does not scroll with the page */}
         <Form {...form}>
@@ -197,6 +335,7 @@ const LoanReport = ({
                   </Button>
                   <div
                     onClick={() => {
+                      if (loading || pdfLoading) return;
                       if (tableData?.length > 0)
                         showData === "110"
                           ? generateDisburseRegisterPrint()
@@ -209,13 +348,48 @@ const LoanReport = ({
                     className={cn(
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
-                        "cursor-not-allowed bg-gray-400 ": !(
-                          tableData?.length > 0
-                        ),
+                        "cursor-not-allowed bg-gray-400 ":
+                          loading ||
+                          pdfLoading ||
+                          !(tableData?.length > 0),
                       },
                     )}
                   >
                     <HiMiniPrinter />
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => {
+                      if (loading || pdfLoading) return;
+                      handleDownloadPDF();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        if (loading || pdfLoading) return;
+                        handleDownloadPDF();
+                      }
+                    }}
+                    className={cn(
+                      "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
+                      {
+                        "cursor-not-allowed bg-gray-400 ":
+                          loading ||
+                          pdfLoading ||
+                          !(tableData?.length > 0),
+                      },
+                    )}
+                  >
+                    {pdfLoading ? (
+                      <ClipLoader
+                        color="#d7e6f4"
+                        size={20}
+                        speedMultiplier={0.7}
+                      />
+                    ) : (
+                      <FiDownload />
+                    )}
                   </div>
                 </div>
               </div>
@@ -287,45 +461,61 @@ const LoanReport = ({
         ledgerTableData={ledgerTableData}
       />
 
-      <div className="hidden">
-        {showData === "110" ? (
-          <DisburseRegisterPreview
-            printRef={printDisburseRegisterRef}
-            tableData={tableData}
-            totalDisburseAmount={totalDisburseAmount}
-            totalShareAmount={totalShareAmount}
-            totalInsAmount={totalInsAmount}
-            totalMisAmount={totalMisAmount}
-            totalNetDisburse={totalNetDisburse}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "111" ? (
-          <RepaymentRegisterPreview
-            printRef={printRepaymentRegisterRef}
-            tableData={tableData}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "112" ? (
-          <DetailedListPreview
-            printRef={printDetailedListRef}
-            tableData={tableData}
-            totalOpening={totalOpening}
-            totalDisburse={totalDisburse}
-            totalPrn={totalPrn}
-            totalIntt={totalIntt}
-            totalCurrOuts={totalCurrOuts}
-            totalOdOuts={totalOdOuts}
-            totalCurrIntt={totalCurrIntt}
-            totalOdIntt={totalOdIntt}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : (
-          <></>
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={printHostRef}
+            aria-hidden
+            style={{
+              position: "fixed",
+              left: "-10000px",
+              top: 0,
+              width: "297mm",
+              background: "#ffffff",
+              pointerEvents: "none",
+              zIndex: -1,
+            }}
+          >
+            {showData === "110" ? (
+              <DisburseRegisterPreview
+                printRef={printDisburseRegisterRef}
+                tableData={tableData}
+                totalDisburseAmount={totalDisburseAmount}
+                totalShareAmount={totalShareAmount}
+                totalInsAmount={totalInsAmount}
+                totalMisAmount={totalMisAmount}
+                totalNetDisburse={totalNetDisburse}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "111" ? (
+              <RepaymentRegisterPreview
+                printRef={printRepaymentRegisterRef}
+                tableData={tableData}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "112" ? (
+              <DetailedListPreview
+                printRef={printDetailedListRef}
+                tableData={tableData}
+                totalOpening={totalOpening}
+                totalDisburse={totalDisburse}
+                totalPrn={totalPrn}
+                totalIntt={totalIntt}
+                totalCurrOuts={totalCurrOuts}
+                totalOdOuts={totalOdOuts}
+                totalCurrIntt={totalCurrIntt}
+                totalOdIntt={totalOdIntt}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : (
+              <></>
+            )}
+          </div>,
+          document.body,
         )}
-      </div>
 
       {showData === "111" ? (
         <CollectionReceipt
