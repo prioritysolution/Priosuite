@@ -38,11 +38,19 @@ export const parseLocalDate = (value) => {
   }
 
   if (typeof value === "number" && Number.isFinite(value)) {
+    if (Number.isInteger(value) && value >= 1000 && value <= 9999) {
+      return localNoon(value, 1, 1);
+    }
     return normalizeLocalNoon(new Date(value));
   }
 
   const raw = String(value).trim();
   if (!raw) return null;
+
+  // Year-only cookie (e.g. 2026)
+  if (/^\d{4}$/.test(raw)) {
+    return localNoon(raw, 1, 1);
+  }
 
   // Date-only yyyy-MM-dd (NO time) — parse as local calendar day, never UTC
   if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {

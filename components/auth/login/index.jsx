@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ClipLoader } from "react-spinners";
 import { useEffect, useState } from "react";
-import { getCheckFinYearAPI } from "@/container/auth/login/LoginApis";
-import { toast } from "react-hot-toast";
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -28,6 +26,7 @@ const Login = ({
   terminateSessionLoading,
   form,
   handleSubmit,
+  financialYear = [],
   showActiveSessionDialog,
   setShowActiveSessionDialog,
   showOtpForm,
@@ -37,20 +36,7 @@ const Login = ({
   showResendOtp,
   handleResendOtp,
 }) => {
-  const [financialYear, setFinancialYear] = useState([]);
   const [showLoginLoading, setShowLoginLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchFinancialYear = async () => {
-      try {
-        const res = await getCheckFinYearAPI();
-        setFinancialYear(res.details || []);
-      } catch (error) {
-        toast.error(error?.message || "Failed to fetch financial year");
-      }
-    };
-    fetchFinancialYear();
-  }, []);
 
   useEffect(() => {
     if (afterLoginLoading && !showLoginLoading) {

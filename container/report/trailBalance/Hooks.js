@@ -9,31 +9,7 @@ import * as yup from "yup";
 import { getTrailBalanceReportAPI } from "./TrailBalanceApis";
 import { localNoon, parseLocalDate } from "@/utils/dateHelpers";
 
-/** Cookie year `2026` (or a date in 2026) → 01-01-2026 (start) / 31-12-2026 (end). */
-const parseFinBoundDate = (value, bound) => {
-  if (value === null || value === undefined || value === "") return null;
 
-  if (
-    typeof value === "number" &&
-    Number.isInteger(value) &&
-    value >= 1000 &&
-    value <= 9999
-  ) {
-    return bound === "end" ? localNoon(value, 12, 31) : localNoon(value, 1, 1);
-  }
-
-  const raw = String(value).trim();
-  const yearFromPrefix = raw.match(/^(\d{4})/);
-  if (yearFromPrefix) {
-    const year = Number(yearFromPrefix[1]);
-    return bound === "end" ? localNoon(year, 12, 31) : localNoon(year, 1, 1);
-  }
-
-  const parsed = parseLocalDate(raw);
-  if (!parsed) return null;
-  const year = parsed.getFullYear();
-  return bound === "end" ? localNoon(year, 12, 31) : localNoon(year, 1, 1);
-};
 
 export const useTrailBalance = () => {
   const branchId = getCookieData("userBranchId");
@@ -64,17 +40,21 @@ export const useTrailBalance = () => {
     },
   });
 
+  console.log(getCookieData("fin_start_date"));
+  console.log(getCookieData("fin_end_date"));
+  
+ 
+  
+
   useEffect(() => {
-    const defaultFromDate = parseFinBoundDate(
-      getCookieData("fin_start_date"),
-      "start",
-    );
-    const defaultToDate = parseFinBoundDate(
-      getCookieData("fin_end_date"),
-      "end",
-    );
-    if (defaultFromDate) form.setValue("fromDate", defaultFromDate);
-    if (defaultToDate) form.setValue("toDate", defaultToDate);
+   
+    const from = new Date(getCookieData("fin_start_date"));
+    const to = new Date(getCookieData("fin_end_date"));
+    form.reset({
+      fromDate: new Date(getCookieData("fin_start_date")),
+      toDate: new Date(getCookieData("fin_end_date")),
+      branch: form.getValues("branch") || getCookieData("userBranchId"),
+    });
   }, [form]);
 
   const handleSubmit = (values) => {

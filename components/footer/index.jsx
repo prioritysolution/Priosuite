@@ -12,7 +12,7 @@ const formatOpenDate = (value) => {
   return parsed ? format(parsed, "dd MMM yyyy") : "";
 };
 
-const Footer = () => {
+const Footer = ({ finYearCookieVersion = 0 }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -30,7 +30,7 @@ const Footer = () => {
     setStartDate(getCookieData("fin_start_date") || "");
     setEndDate(getCookieData("fin_end_date") || "");
     setBegDate(getCookieData("beg_date"));
-  }, [reduxBegDate]);
+  }, [reduxBegDate, finYearCookieVersion]);
 
   useEffect(() => {
     const timer = setInterval(() => {

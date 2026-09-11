@@ -11,7 +11,7 @@ const FooterContainer = () => {
   // Access beg_date from Redux store
   const begDate = useSelector((state) => state?.login?.beg_date);
 
-  const { getFinancialYearApiCall } = useFooter();
+  const { getFinancialYearApiCall, finYearCookieVersion } = useFooter();
 
   useEffect(() => {
     if (token && orgId) {
@@ -21,7 +21,7 @@ const FooterContainer = () => {
 
   console.log("Footer - Begin Date:", begDate);
 
-  return <Footer />;
+  return <Footer finYearCookieVersion={finYearCookieVersion} />;
 };
 
 export default FooterContainer;

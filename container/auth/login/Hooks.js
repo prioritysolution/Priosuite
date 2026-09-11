@@ -18,6 +18,42 @@ import Cookies from "@/utils/secureCookieHelper";
 import { token, beg_date } from "./LoginReducer";
 import { formatDateForApi } from "@/utils/dateHelpers";
 
+const FIN_COOKIE_OPTIONS = {
+  expires: 7,
+  secure: true,
+  sameSite: "Strict",
+  path: "/",
+};
+
+const findLoginFinYear = (details, yearId) => {
+  const list = Array.isArray(details) ? details : [];
+  if (!list.length) return null;
+  if (yearId == null || yearId === "") return list[0];
+  return list.find((year) => String(year.Id) === String(yearId)) || list[0];
+};
+
+/** Update fin year cookies only when GetLoginFinYear dates differ from cookies. */
+export const syncFinYearCookiesIfMismatch = (finYear) => {
+  if (!finYear) return false;
+
+  const apiStart = formatDateForApi(finYear.StartDate);
+  const apiEnd = formatDateForApi(finYear.End_Date);
+  const cookieStart = formatDateForApi(Cookies.get("fin_start_date"));
+  const cookieEnd = formatDateForApi(Cookies.get("fin_end_date"));
+  let updated = false;
+
+  if (apiStart && apiStart !== cookieStart) {
+    Cookies.set("fin_start_date", apiStart, FIN_COOKIE_OPTIONS);
+    updated = true;
+  }
+  if (apiEnd && apiEnd !== cookieEnd) {
+    Cookies.set("fin_end_date", apiEnd, FIN_COOKIE_OPTIONS);
+    updated = true;
+  }
+
+  return updated;
+};
+
 export const useLogin = () => {
   const [os, setOS] = useState("Unknown");
   const [IP, setIP] = useState("");
@@ -32,6 +68,7 @@ export const useLogin = () => {
   const [showActiveSessionDialog, setShowActiveSessionDialog] = useState(false);
   const [showOtpForm, setShowOtpForm] = useState(false);
   const [showResendOtp, setShowResendOtp] = useState(false);
+  const [financialYear, setFinancialYear] = useState([]);
 
   // Form validation schema
   const formSchema = yup.object({
@@ -233,6 +270,19 @@ export const useLogin = () => {
           sameSite: "Strict", // Prevent CSRF attacks
           path: "/",
         });
+
+        let selectedFinYear = findLoginFinYear(financialYear, item.year_id);
+        if (!selectedFinYear) {
+          try {
+            const fyRes = await getCheckFinYearAPI();
+            if (fyRes?.message === "Data Found" || Array.isArray(fyRes?.details)) {
+              selectedFinYear = findLoginFinYear(fyRes.details, item.year_id);
+            }
+          } catch (fyErr) {
+            console.error(fyErr);
+          }
+        }
+        syncFinYearCookiesIfMismatch(selectedFinYear);
         Cookies.set("is_pass_header", res?.is_pass_header, {
           expires: 7, // 7 day expiration
           secure: true, // Secure cookies
@@ -365,12 +415,25 @@ export const useLogin = () => {
       .catch((error) => console.error("Error fetching IP address:", error));
   }, []);
 
+  useEffect(() => {
+    const fetchFinancialYear = async () => {
+      try {
+        const res = await getCheckFinYearAPI();
+        setFinancialYear(res.details || []);
+      } catch (error) {
+        toast.error(error?.message || "Failed to fetch financial year");
+      }
+    };
+    fetchFinancialYear();
+  }, []);
+
   return {
     loginForm,
     loading,
     afterLoginLoading,
     terminateSessionLoading,
     handleLoginSubmit,
+    financialYear,
     showActiveSessionDialog,
     setShowActiveSessionDialog,
     showOtpForm,

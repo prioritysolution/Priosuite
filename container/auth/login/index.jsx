@@ -10,6 +10,7 @@ const LoginContainer = () => {
     terminateSessionLoading,
     loginForm,
     handleLoginSubmit,
+    financialYear,
     showActiveSessionDialog,
     setShowActiveSessionDialog,
     showOtpForm,
@@ -27,6 +28,7 @@ const LoginContainer = () => {
       terminateSessionLoading={terminateSessionLoading}
       form={loginForm}
       handleSubmit={handleLoginSubmit}
+      financialYear={financialYear}
       showActiveSessionDialog={showActiveSessionDialog}
       setShowActiveSessionDialog={setShowActiveSessionDialog}
       showOtpForm={showOtpForm}
