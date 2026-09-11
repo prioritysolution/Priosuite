@@ -20,13 +20,13 @@ const LedgerBalanceContainer = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     getOpeningLedgerBranchApiCall,
-    getOpeningLedgerMainHeadApiCall,
+    getOpeningLedgerAcctTypeApiCall,
   } = useLedgerBalance();
 
   useEffect(() => {
     if (orgId && branchId && token) {
       getOpeningLedgerBranchApiCall(orgId, branchId);
-      getOpeningLedgerMainHeadApiCall();
+      getOpeningLedgerAcctTypeApiCall(orgId);
     }
   }, [orgId, branchId, token]);
 

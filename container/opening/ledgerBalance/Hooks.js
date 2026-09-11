@@ -7,12 +7,14 @@ import getCookieData from "@/utils/getCookieData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   getOpeningLedgerAPI,
+  getOpeningLedgerAcctTypeAPI,
   getOpeningLedgerBranchAPI,
   getOpeningLedgerMainHeadAPI,
   getOpeningLedgerSubHeadAPI,
   postOpeningLedgerAPI,
 } from "./LedgerBalanceApis";
 import {
+  getAcctTypeData,
   getBranchData,
   getLedgerData,
   getMainHeadData,
@@ -38,8 +40,8 @@ export const useLedgerBalance = () => {
 
   const formSchema = yup.object({
     branch: yup.string().required("Branch is required"),
+    acctType: yup.string().required("Account category is required"),
     mainHead: yup.string().required("Main head is required"),
-    subHead: yup.string().required("Sub head is required"),
     subHead: yup.string().required("Sub head is required"),
     ledger: yup.string().required("Ledger is required"),
     openingBalance: yup
@@ -78,6 +80,7 @@ export const useLedgerBalance = () => {
     resolver: yupResolver(formSchema),
     defaultValues: {
       branch: branchId,
+      acctType: "",
       mainHead: "",
       subHead: "",
       ledger: "",
@@ -86,7 +89,7 @@ export const useLedgerBalance = () => {
   });
 
   const { control } = form;
-  const { mainHead, subHead } = useWatch({ control });
+  const { acctType, mainHead, subHead } = useWatch({ control });
 
   const handleSubmit = async (values) => {
     postOpeningLedgerApiCall(values);
@@ -114,7 +117,17 @@ export const useLedgerBalance = () => {
       if (res.message === "Success") {
         setSuccessMessage(res.details);
         setShowSuccessMessage(true);
-        form.reset();
+        form.reset({
+          branch: branchId,
+          acctType: "",
+          mainHead: "",
+          subHead: "",
+          ledger: "",
+          openingBalance: "",
+        });
+        dispatch(getMainHeadData([]));
+        dispatch(getSubHeadData([]));
+        dispatch(getLedgerData([]));
       } else {
         toast.error(res.details);
         setSuccessMessage(null);
@@ -147,13 +160,31 @@ export const useLedgerBalance = () => {
     }
   };
 
-  const getOpeningLedgerMainHeadApiCall = async () => {
-    setLoading(true);
+  const getOpeningLedgerAcctTypeApiCall = async (orgId) => {
+    try {
+      const res = await getOpeningLedgerAcctTypeAPI(orgId);
+      if (res.message === "Data Found" || res.message === "Success") {
+        dispatch(getAcctTypeData(res.details || res.Data || []));
+      } else {
+        dispatch(getAcctTypeData([]));
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.error(error);
+      dispatch(getAcctTypeData([]));
+    }
+  };
+
+  const getOpeningLedgerMainHeadApiCall = async (acctTypeId) => {
+    if (!orgId || !acctTypeId) {
+      dispatch(getMainHeadData([]));
+      return;
+    }
 
     try {
-      const res = await getOpeningLedgerMainHeadAPI();
-      if (res.message === "Data Found") {
-        dispatch(getMainHeadData(res.details));
+      const res = await getOpeningLedgerMainHeadAPI(orgId, acctTypeId);
+      if (res.message === "Data Found" || res.message === "Success") {
+        dispatch(getMainHeadData(res.details || res.Data || []));
       } else {
         dispatch(getMainHeadData([]));
       }
@@ -161,8 +192,6 @@ export const useLedgerBalance = () => {
       toast.error("Something went wrong");
       console.error(error);
       dispatch(getMainHeadData([]));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -170,9 +199,9 @@ export const useLedgerBalance = () => {
     setGetSubHeadLoading(true);
 
     try {
-      const res = await getOpeningLedgerSubHeadAPI(headId);
-      if (res.message === "Data Found") {
-        dispatch(getSubHeadData(res.details));
+      const res = await getOpeningLedgerSubHeadAPI(orgId, headId);
+      if (res.message === "Data Found" || res.message === "Success") {
+        dispatch(getSubHeadData(res.details || res.Data || []));
       } else {
         dispatch(getSubHeadData([]));
       }
@@ -189,7 +218,7 @@ export const useLedgerBalance = () => {
     setGetLedgerLoading(true);
 
     try {
-      const res = await getOpeningLedgerAPI(subId);
+      const res = await getOpeningLedgerAPI(orgId, subId);
       if (res.message === "Data Found") {
         dispatch(getLedgerData(res.details));
       } else {
@@ -205,17 +234,36 @@ export const useLedgerBalance = () => {
   };
 
   useEffect(() => {
+    form.setValue("mainHead", "");
+    form.setValue("subHead", "");
+    form.setValue("ledger", "");
+    dispatch(getSubHeadData([]));
+    dispatch(getLedgerData([]));
+    if (acctType && token) {
+      getOpeningLedgerMainHeadApiCall(acctType);
+    } else {
+      dispatch(getMainHeadData([]));
+    }
+  }, [acctType, token]);
+
+  useEffect(() => {
+    form.setValue("subHead", "");
+    form.setValue("ledger", "");
+    dispatch(getLedgerData([]));
     if (mainHead && token) {
       getOpeningLedgerSubHeadApiCall(mainHead);
+    } else {
+      dispatch(getSubHeadData([]));
     }
-    form.setValue("subHead", "");
   }, [mainHead, token]);
 
   useEffect(() => {
+    form.setValue("ledger", "");
     if (subHead && token) {
       getOpeningLedgerApiCall(subHead);
+    } else {
+      dispatch(getLedgerData([]));
     }
-    form.setValue("ledger", "");
   }, [subHead, token]);
 
   return {
@@ -228,6 +276,6 @@ export const useLedgerBalance = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     getOpeningLedgerBranchApiCall,
-    getOpeningLedgerMainHeadApiCall,
+    getOpeningLedgerAcctTypeApiCall,
   };
 };

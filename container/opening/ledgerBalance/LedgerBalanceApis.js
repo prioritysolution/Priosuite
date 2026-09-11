@@ -10,27 +10,36 @@ export const getOpeningLedgerBranchAPI = async (orgId, branchId) => {
   return res;
 };
 
-export const getOpeningLedgerMainHeadAPI = async () => {
+export const getOpeningLedgerAcctTypeAPI = async (orgId) => {
   let data = {
-    url: endPoints.getOpeningLedgerMainHead,
+    url: endPoints.getLedgerAcctType(orgId),
   };
 
   let res = await doGetApiCall(data);
   return res;
 };
 
-export const getOpeningLedgerSubHeadAPI = async (headId) => {
+export const getOpeningLedgerMainHeadAPI = async (orgId, acctType) => {
   let data = {
-    url: endPoints.getOpeningLedgerSubHead(headId),
+    url: endPoints.getLedgerMainHead(orgId, acctType),
   };
 
   let res = await doGetApiCall(data);
   return res;
 };
 
-export const getOpeningLedgerAPI = async (subId) => {
+export const getOpeningLedgerSubHeadAPI = async (orgId, acctHead) => {
   let data = {
-    url: endPoints.getOpeningLedger(subId),
+    url: endPoints.getLedgerSubHead(orgId, acctHead),
+  };
+
+  let res = await doGetApiCall(data);
+  return res;
+};
+
+export const getOpeningLedgerAPI = async (orgId, subId) => {
+  let data = {
+    url: endPoints.getOpeningLedger(orgId, subId),
   };
 
   let res = await doGetApiCall(data);

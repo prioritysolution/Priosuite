@@ -16,12 +16,35 @@ import { Spinner } from "@/components/ui/spinner";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+const getOptionValue = (item, optionLabelKey, optionValueKey) => {
+  if (!item || typeof item !== "object") return "";
+  if (
+    optionValueKey &&
+    item[optionValueKey] !== undefined &&
+    item[optionValueKey] !== null &&
+    item[optionValueKey] !== ""
+  ) {
+    return item[optionValueKey];
+  }
+  return (
+    item.Id ??
+    item.id ??
+    item.value ??
+    item.Cat_Id ??
+    item.Head_Id ??
+    item.Type_Id ??
+    item[optionLabelKey] ??
+    ""
+  );
+};
+
 const DropdownFieldInner = ({
   label,
   value,
   onChange,
   options = [],
   optionLabelKey = "Option_Value",
+  optionValueKey,
   disabled = false,
   readOnly = false,
   errorMessage = "",
@@ -38,14 +61,17 @@ const DropdownFieldInner = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [menuWidth, setMenuWidth] = useState(0);
+  const selectingRef = useRef(false);
+  const anchorRef = useRef(null);
 
   // Find the label for the current value to display
   const getDisplayLabel = (val) => {
     if (val === null || val === undefined || val === "") return "";
     const found = options.find(
       (opt) =>
-        String(opt?.Id ?? opt?.id ?? opt?.value ?? "") === String(val) ||
-        String(opt?.[optionLabelKey] ?? "") === String(val),
+        String(getOptionValue(opt, optionLabelKey, optionValueKey)) ===
+          String(val) || String(opt?.[optionLabelKey] ?? "") === String(val),
     );
     return found ? String(found[optionLabelKey] ?? "") : "";
   };
@@ -56,6 +82,23 @@ const DropdownFieldInner = ({
   useEffect(() => {
     setSearchVal(getDisplayLabel(value));
   }, [value, options]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const updateWidth = () => {
+      const fieldWidth = anchorRef.current?.getBoundingClientRect().width || 0;
+      const maxWidth = Math.max(window.innerWidth - 24, 160);
+      const preferred = fixedDropdownWidth
+        ? Math.min(500, maxWidth)
+        : fieldWidth;
+      setMenuWidth(Math.min(preferred || fieldWidth, maxWidth));
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, [open, fixedDropdownWidth]);
 
   const isInteractive = !disabled && !loading && !readOnly;
 
@@ -74,7 +117,8 @@ const DropdownFieldInner = ({
     if (filteredOptions.length > 0) {
       const selectedIndex = filteredOptions.findIndex(
         (opt) =>
-          String(opt?.Id ?? opt?.id ?? opt?.value ?? "") === String(value),
+          String(getOptionValue(opt, optionLabelKey, optionValueKey)) ===
+          String(value),
       );
       setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0);
     } else {
@@ -83,9 +127,10 @@ const DropdownFieldInner = ({
   }, [open, filteredOptions.length, value]);
 
   const handleSelectOption = (item) => {
-    const itemValue = item?.Id ?? item?.id ?? item?.value ?? "";
+    const itemValue = getOptionValue(item, optionLabelKey, optionValueKey);
     const itemLabel = String(item?.[optionLabelKey] ?? "");
 
+    selectingRef.current = true;
     setSearchVal(itemLabel);
     setOpen(false);
 
@@ -94,7 +139,9 @@ const DropdownFieldInner = ({
     } else {
       const numValue = Number(itemValue);
       onChange(
-        !isNaN(numValue) && itemValue !== "" ? numValue : String(itemValue),
+        !isNaN(numValue) && String(itemValue).trim() !== ""
+          ? numValue
+          : String(itemValue),
       );
     }
   };
@@ -102,9 +149,11 @@ const DropdownFieldInner = ({
   const handleOpenChange = (newOpen) => {
     if (!isInteractive) return;
     setOpen(newOpen);
-    if (!newOpen) {
-      // Reset input to selected label if closed without selecting
+    if (!newOpen && !selectingRef.current) {
       setSearchVal(getDisplayLabel(value));
+    }
+    if (!newOpen) {
+      selectingRef.current = false;
     }
   };
 
@@ -149,16 +198,16 @@ const DropdownFieldInner = ({
   };
 
   return (
-    <FormItem className="w-full">
+    <FormItem className="w-full min-w-0">
       {label && (
         <FormLabel className="text-sm font-medium text-foreground">
           {label}
           {"  "} {isRequired && <span className="text-red-500 ml-1">*</span>}
         </FormLabel>
       )}
-      <Popover open={open && isInteractive} onOpenChange={handleOpenChange}>
+      <Popover modal open={open && isInteractive} onOpenChange={handleOpenChange}>
         <PopoverPrimitive.Anchor asChild>
-          <div className="relative w-full cursor-text">
+          <div ref={anchorRef} className="relative w-full min-w-0 cursor-text">
             <FormControl>
               <input
                 type="text"
@@ -171,7 +220,7 @@ const DropdownFieldInner = ({
                   searchPlaceholder || `Select ${label?.toLowerCase()}`
                 }
                 className={cn(
-                  "flex h-10 w-full rounded-md border border-input bg-background pl-3 pr-10 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                  "flex h-10 w-full min-w-0 rounded-md border border-input bg-background pl-3 pr-10 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 truncate",
                   errorMessage && "border-destructive focus:ring-destructive",
                 )}
               />
@@ -192,15 +241,17 @@ const DropdownFieldInner = ({
         </PopoverPrimitive.Anchor>
         <PopoverContent
           align="start"
-          className="p-0 w-full bg-popover text-popover-foreground border shadow-md rounded-md z-50"
+          side="bottom"
+          sideOffset={4}
+          collisionPadding={8}
+          className="p-0 overflow-hidden bg-popover text-popover-foreground border shadow-md rounded-md z-[200] max-w-[calc(100vw-1.5rem)]"
           style={{
-            width: fixedDropdownWidth
-              ? "500px"
-              : "var(--radix-popover-trigger-width)",
+            width: menuWidth ? `${menuWidth}px` : undefined,
           }}
           onOpenAutoFocus={(e) => e.preventDefault()}
+          onCloseAutoFocus={(e) => e.preventDefault()}
         >
-          <div className="p-1 max-h-[300px] overflow-y-auto">
+          <div className="p-1 max-h-[min(300px,50vh)] overflow-y-auto overflow-x-hidden">
             {filteredOptions.length === 0 ? (
               <div className="p-4 text-sm text-slate-500 text-center">
                 No results found
@@ -208,14 +259,14 @@ const DropdownFieldInner = ({
             ) : (
               filteredOptions.map((item, index) => {
                 const itemVal = String(
-                  item?.Id ?? item?.id ?? item?.value ?? "",
+                  getOptionValue(item, optionLabelKey, optionValueKey),
                 );
                 const isSelected = String(value) === itemVal;
                 const isHighlighted = activeIndex === index;
 
                 return (
                   <button
-                    key={itemVal}
+                    key={itemVal || `opt-${index}`}
                     type="button"
                     ref={(el) => {
                       if (el && isHighlighted) {
@@ -225,9 +276,17 @@ const DropdownFieldInner = ({
                         });
                       }
                     }}
-                    onClick={() => handleSelectOption(item)}
+                    onPointerDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleSelectOption(item);
+                    }}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
                     className={cn(
-                      "relative flex w-full items-center rounded-sm py-1.5 pl-8 pr-2 text-sm text-left outline-none select-none cursor-pointer",
+                      "relative flex w-full min-w-0 items-center rounded-sm py-1.5 pl-8 pr-2 text-sm text-left outline-none select-none cursor-pointer",
                       isSelected
                         ? "bg-accent/40 text-accent-foreground font-medium"
                         : "text-foreground",
@@ -241,7 +300,9 @@ const DropdownFieldInner = ({
                         <Check className="h-4 w-4" />
                       </span>
                     )}
-                    {String(item?.[optionLabelKey] ?? "")}
+                    <span className="block min-w-0 truncate">
+                      {String(item?.[optionLabelKey] ?? "")}
+                    </span>
                   </button>
                 );
               })

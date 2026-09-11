@@ -1,9 +1,9 @@
 import { doGetApiCall, doPostApiCall } from "@/utils/apiConfig";
 import { endPoints } from "@/utils/endPoints";
 
-export const getAccountLedgerDataAPI = async () => {
+export const getAccountLedgerDataAPI = async (orgId) => {
   let data = {
-    url: endPoints.getAccountLedgerDataReport,
+    url: endPoints.getAccountLedgerDataReport(orgId),
   };
 
   let res = await doGetApiCall(data);

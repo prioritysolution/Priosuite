@@ -3,18 +3,11 @@ import SuccessMessage from "@/common/dialog/SuccessMessage";
 import DropdownField from "@/common/formFields/DropdownField";
 import InputField from "@/common/formFields/InputField";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useWatch } from "react-hook-form";
 
 const LedgerBalance = ({
   loading,
@@ -27,14 +20,18 @@ const LedgerBalance = ({
   handleCloseSuccessMessage,
 }) => {
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
-
-  const mainHeadData = useSelector(
-    (state) => state?.ledgerBalance?.mainHeadData
+  const acctTypeData = useSelector(
+    (state) => state?.ledgerBalance?.acctTypeData,
   );
-
+  const mainHeadData = useSelector(
+    (state) => state?.ledgerBalance?.mainHeadData,
+  );
   const subHeadData = useSelector((state) => state?.ledgerBalance?.subHeadData);
-
   const ledgerData = useSelector((state) => state?.ledgerBalance?.ledgerData);
+
+  const acctType = useWatch({ control: form.control, name: "acctType" });
+  const mainHead = useWatch({ control: form.control, name: "mainHead" });
+  const subHead = useWatch({ control: form.control, name: "subHead" });
 
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
@@ -49,7 +46,7 @@ const LedgerBalance = ({
               autoComplete="off"
             >
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
+                <div className="w-full min-w-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 lg:gap-x-10 gap-y-3">
                   <DropdownField
                     control={form.control}
                     name="branch"
@@ -63,12 +60,24 @@ const LedgerBalance = ({
 
                   <DropdownField
                     control={form.control}
+                    name="acctType"
+                    label="Account Category"
+                    options={acctTypeData}
+                    optionLabelKey="Cat_Name"
+                    placeholder="Select account category"
+                    searchPlaceholder="Search account category..."
+                    isRequired
+                  />
+
+                  <DropdownField
+                    control={form.control}
                     name="mainHead"
                     label="Main Head"
                     options={mainHeadData}
                     optionLabelKey="Head_Name"
                     placeholder="Select main head"
                     searchPlaceholder="Search main head..."
+                    disabled={!acctType}
                     isRequired
                   />
 
@@ -77,9 +86,10 @@ const LedgerBalance = ({
                     name="subHead"
                     label="Sub Head"
                     options={subHeadData}
-                    optionLabelKey="Sub_Head_Name"
+                    optionLabelKey="Sub_Head"
+                    optionValueKey="Id"
                     loading={getSubHeadLoading}
-                    disabled={!form.getValues("mainHead")}
+                    disabled={!mainHead}
                     isRequired
                   />
 
@@ -90,7 +100,7 @@ const LedgerBalance = ({
                     options={ledgerData}
                     optionLabelKey="Ledger_Name"
                     loading={getLedgerLoading}
-                    disabled={!form.getValues("subHead")}
+                    disabled={!subHead}
                     isRequired
                   />
 

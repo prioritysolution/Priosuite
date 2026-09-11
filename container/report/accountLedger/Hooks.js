@@ -85,7 +85,7 @@ export const useAccountLedger = () => {
     setLoading(true);
 
     try {
-      const res = await getAccountLedgerDataAPI();
+      const res = await getAccountLedgerDataAPI(orgId);
       console.log(res);
       if (res.message === "Data Found") {
         dispatch(getLedgerData(res.details));

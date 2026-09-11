@@ -20,10 +20,10 @@ import {
   getVoucherSubLedgerListAPI,
   getLedgerAcctTypeAPI,
   getLedgerMainHeadAPI,
-  getLedgerSubHeadAPI,
   searchLedgerAPI,
   getLedgerAPI,
 } from "./VoucherEntryApis";
+import { getOpeningLedgerSubHeadAPI } from "@/container/opening/ledgerBalance/LedgerBalanceApis";
 import {
   alphanumericWithHyphenUnderscoreRegex,
   integerRegex,
@@ -704,11 +704,11 @@ export const useLedgerSearch = () => {
   const fetchAcctTypes = useCallback(async () => {
     if (!orgId) return;
     try {
-      console.log("Fetching account types for orgId:", orgId);
       const res = await getLedgerAcctTypeAPI(orgId);
-      console.log("Account types response:", res);
-      if (res.message == "Data Found") {
-        setAcctTypeOptions(res.details);
+      if (res.message === "Data Found" || res.message === "Success") {
+        setAcctTypeOptions(res.details || res.Data || []);
+      } else {
+        setAcctTypeOptions([]);
       }
     } catch (error) {
       console.error("Error fetching account types:", error);
@@ -718,21 +718,20 @@ export const useLedgerSearch = () => {
   // API call to get Main Heads based on Account Type
   const fetchMainHeads = useCallback(
     async (acctTypeId) => {
-      if (!orgId) return;
+      if (!orgId || !acctTypeId) {
+        setMainHeadOptions([]);
+        return;
+      }
       try {
-        console.log(
-          "Fetching main heads for orgId:",
-          orgId,
-          "acctType:",
-          acctTypeId,
-        );
         const res = await getLedgerMainHeadAPI(orgId, acctTypeId);
-        console.log("Main heads response:", res);
-        if (res.message == "Data Found") {
-          setMainHeadOptions(res.details);
+        if (res.message === "Data Found" || res.message === "Success") {
+          setMainHeadOptions(res.details || res.Data || []);
+        } else {
+          setMainHeadOptions([]);
         }
       } catch (error) {
         console.error("Error fetching main heads:", error);
+        setMainHeadOptions([]);
       }
     },
     [orgId],
@@ -741,21 +740,20 @@ export const useLedgerSearch = () => {
   // API call to get Sub Heads based on Main Head
   const fetchSubHeads = useCallback(
     async (mainHeadId) => {
-      if (!orgId) return;
+      if (!orgId || !mainHeadId) {
+        setSubHeadOptions([]);
+        return;
+      }
       try {
-        console.log(
-          "Fetching sub heads for orgId:",
-          orgId,
-          "mainHead:",
-          mainHeadId,
-        );
-        const res = await getLedgerSubHeadAPI(orgId, mainHeadId);
-        console.log("Sub heads response:", res);
-        if (res.message == "Data Found") {
-          setSubHeadOptions(res.details);
+        const res = await getOpeningLedgerSubHeadAPI(orgId, mainHeadId);
+        if (res.message === "Data Found" || res.message === "Success") {
+          setSubHeadOptions(res.details || res.Data || []);
+        } else {
+          setSubHeadOptions([]);
         }
       } catch (error) {
         console.error("Error fetching sub heads:", error);
+        setSubHeadOptions([]);
       }
     },
     [orgId],

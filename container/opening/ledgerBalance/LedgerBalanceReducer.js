@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const initialState = {
   branchData: [],
+  acctTypeData: [],
   mainHeadData: [],
   subHeadData: [],
   ledgerData: [],
@@ -12,6 +13,9 @@ const LedgerBalanceSlice = createSlice({
   reducers: {
     getBranchData: (state, action) => {
       state.branchData = action.payload;
+    },
+    getAcctTypeData: (state, action) => {
+      state.acctTypeData = action.payload;
     },
     getMainHeadData: (state, action) => {
       state.mainHeadData = action.payload;
@@ -24,6 +28,11 @@ const LedgerBalanceSlice = createSlice({
     },
   },
 });
-export const { getBranchData, getMainHeadData, getSubHeadData, getLedgerData } =
-  LedgerBalanceSlice.actions;
+export const {
+  getBranchData,
+  getAcctTypeData,
+  getMainHeadData,
+  getSubHeadData,
+  getLedgerData,
+} = LedgerBalanceSlice.actions;
 export default LedgerBalanceSlice.reducer;

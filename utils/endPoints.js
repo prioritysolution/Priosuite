@@ -34,9 +34,9 @@ export const endPoints = {
     `${createApi}Org/ProcessOpening/GetBranchList?org_id=${orgId}&branch_id=${branchId}`,
   getOpeningLedgerMainHead: `${createApi}Org/ProcessOpening/GetAcctMainHead`,
   getOpeningLedgerSubHead: (headId) =>
-    `${createApi}Org/ProcessOpening/GetSubHead?head_id=${headId}`,
-  getOpeningLedger: (subId) =>
-    `${createApi}Org/ProcessOpening/GetLedger?sub_head=${subId}`,
+    `${createApi}Org/ProcessOpening/GetSubHead`,
+  getOpeningLedger: (orgId, subId) =>
+    `${createApi}Org/ProcessOpening/GetLedger?org_id=${orgId}&sub_head=${subId}`,
   addOpeningLedger: `${createApi}Org/ProcessOpening/AddAcctBalance`,
   addDenomination: `${createApi}Org/ProcessOpening/OpnDenomBranch`,
   addMasterState: `${createApi}Org/MasterSetup/AddState`,
@@ -510,7 +510,8 @@ export const endPoints = {
     `${createApi}Org/FinancialReporting/GetCashBook?org_id=${orgId}&branch_id=${branchId}&date=${date}`,
   getCashAccountReport: (orgId, branchId, fromDate, toDate) =>
     `${createApi}Org/FinancialReporting/GetCashAcct?org_id=${orgId}&branch_id=${branchId}&form_date=${fromDate}&to_date=${toDate}`,
-  getAccountLedgerDataReport: `${createApi}Org/FinancialReporting/GetAcctLedger`,
+  getAccountLedgerDataReport: (orgId) =>
+    `${createApi}Org/FinancialReporting/GetAcctLedger?org_id=${orgId}`,
   getAccountLedgerReport: (orgId, branchId, fromDate, toDate, ledgerId) =>
     `${createApi}Org/FinancialReporting/GenereateAcctLedger?org_id=${orgId}&branch_id=${branchId}&date=${fromDate}&to_date=${toDate}&ledger_id=${ledgerId}`,
   getReportVoucherList: (
