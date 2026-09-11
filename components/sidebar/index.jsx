@@ -70,7 +70,7 @@ const Sidebar = ({ loading, onClose }) => {
         {/* Close button — mobile only */}
         <button
           onClick={onClose}
-          className="lg:hidden flex-shrink-0 ml-2 p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors z-10"
+          className="lg:hidden flex-shrink-0 ml-2 p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors z-10 cursor-pointer"
           aria-label="Close sidebar"
         >
           <MdOutlineClose className="text-xl" />
@@ -111,7 +111,7 @@ const Sidebar = ({ loading, onClose }) => {
                         }
                       }}
                       className={cn(
-                        "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group",
+                        "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group cursor-pointer",
                         isActive
                           ? "bg-[#14B8A6] text-white shadow-sm"
                           : "text-white/85 hover:bg-white/10 hover:text-white border border-white/20",
@@ -174,7 +174,7 @@ const Sidebar = ({ loading, onClose }) => {
                                 }
                               }}
                               className={cn(
-                                "w-full text-left pl-9 pr-8 py-[9px] rounded-md transition-all duration-150 relative",
+                                "w-full text-left pl-9 pr-8 py-[9px] rounded-md transition-all duration-150 relative cursor-pointer",
                                 // horizontal tick from vertical bar
                                 "before:absolute before:left-[18px] before:top-1/2 before:-translate-y-1/2 before:w-2.5 before:h-[1.5px] before:bg-white/20",
                                 isChildActive
@@ -217,15 +217,15 @@ const Sidebar = ({ loading, onClose }) => {
       </div> */}
 
       {/* ── Bottom brand bar ── */}
-      <div className="flex-shrink-0 border-t border-white/10 px-4 h-10 flex items-center">
+      <div className="flex-shrink-0 border-t border-white/10 px-4 h-10 flex items-center  ">
         <Link
           href="https://prioritysolutions.in/"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white/50 text-xs font-medium tracking-widest uppercase"
+          className="text-white/50 text-[11px] font-medium tracking-widest uppercase cursor-pointer hover:text-white/80"
         >
-          {/* EziCBS <span className="text-white/30">v1.0.1</span> */}
-          By Priority Solutions
+          
+         Powered By Priority Solutions
         </Link>
       </div>
     </div>

@@ -173,7 +173,7 @@ const RepaymentRegisterPreview = ({
                   >
                     <TableCell
                       colSpan={9}
-                      className="font-semibold text-sm border p-0 pl-5 border-black text-start"
+                      className="font-semibold text-sm border p-0 pl-5 border-black text-center"
                     >
                       {row?.date ? format(row.date, "dd-MM-yyyy") : ""}
                     </TableCell>

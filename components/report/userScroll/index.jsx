@@ -153,7 +153,7 @@ const UserScroll = ({
   };
 
   return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
+    <div className="w-full h-full flex justify-between  bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
         <Form {...form}>
           <form
