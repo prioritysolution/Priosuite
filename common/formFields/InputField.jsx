@@ -15,15 +15,25 @@ import {
 
 const limitToTwoDecimals = (value) => {
   if (value == null) return "";
-  const next = String(value).replace(/[^\d.]/g, "");
+  let next = String(value).replace(/[^\d.-]/g, "");
+  const isNegative = next.startsWith("-");
+  next = next.replace(/-/g, "");
   const dotIndex = next.indexOf(".");
-  if (dotIndex === -1) return next;
-  const integerPart = next.slice(0, dotIndex);
-  const decimalPart = next
-    .slice(dotIndex + 1)
-    .replace(/\./g, "")
-    .slice(0, 2);
-  return `${integerPart}.${decimalPart}`;
+  let limited;
+  if (dotIndex === -1) {
+    limited = next;
+  } else {
+    const integerPart = next.slice(0, dotIndex);
+    const decimalPart = next
+      .slice(dotIndex + 1)
+      .replace(/\./g, "")
+      .slice(0, 2);
+    limited = `${integerPart}.${decimalPart}`;
+  }
+  if (isNegative) {
+    return limited ? `-${limited}` : "-";
+  }
+  return limited;
 };
 
 const InputField = ({
@@ -47,6 +57,7 @@ const InputField = ({
   formItemClassName,
   autoComplete,
   displayValue,
+  autoFocus,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [localValue, setLocalValue] = useState("");
@@ -113,6 +124,7 @@ const InputField = ({
                   step={type === "number" ? "0.01" : undefined}
                   inputMode={type === "number" ? "decimal" : undefined}
                   autoComplete={autoComplete}
+                  autoFocus={autoFocus}
                   className={cn(
                     // ✅ Full width when no start/end content, flex-1 when there is content
                     startContent || endContent ? "flex-1 min-w-0" : "w-full",
@@ -150,10 +162,7 @@ const InputField = ({
                     field.onBlur();
                   }}
                   onKeyDown={(e) => {
-                    if (
-                      type === "number" &&
-                      ["e", "E", "+", "-"].includes(e.key)
-                    ) {
+                    if (type === "number" && ["e", "E", "+"].includes(e.key)) {
                       e.preventDefault();
                     }
                   }}

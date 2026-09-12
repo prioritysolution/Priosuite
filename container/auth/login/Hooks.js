@@ -73,7 +73,21 @@ export const useLogin = () => {
   // Form validation schema
   const formSchema = yup.object({
     language: yup.string().required("Language is required"),
-    email: yup.string().email("Invalid email").required("Email is required"),
+    email: yup
+      .string()
+      .trim()
+      .required("Email or username is required")
+      .test(
+        "email-or-username",
+        "Enter a valid email or username",
+        (value) => {
+          if (!value) return false;
+          if (value.includes("@")) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+          }
+          return value.length >= 2;
+        },
+      ),
     password: yup.string().required("Password is required"),
     year_id: yup.string().required("Financial year is required"),
   });
@@ -419,13 +433,20 @@ export const useLogin = () => {
     const fetchFinancialYear = async () => {
       try {
         const res = await getCheckFinYearAPI();
-        setFinancialYear(res.details || []);
+        const list = res.details || [];
+        setFinancialYear(list);
+        const currentYear = loginForm.getValues("year_id");
+        if (list.length && !currentYear) {
+          loginForm.setValue("year_id", String(list[0].Id), {
+            shouldValidate: true,
+          });
+        }
       } catch (error) {
         toast.error(error?.message || "Failed to fetch financial year");
       }
     };
     fetchFinancialYear();
-  }, []);
+  }, [loginForm]);
 
   return {
     loginForm,

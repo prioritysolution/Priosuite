@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, Suspense } from "react";
-import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "@/utils/secureCookieHelper";
 import getCookieData from "@/utils/getCookieData";
+import BrandMark from "@/common/BrandMark";
 
 const COOKIE_OPTIONS = {
   expires: 7,
@@ -23,24 +23,17 @@ function applyAuthCookiesFromSearchParams(searchParams) {
 
 function LoadingScreen() {
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center gap-6 bg-gray-100">
-      <Image
-        src="/lodingImg.png"
-        alt="Logo"
-        width={300}
-        height={300}
-        className="object-contain"
-        priority
-      />
+    <div className="flex h-full w-full flex-col items-center justify-center gap-6 bg-[#eaf4fc]">
+      <BrandMark />
       <div className="flex items-center gap-4">
-        <p className="text-gray-700 text-lg font-medium tracking-wide">
+        <p className="text-lg font-medium tracking-wide text-gray-700">
           Loading
         </p>
         <div className="flex items-center gap-2.5">
           {[0, 1, 2, 3].map((i) => (
             <span
               key={i}
-              className="w-2.5 h-2.5 rounded-full bg-[#1769c2] inline-block"
+              className="inline-block h-2.5 w-2.5 rounded-full bg-[#1B74D6]"
               style={{
                 animation: "bounce-dot 1.2s ease-in-out infinite",
                 animationDelay: `${i * 0.2}s`,

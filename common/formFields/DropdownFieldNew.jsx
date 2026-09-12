@@ -37,6 +37,7 @@ const DropdownFieldNew = ({
   defaultValue,
   sortValue,
   isRequired = false,
+  startContent,
 }) => {
   const [search, setSearch] = useState("");
   const searchRef = useRef(null);
@@ -204,25 +205,33 @@ const DropdownFieldNew = ({
                 }}
                 disabled={disabled || loading}
               >
-                <SelectTrigger
-                  className={cn(
-                    "font-normal text-[15px]",
-                    "border-[1.5px] rounded-md h-auto py-2.5 px-4",
-                    "transition-all duration-150",
-                    "focus-visible:ring-4",
-                    hasError
-                      ? "border-destructive focus-visible:ring-destructive/15"
-                      : "border-border focus-visible:border-ring focus-visible:ring-ring/18",
-                    disabled &&
-                      "bg-slate-50 cursor-not-allowed border-slate-300 text-slate-900",
+                <div className="relative">
+                  {startContent && (
+                    <span className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-muted-foreground">
+                      {startContent}
+                    </span>
                   )}
-                >
-                  <SelectValue
-                    placeholder={
-                      loading ? "Loading..." : `Select ${label.toLowerCase()}`
-                    }
-                  />
-                </SelectTrigger>
+                  <SelectTrigger
+                    className={cn(
+                      "font-normal text-[15px] w-full",
+                      "border-[1.5px] rounded-md h-auto py-2.5 px-4",
+                      "transition-all duration-150",
+                      "focus-visible:ring-4",
+                      startContent && "pl-9",
+                      hasError
+                        ? "border-destructive focus-visible:ring-destructive/15"
+                        : "border-border focus-visible:border-ring focus-visible:ring-ring/18",
+                      disabled &&
+                        "bg-slate-50 cursor-not-allowed border-slate-300 text-slate-900",
+                    )}
+                  >
+                    <SelectValue
+                      placeholder={
+                        loading ? "Loading..." : `Select ${label.toLowerCase()}`
+                      }
+                    />
+                  </SelectTrigger>
+                </div>
                 <SelectContent className="max-h-80 min-w-[250px]">
                   {/* Search - only show if isSearch is true */}
                   {isSearch && (
