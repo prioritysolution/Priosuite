@@ -772,13 +772,24 @@ export const useOperationalArea = () => {
   };
 
   const putMasterOperationalVillageApiCall = async (villageId, orgId, item) => {
+    // let data = {
+    //   vill_id: villageId,
+    //   dist_id: item.districtId,
+    //   state_id: item.stateId,
+    //   block_name: item.name,
+    //   org_id: orgId,
+    // };
+
+    console.log("item update", item);
     let data = {
-      vill_id: villageId,
-      dist_id: item.districtId,
+      vill_id:villageId,
+      block_id:item.blockId,
+      village_name:item.name,
+      org_id:orgId,
       state_id: item.stateId,
-      block_name: item.name,
-      org_id: orgId,
+      dist_id: item.districtId,
     };
+    
     setUpdateLoading(true);
     try {
       const res = await updateMasterOperationalAPI(data, "VILLAGE");

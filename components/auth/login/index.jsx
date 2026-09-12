@@ -1,4 +1,7 @@
 
+
+
+
 "use client";
 
 import { Form } from "@/components/ui/form";
@@ -10,7 +13,6 @@ import {
   ArrowRight,
   BarChart3,
   CalendarDays,
-  Cloud,
   Coins,
   Globe,
   Landmark,
@@ -21,6 +23,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { IoIosCloudOutline } from "react-icons/io";
 import Link from "next/link";
 import Image from "next/image";
 import DropdownFieldNew from "@/common/formFields/DropdownFieldNew";
@@ -34,7 +37,7 @@ const languageOptions = [
   { Id: "ur", Option_Value: "Urdu" },
 ];
 
-const FeatureStripItem = ({ icon: Icon, label, className }) => (
+const FeatureStripItem = ({ icon: Icon, label ,className}) => (
   <div className={`flex flex-1 flex-col items-center gap-1.5 text-center ${className}`}>
     <Icon
       size={28}
@@ -47,7 +50,6 @@ const FeatureStripItem = ({ icon: Icon, label, className }) => (
     </p>
   </div>
 );
-
 
 const Login = ({
   loading,
@@ -112,7 +114,7 @@ const Login = ({
     <div className="relative h-full max-h-full w-full overflow-hidden bg-[#d7eefc]">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <Image
-          src="/finalloginimg.png"
+          src="/floginpagebg.png"
           alt=""
           fill
           priority
@@ -125,40 +127,52 @@ const Login = ({
       </div>
 
       <div className="relative z-10 flex h-full max-h-full flex-col overflow-hidden lg:flex-row">
-        <section className="relative hidden h-full min-h-0 flex-1 overflow-visible lg:block">
-          {/* BrandMark — top center of illustration */}
-          <div className="absolute left-96 top-6 z-20  xl:left-96 xl:top-4">
+        <section className="relative hidden h-full min-h-0 flex-1 flex-col overflow-hidden lg:flex">
+         
+         {/* left side content — matches mockup: brand, one-line headline, two-line subtitle */}
+          <div className="relative z-20 shrink-0 px-10 pt-8 xl:px-14 xl:pt-10 2xl:px-16">
             <BrandMark />
+            <h1 className="mt-7 whitespace-nowrap text-[22px] font-extrabold tracking-tight text-[#163A5F] xl:mt-8 xl:text-[26px] 2xl:text-[28px]">
+              Smarter Banking
+              <span className="mx-2.5 font-medium text-[#1B74D6]">|</span>
+              Stronger Communities
+            </h1>
+            <p className="mt-3 max-w-[460px] text-[13px] leading-[1.55] text-[#6B849E] xl:text-[14px]">
+              A complete, secure and scalable Core Banking Solution
+              designed to simplify modern financial operations.
+            </p>
           </div>
 
-          {/* Feature Strip — fixed above bottom so it stays fully visible */}
-          <div className="absolute bottom-5 left-8 z-20 flex w-[min(92%,720px)] items-start justify-between gap-4 rounded-2xl px-6 py-4 xl:bottom-3 xl:left-14 xl:px-8 2xl:left-16">
-            <FeatureStripItem
-              icon={ShieldCheck}
-              label="Secure & Reliable"
-              className="border-r-2 border-r-[#1B74D6]"
+          <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-0 py-2">
+            <Image
+              src="/floginpageimg.png"
+              alt="PrioSuite banking illustration"
+              width={1536}
+              height={1024}
+              priority
+              unoptimized
+              className="h-auto w-[min(85%,780px)] max-h-[min(520px,55vh)] object-contain"
             />
-            <FeatureStripItem
-              icon={Cloud}
-              label="Scalable Architecture"
-              className="border-r-2 border-r-[#1B74D6]"
-            />
-            <FeatureStripItem
-              icon={Zap}
-              label="Faster Operations"
-              className="border-r-2 border-r-[#1B74D6]"
-            />
-            <FeatureStripItem icon={Users} label="Better Member Service" />
+          </div>
+
+          {/* Bottom feature strip — solid gradient bar, full width, pinned to bottom */}
+          <div className="relative z-20 mt-auto w-full shrink-0  px-10 py-5 xl:px-14 xl:py-6 2xl:px-16">
+            <div className="mx-auto flex w-full max-w-[720px] items-start justify-between gap-4">
+              <FeatureStripItem icon={ShieldCheck} label="Secure & Reliable"  className="border-r-2 border-r-[#1B74D6]" />
+              <FeatureStripItem icon={IoIosCloudOutline} label="Scalable Architecture"  className="border-r-2 border-r-[#1B74D6]" />
+              <FeatureStripItem icon={Zap} label="Faster Operations"  className="border-r-2 border-r-[#1B74D6]" />
+              <FeatureStripItem icon={Users} label="Better Member Service"  />
+            </div>
           </div>
         </section>
 
         {/* Right login — fixed, no scroll */}
-        <section className="flex h-full w-full shrink-0 items-center justify-center overflow-hidden p-3 sm:p-5 lg:w-[min(100%,780px)] lg:-ml-8 lg:justify-start lg:pl-4 lg:pr-8 xl:w-[860px] xl:-ml-12 xl:pl-6 xl:pr-10">
+        <section className="flex h-full w-full shrink-0 items-center justify-center overflow-hidden p-3 sm:p-5 lg:w-[min(100%,720px)] lg:-ml-16 lg:justify-start lg:pl-2 lg:pr-8 xl:w-[780px] xl:-ml-24 xl:pl-4 xl:pr-10">
           <div
-            className="flex w-full max-w-[540px] flex-col justify-center rounded-2xl border border-white/80 bg-white/95 px-5 py-6 shadow-[0_18px_50px_rgba(22,58,95,0.14)] backdrop-blur-md sm:max-w-[580px] sm:rounded-3xl sm:px-10 sm:py-8 lg:min-h-[680px]"
+            className="flex w-full max-w-[500px] flex-col rounded-2xl border border-white/80 bg-white/95 px-5 py-5 shadow-[0_18px_50px_rgba(22,58,95,0.14)] backdrop-blur-md sm:max-w-[540px] sm:rounded-[28px] sm:px-9 sm:py-7"
             style={{ animation: "login-card-in 0.45s ease-out" }}
           >
-            <div className="mb-3 flex items-center justify-end">
+            <div className="mb-2 flex items-center justify-end">
               <span className="inline-flex items-center gap-1 rounded-full bg-[#F3F8FD] px-2 py-0.5 text-[10px] font-medium text-[#6F87A3] sm:text-[11px]">
                 <Lock className="h-3 w-3" />
                 Secure Login
@@ -169,7 +183,7 @@ const Login = ({
               <BrandMark compact />
             </div>
 
-            <div className="mb-6 text-center">
+            <div className="mb-5 text-center">
               <h2 className="text-[22px] font-extrabold leading-tight text-[#163A5F] sm:text-[24px]">
                 Welcome Back
               </h2>
@@ -251,13 +265,21 @@ const Login = ({
               </form>
             </Form>
 
-{/*  */}
-            <div className="mt-6 flex items-center justify-center gap-1.5 border-t border-[#eef3f8] pt-4 text-[10px] text-[#9AADC2] sm:text-[11px]">
-             
-
-             <Link href="https://prioritysolutions.in" target="_blank" className="text-[#9AADC2] hover:text-[#1B74D6]">              
-              Powered by Priority Solutions
-             </Link>
+            <div className="mt-5 flex items-center justify-center gap-1.5 border-t border-[#eef3f8] pt-4 text-[10px] text-[#9AADC2] sm:text-[11px]">
+              {/* <Image
+                src="/pristlogo.png"
+                alt=""
+                width={16}
+                height={16}
+                className="h-4 w-4 object-contain"
+              /> */}
+              <Link
+                href="https://prioritysolutions.in"
+                target="_blank"
+                className="text-[#9AADC2] hover:text-[#1B74D6]"
+              >
+                Powered by Priority Solutions
+              </Link>
             </div>
           </div>
         </section>

@@ -1,18 +1,25 @@
 "use client";
 
 import { DatePickerField } from "@/common/formFields/DatePickerField";
-import DropdownField from "@/common/formFields/DropdownField";
 import InputField from "@/common/formFields/InputField";
 import AccountSummary from "@/components/dashboard/AccountSummary";
-import AccountsOverview from "@/components/dashboard/AccountsOverview";
-import DepositsLoansChart from "@/components/dashboard/DepositsLoansChart";
+import BranchLiquidityTable from "@/components/dashboard/BranchLiquidityTable";
+import CashDenominationTally from "@/components/dashboard/CashDenominationTally";
+import FieldAgentTable from "@/components/dashboard/FieldAgentTable";
+import LiquidFundsCard from "@/components/dashboard/LiquidFundsCard";
 import MemberQuickActions from "@/components/dashboard/MemberQuickActions";
 import MemberSummaryCards from "@/components/dashboard/MemberSummaryCards";
 import MemberTransactionTable from "@/components/dashboard/MemberTransactionTable";
-import PendingApprovals from "@/components/dashboard/PendingApprovals";
-import RecentTransactions from "@/components/dashboard/RecentTransactions";
-import StatsGrid from "@/components/dashboard/StatsGrid";
-import SystemAlerts from "@/components/dashboard/SystemAlerts";
+import MicrofinanceStatsGrid from "@/components/dashboard/MicrofinanceStatsGrid";
+import NpaCards from "@/components/dashboard/NpaCards";
+import {
+  branchLiquidity,
+  cashTally,
+  fieldAgents,
+  liquidFunds,
+  microfinanceStatCards,
+  npaMetrics,
+} from "@/components/dashboard/microfinanceMockData";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -76,69 +83,38 @@ const Dashboard = ({ dashboardItemData }) => {
   );
 };
 
-const AdminDashboard = ({
-  form,
-  openingLedgerBranchData,
-  dashboardItemData,
-}) => {
+const AdminDashboard = ({ form, openingLedgerBranchData }) => {
   return (
-    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border-2 border-primary bg-slate-50">
-      <header className="no-print z-10 shrink-0 border-b border-slate-200 bg-white">
-        <div className="flex flex-col gap-3 px-3 py-3 sm:px-4 lg:px-5">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
-            <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <h2 className="shrink-0 text-base font-semibold tracking-tight text-slate-800 sm:text-lg">
-                Admin Dashboard
-              </h2>
-            </div>
+    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg bg-slate-50">
+      <div className="min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto">
+        <div className="w-full space-y-3 sm:space-y-4">
+          <MicrofinanceStatsGrid cards={microfinanceStatCards} />
 
-            <div className="w-full min-w-0 sm:max-w-xs lg:w-52">
-              <Form {...form}>
-                <FormField
-                  control={form.control}
-                  name="branchName"
-                  render={({ field }) => (
-                    <DropdownField
-                      label="Branch"
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={openingLedgerBranchData}
-                      optionLabelKey="Branch_Name"
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
-                      labeldisable={true}
-                      searchable={true}
-                    />
-                  )}
-                />
-              </Form>
+          <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-12">
+            <div className="w-full min-w-0 lg:col-span-4">
+              <LiquidFundsCard data={liquidFunds} />
+            </div>
+            <div className="w-full min-w-0 lg:col-span-8">
+              <FieldAgentTable agents={fieldAgents} />
+            </div>
+          </div>
+
+          <BranchLiquidityTable
+            branches={branchLiquidity}
+            form={form}
+            openingLedgerBranchData={openingLedgerBranchData}
+          />
+
+          <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-12">
+            <div className="w-full min-w-0 lg:col-span-8">
+              <CashDenominationTally data={cashTally} />
+            </div>
+            <div className="w-full min-w-0 lg:col-span-4">
+              <NpaCards metrics={npaMetrics} />
             </div>
           </div>
         </div>
-      </header>
-
-      <ScrollArea className="min-h-0 w-full flex-1">
-        <div className="mx-auto w-full max-w-[1400px] space-y-4 p-3 pb-6 sm:space-y-5 sm:p-4 lg:p-5">
-          <StatsGrid dashboardItemData={dashboardItemData} />
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
-            <div className="min-w-0 lg:col-span-2 xl:col-span-5">
-              <DepositsLoansChart />
-            </div>
-            <div className="min-w-0 xl:col-span-4">
-              <AccountsOverview />
-            </div>
-            <div className="min-w-0 xl:col-span-3">
-              <RecentTransactions />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <PendingApprovals />
-            <SystemAlerts />
-          </div>
-        </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 };
@@ -306,7 +282,6 @@ const MainDashboard = ({
         <AdminDashboard
           form={form}
           openingLedgerBranchData={openingLedgerBranchData}
-          dashboardItemData={dashboardItemData}
         />
       ) : (
         <Dashboard dashboardItemData={dashboardItemData} begDate={begDate} />

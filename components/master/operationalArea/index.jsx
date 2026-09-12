@@ -1,6 +1,5 @@
 "use client";
 
-import OperationalAreaCard from "@/common/cards/OperationalAreaCard";
 import { Button } from "@/components/ui/button";
 import StateForm from "./state/StateForm";
 import StateTable from "./state/StateTable";
@@ -17,7 +16,8 @@ import PoliceStationTable from "./policeStation/PoliceStationTable";
 import PostOfficeTable from "./postOffice/PostOfficeTable";
 import UnitTable from "./unit/UnitTable";
 import VillageTable from "./village/VillageTable";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const OperationalArea = ({
   activeForm,
@@ -132,6 +132,7 @@ const OperationalArea = ({
           form={masterOperationStateForm}
           handleSubmit={handleMasterOperationStateSubmit}
           editData={editStateData}
+          onCancel={() => setOpenDialouge(false)}
         />
       ),
       table: (
@@ -152,6 +153,7 @@ const OperationalArea = ({
           handleSubmit={handleMasterOperationDistrictSubmit}
           editData={editDistrictData}
           stateData={stateListData}
+          onCancel={() => setOpenDialouge(false)}
         />
       ),
       table: (
@@ -176,6 +178,7 @@ const OperationalArea = ({
           editData={editBlockData}
           stateData={stateListData}
           districtData={districtListUnderStateData}
+          onCancel={() => setOpenDialouge(false)}
         />
       ),
       table: (
@@ -200,6 +203,7 @@ const OperationalArea = ({
           editData={editPoliceStationData}
           stateData={stateListData}
           districtData={districtListUnderStateData}
+          onCancel={() => setOpenDialouge(false)}
         />
       ),
       table: (
@@ -224,6 +228,7 @@ const OperationalArea = ({
           editData={editPostOfficeData}
           stateData={stateListData}
           districtData={districtListUnderStateData}
+          onCancel={() => setOpenDialouge(false)}
         />
       ),
       table: (
@@ -249,6 +254,7 @@ const OperationalArea = ({
           stateData={stateListData}
           districtData={districtListUnderStateData}
           blockData={blockListUnderDistrictData}
+          onCancel={() => setOpenDialouge(false)}
         />
       ),
       table: (
@@ -271,6 +277,7 @@ const OperationalArea = ({
           form={masterOperationUnitForm}
           handleSubmit={handleMasterOperationUnitSubmit}
           editData={editUnitData}
+          onCancel={() => setOpenDialouge(false)}
         />
       ),
       table: (
@@ -286,63 +293,89 @@ const OperationalArea = ({
     },
   ];
 
-  const handleFormClick = (id) => {
-    setActiveForm(id);
-  };
-
   return (
-    <div className="w-full h-full flex justify-between p-5 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col lg:flex-row items-center lg:items-start justify-center border-primary rounded-lg border-[2px] p-5 w-full gap-5 xl:gap-20 overflow-hidden">
-        <div className="h-fit lg:h-full w-full lg:w-1/5 flex">
-          <div
-            className="w-full flex flex-wrap lg:flex-nowrap lg:items-stretch lg:flex-col  gap-5 lg:gap-2
-          lg:justify-between overflow-y-scroll py-1"
-          >
+    <div className="flex h-full w-full rounded-lg bg-[#fefefe] p-3 sm:p-4">
+      <div className="flex h-full w-full flex-col overflow-hidden rounded-lg border-2 border-primary p-3 sm:p-4">
+        <Tabs
+          value={String(activeForm)}
+          onValueChange={(value) => setActiveForm(Number(value))}
+          className="flex h-full min-h-0 w-full flex-col"
+        >
+          <TabsList className="h-auto w-full shrink-0 flex-wrap justify-start gap-1 rounded-lg bg-muted/60 p-1">
             {formList.map((item, id) => (
-              <div key={id} onClick={() => handleFormClick(id)}>
-                <OperationalAreaCard
-                  label={item.label}
-                  active={id === activeForm}
-                />
-              </div>
+              <TabsTrigger
+                key={item.label}
+                value={String(id)}
+                className="min-w-[96px] flex-1 text-xs transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm sm:text-sm"
+              >
+                {item.label}
+              </TabsTrigger>
             ))}
-          </div>
-        </div>
-        <div className="h-full w-full text-center flex flex-col items-center gap-5 overflow-y-scroll">
-          <h2 className="text-lg sm:text-2xl font-semibold">
-            Operational Area {formList[activeForm].label}
-          </h2>
-          <div className="w-full flex items-center justify-end">
-            <Button
-              className="px-10 py-6 text-lg"
-              onClick={() => setOpenDialouge(true)}
+          </TabsList>
+
+          {formList.map((item, id) => (
+            <TabsContent
+              key={item.label}
+              value={String(id)}
+              className="mt-3 flex min-h-0 flex-1 flex-col gap-3 overflow-hidden data-[state=inactive]:hidden"
             >
-              Add {formList[activeForm].label}
-            </Button>
-            <Dialog open={openDialouge} onOpenChange={setOpenDialouge}>
-              <DialogContent className="w-[calc(100vw-1rem)] max-w-md">
-                <DialogHeader>
-                  {editStateData ||
-                  editDistrictData ||
-                  editBlockData ||
-                  editPoliceStationData ||
-                  editPostOfficeData ||
-                  editVillageData ||
-                  editUnitData
-                    ? "Update"
-                    : "Add"}{" "}
-                  {formList[activeForm].label}
-                </DialogHeader>
-                <div className="py-4">{formList[activeForm].form}</div>
-              </DialogContent>
-            </Dialog>
-          </div>
-          <div className=" w-[300px] sm:w-full h-full sm:overflow-y-scroll">
-            {formList[activeForm].table && formList[activeForm].table}
-          </div>
-        </div>
+              <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-lg font-semibold text-[#163A5F] sm:text-xl">
+                  Operational Area — {item.label}
+                </h2>
+                <Button
+                  className="h-10 shrink-0 px-5 text-sm sm:h-11 sm:px-6 sm:text-base"
+                  onClick={() => setOpenDialouge(true)}
+                >
+                  Add {item.label}
+                </Button>
+              </div>
+
+              <div className="min-h-0 flex-1 overflow-auto">
+                {item.table}
+              </div>
+            </TabsContent>
+          ))}
+        </Tabs>
+
+        <Dialog open={openDialouge}>
+          <DialogContent
+            hideClose
+            className="w-[calc(100vw-1.5rem)] max-w-[640px] gap-0 overflow-hidden rounded-2xl border-0 p-0 shadow-[0_20px_50px_rgba(22,58,95,0.18)] sm:max-w-[680px] sm:rounded-2xl"
+          >
+            <DialogHeader className="border-b border-[#e8eef5] bg-[#F7FAFD] px-5 py-4 text-left sm:px-6 sm:py-5">
+              <DialogTitle className="text-lg font-semibold text-[#163A5F] sm:text-xl">
+                {editStateData ||
+                editDistrictData ||
+                editBlockData ||
+                editPoliceStationData ||
+                editPostOfficeData ||
+                editVillageData ||
+                editUnitData
+                  ? "Update"
+                  : "Add"}{" "}
+                {formList[activeForm].label}
+              </DialogTitle>
+              <DialogDescription className="mt-1 text-[13px] text-[#7A93B0]">
+                {editStateData ||
+                editDistrictData ||
+                editBlockData ||
+                editPoliceStationData ||
+                editPostOfficeData ||
+                editVillageData ||
+                editUnitData
+                  ? `Update the selected ${formList[activeForm].label.toLowerCase()} details below.`
+                  : `Fill in the details to add a new ${formList[activeForm].label.toLowerCase()}.`}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="px-5 py-5 sm:px-6 sm:py-6">
+              {formList[activeForm].form}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
 };
+
 export default OperationalArea;

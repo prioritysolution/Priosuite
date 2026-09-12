@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
 import { ClipLoader } from "react-spinners";
 
@@ -16,12 +9,15 @@ const UnitForm = ({
   form,
   handleSubmit,
   editData,
+  onCancel,
 }) => {
+  const isEdit = editData && Object.keys(editData).length > 0;
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-3 py-5"
+        className="flex flex-col gap-4"
         autoComplete="off"
       >
         <InputField
@@ -30,30 +26,39 @@ const UnitForm = ({
           label="Unit Name"
           placeholder="Enter unit name"
           maxLength={20}
+          isRequired
         />
-
         <InputField
           control={form.control}
           name="number"
           label="Unit Number"
           placeholder="Enter unit number"
           type="number"
+          isRequired
           onInput={(e) => {
             if (e.target.value.length > 10) {
               e.target.value = e.target.value.slice(0, 10);
             }
           }}
         />
-
-        <div className="w-full flex items-center justify-end">
+        <div className="flex items-center justify-end gap-3 pt-1">
+          <Button
+            type="button"
+            variant="outline"
+            className="h-10 min-w-[110px] rounded-lg px-5"
+            onClick={onCancel}
+            disabled={postLoading || updateLoading}
+          >
+            Cancel
+          </Button>
           <Button
             type="submit"
-            className="w-1/4"
+            className="h-10 min-w-[120px] rounded-lg px-6"
             disabled={postLoading || updateLoading}
           >
             {postLoading || updateLoading ? (
-              <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
-            ) : editData && Object.keys(editData).length > 0 ? (
+              <ClipLoader color="#fff" size={18} speedMultiplier={0.7} />
+            ) : isEdit ? (
               "Update"
             ) : (
               "Add"
@@ -64,4 +69,5 @@ const UnitForm = ({
     </Form>
   );
 };
+
 export default UnitForm;

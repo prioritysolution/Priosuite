@@ -190,15 +190,20 @@ const MemberSearchForm = ({
     }
   }, [beg_date, form]);
 
-  const handleSearchMember = () => {
-    if (form.getValues("dialougeMemberName"))
-      getMemberDataByNameApiCall(
-        orgId,
-        currentMemberPage,
-        form.getValues("dialougeMemberName"),
-        selectedRadio,
-      );
-    else toast.error("Please enter name");
+  const handleSearchMember = (e) => {
+    e?.preventDefault?.();
+    if (!orgId) return;
+    const name = form.getValues("dialougeMemberName");
+    if (!name) {
+      toast.error("Please enter name");
+      return;
+    }
+    // Search always starts from page 1
+    if (currentMemberPage === 1) {
+      getMemberDataByNameApiCall(orgId, 1, name, selectedRadio || "1");
+    } else {
+      setCurrentMemberPage(1);
+    }
   };
 
   const handleSelectClick = (data) => {
@@ -210,26 +215,36 @@ const MemberSearchForm = ({
     (state) => state?.issueMembership?.memberDataByName,
   );
 
-  useEffect(() => {
-    form.reset({
-      date: beg_date ? parseFlexDate(beg_date) : null,
-      memberNo: form.getValues("memberNo"),
-      dialougeMemberName: "",
-    });
-    dispatch(getMemberDataByName([]));
-    setCurrentMemberPage(1);
-  }, [dialougeOpen]);
+  const handleDialogueOpenChange = (open) => {
+    if (open) {
+      form.setValue("dialougeMemberName", "");
+      setCurrentMemberPage(1);
+      dispatch(getMemberDataByName([]));
+    } else {
+      dispatch(getMemberDataByName([]));
+    }
+    setDialougeOpen(open);
+  };
 
+  // Pagination only — never auto-call on dialog open / Next / radio change
   useEffect(() => {
+    if (!dialougeOpen || !orgId) return;
+    const name = form.getValues("dialougeMemberName");
+    if (!name) return;
     getMemberDataByNameApiCall(
       orgId,
       currentMemberPage,
-      form.getValues("dialougeMemberName"),
-      selectedRadio || "A",
+      name,
+      selectedRadio || "1",
     );
-  }, [currentMemberPage, selectedRadio]);
+  }, [currentMemberPage]);
 
-  console.log("selectedRadio=", selectedRadio);
+  // Clear results when customer type radio changes; user must click Search again
+  useEffect(() => {
+    if (!dialougeOpen) return;
+    dispatch(getMemberDataByName([]));
+    setCurrentMemberPage(1);
+  }, [selectedRadio]);
 
   return (
     <div
@@ -240,7 +255,7 @@ const MemberSearchForm = ({
     >
       <Form {...form}>
         <form autoComplete="off" className={`w-full`}>
-          <Dialog open={dialougeOpen} onOpenChange={setDialougeOpen}>
+          <Dialog open={dialougeOpen} onOpenChange={handleDialogueOpenChange}>
             <div
               className={cn(
                 "w-full flex flex-col lg:flex-row items-center justify-between gap-x-10 gap-y-2 lg:gap-y-5  ",
@@ -431,6 +446,7 @@ const MemberSearchForm = ({
                     )}
                   />
                   <Button
+                    type="button"
                     className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                     onClick={handleSearchMember}
                   >

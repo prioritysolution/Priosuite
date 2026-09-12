@@ -291,6 +291,7 @@ const MemberProfile = ({
                   )}
                 />
 
+                    {/* reset and next button */}
                 {showForm ? (
                   <div
                     className="self-end h-10 w-32 text-white bg-primary rounded-md flex items-center justify-center cursor-pointer"
