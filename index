@@ -1,0 +1,643 @@
+// components/dashboard/branch-liquidity-table.tsx
+import { GitBranch } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { formatINR } from "@/lib/format";
+import type { BranchLiquidity } from "@/lib/types";
+
+export function BranchLiquidityTable({
+  branches,
+}: {
+  branches: BranchLiquidity[];
+}) {
+  return (
+    <Card className="shadow-sm">
+      <CardHeader className="flex flex-col gap-2 border-b sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-2">
+          <GitBranch className="mt-0.5 h-4 w-4 text-violet-600" />
+          <div>
+            <h3 className="text-sm font-semibold sm:text-base">
+              Multi-Branch Operations &amp; Liquidity Matrix
+            </h3>
+            <p className="text-xs text-muted-foreground sm:text-sm">
+              Consolidated branch loan volumes, daily collections, and vault balances
+            </p>
+          </div>
+        </div>
+        <Badge variant="outline" className="w-fit shrink-0">
+          {branches.length} Active Branches
+        </Badge>
+      </CardHeader>
+
+      <CardContent className="p-0">
+        {/* Desktop / tablet: full table */}
+        <div className="hidden overflow-x-auto lg:block">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Branch Name</TableHead>
+                <TableHead className="text-right">Active Loan Book (₹)</TableHead>
+                <TableHead className="text-right">Today&apos;s Collection (₹)</TableHead>
+                <TableHead className="text-right">Branch Vault Cash (₹)</TableHead>
+                <TableHead className="text-right">Open Loans</TableHead>
+                <TableHead className="text-right">Recovery %</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {branches.map((branch) => (
+                <TableRow key={branch.id}>
+                  <TableCell className="font-medium">
+                    {branch.name}
+                    {branch.localName && (
+                      <span className="text-muted-foreground"> ({branch.localName})</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatINR(branch.activeLoanBook, 0)}
+                  </TableCell>
+                  <TableCell className="text-right text-emerald-600">
+                    {formatINR(branch.todaysCollection, 0)}
+                  </TableCell>
+                  <TableCell className="text-right text-blue-600">
+                    {formatINR(branch.branchVaultCash, 0)}
+                  </TableCell>
+                  <TableCell className="text-right">{branch.openLoans}</TableCell>
+                  <TableCell className="text-right">
+                    <Badge
+                      variant="outline"
+                      className="border-emerald-200 bg-emerald-50 text-emerald-700"
+                    >
+                      {branch.recoveryPct}%
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Mobile / tablet-narrow: stacked cards */}
+        <div className="flex flex-col divide-y lg:hidden">
+          {branches.map((branch) => (
+            <div key={branch.id} className="flex flex-col gap-2 p-4">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium">
+                  {branch.name}
+                  {branch.localName && (
+                    <span className="text-muted-foreground"> ({branch.localName})</span>
+                  )}
+                </span>
+                <Badge
+                  variant="outline"
+                  className="border-emerald-200 bg-emerald-50 text-emerald-700"
+                >
+                  {branch.recoveryPct}%
+                </Badge>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
+                <div>
+                  <div className="text-xs text-muted-foreground">Loan Book</div>
+                  <div>{formatINR(branch.activeLoanBook, 0)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Today&apos;s Collection</div>
+                  <div className="text-emerald-600">
+                    {formatINR(branch.todaysCollection, 0)}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Vault Cash</div>
+                  <div className="text-blue-600">
+                    {formatINR(branch.branchVaultCash, 0)}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Open Loans</div>
+                  <div>{branch.openLoans}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+-------------
+// components/dashboard/cash-denomination-tally.tsx
+"use client";
+
+import { useState } from "react";
+import { Coins, Minus, Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { formatINR } from "@/lib/format";
+import { cn } from "@/lib/utils";
+import type { CashTally, DenominationCount } from "@/lib/types";
+
+// Parses "₹500 Notes" -> 500 so we can recompute each row's value live.
+function denominationFace(label: string): number {
+  const match = label.match(/(\d+)/);
+  return match ? Number(match[1]) : 1;
+}
+
+function DenominationInput({
+  denom,
+  onChange,
+}: {
+  denom: DenominationCount;
+  onChange: (id: string, count: number) => void;
+}) {
+  const face = denominationFace(denom.label);
+
+  return (
+    <div className="flex flex-col gap-2 rounded-lg border p-3">
+      <span className="text-xs font-medium text-muted-foreground">
+        {denom.label}
+      </span>
+      <div className="flex items-center gap-1">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="h-7 w-7 shrink-0"
+          onClick={() => onChange(denom.id, Math.max(0, denom.count - 1))}
+          aria-label={`Decrease ${denom.label}`}
+        >
+          <Minus className="h-3 w-3" />
+        </Button>
+        <Input
+          type="number"
+          inputMode="numeric"
+          min={0}
+          value={denom.count}
+          onChange={(e) => onChange(denom.id, Math.max(0, Number(e.target.value) || 0))}
+          className="h-8 text-center"
+        />
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="h-7 w-7 shrink-0"
+          onClick={() => onChange(denom.id, denom.count + 1)}
+          aria-label={`Increase ${denom.label}`}
+        >
+          <Plus className="h-3 w-3" />
+        </Button>
+      </div>
+      <span className="text-sm font-semibold">
+        {formatINR(denom.count * face, 0)}
+      </span>
+    </div>
+  );
+}
+
+export function CashDenominationTally({ data }: { data: CashTally }) {
+  const [denominations, setDenominations] = useState(data.denominations);
+
+  const handleChange = (id: string, count: number) => {
+    setDenominations((prev) =>
+      prev.map((d) =>
+        d.id === id ? { ...d, count, value: count * denominationFace(d.label) } : d,
+      ),
+    );
+  };
+
+  const totalCounted = denominations.reduce(
+    (sum, d) => sum + d.count * denominationFace(d.label),
+    0,
+  );
+  const isReconciled = data.isReconciled;
+
+  return (
+    <Card className="shadow-sm">
+      <CardHeader className="flex flex-col gap-2 border-b sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-2">
+          <Coins className="mt-0.5 h-4 w-4 text-amber-600" />
+          <h3 className="text-sm font-semibold sm:text-base">
+            Physical Cash Denomination Tally{" "}
+            <span className="font-normal text-muted-foreground">
+              (নোট ও কয়েন গণনা)
+            </span>
+          </h3>
+        </div>
+        <Badge
+          variant="outline"
+          className={cn(
+            "w-fit shrink-0",
+            isReconciled
+              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+              : "border-amber-200 bg-amber-50 text-amber-700",
+          )}
+        >
+          {isReconciled ? "Reconciled Zero Variance" : "Variance Detected"}
+        </Badge>
+      </CardHeader>
+
+      <CardContent className="flex flex-col gap-4 p-4 sm:p-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+          {denominations.map((denom) => (
+            <DenominationInput key={denom.id} denom={denom} onChange={handleChange} />
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-1 border-t pt-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <span className="font-medium">
+            Total Physical Counted Cash: {formatINR(totalCounted, 2)}
+          </span>
+          <span
+            className={cn(
+              "font-medium",
+              data.variance === 0 ? "text-emerald-600" : "text-emerald-600",
+            )}
+          >
+            Variance: {formatINR(data.variance, 2)} (Balanced)
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+-------------------------------------
+// components/dashboard/field-agent-table.tsx
+import { Files } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { formatINR } from "@/lib/format";
+import { cn } from "@/lib/utils";
+import type { AgentStatus, FieldAgent } from "@/lib/types";
+
+const STATUS_CLASS: Record<AgentStatus, string> = {
+  "In Field": "bg-emerald-50 text-emerald-700 border-emerald-200",
+  "Returning to Vault": "bg-amber-50 text-amber-700 border-amber-200",
+  "Off Duty": "bg-slate-100 text-slate-600 border-slate-200",
+};
+
+function StatusBadge({ status }: { status: AgentStatus }) {
+  return (
+    <Badge variant="outline" className={cn("font-medium", STATUS_CLASS[status])}>
+      {status}
+    </Badge>
+  );
+}
+
+export function FieldAgentTable({
+  agents,
+  activeCount,
+}: {
+  agents: FieldAgent[];
+  activeCount: number;
+}) {
+  return (
+    <Card className="shadow-sm">
+      <CardHeader className="flex flex-col gap-2 border-b sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-2">
+          <Files className="mt-0.5 h-4 w-4 text-blue-600" />
+          <div>
+            <h3 className="text-sm font-semibold sm:text-base">
+              Field Collection Agent Performance &amp; Live Wallet
+            </h3>
+            <p className="text-xs text-muted-foreground sm:text-sm">
+              Real-time tracking of cash collected in the field before branch vault hand-in
+            </p>
+          </div>
+        </div>
+        <Badge variant="outline" className="w-fit shrink-0 border-blue-200 bg-blue-50 text-blue-700">
+          {activeCount} Field Agents Active
+        </Badge>
+      </CardHeader>
+
+      <CardContent className="p-0">
+        {/* Desktop / tablet: full table */}
+        <div className="hidden overflow-x-auto md:block">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Agent Name</TableHead>
+                <TableHead>Assigned Kendras</TableHead>
+                <TableHead className="text-right">Today Target</TableHead>
+                <TableHead className="text-right">Collected</TableHead>
+                <TableHead className="text-right">Live Field Wallet</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {agents.map((agent) => (
+                <TableRow key={agent.id}>
+                  <TableCell className="font-medium">
+                    {agent.name}{" "}
+                    <span className="text-muted-foreground">({agent.code})</span>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {agent.assignedKendras}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatINR(agent.todayTarget, 0)}
+                  </TableCell>
+                  <TableCell className="text-right text-blue-600">
+                    {formatINR(agent.collected, 0)}
+                  </TableCell>
+                  <TableCell className="text-right font-medium text-blue-600">
+                    {formatINR(agent.liveFieldWallet, 0)}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={agent.status} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Mobile: stacked cards */}
+        <div className="flex flex-col divide-y md:hidden">
+          {agents.map((agent) => (
+            <div key={agent.id} className="flex flex-col gap-2 p-4">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium">
+                  {agent.name}{" "}
+                  <span className="text-muted-foreground">({agent.code})</span>
+                </span>
+                <StatusBadge status={agent.status} />
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {agent.assignedKendras}
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-sm">
+                <div>
+                  <div className="text-xs text-muted-foreground">Target</div>
+                  <div>{formatINR(agent.todayTarget, 0)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Collected</div>
+                  <div className="text-blue-600">
+                    {formatINR(agent.collected, 0)}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Wallet</div>
+                  <div className="font-medium text-blue-600">
+                    {formatINR(agent.liveFieldWallet, 0)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+------------------------------------
+// components/dashboard/liquid-funds-card.tsx
+import { Landmark } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { formatINR } from "@/lib/format";
+import type { LiquidFundsData } from "@/lib/types";
+
+export function LiquidFundsCard({ data }: { data: LiquidFundsData }) {
+  return (
+    <Card className="h-full border-0 bg-slate-900 text-slate-50 shadow-sm">
+      <CardContent className="flex h-full flex-col gap-6 p-5 sm:p-6">
+        <div className="flex items-start justify-between">
+          <span className="text-xs font-semibold uppercase tracking-wide text-emerald-400">
+            {data.totalLabel}
+          </span>
+          <Landmark className="h-5 w-5 text-slate-400" />
+        </div>
+
+        <div className="text-3xl font-bold tracking-tight sm:text-4xl">
+          {formatINR(data.total)}
+        </div>
+
+        <div className="flex flex-col gap-3 text-sm">
+          <div className="flex items-center justify-between gap-2">
+            <span className="flex items-center gap-2 text-slate-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              Cash In Hand (Branch Vaults):
+            </span>
+            <span className="font-medium text-emerald-400">
+              {formatINR(data.cashInHand)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="flex items-center gap-2 text-slate-300">
+              <span className="h-2 w-2 rounded-full bg-sky-400" />
+              Bank Balances (Commercial Banks):
+            </span>
+            <span className="font-medium text-sky-400">
+              {formatINR(data.bankBalance)}
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-slate-700 pt-4 text-xs sm:text-sm">
+          <span className="text-slate-400">{data.footerLabel}</span>
+          <button className="font-medium text-emerald-400 hover:underline">
+            {data.footerLinkText}
+          </button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+-------------------------
+// components/dashboard/microfinance-dashboard.tsx
+import { StatsGrid } from "./stats-grid";
+import { LiquidFundsCard } from "./liquid-funds-card";
+import { FieldAgentTable } from "./field-agent-table";
+import { BranchLiquidityTable } from "./branch-liquidity-table";
+import { CashDenominationTally } from "./cash-denomination-tally";
+import { NpaCards } from "./npa-cards";
+import {
+  branchLiquidity,
+  cashTally,
+  fieldAgents,
+  liquidFunds,
+  npaMetrics,
+  statCards,
+} from "@/lib/mock-data";
+
+// Drop this component onto any page/route. Swap the imported mock data for
+// real data fetched server-side (or via a hook) — every child component is
+// a pure presentational piece that only takes typed props.
+export function MicrofinanceDashboard() {
+  const activeFieldAgents = fieldAgents.filter((a) => a.status !== "Off Duty").length;
+
+  return (
+    <div className="flex flex-col gap-4 p-4 sm:gap-6 sm:p-6">
+      <StatsGrid items={statCards} />
+
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-[380px_1fr]">
+        <LiquidFundsCard data={liquidFunds} />
+        <FieldAgentTable agents={fieldAgents} activeCount={activeFieldAgents} />
+      </div>
+
+      <BranchLiquidityTable branches={branchLiquidity} />
+
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-[1fr_320px]">
+        <CashDenominationTally data={cashTally} />
+        <NpaCards metrics={npaMetrics} />
+      </div>
+    </div>
+  );
+}
+----------------
+// components/dashboard/npa-cards.tsx
+import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import type { NpaMetric } from "@/lib/types";
+
+const TONE_STYLES: Record<NpaMetric["tone"], { icon: React.ElementType; iconWrap: string }> = {
+  danger: { icon: AlertTriangle, iconWrap: "bg-red-50 text-red-600" },
+  success: { icon: CheckCircle2, iconWrap: "bg-emerald-50 text-emerald-600" },
+};
+
+export function NpaCards({ metrics }: { metrics: NpaMetric[] }) {
+  return (
+    <div className="flex flex-col gap-4">
+      {metrics.map((metric) => {
+        const { icon: Icon, iconWrap } = TONE_STYLES[metric.tone];
+        return (
+          <Card key={metric.id} className="shadow-sm">
+            <CardContent className="flex items-start justify-between gap-3 p-4 sm:p-5">
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {metric.label}
+                </span>
+                <span className="text-2xl font-bold tracking-tight">
+                  {metric.value}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {metric.subLabel}
+                </span>
+              </div>
+              <span
+                className={cn(
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                  iconWrap,
+                )}
+              >
+                <Icon className="h-4.5 w-4.5" />
+              </span>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+-----------------
+// components/dashboard/stat-card.tsx
+"use client";
+
+import { AlertTriangle, TrendingUp, Users, Wallet } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import type { StatCardData } from "@/lib/types";
+
+const ACCENT_BORDER: Record<StatCardData["accentColor"], string> = {
+  blue: "border-l-blue-500",
+  green: "border-l-emerald-500",
+  orange: "border-l-orange-500",
+  purple: "border-l-violet-500",
+};
+
+const ICON_WRAPPER_BG: Record<StatCardData["accentColor"], string> = {
+  blue: "bg-blue-50 text-blue-600",
+  green: "bg-emerald-50 text-emerald-600",
+  orange: "bg-orange-50 text-orange-600",
+  purple: "bg-violet-50 text-violet-600",
+};
+
+const ICONS: Record<StatCardData["icon"], React.ElementType> = {
+  wallet: Wallet,
+  "trending-up": TrendingUp,
+  "alert-triangle": AlertTriangle,
+  users: Users,
+};
+
+const BADGE_TONE_CLASS: Record<NonNullable<StatCardData["badge"]>["tone"], string> = {
+  success: "bg-emerald-50 text-emerald-700 hover:bg-emerald-50 border-emerald-200",
+  warning: "bg-amber-50 text-amber-700 hover:bg-amber-50 border-amber-200",
+  neutral: "bg-slate-100 text-slate-700 hover:bg-slate-100 border-slate-200",
+};
+
+export function StatCard({ data }: { data: StatCardData }) {
+  const Icon = ICONS[data.icon];
+
+  return (
+    <Card
+      className={cn(
+        "border-l-4 shadow-sm transition-shadow hover:shadow-md",
+        ACCENT_BORDER[data.accentColor],
+      )}
+    >
+      <CardContent className="flex flex-col gap-3 p-4 sm:p-5">
+        <div className="flex items-start justify-between gap-3">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {data.label}
+          </span>
+          <span
+            className={cn(
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+              ICON_WRAPPER_BG[data.accentColor],
+            )}
+          >
+            <Icon className="h-4.5 w-4.5" />
+          </span>
+        </div>
+
+        <div className="text-2xl font-bold tracking-tight sm:text-3xl">
+          {data.value}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground sm:text-sm">
+          <span>{data.subLabel}</span>
+          {data.badge && (
+            <Badge
+              variant="outline"
+              className={cn("h-5 px-2 text-[11px] font-medium", BADGE_TONE_CLASS[data.badge.tone])}
+            >
+              {data.badge.text}
+            </Badge>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+------------------
+// components/dashboard/stats-grid.tsx
+import { StatCard } from "./stat-card";
+import type { StatCardData } from "@/lib/types";
+
+export function StatsGrid({ items }: { items: StatCardData[] }) {
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {items.map((item) => (
+        <StatCard key={item.id} data={item} />
+      ))}
+    </div>
+  );
+}

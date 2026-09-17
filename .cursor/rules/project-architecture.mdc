@@ -1,0 +1,57 @@
+---
+description: PrioSuite architecture + updated package stack. Always follow when adding screens or scaffolding.
+alwaysApply: true
+---
+
+# PrioSuite / prio_bank — Architecture Rules
+
+Read `AGENTS.md` at the repo root for the full guide (includes full package version table). Follow these rules on every task.
+
+## Feature flow (required)
+
+```
+app/(dashboard)/<domain>/<feature>/page.jsx
+  → container/<domain>/<feature>/index.jsx
+      → Hooks.js + *Apis.js + optional *Reducer.js
+  → components/<domain>/<feature>/index.jsx
+```
+
+- **page**: metadata + mount container only
+- **container**: cookies, hooks, useEffect loads, pass props
+- **Hooks**: form (RHF+yup), API calls, Redux dispatch, business rules
+- **Apis**: `doGetApiCall`/`doPostApiCall` + `endPoints` only
+- **components**: UI only; use `common/formFields`
+
+## Updated packages (required)
+
+Use this stack — do not downgrade or swap stacks unless the user asks:
+
+- `next@^15.2.4` · `react@^18.3.1` · `typescript@5.8.2`
+- `tailwindcss@^4.3.3` · `@tailwindcss/postcss@^4.3.3` · `postcss@^8.5.26`
+- `react-hook-form@^7.52.1` · `@hookform/resolvers@^3.9.0` · `yup@^1.7.1`
+- `@reduxjs/toolkit@^2.11.2` · `react-redux@^9.2.0`
+- `axios@^1.16.0` · `date-fns@^3.6.0` · `react-day-picker@8.10.1` (v8 only)
+- `@tanstack/react-table@^8.19.3` · `react-hot-toast@^2.6.0`
+- Radix via existing `components/ui/*` · `lucide-react` / `react-icons`
+- Charts: `recharts@^3` / `ag-charts-react@^13` when needed
+
+When scaffolding a **new project**, generate `package.json` from `AGENTS.md` package table (same majors).
+
+## New screen checklist
+
+1. Thin `page.jsx`
+2. `container/.../{index,Hooks,*Apis,*Reducer?}`
+3. `components/...` UI
+4. Add URLs in `utils/endPoints.js`
+5. Register reducer in `redux/configureStore.js` if needed
+6. Reuse existing hooks/masters when possible
+7. Use packages from the list above only
+
+## Do not
+
+- Put API/business logic in `app/` pages or presentational components
+- Hardcode API base URLs (use `endPoints.js`)
+- Invent a new folder structure
+- Commit `.env` / secrets
+- Unrelated refactors or unsolicited markdown docs
+- Install old stacks (Next 12/13, React 17, Tailwind 3, Formik, Zustand) instead of this stack
