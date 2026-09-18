@@ -2325,6 +2325,21 @@ const or = {
       noResults: "କୌଣସି ଫଳାଫଳ ନାହିଁ।"
     },
     common: {
+      buttons: {
+        add: "ଯୋଡନ୍ତୁ",
+        edit: "ସମ୍ପାଦନା",
+        update: "ଅପଡେଟ୍",
+        save: "ସେଭ୍",
+        submit: "ଦାଖଲ",
+        cancel: "ବାତିଲ୍",
+        print: "ପ୍ରିଣ୍ଟ",
+        reset: "ରିସେଟ୍",
+        remove: "ହଟାନ୍ତୁ",
+        generate: "ଜେନେରେଟ୍",
+        close: "ବନ୍ଦ",
+        download: "ଡାଉନଲୋଡ୍",
+        next: "ପରବର୍ତ୍ତୀ"
+      },
       add: "ଯୋଡ଼ନ୍ତୁ",
       cash: "ନଗଦ",
       transfer: "ସ୍ଥାନାନ୍ତର",

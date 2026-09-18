@@ -2323,6 +2323,21 @@ const hi = {
       noResults: "कोई परिणाम नहीं।"
     },
     common: {
+      buttons: {
+        add: "जोड़ें",
+        edit: "संपादित करें",
+        update: "अपडेट करें",
+        save: "सहेजें",
+        submit: "जमा करें",
+        cancel: "रद्द करें",
+        print: "प्रिंट",
+        reset: "रीसेट",
+        remove: "हटाएँ",
+        generate: "जनरेट करें",
+        close: "बंद करें",
+        download: "डाउनलोड",
+        next: "आगे"
+      },
       add: "जोड़ें",
       cash: "नकद",
       transfer: "हस्तांतरण",

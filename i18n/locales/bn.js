@@ -2323,6 +2323,21 @@ const bn = {
       noResults: "কোনো ফলাফল নেই।"
     },
     common: {
+      buttons: {
+        add: "যোগ করুন",
+        edit: "সম্পাদনা",
+        update: "আপডেট",
+        save: "সংরক্ষণ",
+        submit: "জমা দিন",
+        cancel: "বাতিল",
+        print: "প্রিন্ট",
+        reset: "রিসেট",
+        remove: "সরান",
+        generate: "জেনারেট",
+        close: "বন্ধ",
+        download: "ডাউনলোড",
+        next: "পরবর্তী"
+      },
       add: "যোগ করুন",
       cash: "নগদ",
       transfer: "স্থানান্তর",

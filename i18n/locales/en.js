@@ -2324,6 +2324,21 @@ const en = {
       noResults: "No results."
     },
     common: {
+      buttons: {
+        add: "Add",
+        edit: "Edit",
+        update: "Update",
+        save: "Save",
+        submit: "Submit",
+        cancel: "Cancel",
+        print: "Print",
+        reset: "Reset",
+        remove: "Remove",
+        generate: "Generate",
+        close: "Close",
+        download: "Download",
+        next: "Next"
+      },
       add: "Add",
       cash: "Cash",
       transfer: "Transfer",
