@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useState } from "react";
 import {
   flexRender,
@@ -38,6 +40,7 @@ const DepositProductTable = ({
   lastPage = 1,
   pageLimit = 10,
 }) => {
+  const { t } = useTranslation();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -46,7 +49,7 @@ const DepositProductTable = ({
   const columns = [
     {
       accessorKey: "serialNo",
-      header: () => <div className="text-left">Serial No</div>,
+      header: () => <div className="text-left">{t("common.serialNo")}</div>,
       cell: ({ row }) => (
         <div className="text-left">
           {(Number(currentPage) - 1) * Number(pageLimit) + Number(row.id) + 1}
@@ -61,7 +64,7 @@ const DepositProductTable = ({
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Product Name
+          {t("master.depositProduct.table.productName")}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
@@ -71,61 +74,61 @@ const DepositProductTable = ({
     },
     {
       accessorKey: "Prd_SH_Name",
-      header: () => <div className="text-left">Short Name</div>,
+      header: () => <div className="text-left">{t("master.depositProduct.table.shortName")}</div>,
       cell: ({ row }) => (
         <div className="text-left">{row.getValue("Prd_SH_Name")}</div>
       ),
     },
     {
       accessorKey: "Prd_Type_Name",
-      header: () => <div className="text-left">Product Type</div>,
+      header: () => <div className="text-left">{t("master.depositProduct.table.productType")}</div>,
       cell: ({ row }) => (
         <div className="text-left">{row.getValue("Prd_Type_Name")}</div>
       ),
     },
     {
       accessorKey: "Dep_Type_Name",
-      header: () => <div className="text-left">Deposit Type</div>,
+      header: () => <div className="text-left">{t("master.depositProduct.table.depositType")}</div>,
       cell: ({ row }) => (
         <div className="text-left">{row.getValue("Dep_Type_Name")}</div>
       ),
     },
     {
       accessorKey: "Interest_Type_Name",
-      header: () => <div className="text-left">Interest Type</div>,
+      header: () => <div className="text-left">{t("master.depositProduct.table.interestType")}</div>,
       cell: ({ row }) => (
         <div className="text-left">{row.getValue("Interest_Type_Name")}</div>
       ),
     },
     {
       accessorKey: "Min_Amount",
-      header: () => <div className="text-left">Min Amt</div>,
+      header: () => <div className="text-left">{t("master.depositProduct.table.minAmt")}</div>,
       cell: ({ row }) => (
         <div className="text-left">{row.getValue("Min_Amount")}</div>
       ),
     },
     {
       accessorKey: "Max_Amount",
-      header: () => <div className="text-left">Max Amt</div>,
+      header: () => <div className="text-left">{t("master.depositProduct.table.maxAmt")}</div>,
       cell: ({ row }) => (
         <div className="text-left">{row.getValue("Max_Amount")}</div>
       ),
     },
     {
       accessorKey: "ROI",
-      header: () => <div className="text-left">ROI</div>,
+      header: () => <div className="text-left">{t("master.depositProduct.table.roi")}</div>,
       cell: ({ row }) => <div className="text-left">{row.getValue("ROI")}</div>,
     },
     {
       accessorKey: "Status",
-      header: () => <div className="text-left">Status</div>,
+      header: () => <div className="text-left">{t("master.depositProduct.table.status")}</div>,
       cell: ({ row }) => (
         <div className="text-left">{row.getValue("Status")}</div>
       ),
     },
     {
       accessorKey: "Id",
-      header: () => <div className="text-center">Actions</div>,
+      header: () => <div className="text-center">{t("common.action")}</div>,
       cell: ({ row }) => (
         <div className="w-full flex justify-center text-center">
           <Button
@@ -133,7 +136,7 @@ const DepositProductTable = ({
             className="flex text-center items-center justify-center gap-3"
             onClick={() => handleEditData(data[row.id])}
           >
-            Edit
+            {t("common.buttons.edit")}
             <FaRegEdit />
           </Button>
         </div>
@@ -217,7 +220,7 @@ const DepositProductTable = ({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("forms.noResults")}
                 </TableCell>
               </TableRow>
             )}
@@ -238,7 +241,7 @@ const DepositProductTable = ({
                   onClick={() => setCurrentPage((prev) => prev - 1)}
                   disabled={currentPage === 1 || loading}
                 >
-                  Previous
+                  {t("forms.previous")}
                 </Button>
               </PaginationItem>
 
@@ -262,7 +265,7 @@ const DepositProductTable = ({
                   onClick={() => setCurrentPage((prev) => prev + 1)}
                   disabled={currentPage === totalPages || loading || totalPages === 0}
                 >
-                  Next
+                  {t("forms.next")}
                 </Button>
               </PaginationItem>
             </PaginationContent>

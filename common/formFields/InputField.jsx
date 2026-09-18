@@ -81,7 +81,7 @@ const InputField = ({
 
         return (
           <FormItem
-            className={cn("flex flex-col w-full gap-1.5", formItemClassName)}
+            className={cn("w-full min-w-0", formItemClassName)}
           >
             {label && (
               <FormLabel className="text-sm font-medium text-foreground">

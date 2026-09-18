@@ -10,6 +10,8 @@ import or from "./locales/or";
 
 const SUPPORTED_LANGS = ["en", "bn", "hi", "or"];
 
+const bundles = { en, bn, hi, or };
+
 export const getStoredLanguage = () => {
   if (typeof window === "undefined") return "en";
   try {
@@ -22,20 +24,28 @@ export const getStoredLanguage = () => {
   return "en";
 };
 
+/** Keep i18n resources in sync when locale modules HMR / change. */
+export const syncI18nResources = () => {
+  Object.entries(bundles).forEach(([lng, bundle]) => {
+    if (bundle?.translation) {
+      i18n.addResourceBundle(lng, "translation", bundle.translation, true, true);
+    }
+  });
+};
+
 if (!i18n.isInitialized) {
   i18n.use(initReactI18next).init({
-    resources: {
-      en,
-      bn,
-      hi,
-      or,
-    },
+    resources: bundles,
     lng: getStoredLanguage(),
     fallbackLng: "en",
     interpolation: {
       escapeValue: false,
     },
+    returnNull: false,
+    parseMissingKeyHandler: undefined,
   });
+} else {
+  syncI18nResources();
 }
 
 export const setAppLanguage = (language) => {
@@ -48,6 +58,7 @@ export const setAppLanguage = (language) => {
       // ignore storage errors
     }
   }
+  syncI18nResources();
   return i18n.changeLanguage(next);
 };
 

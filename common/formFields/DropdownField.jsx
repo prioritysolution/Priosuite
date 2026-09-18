@@ -200,7 +200,7 @@ const DropdownFieldInner = ({
   };
 
   return (
-    <FormItem className="w-full min-w-0">
+    <FormItem className="w-full min-w-0 ">
       {label && (
         <FormLabel className="text-sm font-medium text-foreground">
           {label}

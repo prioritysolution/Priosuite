@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import DropdownField from "@/common/formFields/DropdownField";
 import InputField from "@/common/formFields/InputField";
 import { Button } from "@/components/ui/button";
@@ -15,6 +17,7 @@ const DepositProductForm = ({
   editData,
   onCancel,
 }) => {
+  const { t } = useTranslation();
   const productTypeData = useSelector(
     (state) => state?.depositProduct?.productTypeData,
   );
@@ -39,45 +42,46 @@ const DepositProductForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col gap-5"
+        className="h-full min-h-0 flex flex-col"
         autoComplete="off"
       >
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-3">
           <DropdownField
             control={form.control}
             name="prdType"
-            label="Product Type"
+            label={t("master.depositProduct.fields.productType")}
             options={productTypeData || []}
             optionLabelKey="Option_Value"
-            placeholder="Select product type"
-            searchPlaceholder="Search product type..."
+            placeholder={t("master.depositProduct.placeholders.productType")}
+            searchPlaceholder={t("master.depositProduct.placeholders.searchProductType")}
             isRequired
           />
 
           <DropdownField
             control={form.control}
             name="depType"
-            label="Deposit Type"
+            label={t("master.depositProduct.fields.depositType")}
             options={depTypeData || []}
             optionLabelKey="Option_Value"
-            placeholder="Select deposit type"
-            searchPlaceholder="Search deposit type..."
+            placeholder={t("master.depositProduct.placeholders.depositType")}
+            searchPlaceholder={t("master.depositProduct.placeholders.searchDepositType")}
             isRequired
           />
 
           <InputField
             control={form.control}
             name="productName"
-            label="Product Name"
-            placeholder="Enter product name"
+            label={t("master.depositProduct.fields.productName")}
+            placeholder={t("master.depositProduct.placeholders.productName")}
             isRequired
           />
 
           <InputField
             control={form.control}
             name="prdShName"
-            label="Short Name"
-            placeholder="Enter short name"
+            label={t("master.depositProduct.fields.shortName")}
+            placeholder={t("master.depositProduct.placeholders.shortName")}
             onInput={(e) => {
               if (e.target.value.length > 10) {
                 e.target.value = e.target.value.slice(0, 10);
@@ -89,19 +93,19 @@ const DepositProductForm = ({
           <DropdownField
             control={form.control}
             name="interestType"
-            label="Interest Type"
+            label={t("master.depositProduct.fields.interestType")}
             options={interestTypeData || []}
             optionLabelKey="Option_Value"
-            placeholder="Select interest type"
-            searchPlaceholder="Search interest type..."
+            placeholder={t("master.depositProduct.placeholders.interestType")}
+            searchPlaceholder={t("master.depositProduct.placeholders.searchInterestType")}
             isRequired
           />
 
           <InputField
             control={form.control}
             name="minAmt"
-            label="Minimum Amount"
-            placeholder="Enter minimum amount"
+            label={t("master.depositProduct.fields.minAmount")}
+            placeholder={t("master.depositProduct.placeholders.minAmount")}
             type="number"
             isRequired
           />
@@ -109,8 +113,8 @@ const DepositProductForm = ({
           <InputField
             control={form.control}
             name="maxAmt"
-            label="Maximum Amount"
-            placeholder="Enter maximum amount"
+            label={t("master.depositProduct.fields.maxAmount")}
+            placeholder={t("master.depositProduct.placeholders.maxAmount")}
             type="number"
             isRequired
           />
@@ -118,8 +122,8 @@ const DepositProductForm = ({
           <InputField
             control={form.control}
             name="roi"
-            label="Rate of Interest"
-            placeholder="Enter ROI"
+            label={t("master.depositProduct.fields.roi")}
+            placeholder={t("master.depositProduct.placeholders.roi")}
             type="number"
             isRequired
           />
@@ -127,133 +131,134 @@ const DepositProductForm = ({
           <InputField
             control={form.control}
             name="minDur"
-            label="Minimum Duration"
-            placeholder="Enter minimum duration"
+            label={t("master.depositProduct.fields.minDuration")}
+            placeholder={t("master.depositProduct.placeholders.minDuration")}
             type="number"
           />
 
           <InputField
             control={form.control}
             name="maxDur"
-            label="Maximum Duration"
-            placeholder="Enter maximum duration"
+            label={t("master.depositProduct.fields.maxDuration")}
+            placeholder={t("master.depositProduct.placeholders.maxDuration")}
             type="number"
           />
 
           <DropdownField
             control={form.control}
             name="durUnit"
-            label="Duration Unit"
+            label={t("master.depositProduct.fields.durationUnit")}
             options={durationUnitData || []}
             optionLabelKey="Option_Value"
-            placeholder="Select duration unit"
-            searchPlaceholder="Search duration unit..."
+            placeholder={t("master.depositProduct.placeholders.durationUnit")}
+            searchPlaceholder={t("master.depositProduct.placeholders.searchDurationUnit")}
           />
 
           <InputField
             control={form.control}
             name="lockDays"
-            label="Lock-in Days"
-            placeholder="Enter lock-in days"
+            label={t("master.depositProduct.fields.lockInDays")}
+            placeholder={t("master.depositProduct.placeholders.lockInDays")}
             type="number"
           />
 
           <InputField
             control={form.control}
             name="passbookFees"
-            label="Passbook Fees"
-            placeholder="Enter passbook fees"
+            label={t("master.depositProduct.fields.passbookFees")}
+            placeholder={t("master.depositProduct.placeholders.passbookFees")}
             type="number"
           />
 
           <InputField
             control={form.control}
             name="defaultFine"
-            label="Default Fine"
-            placeholder="Enter default fine"
+            label={t("master.depositProduct.fields.defaultFine")}
+            placeholder={t("master.depositProduct.placeholders.defaultFine")}
             type="number"
           />
 
           <InputField
             control={form.control}
             name="fineOn"
-            label="Fine On"
-            placeholder="Enter fine on"
+            label={t("master.depositProduct.fields.fineOn")}
+            placeholder={t("master.depositProduct.placeholders.fineOn")}
             type="number"
           />
 
           <InputField
             control={form.control}
             name="inOperMonth"
-            label="Inoperative Months"
-            placeholder="Enter inoperative months"
+            label={t("master.depositProduct.fields.inoperativeMonths")}
+            placeholder={t("master.depositProduct.placeholders.inoperativeMonths")}
             type="number"
           />
 
           <InputField
             control={form.control}
             name="inDorMonth"
-            label="Dormant Months"
-            placeholder="Enter dormant months"
+            label={t("master.depositProduct.fields.dormantMonths")}
+            placeholder={t("master.depositProduct.placeholders.dormantMonths")}
             type="number"
           />
 
           <DropdownField
             control={form.control}
             name="memberType"
-            label="Member Type"
+            label={t("master.depositProduct.fields.memberType")}
             options={memberTypeData || []}
             optionLabelKey="Option_Value"
-            placeholder="Select member type"
-            searchPlaceholder="Search member type..."
+            placeholder={t("master.depositProduct.placeholders.memberType")}
+            searchPlaceholder={t("master.depositProduct.placeholders.searchMemberType")}
           />
 
           <DropdownField
             control={form.control}
             name="prnLedg"
-            label="Principal Ledger"
+            label={t("master.depositProduct.fields.principalLedger")}
             options={ledgerData || []}
             optionLabelKey="Ledger_Name"
-            placeholder="Select principal ledger"
-            searchPlaceholder="Search ledger..."
+            placeholder={t("master.depositProduct.placeholders.principalLedger")}
+            searchPlaceholder={t("master.depositProduct.placeholders.searchLedger")}
             isRequired
           />
 
           <DropdownField
             control={form.control}
             name="inttLedg"
-            label="Interest Ledger"
+            label={t("master.depositProduct.fields.interestLedger")}
             options={ledgerData || []}
             optionLabelKey="Ledger_Name"
-            placeholder="Select interest ledger"
-            searchPlaceholder="Search ledger..."
+            placeholder={t("master.depositProduct.placeholders.interestLedger")}
+            searchPlaceholder={t("master.depositProduct.placeholders.searchLedger")}
             isRequired
           />
 
           <DropdownField
             control={form.control}
             name="provLedg"
-            label="Provision Ledger"
+            label={t("master.depositProduct.fields.provisionLedger")}
             options={ledgerData || []}
             optionLabelKey="Ledger_Name"
-            placeholder="Select provision ledger"
-            searchPlaceholder="Search ledger..."
+            placeholder={t("master.depositProduct.placeholders.provisionLedger")}
+            searchPlaceholder={t("master.depositProduct.placeholders.searchLedger")}
             isRequired
           />
 
           <DropdownField
             control={form.control}
             name="fineLedg"
-            label="Fine Ledger"
+            label={t("master.depositProduct.fields.fineLedger")}
             options={ledgerData || []}
             optionLabelKey="Ledger_Name"
-            placeholder="Select fine ledger"
-            searchPlaceholder="Search ledger..."
+            placeholder={t("master.depositProduct.placeholders.fineLedger")}
+            searchPlaceholder={t("master.depositProduct.placeholders.searchLedger")}
             isRequired
           />
         </div>
+        </div>
 
-        <div className="w-full flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-2 border-t border-[#e8eef5]">
+        <div className="shrink-0 w-full flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-[#e8eef5] bg-background px-5 py-4 sm:px-6">
           <Button
             type="button"
             variant="outline"
@@ -261,7 +266,7 @@ const DepositProductForm = ({
             onClick={onCancel}
             disabled={isBusy}
           >
-            Cancel
+            {t("common.buttons.cancel")}
           </Button>
           <Button
             type="submit"
@@ -271,9 +276,9 @@ const DepositProductForm = ({
             {isBusy ? (
               <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
             ) : isEdit ? (
-              "Update"
+              t("common.buttons.update")
             ) : (
-              "Add"
+              t("common.buttons.add")
             )}
           </Button>
         </div>

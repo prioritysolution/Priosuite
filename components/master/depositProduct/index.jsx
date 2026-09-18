@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import {
@@ -27,6 +29,7 @@ const DepositProduct = ({
   lastPage,
   pageLimit,
 }) => {
+  const { t } = useTranslation();
   const depositProductList = useSelector(
     (state) => state?.depositProduct?.depositProductList,
   );
@@ -38,14 +41,14 @@ const DepositProduct = ({
       <div className="h-full w-full flex flex-col border-primary rounded-lg border-[2px] overflow-hidden">
         <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-4 border-b border-border">
           <h2 className="text-lg sm:text-2xl font-semibold text-center sm:text-left">
-            Deposit Product
+            {t("master.depositProduct.title")}
           </h2>
           <Button
             type="button"
             className="px-8 py-5 text-base self-end sm:self-auto"
             onClick={() => setOpenDialouge(true)}
           >
-            Add New
+            {t("master.depositProduct.addNew")}
           </Button>
         </div>
 
@@ -63,23 +66,23 @@ const DepositProduct = ({
       </div>
 
       {openDialouge ? (
-        <Dialog open={openDialouge} onOpenChange={setOpenDialouge}>
+        <Dialog open={openDialouge} >
           <DialogContent
             hideClose
-            className="w-[calc(100vw-1rem)] max-w-5xl h-[min(92dvh,860px)] flex flex-col gap-0 overflow-hidden rounded-2xl border-0 p-0 shadow-[0_20px_50px_rgba(22,58,95,0.18)]"
+            className="!flex !flex-col gap-0 w-[calc(100vw-1rem)] max-w-5xl h-[min(92dvh,860px)] max-h-[92dvh] !overflow-hidden rounded-2xl border-0 p-0 shadow-[0_20px_50px_rgba(22,58,95,0.18)]"
           >
             <DialogHeader className="shrink-0 border-b border-[#e8eef5] bg-[#F7FAFD] px-5 py-4 text-left sm:px-6 sm:py-5">
               <DialogTitle className="text-lg font-semibold text-[#163A5F] sm:text-xl">
-                {isEdit ? "Edit" : "Add"} Deposit Product
+                {isEdit ? t("master.depositProduct.editTitle") : t("master.depositProduct.addTitle")}
               </DialogTitle>
               <DialogDescription className="mt-1 text-[13px] text-[#7A93B0]">
                 {isEdit
-                  ? "Update the selected deposit product details below."
-                  : "Fill in the details to add a new deposit product."}
+                  ? t("master.depositProduct.editDesc")
+                  : t("master.depositProduct.addDesc")}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+            <div className="min-h-0 flex-1 overflow-hidden flex flex-col">
               <DepositProductForm
                 postLoading={postLoading}
                 updateLoading={updateLoading}
