@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -15,6 +16,8 @@ const VillageForm = ({
   blockData,
   onCancel,
 }) => {
+  const { t } = useTranslation();
+
   const isEdit = editData && Object.keys(editData).length > 0;
 
   return (
@@ -27,27 +30,27 @@ const VillageForm = ({
         <InputField
           control={form.control}
           name="name"
-          label="Village Name"
-          placeholder="Enter village name"
+          label={t("master.operationalArea.fields.villageName")}
+          placeholder={t("master.operationalArea.placeholders.villageName")}
           isRequired
         />
         <DropdownField
           control={form.control}
           name="stateId"
-          label="State"
+          label={t("master.operationalArea.fields.state")}
           options={stateData}
           optionLabelKey="State_Name"
-          placeholder="Select state"
-          searchPlaceholder="Search state..."
+          placeholder={t("master.operationalArea.placeholders.state")}
+          searchPlaceholder={t("master.operationalArea.placeholders.searchState")}
         />
         <DropdownField
           control={form.control}
           name="districtId"
-          label="District"
+          label={t("master.operationalArea.fields.district")}
           options={districtData}
           optionLabelKey="Dist_Name"
-          placeholder="Select district"
-          searchPlaceholder="Search district..."
+          placeholder={t("master.operationalArea.placeholders.district")}
+          searchPlaceholder={t("master.operationalArea.placeholders.searchDistrict")}
           disabled={
             !districtData ||
             !(districtData.length > 0) ||
@@ -57,11 +60,11 @@ const VillageForm = ({
         <DropdownField
           control={form.control}
           name="blockId"
-          label="Block"
+          label={t("master.operationalArea.fields.block")}
           options={blockData}
           optionLabelKey="Block_Name"
-          placeholder="Select block"
-          searchPlaceholder="Search block..."
+          placeholder={t("master.operationalArea.placeholders.block")}
+          searchPlaceholder={t("master.operationalArea.placeholders.searchBlock")}
           disabled={
             !blockData ||
             !(blockData.length > 0) ||
@@ -76,7 +79,7 @@ const VillageForm = ({
             onClick={onCancel}
             disabled={postLoading || updateLoading}
           >
-            Cancel
+            {t("common.buttons.cancel")}
           </Button>
           <Button
             type="submit"
@@ -86,9 +89,9 @@ const VillageForm = ({
             {postLoading || updateLoading ? (
               <ClipLoader color="#fff" size={18} speedMultiplier={0.7} />
             ) : isEdit ? (
-              "Update"
+              t("common.buttons.update")
             ) : (
-              "Add"
+              t("common.buttons.add")
             )}
           </Button>
         </div>

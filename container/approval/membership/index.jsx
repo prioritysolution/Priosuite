@@ -25,9 +25,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import SuccessMessage from "@/common/dialog/SuccessMessage"; 
+import SuccessMessage from "@/common/dialog/SuccessMessage";
+import { useTranslation } from "react-i18next"; 
 
 const MembershipApproval = () => {
+  const { t } = useTranslation();
+
   const {
     membershipList,
     loading,
@@ -69,7 +72,7 @@ const MembershipApproval = () => {
       {/* Header & Search */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-lg shadow-sm border">
         <h2 className="text-2xl font-bold text-gray-800 border-l-4 border-primary pl-3">
-          Membership Approval
+          {t("membershipApproval.membershipApproval")}
         </h2>
         <div className="relative w-full md:w-1/3">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -80,7 +83,7 @@ const MembershipApproval = () => {
               paginate(1);
             }}
             className="pl-10 border-primary/20 focus-visible:ring-primary"
-            placeholder="Search particular, voucher..."
+            placeholder={t("membershipApproval.searchPlaceholder")}
           />
         </div>
       </div>
@@ -91,26 +94,28 @@ const MembershipApproval = () => {
             <TableHeader className="bg-primary">
               <TableRow className="hover:bg-primary">
                 <TableHead className="w-[50px] text-white font-bold">
-                  Sl
+                  {t("common.sl")}
                 </TableHead>
                 <TableHead className="text-white font-bold">
-                  Transaction Date
-                </TableHead>
-                <TableHead className="text-white font-bold">Queue No</TableHead>
-                <TableHead className="text-white font-bold">
-                  Particulars
+                  {t("membershipApproval.transactionDate")}
                 </TableHead>
                 <TableHead className="text-white font-bold">
-                  Voucher Type
+                  {t("membershipApproval.queueNo")}
                 </TableHead>
                 <TableHead className="text-white font-bold">
-                  Entered By
+                  {t("membershipApproval.particulars")}
                 </TableHead>
                 <TableHead className="text-white font-bold">
-                  Entered On
+                  {t("membershipApproval.voucherType")}
+                </TableHead>
+                <TableHead className="text-white font-bold">
+                  {t("membershipApproval.enteredBy")}
+                </TableHead>
+                <TableHead className="text-white font-bold">
+                  {t("membershipApproval.enteredOn")}
                 </TableHead>
                 <TableHead className="text-right text-white font-bold text-center">
-                  Action
+                  {t("common.action")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -135,12 +140,12 @@ const MembershipApproval = () => {
                       <TableCell>
                         {formatDate(item.Trans_Date)}
                       </TableCell>
-                      <TableCell>{item.Queue_No || "N/A"}</TableCell>
+                      <TableCell>{item.Queue_No || t("common.notAvailable")}</TableCell>
                       <TableCell
                         className="max-w-[200px] truncate font-medium text-gray-700"
                         title={item.Particular}
                       >
-                        {item.Particular || "N/A"}
+                        {item.Particular || t("common.notAvailable")}
                       </TableCell>
 
                       <TableCell>
@@ -149,11 +154,11 @@ const MembershipApproval = () => {
                             item.Vouch_Type,
                           )}`}
                         >
-                          {item.Vouch_Type || "N/A"}
+                          {item.Vouch_Type || t("common.notAvailable")}
                         </span>
                       </TableCell>
 
-                      <TableCell>{item.Entred_By || "N/A"}</TableCell>
+                      <TableCell>{item.Entred_By || t("common.notAvailable")}</TableCell>
                       <TableCell className="text-xs text-gray-500">
                         {formatDate(item.Entred_On)}
                       </TableCell>
@@ -163,7 +168,7 @@ const MembershipApproval = () => {
                           className="bg-primary hover:bg-primary/90 text-white shadow-sm"
                           onClick={() => handleView(item)}
                         >
-                          <Eye className="w-4 h-4 mr-2" /> View
+                          <Eye className="w-4 h-4 mr-2" /> {t("common.view")}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -177,7 +182,7 @@ const MembershipApproval = () => {
                   >
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Search className="h-8 w-8 text-gray-300" />
-                      <p>No pending approvals found matching your search.</p>
+                      <p>{t("membershipApproval.noPendingApprovals")}</p>
                     </div>
                   </TableCell>
                 </TableRow>

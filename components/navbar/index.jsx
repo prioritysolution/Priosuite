@@ -282,10 +282,13 @@ import {
   MdPerson,
   MdLogout,
   MdSearch,
+  MdLanguage,
 } from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 import getCookieData from "../../utils/getCookieData";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import { setAppLanguage } from "@/i18n";
 import { Skeleton } from "../ui/skeleton";
 import { Form } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
@@ -298,6 +301,13 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import QuickActions from "@/components/dashboard/QuickActions";
+
+const LANGUAGE_OPTIONS = [
+  { code: "en", label: "English", short: "EN" },
+  { code: "bn", label: "Bengali", short: "BN" },
+  { code: "hi", label: "Hindi", short: "HI" },
+  { code: "or", label: "Odia", short: "OR" },
+];
 
 const Navbar = ({
   logoutLoading,
@@ -317,6 +327,14 @@ const Navbar = ({
   const [activeIndex, setActiveIndex] = useState(0);
   const searchWrapRef = useRef(null);
   const router = useRouter();
+  const { i18n } = useTranslation();
+
+  const resolvedLang = (i18n.language || "en").split("-")[0];
+  const currentLang =
+    LANGUAGE_OPTIONS.find((lang) => lang.code === resolvedLang)?.code || "en";
+  const currentLangOption =
+    LANGUAGE_OPTIONS.find((lang) => lang.code === currentLang) ||
+    LANGUAGE_OPTIONS[0];
 
   const query = String(searchValue || "").trim();
   const isSuggestionsOpen = Boolean(showSuggestions && query);
@@ -365,6 +383,10 @@ const Navbar = ({
     } else if (event.key === "Escape") {
       setShowSuggestions?.(false);
     }
+  };
+
+  const handleLanguageChange = (code) => {
+    setAppLanguage(code || "en");
   };
 
   return (
@@ -464,6 +486,47 @@ const Navbar = ({
         </div>
 
         <QuickActions />
+
+        {/* Language switch — default EN */}
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className="outline-none flex-shrink-0"
+            aria-label="Change language"
+          >
+            <div className="flex items-center gap-1 px-1.5 sm:px-2 py-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all duration-150 ease-out cursor-pointer">
+              <MdLanguage className="text-xl" />
+              <span className="text-xs sm:text-sm font-semibold tracking-wide">
+                {mounted ? currentLangOption.short : "EN"}
+              </span>
+              <MdOutlineArrowDropDown className="hidden sm:block text-white/60 text-lg" />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="w-44 border border-gray-200 shadow-xl rounded-xl mt-2 p-1 animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-150 ease-out"
+          >
+            <DropdownMenuLabel className="px-3 py-2 text-xs text-gray-400 font-normal">
+              Language
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="my-1" />
+            {LANGUAGE_OPTIONS.map((lang) => (
+              <DropdownMenuItem
+                key={lang.code}
+                onClick={() => handleLanguageChange(lang.code)}
+                className={`flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer text-sm transition-colors duration-150 ease-out ${
+                  currentLang === lang.code
+                    ? "bg-primary/10 text-primary font-semibold"
+                    : "text-gray-700 hover:bg-primary/8 focus:bg-primary/10"
+                }`}
+              >
+                <span>{lang.label}</span>
+                <span className="text-xs font-semibold tracking-wide">
+                  {lang.short}
+                </span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Notifications */}
         <button

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import DropdownField from "@/common/formFields/DropdownField";
 import InputField from "@/common/formFields/InputField";
@@ -102,6 +104,8 @@ const Repayment = ({
   setShowGuarantorSecurityDialog,
   guarantorSecurityDetails,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -131,7 +135,7 @@ const Repayment = ({
             resetTrigger={resetTrigger}
             showLedger={showLedger}
             handleShowLedger={handleShowLedger}
-            formLabel="Loan Repayment"
+            formLabel={t("loan.loanRepayment")}
             showDateFix={true}
           />
         </div>
@@ -145,9 +149,7 @@ const Repayment = ({
               {visibleBlock && (
                 <>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">
-                      Account Details
-                    </h2>
+                    <h2 className="text-lg text-center font-semibold">{t("loan.accountDetails")}</h2>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
                         <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-5 gap-y-3 ">
@@ -156,10 +158,10 @@ const Repayment = ({
                             name="accountNo"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Account No.</FormLabel>
+                                <FormLabel>{t("loan.accountNo")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter account no."
+                                    placeholder={t("loan.enterAccountNo")}
                                     {...field}
                                     readOnly
                                   />
@@ -174,10 +176,10 @@ const Repayment = ({
                             name="memberName"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Member Name</FormLabel>
+                                <FormLabel>{t("loan.memberName")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter member name"
+                                    placeholder={t("loan.enterMemberName")}
                                     {...field}
                                     readOnly
                                   />
@@ -191,10 +193,10 @@ const Repayment = ({
                             name="gurdianName"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Gurdian Name</FormLabel>
+                                <FormLabel>{t("loan.gurdianName")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter gurdian name"
+                                    placeholder={t("loan.enterGurdianName")}
                                     {...field}
                                     readOnly
                                   />
@@ -209,10 +211,10 @@ const Repayment = ({
                             name="address"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Address</FormLabel>
+                                <FormLabel>{t("loan.address")}</FormLabel>
                                 <FormControl>
                                   <Textarea
-                                    placeholder="Enter address"
+                                    placeholder={t("loan.enterAddress")}
                                     {...field}
                                     className="resize-none"
                                     readOnly
@@ -228,10 +230,10 @@ const Repayment = ({
                             name="mobile"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Mobile No.</FormLabel>
+                                <FormLabel>{t("loan.mobileNo")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter mobile no."
+                                    placeholder={t("loan.enterMobileNo")}
                                     {...field}
                                     readOnly
                                   />
@@ -254,10 +256,10 @@ const Repayment = ({
                             name="accountType"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Account Type</FormLabel>
+                                <FormLabel>{t("loan.accountType")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter account type"
+                                    placeholder={t("loan.enterAccountType")}
                                     readOnly
                                     {...field}
                                   />
@@ -272,10 +274,10 @@ const Repayment = ({
                             name="disburseDate"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Disburse Date</FormLabel>
+                                <FormLabel>{t("loan.disburseDate")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter disburse date"
+                                    placeholder={t("loan.enterDisburseDate")}
                                     readOnly
                                     {...field}
                                   />
@@ -290,10 +292,10 @@ const Repayment = ({
                             name="disburseAmount"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Disburse Amount</FormLabel>
+                                <FormLabel>{t("loan.disburseAmount")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter disburse amount"
+                                    placeholder={t("loan.enterDisburseAmount")}
                                     readOnly
                                     {...field}
                                   />
@@ -308,10 +310,10 @@ const Repayment = ({
                             name="roi"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Rate Of Interest</FormLabel>
+                                <FormLabel>{t("loan.rateOfInterest")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter rate of interest"
+                                    placeholder={t("loan.enterRateOfInterest")}
                                     readOnly
                                     {...field}
                                   />
@@ -326,10 +328,10 @@ const Repayment = ({
                             name="finalRepayDate"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Final Repay Date</FormLabel>
+                                <FormLabel>{t("loan.finalRepayDate")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter final repay date"
+                                    placeholder={t("loan.enterFinalRepayDate")}
                                     readOnly
                                     {...field}
                                   />
@@ -344,10 +346,10 @@ const Repayment = ({
                             name="repayMode"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Repay Mode</FormLabel>
+                                <FormLabel>{t("loan.repayMode")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter repay mode"
+                                    placeholder={t("loan.enterRepayMode")}
                                     readOnly
                                     {...field}
                                   />
@@ -362,10 +364,10 @@ const Repayment = ({
                             name="installmentAmount"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Installment Amount</FormLabel>
+                                <FormLabel>{t("loan.installmentAmount")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter installment amount"
+                                    placeholder={t("loan.enterInstallmentAmount")}
                                     readOnly
                                     {...field}
                                   />
@@ -380,10 +382,10 @@ const Repayment = ({
                             name="lastRepayDate"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Last Repay Date</FormLabel>
+                                <FormLabel>{t("loan.lastRepayDate")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter last repay date"
+                                    placeholder={t("loan.enterLastRepayDate")}
                                     readOnly
                                     {...field}
                                   />
@@ -397,10 +399,10 @@ const Repayment = ({
                             name="lastRepayPrincipal"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Last Repay Principal</FormLabel>
+                                <FormLabel>{t("loan.lastRepayPrincipal")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter last repay principal"
+                                    placeholder={t("loan.enterLastRepayPrincipal")}
                                     readOnly
                                     {...field}
                                   />
@@ -414,10 +416,10 @@ const Repayment = ({
                             name="LastRepayInterest"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Last Repay Interest</FormLabel>
+                                <FormLabel>{t("loan.lastRepayInterest")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter last repay interest"
+                                    placeholder={t("loan.enterLastRepayInterest")}
                                     readOnly
                                     {...field}
                                   />
@@ -432,10 +434,10 @@ const Repayment = ({
                             name="currentBalance"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Outstanding Balance</FormLabel>
+                                <FormLabel>{t("loan.outstandingBalance")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter outstanding balance"
+                                    placeholder={t("loan.enterOutstandingBalance")}
                                     readOnly
                                     {...field}
                                   />
@@ -451,10 +453,10 @@ const Repayment = ({
                             name="currentDays"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Current Days</FormLabel>
+                                <FormLabel>{t("loan.currentDays")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter current days"
+                                    placeholder={t("loan.enterCurrentDays")}
                                     readOnly
                                     {...field}
                                   />
@@ -469,10 +471,10 @@ const Repayment = ({
                             name="overdueDays"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Overdue Days</FormLabel>
+                                <FormLabel>{t("loan.overdueDays")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter overdue days"
+                                    placeholder={t("loan.enterOverdueDays")}
                                     readOnly
                                     {...field}
                                   />
@@ -487,10 +489,10 @@ const Repayment = ({
                             name="currentAmount"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Current Amount</FormLabel>
+                                <FormLabel>{t("loan.currentAmount")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter current amount"
+                                    placeholder={t("loan.enterCurrentAmount")}
                                     readOnly
                                     {...field}
                                   />
@@ -505,10 +507,10 @@ const Repayment = ({
                             name="overdueAmount"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Overdue Amount</FormLabel>
+                                <FormLabel>{t("loan.overdueAmount")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter overdue amount"
+                                    placeholder={t("loan.enterOverdueAmount")}
                                     readOnly
                                     {...field}
                                   />
@@ -523,10 +525,10 @@ const Repayment = ({
                             name="currentInterest"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Current Interest</FormLabel>
+                                <FormLabel>{t("loan.currentInterest")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter current interest"
+                                    placeholder={t("loan.enterCurrentInterest")}
                                     readOnly
                                     {...field}
                                   />
@@ -541,10 +543,10 @@ const Repayment = ({
                             name="overdueInterest"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Overdue Interest</FormLabel>
+                                <FormLabel>{t("loan.overdueInterest")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter overdue interest"
+                                    placeholder={t("loan.enterOverdueInterest")}
                                     readOnly
                                     {...field}
                                   />
@@ -559,10 +561,10 @@ const Repayment = ({
                             name="prevDueInterest"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Previous Due Interest</FormLabel>
+                                <FormLabel>{t("loan.previousDueInterest")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter previous due interest"
+                                    placeholder={t("loan.enterPreviousDueInterest")}
                                     readOnly
                                     {...field}
                                   />
@@ -577,10 +579,10 @@ const Repayment = ({
                             name="totalInterest"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Total Interest</FormLabel>
+                                <FormLabel>{t("loan.totalInterest")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter total interest"
+                                    placeholder={t("loan.enterTotalInterest")}
                                     readOnly
                                     {...field}
                                   />
@@ -595,10 +597,10 @@ const Repayment = ({
                             name="demandPrincipal"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Demand Principal</FormLabel>
+                                <FormLabel>{t("loan.demandPrincipal")}</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Enter demand principal"
+                                    placeholder={t("loan.enterDemandPrincipal")}
                                     readOnly
                                     {...field}
                                   />
@@ -612,17 +614,15 @@ const Repayment = ({
                     </div>
                   </div>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">
-                      Transaction Details
-                    </h2>
+                    <h2 className="text-lg text-center font-semibold">{t("loan.transactionDetails")}</h2>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className="w-full flex flex-col gap-5">
                         <div className="w-full flex flex-col gap-3">
                           <InputField
                             control={form.control}
                             name="principalAmount"
-                            label="Principal"
-                            placeholder="Enter principal amount"
+                            label={t("loan.principal")}
+                            placeholder={t("loan.enterPrincipalAmount")}
                             type="number"
                             // isBlurUpdate={"true"}
                             // readOnly
@@ -632,8 +632,8 @@ const Repayment = ({
                           <InputField
                             control={form.control}
                             name="interestAmount"
-                            label="Interest"
-                            placeholder="Enter interest amount"
+                            label={t("loan.interest")}
+                            placeholder={t("loan.enterInterestAmount")}
                             type="number"
                             // isBlurUpdate={"true"}
                             // readOnly
@@ -643,8 +643,8 @@ const Repayment = ({
                           <InputField
                             control={form.control}
                             name="totalAmount"
-                            label="Total"
-                            placeholder="Enter total amount"
+                            label={t("loan.total")}
+                            placeholder={t("loan.enterTotalAmount")}
                             type="number"
                             formItemClassName="grid grid-cols-[3fr_7fr] items-center gap-2 space-y-0"
                           />
@@ -656,7 +656,7 @@ const Repayment = ({
                               <FormItem>
                                 <FormControl>
                                   <Textarea
-                                    placeholder="Total amount in words"
+                                    placeholder={t("loan.totalAmountInWords")}
                                     className="text-red-500 text-base resize-none"
                                     readOnly
                                     {...field}
@@ -683,25 +683,19 @@ const Repayment = ({
                                       <FormControl>
                                         <RadioGroupItem value="cash" />
                                       </FormControl>
-                                      <FormLabel className="font-normal">
-                                        Cash
-                                      </FormLabel>
+                                      <FormLabel className="font-normal">{t("loan.cash")}</FormLabel>
                                     </FormItem>
                                     <FormItem className="flex items-center space-x-3 space-y-0">
                                       <FormControl>
                                         <RadioGroupItem value="bank" />
                                       </FormControl>
-                                      <FormLabel className="font-normal">
-                                        Bank
-                                      </FormLabel>
+                                      <FormLabel className="font-normal">{t("loan.bank")}</FormLabel>
                                     </FormItem>
                                     <FormItem className="flex items-center space-x-3 space-y-0">
                                       <FormControl>
                                         <RadioGroupItem value="savings" />
                                       </FormControl>
-                                      <FormLabel className="font-normal">
-                                        Savings
-                                      </FormLabel>
+                                      <FormLabel className="font-normal">{t("loan.savings")}</FormLabel>
                                     </FormItem>
                                   </RadioGroup>
                                 </FormControl>
@@ -713,7 +707,7 @@ const Repayment = ({
                           <InputField
                             control={form.control}
                             name="refVouchNo"
-                            placeholder="Enter ref. vouch no."
+                            placeholder={t("loan.enterRefVouchNo")}
                           />
                           {transMode === "cash" ? (
                             isActiveDenom ? (
@@ -743,13 +737,13 @@ const Repayment = ({
                               name="bank"
                               render={({ field }) => (
                                 <DropdownField
-                                  label="Bank"
+                                  label={t("loan.bank")}
                                   value={field.value}
                                   onChange={field.onChange}
                                   options={bankAccountData}
                                   optionLabelKey="Bank_Name" // Specify the key for label
-                                  placeholder="Select bank"
-                                  searchPlaceholder="Search bank..."
+                                  placeholder={t("loan.selectBank")}
+                                  searchPlaceholder={t("loan.searchBank")}
                                 />
                               )}
                             />
@@ -760,7 +754,7 @@ const Repayment = ({
                                 name="savingsAccountType"
                                 render={({ field }) => (
                                   <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full">
-                                    <FormLabel>Account Type</FormLabel>
+                                    <FormLabel>{t("loan.accountType")}</FormLabel>
                                     <FormControl>
                                       <RadioGroup
                                         onValueChange={field.onChange}
@@ -771,17 +765,13 @@ const Repayment = ({
                                           <FormControl>
                                             <RadioGroupItem value="own" />
                                           </FormControl>
-                                          <FormLabel className="font-normal">
-                                            Own Account
-                                          </FormLabel>
+                                          <FormLabel className="font-normal">{t("loan.ownAccount")}</FormLabel>
                                         </FormItem>
                                         <FormItem className="flex items-center space-x-3 space-y-0">
                                           <FormControl>
                                             <RadioGroupItem value="other" />
                                           </FormControl>
-                                          <FormLabel className="font-normal">
-                                            Other Account
-                                          </FormLabel>
+                                          <FormLabel className="font-normal">{t("loan.otherAccount")}</FormLabel>
                                         </FormItem>
                                       </RadioGroup>
                                     </FormControl>
@@ -800,8 +790,8 @@ const Repayment = ({
                                     <InputField
                                       control={form.control}
                                       name="savingsAccountNo"
-                                      label="Account No."
-                                      placeholder="Enter account no."
+                                      label={t("loan.accountNo")}
+                                      placeholder={t("loan.enterAccountNo")}
                                       type="number"
                                       readOnly
                                       endContent={
@@ -825,7 +815,7 @@ const Repayment = ({
                                     <DialogHeader
                                       className={`w-full flex items-center justify-center`}
                                     >
-                                      <DialogTitle>Search Account</DialogTitle>
+                                      <DialogTitle>{t("loan.searchAccount")}</DialogTitle>
                                     </DialogHeader>
                                     <div className="w-full overflow-y-scroll">
                                       <div className="w-full ">
@@ -856,9 +846,9 @@ const Repayment = ({
                                             <InputField
                                               control={form.control}
                                               name="dialougeMemberNo"
-                                              label="Member No."
+                                              label={t("loan.memberNo2")}
                                               autoComplete="off"
-                                              placeholder="Search by enter member no."
+                                              placeholder={t("loan.searchByEnterMemberNo")}
                                               formItemClassName="w-full"
                                             />
                                             <Button
@@ -866,9 +856,7 @@ const Repayment = ({
                                               onClick={
                                                 handleSearchAccountListByMemberNo
                                               }
-                                            >
-                                              Search
-                                            </Button>
+                                            >{t("loan.search")}</Button>
                                           </TabsContent>
                                           <TabsContent
                                             value="name"
@@ -877,9 +865,9 @@ const Repayment = ({
                                             <InputField
                                               control={form.control}
                                               name="dialougeAccountName"
-                                              label="Name"
+                                              label={t("loan.name")}
                                               autoComplete="off"
-                                              placeholder="Search by enter name"
+                                              placeholder={t("loan.searchByEnterName")}
                                               formItemClassName="w-full"
                                             />
                                             <Button
@@ -887,9 +875,7 @@ const Repayment = ({
                                               onClick={
                                                 handleSearchAccountListByName
                                               }
-                                            >
-                                              Search
-                                            </Button>
+                                            >{t("loan.search")}</Button>
                                           </TabsContent>
                                         </Tabs>
                                       </div>
@@ -915,13 +901,13 @@ const Repayment = ({
                                   name="savings"
                                   render={({ field }) => (
                                     <DropdownField
-                                      label="Savings"
+                                      label={t("loan.savings")}
                                       value={field.value}
                                       onChange={field.onChange}
                                       options={savingsAccountData}
                                       optionLabelKey="Account_No" // Specify the key for label
-                                      placeholder="Select savings"
-                                      searchPlaceholder="Search savings..."
+                                      placeholder={t("loan.selectSavings")}
+                                      searchPlaceholder={t("loan.searchSavings")}
                                     />
                                   )}
                                 />
@@ -932,8 +918,8 @@ const Repayment = ({
                                 <InputField
                                   control={form.control}
                                   name="savingsName"
-                                  label="Account Name"
-                                  placeholder="Enter name"
+                                  label={t("loan.accountName")}
+                                  placeholder={t("loan.enterName")}
                                   readOnly
                                   formItemClassName="w-full"
                                 />
@@ -946,8 +932,8 @@ const Repayment = ({
                                 <InputField
                                   control={form.control}
                                   name="savingsBalance"
-                                  label="Account Balance"
-                                  placeholder="Enter balance"
+                                  label={t("loan.accountBalance")}
+                                  placeholder={t("loan.enterBalance")}
                                   readOnly
                                   formItemClassName="w-full"
                                 />
@@ -961,8 +947,8 @@ const Repayment = ({
                                 <InputField
                                   control={form.control}
                                   name="savingsAccountName"
-                                  label="Name"
-                                  placeholder="Enter name"
+                                  label={t("loan.name")}
+                                  placeholder={t("loan.enterName")}
                                   displayValue={savingsAccountFullName}
                                   readOnly
                                 />
@@ -976,8 +962,8 @@ const Repayment = ({
                                 <InputField
                                   control={form.control}
                                   name="savingsAccountBalance"
-                                  label="Balance"
-                                  placeholder="Enter balance"
+                                  label={t("loan.balance")}
+                                  placeholder={t("loan.enterBalance")}
                                   displayValue={savingsAccountBalance}
                                   readOnly
                                 />
@@ -1013,7 +999,7 @@ const Repayment = ({
                               speedMultiplier={0.7}
                             />
                           ) : (
-                            "Save"
+                            t("loan.save")
                           )}
                         </Button>
                       </div>
@@ -1032,37 +1018,23 @@ const Repayment = ({
       >
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px] max-h-[90dvh]">
           <DialogHeader className={`w-full flex items-center justify-center`}>
-            <DialogTitle>Guarantor / Security Details</DialogTitle>
+            <DialogTitle>{t("loan.guarantorSecurityDetails")}</DialogTitle>
           </DialogHeader>
           <div className="w-full flex flex-col gap-5 overflow-y-scroll">
             {guarantorSecurityDetails?.SecurityDetails &&
             guarantorSecurityDetails?.SecurityDetails?.length > 0 ? (
               <div className="w-full">
-                <h3 className="w-full text-center ">Security Details</h3>
+                <h3 className="w-full text-center ">{t("loan.securityDetails")}</h3>
                 <Table className="border">
                   <TableHeader>
                     <TableRow>
-                      <TableHead align="center" className="text-center">
-                        Sl. No.
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        Security Type
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        Certificate Type
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        Certificate No
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        Issue Date
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        Maturity Date
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        Deposit Balance
-                      </TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.slNoDot")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.securityType")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.certificateType")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.certificateNo")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.issueDate")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.maturityDate")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.depositBalance")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -1104,25 +1076,15 @@ const Repayment = ({
             {guarantorSecurityDetails?.GurrantorDetails &&
             guarantorSecurityDetails?.GurrantorDetails?.length > 0 ? (
               <div className="w-full">
-                <h3 className="w-full text-center ">Guarantor Details</h3>
+                <h3 className="w-full text-center ">{t("loan.guarantorDetails")}</h3>
                 <Table className="border">
                   <TableHeader>
                     <TableRow>
-                      <TableHead align="center" className="text-center">
-                        Sl. No.
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        Guarantor Name
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        Guardian Name
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        Member No.
-                      </TableHead>
-                      <TableHead align="center" className="text-center">
-                        CIF. No.
-                      </TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.slNoDot")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.guarantorName")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.guardianName")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.memberNo2")}</TableHead>
+                      <TableHead align="center" className="text-center">{t("loan.cIFNo2")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

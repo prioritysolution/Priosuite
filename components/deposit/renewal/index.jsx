@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
@@ -36,6 +38,8 @@ const Renewal = ({
   checkDepositDurationMessage,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
+
   const durationTypeData = useSelector(
     (state) => state?.openDepositAccount?.durationTypeData,
   );
@@ -58,7 +62,7 @@ const Renewal = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        {/* <h3 className="text-2xl font-semibold ">Renewal</h3> */}
+        {/* <h3 className="text-2xl font-semibold ">{t("deposit.renewal.title")}</h3> */}
 
         <ScrollArea className="w-full h-full px-2 ">
           <div className="w-full mb-10">
@@ -67,7 +71,7 @@ const Renewal = ({
               loading={getRenewalLoading}
               resetTrigger={resetTrigger}
               allowAlphanumeric
-              formLabel="Renewal"
+              formLabel={t("deposit.renewal.title")}
               operateProductData={operateProductData}
               showProduct={true}
             />
@@ -81,7 +85,7 @@ const Renewal = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Basic Info Block
+                    {t("deposit.sections.basicInfo")}
                   </h3>
                   {getRenewalLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -100,83 +104,83 @@ const Renewal = ({
                       <InputField
                         control={form.control}
                         name="memberNo"
-                        label="Member No."
-                        placeholder="Enter member no."
+                        label={t("deposit.fields.memberNo")}
+                        placeholder={t("deposit.placeholders.memberNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="cifNo"
-                        label="CIF No."
-                        placeholder="Enter cif no."
+                        label={t("deposit.fields.cifNo")}
+                        placeholder={t("deposit.placeholders.cifNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="refAcNo"
-                        label="Manual / REF. Account No."
-                        placeholder="Enter manual / ref. account no."
+                        label={t("deposit.fields.manualRefAccountNo")}
+                        placeholder={t("deposit.placeholders.manualRefAccountNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="memberName"
-                        label="Member Name"
-                        placeholder="Enter member name"
+                        label={t("deposit.fields.memberName")}
+                        placeholder={t("deposit.placeholders.memberName")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="gurdianName"
-                        label="Gurdian Name"
-                        placeholder="Enter gurdian name"
+                        label={t("deposit.fields.guardianName")}
+                        placeholder={t("deposit.placeholders.guardianName")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="mobile"
-                        label="Mobile No."
-                        placeholder="Enter mobile no."
+                        label={t("deposit.fields.mobileNo")}
+                        placeholder={t("deposit.placeholders.mobileNo")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="panNo"
-                        label="Pan No."
-                        placeholder="Enter pan no."
+                        label={t("deposit.fields.panNo")}
+                        placeholder={t("deposit.placeholders.panNo")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="depositAmount"
-                        label="Deposit Amount"
-                        placeholder="Enter deposit amount"
+                        label={t("deposit.fields.depositAmount")}
+                        placeholder={t("deposit.placeholders.depositAmount")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="rateOfInterest"
-                        label="Rate Of Interest"
-                        placeholder="Enter rate of interest"
+                        label={t("deposit.fields.rateOfInterest")}
+                        placeholder={t("deposit.placeholders.rateOfInterest")}
                         readOnly
                       />
 
                       <DatePickerField
                         control={form.control}
                         name="maturityDate"
-                        label="Maturity Date"
+                        label={t("deposit.fields.maturityDate")}
                         disabled
                       />
 
                       <InputField
                         control={form.control}
                         name="maturityAmount"
-                        label="Maturity Amount"
-                        placeholder="Enter maturity amount"
+                        label={t("deposit.fields.maturityAmount")}
+                        placeholder={t("deposit.placeholders.maturityAmount")}
                         readOnly
                       />
                     </div>
@@ -187,7 +191,7 @@ const Renewal = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Renewal Info Block
+                    {t("deposit.sections.renewalInfo")}
                   </h3>
                   {getRenewalLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -209,7 +213,7 @@ const Renewal = ({
                         name="renewalType"
                         render={({ field }) => (
                           <FormItem className="flex flex-col space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full ">
-                            <FormLabel>Select renewal type</FormLabel>
+                            <FormLabel>{t("deposit.renewal.selectRenewalType")}</FormLabel>
                             <FormControl>
                               <RadioGroup
                                 onValueChange={field.onChange}
@@ -242,30 +246,30 @@ const Renewal = ({
                       <DatePickerField
                         control={form.control}
                         name="renewalDate"
-                        label="Renewal Date"
+                        label={t("deposit.fields.renewalDate")}
                         disabled
                       />
 
                       <DatePickerField
                         control={form.control}
                         name="effectDate"
-                        label="Effect Date"
+                        label={t("deposit.fields.effectDate")}
                         disabled
                       />
 
                       <InputField
                         control={form.control}
                         name="depositBalance"
-                        label="Deposit Amount"
-                        placeholder="Enter deposit amount"
+                        label={t("deposit.fields.depositAmount")}
+                        placeholder={t("deposit.placeholders.depositAmount")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="duration"
-                        label="Duration"
-                        placeholder="Enter duration"
+                        label={t("deposit.fields.duration")}
+                        placeholder={t("deposit.placeholders.duration")}
                         type="number"
                         hint={checkDepositDurationMessage}
                         hintClassName="text-destructive text-sm"
@@ -274,18 +278,18 @@ const Renewal = ({
                       <DropdownField
                         control={form.control}
                         name="durationUnit"
-                        label="Duration Unit"
+                        label={t("deposit.fields.durationUnit")}
                         options={durationTypeData}
                         optionLabelKey="Option_Value"
-                        placeholder="Select duration unit"
-                        searchPlaceholder="Search duration unit..."
+                        placeholder={t("deposit.placeholders.selectDurationUnit")}
+                        searchPlaceholder={t("deposit.placeholders.searchDurationUnit")}
                       />
 
                       <InputField
                         control={form.control}
                         name="newRateOfInterest"
-                        label="Rate Of Interest"
-                        placeholder="Enter rate of interest"
+                        label={t("deposit.fields.rateOfInterest")}
+                        placeholder={t("deposit.placeholders.rateOfInterest")}
                         className="w-full"
                         containerClassName="w-full"
                         readOnly
@@ -294,15 +298,15 @@ const Renewal = ({
                       <DatePickerField
                         control={form.control}
                         name="newMaturityDate"
-                        label="Maturity Date"
+                        label={t("deposit.fields.maturityDate")}
                         disabled
                       />
 
                       <InputField
                         control={form.control}
                         name="newMaturityAmount"
-                        label="Maturity Amount"
-                        placeholder="Enter maturity amount"
+                        label={t("deposit.fields.maturityAmount")}
+                        placeholder={t("deposit.placeholders.maturityAmount")}
                         readOnly
                       />
                     </div>
@@ -314,7 +318,7 @@ const Renewal = ({
                 form.getValues("renewalType") === "principal" && (
                   <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:p-5 gap-5">
                     <h3 className="w-full text-center text-xl font-semibold">
-                      Transanction Block
+                      {t("deposit.sections.transaction")}
                     </h3>
                     {getRenewalLoading ? (
                       <div className="w-full border border-primary rounded-md p-5 mb-5 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -338,22 +342,22 @@ const Renewal = ({
                         <InputField
                           control={form.control}
                           name="payoutAmount"
-                          label="Payout Amount"
-                          placeholder="Enter payout amount"
+                          label={t("deposit.fields.payoutAmount")}
+                          placeholder={t("deposit.placeholders.payoutAmount")}
                           readOnly
                         />
                         <InputField
                           control={form.control}
                           name="refVouchNo"
-                          label="Ref. Vouch No."
-                          placeholder="Enter ref. vouch no."
+                          label={t("deposit.fields.refVoucherNo")}
+                          placeholder={t("deposit.placeholders.refVoucherNo")}
                         />
                         <FormField
                           control={form.control}
                           name="transMode"
                           render={({ field }) => (
                             <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full lg:w-fit col-span-3">
-                              <FormLabel>Select transanction mode</FormLabel>
+                              <FormLabel>{t("deposit.common.selectTransanctionMode")}</FormLabel>
                               <FormControl>
                                 <RadioGroup
                                   onValueChange={field.onChange}
@@ -389,11 +393,11 @@ const Renewal = ({
                         <DropdownField
                           control={form.control}
                           name="bank"
-                          label="Bank"
+                          label={t("deposit.fields.bank")}
                           options={bankAccountData}
                           optionLabelKey="Bank_Name"
-                          placeholder="Select bank"
-                          searchPlaceholder="Search bank..."
+                          placeholder={t("deposit.placeholders.selectBank")}
+                          searchPlaceholder={t("deposit.placeholders.searchBank")}
                         />
                       </div>
                     ) : (
@@ -401,11 +405,11 @@ const Renewal = ({
                         <DropdownField
                           control={form.control}
                           name="savings"
-                          label="Savings"
+                          label={t("deposit.fields.savings")}
                           options={savingsAccountData}
                           optionLabelKey="Account_No"
-                          placeholder="Select savings"
-                          searchPlaceholder="Search savings..."
+                          placeholder={t("deposit.placeholders.selectSavings")}
+                          searchPlaceholder={t("deposit.placeholders.searchSavings")}
                         />
                       </div>
                     )}

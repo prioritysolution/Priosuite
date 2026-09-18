@@ -10,23 +10,26 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { Fragment } from "react";
+import { useTranslation } from "react-i18next";
 
 const DetailedListTable = ({ loading, tableData, handleShowLedger }) => {
+  const { t } = useTranslation();
+
   return (
     <Table>
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className="text-center">Sl No.</TableHead>
-          <TableHead className="">Opening Date</TableHead>
-          <TableHead className="">Product Name</TableHead>
-          <TableHead className="">Bank Name</TableHead>
-          <TableHead className="">Account No.</TableHead>
-          <TableHead className="">Disburse</TableHead>
-          <TableHead className="">Prn. Refund</TableHead>
-          <TableHead className="">Intt. Refund</TableHead>
-          <TableHead className="">Outs. Bal</TableHead>
-          <TableHead className="">Provision Intt.</TableHead>
-          <TableHead className="">Due Date</TableHead>
+          <TableHead className="text-center">{t("borrowings.slNo")}</TableHead>
+          <TableHead className="">{t("borrowings.openingDate")}</TableHead>
+          <TableHead className="">{t("borrowings.productName")}</TableHead>
+          <TableHead className="">{t("common.bankName")}</TableHead>
+          <TableHead className="">{t("common.accountNo")}</TableHead>
+          <TableHead className="">{t("borrowings.disburse")}</TableHead>
+          <TableHead className="">{t("borrowings.prnRefund")}</TableHead>
+          <TableHead className="">{t("borrowings.inttRefund")}</TableHead>
+          <TableHead className="">{t("borrowings.outsBal")}</TableHead>
+          <TableHead className="">{t("borrowings.provisionIntt")}</TableHead>
+          <TableHead className="">{t("common.dueDate")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">
@@ -49,7 +52,7 @@ const DetailedListTable = ({ loading, tableData, handleShowLedger }) => {
                   {/* Subheader for Group */}
                   <TableRow className="bg-gray-50">
                     <TableCell colSpan={11} className="font-medium text-center">
-                      GL - {group.transactions[0].Ledger_Name}
+                      {t("common.gl")} - {group.transactions[0].Ledger_Name}
                     </TableCell>
                   </TableRow>
                   {/* Rows for Transactions */}
@@ -84,7 +87,7 @@ const DetailedListTable = ({ loading, tableData, handleShowLedger }) => {
                   {/* Subtotal Row */}
                   <TableRow className="bg-gray-50 font-medium">
                     <TableCell colSpan={5} className="text-right">
-                      Subtotal
+                      {t("common.subtotal")}
                     </TableCell>
                     <TableCell>{group.subtotalDisburse.toFixed(2)}</TableCell>
                     <TableCell>{group.subtotalPrnRefund.toFixed(2)}</TableCell>
@@ -101,7 +104,7 @@ const DetailedListTable = ({ loading, tableData, handleShowLedger }) => {
         {tableData.some((group) => group.isGrandTotal) && (
           <TableRow className="bg-gray-100">
             <TableCell colSpan={5} className="font-medium text-right">
-              Grand Total
+              {t("common.grandTotal")}
             </TableCell>
             <TableCell className="font-medium">
               {tableData

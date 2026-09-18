@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Ban, CheckCircle2, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import Spinner from "@/common/loader/Spinner";
+import { useTranslation } from "react-i18next";
 
 const BorrowingsActionModal = ({
   open,
@@ -23,6 +24,7 @@ const BorrowingsActionModal = ({
   onApproveReject,
   loading,
 }) => {
+  const { t } = useTranslation();
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectRemarks, setRejectRemarks] = useState("");
 
@@ -33,7 +35,7 @@ const BorrowingsActionModal = ({
 
   const handleRejectConfirm = () => {
     if (!rejectRemarks.trim()) {
-      toast.error("Please enter remarks for rejection.");
+      toast.error(t("borrowingsApproval.remarksRequired"));
       return;
     }
     onApproveReject(2, rejectRemarks);
@@ -71,11 +73,12 @@ const BorrowingsActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-2xl font-bold text-gray-800 tracking-tight">
-                Borrowings Approval
+                {t("borrowingsApproval.borrowingsApproval")}
               </DialogTitle>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span className="font-medium">
-                  Queue No: {selectedApplication.Queue_No || "N/A"}
+                  {t("common.queueNo")}:{" "}
+                  {selectedApplication.Queue_No || "N/A"}
                 </span>
                 <span className="h-4 w-px bg-gray-300" />
                 <span className="font-semibold text-primary">
@@ -92,25 +95,33 @@ const BorrowingsActionModal = ({
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 p-6 rounded-2xl border border-gray-200 bg-white shadow-sm">
-                {renderField("Transaction Date", formatDate(selectedApplication.Trans_Date))}
-                {renderField("Transaction Type", selectedApplication.Type)}
-                {renderField("Borrowings Type", selectedApplication.Borrow_Type)}
-                {renderField("Product Name", selectedApplication.Product_Name)}
-                {renderField("Bank Name", selectedApplication.Bank_Name)}
-                {renderField("Account No", selectedApplication.Account_No)}
-                {renderField("Repayment Mode", selectedApplication.Repay_Mode)}
+                {renderField(t("common.transactionDate"), formatDate(selectedApplication.Trans_Date))}
+                {renderField(t("common.transactionType"), selectedApplication.Type)}
+                {renderField(t("borrowingsApproval.borrowingsType"), selectedApplication.Borrow_Type)}
+                {renderField(t("borrowingsApproval.productName"), selectedApplication.Product_Name)}
+                {renderField(t("common.bankName"), selectedApplication.Bank_Name)}
+                {renderField(t("common.accountNo"), selectedApplication.Account_No)}
+                {renderField(t("borrowingsApproval.repaymentMode"), selectedApplication.Repay_Mode)}
 
-                {isDisbursement && renderField("Disburse Amount", selectedApplication.Prn_Amount)}
+                {isDisbursement &&
+                  renderField(
+                    t("borrowingsApproval.disburseAmount"),
+                    selectedApplication.Prn_Amount,
+                  )}
 
                 {isRepayment && (
                   <>
-                    {renderField("Principal", selectedApplication.Prn_Amount)}
-                    {renderField("Interest", selectedApplication.Intt_Amount || selectedApplication.inter)}
+                    {renderField(t("common.principal"), selectedApplication.Prn_Amount)}
+                    {renderField(
+                      t("common.interest"),
+                      selectedApplication.Intt_Amount ||
+                        selectedApplication.inter,
+                    )}
                   </>
                 )}
 
-                {renderField("Total Amount", selectedApplication.Amount)}
-                {renderField("Transaction Mode", selectedApplication.Trans_Mode)}
+                {renderField(t("common.totalAmount"), selectedApplication.Amount)}
+                {renderField(t("common.transactionMode"), selectedApplication.Trans_Mode)}
               </div>
             )}
           </div>
@@ -122,14 +133,14 @@ const BorrowingsActionModal = ({
                 onClick={() => setShowRejectModal(true)}
                 disabled={loading}
               >
-                <Ban className="w-4 h-4 mr-2" /> Reject
+                <Ban className="w-4 h-4 mr-2" /> {t("common.reject")}
               </Button>
               <Button
                 className="bg-primary hover:bg-primary/90 text-white px-8 font-bold min-w-[120px] transition-all w-full sm:w-auto"
                 onClick={() => onApproveReject(1)}
                 disabled={loading}
               >
-                <CheckCircle2 className="w-4 h-4 mr-2" /> Approve
+                <CheckCircle2 className="w-4 h-4 mr-2" /> {t("common.approve")}
               </Button>
             </div>
           </div>
@@ -141,16 +152,17 @@ const BorrowingsActionModal = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-red-600">
               <AlertTriangle className="h-5 w-5" />
-              Reject Application
+              {t("rejectReasonModal.rejectApplication")}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <Label htmlFor="remarks" className="mb-2 block text-sm font-medium">
-              Rejection Remarks <span className="text-red-500">*</span>
+              {t("rejectReasonModal.rejectionRemarks")}{" "}
+              <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="remarks"
-              placeholder="Enter reason for rejection..."
+              placeholder={t("rejectReasonModal.enterReason")}
               value={rejectRemarks}
               onChange={(e) => setRejectRemarks(e.target.value)}
               className="min-h-[100px] focus-visible:ring-red-500"
@@ -158,13 +170,13 @@ const BorrowingsActionModal = ({
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowRejectModal(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               className="bg-red-600 hover:bg-red-700 text-white"
               onClick={handleRejectConfirm}
             >
-              Confirm Rejection
+              {t("rejectReasonModal.confirmRejection")}
             </Button>
           </DialogFooter>
         </DialogContent>

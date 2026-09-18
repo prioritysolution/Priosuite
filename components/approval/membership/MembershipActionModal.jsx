@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, Ban, AlertTriangle, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import Spinner from "@/common/loader/Spinner";
+import { useTranslation } from "react-i18next";
 
 const MembershipActionModal = ({
   open,
@@ -23,12 +24,14 @@ const MembershipActionModal = ({
   detailsLoading,
   loading,
 }) => {
+  const { t } = useTranslation();
+
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectRemarks, setRejectRemarks] = useState("");
 
   const handleRejectConfirm = () => {
     if (!rejectRemarks.trim()) {
-      toast.error("Please enter remarks for rejection.");
+      toast.error(t("membershipApproval.pleaseEnterRejectionRemarks"));
       return;
     }
     onApproveReject(2, rejectRemarks);
@@ -77,12 +80,12 @@ const MembershipActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-xl font-bold text-gray-800 tracking-tight">
-                Membership Transaction Approval
+                {t("membershipApproval.transactionApproval")}
               </DialogTitle>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 {selectedApplication?.Queue_No && (
                   <>
-                    <span className="font-medium">Queue:</span>
+                    <span className="font-medium">{t("membershipApproval.queue")}</span>
                     <span className="font-semibold text-primary">
                       {selectedApplication.Queue_No}
                     </span>
@@ -96,7 +99,7 @@ const MembershipActionModal = ({
 
                 {selectedApplication?.Vouch_Type && (
                   <>
-                    <span className="font-medium">Type:</span>
+                    <span className="font-medium">{t("membershipApproval.type")}</span>
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
                       {selectedApplication.Vouch_Type}
                     </span>
@@ -119,19 +122,19 @@ const MembershipActionModal = ({
                   selectedApplication?.Relation_Name) && (
                   <div className="border-b pb-4 last:border-0">
                     <h3 className="text-sm font-bold text-gray-700 mb-3 border-l-4 border-primary pl-2">
-                      Member Information
+                      {t("membershipApproval.memberInformation")}
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       <DetailRow
-                        label="Full Name"
+                        label={t("membershipApproval.fullName")}
                         value={selectedApplication?.Full_Name}
                       />
                       <DetailRow
-                        label="Admission No"
+                        label={t("membershipApproval.admissionNo")}
                         value={selectedApplication?.Adm_No}
                       />
                       <DetailRow
-                        label="Relation Name"
+                        label={t("membershipApproval.relationName")}
                         value={selectedApplication?.Relation_Name}
                       />
                     </div>
@@ -141,24 +144,24 @@ const MembershipActionModal = ({
                 {/* 2. Transaction Overview (Moved to 2nd position) */}
                 <div className="border-b pb-4 last:border-0">
                   <h3 className="text-sm font-bold text-gray-700 mb-3 border-l-4 border-blue-500 pl-2">
-                    Transaction Overview
+                    {t("membershipApproval.transactionOverview")}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <DetailRow
-                      label="Particulars"
+                      label={t("membershipApproval.particulars")}
                       value={selectedApplication?.Particular}
                     />
                     <DetailRow
-                      label="Transaction Type"
+                      label={t("membershipApproval.transactionType")}
                       value={selectedApplication?.Trans_Type}
                     />
                     <DetailRow
-                      label="Transaction Date"
+                      label={t("membershipApproval.transactionDate")}
                       value={formatDate(selectedApplication?.Trans_Date)}
                     />
                     {/* Amount placed right after Transaction Date */}
                     <DetailRow
-                      label="Total Amount"
+                      label={t("membershipApproval.totalAmount")}
                       value={
                         selectedApplication?.Tot_Amt ||
                         selectedApplication?.Amount
@@ -166,7 +169,7 @@ const MembershipActionModal = ({
                       isCurrency={true}
                     />
                     <DetailRow
-                      label="Transfer On"
+                      label={t("membershipApproval.transferOn")}
                       value={selectedApplication?.Trf_On}
                     />
                   </div>
@@ -179,25 +182,25 @@ const MembershipActionModal = ({
                   !isZero(selectedApplication?.Adm_Fees)) && (
                   <div className="border-b pb-4 last:border-0">
                     <h3 className="text-sm font-bold text-gray-700 mb-3 border-l-4 border-green-500 pl-2">
-                      Share & Financial Details
+                      {t("membershipApproval.shareFinancialDetails")}
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                       {!isZero(selectedApplication?.No_Share) && (
                         <DetailRow
-                          label="No. of Shares"
+                          label={t("membershipApproval.noOfShares")}
                           value={selectedApplication?.No_Share}
                         />
                       )}
                       {!isZero(selectedApplication?.Share_Rate) && (
                         <DetailRow
-                          label="Share Rate"
+                          label={t("membershipApproval.shareRate")}
                           value={selectedApplication?.Share_Rate}
                           isCurrency={true}
                         />
                       )}
                       {!isZero(selectedApplication?.Adm_Fees) && (
                         <DetailRow
-                          label="Admission Fees"
+                          label={t("membershipApproval.admissionFees")}
                           value={selectedApplication?.Adm_Fees}
                           isCurrency={true}
                         />
@@ -209,15 +212,15 @@ const MembershipActionModal = ({
                 {/* 4. System Info */}
                 <div className="pb-2">
                   <h3 className="text-sm font-bold text-gray-700 mb-3 border-l-4 border-gray-400 pl-2">
-                    System Information
+                    {t("membershipApproval.systemInformation")}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <DetailRow
-                      label="Entered By"
+                      label={t("membershipApproval.enteredBy")}
                       value={selectedApplication?.Entred_By}
                     />
                     <DetailRow
-                      label="Entered On"
+                      label={t("membershipApproval.enteredOn")}
                       value={selectedApplication?.Entred_On}
                     />
                   </div>
@@ -232,14 +235,14 @@ const MembershipActionModal = ({
               onClick={() => setShowRejectModal(true)}
               disabled={detailsLoading || loading}
             >
-              <Ban className="w-4 h-4 mr-2" /> Reject
+              <Ban className="w-4 h-4 mr-2" /> {t("membershipApproval.reject")}
             </Button>
             <Button
               className="bg-primary hover:bg-primary/90 text-white px-6 font-bold transition-all min-w-[120px] w-full sm:w-auto"
               onClick={() => onApproveReject(1)}
               disabled={detailsLoading || loading}
             >
-              <CheckCircle2 className="w-4 h-4 mr-2" /> Approve
+              <CheckCircle2 className="w-4 h-4 mr-2" /> {t("membershipApproval.approve")}
             </Button>
           </div>
         </DialogContent>
@@ -251,21 +254,21 @@ const MembershipActionModal = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-red-600">
               <AlertTriangle className="w-5 h-5" />
-              Confirm Rejection
+              {t("membershipApproval.confirmRejection")}
             </DialogTitle>
           </DialogHeader>
 
           <div className="py-4 space-y-4">
             <p className="text-sm text-gray-600">
-              Are you sure you want to reject this transaction? This action
-              cannot be undone. Please provide a reason.
+              {t("membershipApproval.rejectConfirmMessage")}
             </p>
             <div className="space-y-2">
               <Label className="text-sm font-semibold">
-                Rejection Remarks <span className="text-red-500">*</span>
+                {t("membershipApproval.rejectionRemarks")}{" "}
+                <span className="text-red-500">*</span>
               </Label>
               <Textarea
-                placeholder="Enter detailed reason for rejection..."
+                placeholder={t("membershipApproval.enterRejectionReason")}
                 value={rejectRemarks}
                 onChange={(e) => setRejectRemarks(e.target.value)}
                 className="min-h-[100px] resize-none focus:ring-red-500"
@@ -275,13 +278,13 @@ const MembershipActionModal = ({
 
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setShowRejectModal(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               className="bg-red-600 hover:bg-red-700 text-white"
               onClick={handleRejectConfirm}
             >
-              Confirm Reject
+              {t("membershipApproval.confirmReject")}
             </Button>
           </DialogFooter>
         </DialogContent>

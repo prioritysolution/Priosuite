@@ -17,8 +17,11 @@ import Spinner from "@/common/loader/Spinner";
 import { Input } from "@/components/ui/input";
 import LoanActionModal from "./LoanActionModal";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
+import { useTranslation } from "react-i18next";
 
 const LoanapproalComponent = (props) => {
+  const { t } = useTranslation();
+
   const {
     kycList,
     loading,
@@ -44,7 +47,7 @@ const LoanapproalComponent = (props) => {
     <div className="p-6 space-y-6 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5">
         <h2 className="text-2xl font-bold tracking-tight text-gray-800">
-          Loan Approval
+          {t("loanApproval.loanApproval")}
         </h2>
         <div className="relative w-full sm:w-auto flex items-center">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -55,7 +58,7 @@ const LoanapproalComponent = (props) => {
               paginate(1);
             }}
             className="w-full sm:w-64 pl-10 bg-white border-gray-300 focus:border-primary"
-            placeholder="Search by app no, name, product..."
+            placeholder={t("loanApproval.searchPlaceholder")}
           />
         </div>
       </div>
@@ -65,14 +68,30 @@ const LoanapproalComponent = (props) => {
           <Table>
             <TableHeader className="bg-background z-10">
               <TableRow className="bg-gray-100">
-                <TableHead className="w-[50px] font-semibold">Sl</TableHead>
-                <TableHead className="font-semibold">Application No</TableHead>
-                <TableHead className="font-semibold">Date</TableHead>
-                <TableHead className="font-semibold">Case No</TableHead>
-                <TableHead className="font-semibold">Applicant Name</TableHead>
-                <TableHead className="font-semibold">Product</TableHead>
-                <TableHead className="font-semibold">Amount</TableHead>
-                <TableHead className="text-right font-semibold">Action</TableHead>
+                <TableHead className="w-[50px] font-semibold">
+                  {t("common.sl")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("loanApproval.applicationNo")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("loanApproval.date")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("loanApproval.caseNo")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("loanApproval.applicantName")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("loanApproval.product")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("common.amount")}
+                </TableHead>
+                <TableHead className="text-right font-semibold">
+                  {t("common.action")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -116,7 +135,7 @@ const LoanapproalComponent = (props) => {
                   <TableCell colSpan={8} className="h-32 text-center text-gray-500">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Search className="h-8 w-8 text-gray-300" />
-                      <p>No pending approvals found matching your search.</p>
+                      <p>{t("loanApproval.noPendingApprovals")}</p>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -128,9 +147,13 @@ const LoanapproalComponent = (props) => {
         {!loading && totalPages > 0 && (
           <div className="flex items-center justify-between px-4 py-4 border-t bg-gray-50/50">
             <div className="text-sm text-gray-500">
-              Showing{" "}
-              {kycList.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-              {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} entries
+              {t("common.showing")}{" "}
+              {kycList.length > 0
+                ? (currentPage - 1) * itemsPerPage + 1
+                : 0}{" "}
+              {t("common.to")}{" "}
+              {Math.min(currentPage * itemsPerPage, totalItems)}{" "}
+              {t("common.of")} {totalItems} {t("common.entries")}
             </div>
 
             <div className="flex items-center gap-2">

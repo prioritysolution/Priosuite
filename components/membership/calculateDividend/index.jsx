@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -36,17 +38,19 @@ const CalculateDividend = ({
   handleCloseSuccessMessage,
   handleCalculateDividend,
 }) => {
+  const { t } = useTranslation();
+
   const printRef = useRef(null);
 
   const generatePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: "Dividend List",
+    documentTitle: t("membership.calculateDividend.documentTitle"),
   });
 
   return (
     <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg">
       <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 sm:px-10 2xl:px-10">
-        <h3 className="text-2xl font-semibold">Calculate Dividend</h3>
+        <h3 className="text-2xl font-semibold">{t("membership.calculateDividend.title")}</h3>
 
         <Form {...form}>
           <form
@@ -57,26 +61,26 @@ const CalculateDividend = ({
             {/* ---------------- Account Info Block (Fixed) ---------------- */}
             <div className="w-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2 flex-none">
               <h3 className="w-full text-center text-xl font-semibold">
-                Account Info Block
+                {t("membership.calculateDividend.sections.accountInfoBlock")}
               </h3>
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("membership.calculateDividend.fields.fromDate")}
                 />
 
                 <DatePickerField
                   control={form.control}
                   name="uptoDate"
-                  label="Upto Date"
+                  label={t("membership.calculateDividend.fields.uptoDate")}
                 />
 
                 <InputField
                   control={form.control}
                   name="dividendRate"
-                  label="Dividend Rate"
-                  placeholder="Enter rate"
+                  label={t("membership.calculateDividend.fields.dividendRate")}
+                  placeholder={t("membership.calculateDividend.placeholders.dividendRate")}
                   type="number"
                 />
 
@@ -84,7 +88,7 @@ const CalculateDividend = ({
                   onClick={handleCalculateDividend}
                   className="w-full py-2 h-fit self-end text-center text-white bg-primary rounded-md cursor-pointer"
                 >
-                  Calculate Dividend
+                  {t("membership.calculateDividend.title")}
                 </div>
                 <div
                   onClick={() => {
@@ -98,7 +102,7 @@ const CalculateDividend = ({
                     },
                   )}
                 >
-                  Preview
+                  {t("membership.calculateDividend.buttons.preview")}
                 </div>
               </div>
             </div>
@@ -109,14 +113,14 @@ const CalculateDividend = ({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[100px]">Sl.</TableHead>
-                    <TableHead>Member Code</TableHead>
-                    <TableHead>Member Name</TableHead>
-                    <TableHead>Guardian Name</TableHead>
-                    <TableHead>Village</TableHead>
-                    <TableHead>Share Balance</TableHead>
+                    <TableHead className="w-[100px]">{t("membership.calculateDividend.table.sl")}</TableHead>
+                    <TableHead>{t("membership.calculateDividend.table.memberCode")}</TableHead>
+                    <TableHead>{t("membership.calculateDividend.table.memberName")}</TableHead>
+                    <TableHead>{t("membership.calculateDividend.table.guardianName")}</TableHead>
+                    <TableHead>{t("membership.calculateDividend.table.village")}</TableHead>
+                    <TableHead>{t("membership.calculateDividend.table.shareBalance")}</TableHead>
                     <TableHead className="text-right">
-                      Dividend Amount
+                      {t("membership.calculateDividend.table.dividendAmount")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -137,7 +141,7 @@ const CalculateDividend = ({
                 </TableBody>
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={6}>Total</TableCell>
+                    <TableCell colSpan={6}>{t("common.total")}</TableCell>
                     <TableCell className="text-right">
                       {tableData?.reduce((sum, item) => sum + item.Dividend, 0)}
                     </TableCell>
@@ -149,7 +153,7 @@ const CalculateDividend = ({
                 <DatePickerField
                   control={form.control}
                   name="postingDate"
-                  label="Posting Date"
+                  label={t("membership.calculateDividend.fields.postingDate")}
                 />
 
                 <Button
@@ -164,7 +168,7 @@ const CalculateDividend = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Post Payble"
+                    t("membership.calculateDividend.buttons.postPayble")
                   )}
                 </Button>
               </div>

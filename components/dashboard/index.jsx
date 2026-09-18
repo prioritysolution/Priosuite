@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import InputField from "@/common/formFields/InputField";
 import AccountSummary from "@/components/dashboard/AccountSummary";
@@ -39,24 +41,26 @@ import { ClipLoader } from "react-spinners";
 import * as yup from "yup";
 
 const Dashboard = ({ dashboardItemData }) => {
-  const [userName, setUserName] = useState("Member");
+  const { t } = useTranslation();
+  const [userName, setUserName] = useState("");
   const [lastLogin, setLastLogin] = useState("");
 
   useEffect(() => {
-    setUserName(getCookieData("userName") || "Member");
+    setUserName(getCookieData("userName") || t("dashboard.member"));
     setLastLogin(format(new Date(), "dd MMM yyyy, hh:mm a"));
-  }, []);
+  }, [t]);
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg bg-slate-50">
       <header className="shrink-0 border-b border-slate-200 bg-white px-3 py-3 sm:px-5 sm:py-4">
         <div className="flex min-w-0 items-center justify-between gap-3">
           <h2 className="min-w-0 truncate text-base font-semibold tracking-tight text-slate-800 sm:text-lg">
-            Welcome, {userName} <span aria-hidden>👋</span>
+            {t("dashboard.welcome", { name: userName })}{" "}
+            <span aria-hidden>👋</span>
           </h2>
           {lastLogin ? (
             <p className="hidden shrink-0 text-sm text-slate-500 md:block">
-              Last Login: {lastLogin}
+              {t("dashboard.lastLogin")} {lastLogin}
             </p>
           ) : null}
         </div>
@@ -126,6 +130,7 @@ const DayBeginDialog = ({
   updateDayBeginLoading,
   updateDayBeginApiCall,
 }) => {
+  const { t } = useTranslation();
   const beg_date_cookie = getCookieData("beg_date");
   const fin_start_date = getCookieData("fin_start_date");
   const fin_end_date = getCookieData("fin_end_date");
@@ -136,7 +141,7 @@ const DayBeginDialog = ({
       .mixed()
       .test(
         "required-date",
-        "Please select a new begin date",
+        t("dashboard.pleaseSelectNewBeginDate"),
         (value) => value instanceof Date && !isNaN(value.getTime()),
       ),
   });
@@ -168,10 +173,10 @@ const DayBeginDialog = ({
       !(values.newBeginDate instanceof Date) ||
       isNaN(values.newBeginDate.getTime())
     ) {
-      toast.error("Please select a new begin date.");
+      toast.error(t("dashboard.pleaseSelectNewBeginDatePeriod"));
       form.setError("newBeginDate", {
         type: "manual",
-        message: "Please select a new begin date",
+        message: t("dashboard.pleaseSelectNewBeginDate"),
       });
       return;
     }
@@ -190,14 +195,14 @@ const DayBeginDialog = ({
         onFocusOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle>Update Day Begin Date</DialogTitle>
+          <DialogTitle>{t("dashboard.updateDayBeginDate")}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <InputField
               control={form.control}
               name="currentBeginDate"
-              label="Current Begin Date"
+              label={t("dashboard.currentBeginDate")}
               disabled
               readOnly
             />
@@ -205,8 +210,8 @@ const DayBeginDialog = ({
               control={form.control}
               // isManualInput={true}
               name="newBeginDate"
-              label="New Date"
-              placeholder="Select new begin date"
+              label={t("dashboard.newDate")}
+              placeholder={t("dashboard.selectNewBeginDate")}
               disabledDateBefore={
                 fin_start_date ? new Date(fin_start_date) : undefined
               }
@@ -224,7 +229,7 @@ const DayBeginDialog = ({
                 disabled={updateDayBeginLoading}
                 className="w-full sm:w-auto"
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
@@ -234,7 +239,7 @@ const DayBeginDialog = ({
                 {updateDayBeginLoading ? (
                   <ClipLoader size={16} color="#ffffff" />
                 ) : (
-                  "Save"
+                  t("common.save")
                 )}
               </Button>
             </div>

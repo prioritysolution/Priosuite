@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import AccountPassbookSearchForm from "@/common/forms/AccountPassbookSearchForm";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
@@ -21,6 +23,8 @@ const CertificatePrint = ({
   pageData,
   handleUpdateCertificate,
 }) => {
+  const { t } = useTranslation();
+
   const [showPrintSuccess, setShowPrintSuccess] = useState(false);
 
   const printRef = useRef(null);
@@ -34,7 +38,7 @@ const CertificatePrint = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Certificate Print</h3>
+        <h3 className="text-2xl font-semibold ">{t("deposit.certificatePrint.title")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20 ">
           <div className="w-full mb-10">

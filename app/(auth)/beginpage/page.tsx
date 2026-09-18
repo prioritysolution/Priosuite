@@ -13,8 +13,10 @@ import { useDispatch } from "react-redux";
 import { beg_date } from "@/container/auth/login/LoginReducer";
 import Link from "next/link";
 import { useLogout } from "@/container/navbar/Hooks";
+import { useTranslation } from "react-i18next";
 
 const BeginPage = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const branchName = getCookieData("userBranchName");
@@ -89,11 +91,11 @@ const BeginPage = () => {
       if (error.response) {
         console.log("API Error:", error.response.data);
         toast.error(
-          error.response.data?.details || "Failed to start business day",
+          error.response.data?.details || t("auth.failedToStartBusinessDay"),
         );
       } else {
         console.log("error", error);
-        toast.error("An error occurred. Please try again.");
+        toast.error(t("auth.anErrorOccurred"));
       }
     } finally {
       setLoading(false);
@@ -137,7 +139,7 @@ const BeginPage = () => {
             fill
             priority
             className="object-contain p-2 sm:p-4 lg:p-6"
-            alt="Login Image"
+            alt={t("auth.loginImageAlt")}
           />
         </div>
       </div>
@@ -151,9 +153,9 @@ const BeginPage = () => {
           {/* Title */}
           <div className="text-center w-full">
             <h1 className="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-[600] mb-1 sm:mb-2 text-primary leading-tight">
-              Welcome to{" "}
+              {t("auth.welcomeTo")}{" "}
               <span className={cn("text-blue-500 italic font-libre font-bold")}>
-                Priosuite
+                {t("auth.priosuite")}
               </span>
             </h1>
           </div>
@@ -173,27 +175,27 @@ const BeginPage = () => {
             {/* Organisation Card */}
             <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200 shadow-sm overflow-hidden">
               <p className="text-xs sm:text-sm text-gray-500 mb-0.5">
-                Organisation Name
+                {t("auth.organisationName")}
               </p>
               <p className="text-sm sm:text-base lg:text-base font-semibold text-gray-800 truncate">
-                {orgName || "N/A"}
+                {orgName || t("common.notAvailable")}
               </p>
             </div>
 
             {/* Branch Card */}
             <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200 shadow-sm overflow-hidden">
               <p className="text-xs sm:text-sm text-gray-500 mb-0.5">
-                Branch Name
+                {t("auth.branchName")}
               </p>
               <p className="text-sm sm:text-base lg:text-base font-semibold text-gray-800 truncate">
-                {branchName || "N/A"}
+                {branchName || t("common.notAvailable")}
               </p>
             </div>
 
             {/* Working Date Card */}
             <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200 shadow-sm">
               <p className="text-xs sm:text-sm text-gray-500 mb-0.5">
-                Working Date
+                {t("auth.workingDate")}
               </p>
               <p className="text-sm sm:text-base lg:text-base font-semibold text-gray-800">
                 {formatDate(currentTime)}
@@ -212,7 +214,7 @@ const BeginPage = () => {
               {loading ? (
                 <ClipLoader color="#ffffff" size={22} speedMultiplier={0.7} />
               ) : (
-                "Process To Day Begin"
+                t("auth.processToDayBegin")
               )}
             </button>
             <button
@@ -220,7 +222,7 @@ const BeginPage = () => {
               disabled={loading}
               className="w-full text-sm sm:text-base lg:text-base py-2.5 sm:py-3 text-white font-semibold rounded-xl transition-all duration-300 ease-out disabled:opacity-50 disabled:cursor-not-allowed bg-red-600 hover:bg-red-700 active:scale-[0.98]"
             >
-              Logout
+              {t("auth.logout")}
             </button>
           </div>
         </div>
@@ -228,9 +230,9 @@ const BeginPage = () => {
 
       <footer className="absolute w-full h-[50px] bottom-0 left-0 flex items-center justify-start px-2 text-sm xl:text-white">
         <p>
-          Designed and Developed by{" "}
+          {t("auth.designedBy")}{" "}
           <Link href="#" target="_blank" className="font-[500]">
-            General Computer
+            {t("auth.generalComputer")}
           </Link>
         </p>
       </footer>

@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import { getYear } from "date-fns";
@@ -40,6 +41,7 @@ const LoanOpening = ({
   loanEligible,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
   const [showBasicInfo, setShowBasicInfo] = useState(true);
   const productData = useSelector(
     (state) => state?.newApplication?.loanProductData,
@@ -58,7 +60,9 @@ const LoanOpening = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Loan Opening</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("opening.loanOpening.title")}
+        </h3>
 
         <ScrollArea className="w-full h-full">
           <div className="w-full mb-5">
@@ -86,7 +90,7 @@ const LoanOpening = ({
                   <div className="w-full flex justify-between items-center">
                     <div className="w-5" />
                     <h3 className="text-xl font-semibold text-center flex-grow">
-                      Basic Info Block
+                      {t("opening.loanOpening.basicInfo.title")}
                     </h3>
                     <button
                       type="button"
@@ -105,22 +109,25 @@ const LoanOpening = ({
                       <InputField
                         control={form.control}
                         name="memberName"
-                        label="Member Name"
-                        placeholder="Enter member name"
+                        label={t("opening.loanOpening.basicInfo.memberName")}
+                        placeholder={t("opening.loanOpening.basicInfo.memberNamePlaceholder",
+                        )}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="gurdianName"
-                        label="Gurdian Name"
-                        placeholder="Enter gurdian name"
+                        label={t("opening.loanOpening.basicInfo.guardianName")}
+                        placeholder={t("opening.loanOpening.basicInfo.guardianNamePlaceholder",
+                        )}
                         readOnly
                       />
                       <TextareaField
                         control={form.control}
                         name="address"
-                        label="Address"
-                        placeholder="Enter address"
+                        label={t("opening.loanOpening.basicInfo.address")}
+                        placeholder={t("opening.loanOpening.basicInfo.addressPlaceholder",
+                        )}
                         className="resize-none"
                         readOnly
                       />
@@ -128,24 +135,27 @@ const LoanOpening = ({
                       <InputField
                         control={form.control}
                         name="mobile"
-                        label="Mobile No."
-                        placeholder="Enter mobile no."
+                        label={t("opening.loanOpening.basicInfo.mobile")}
+                        placeholder={t("opening.loanOpening.basicInfo.mobilePlaceholder",
+                        )}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="memberType"
-                        label="Member Type"
-                        placeholder="Enter member type"
+                        label={t("opening.loanOpening.basicInfo.memberType")}
+                        placeholder={t("opening.loanOpening.basicInfo.memberTypePlaceholder",
+                        )}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="shareBalance"
-                        label="Share Balance"
-                        placeholder="Enter share balance"
+                        label={t("opening.loanOpening.basicInfo.shareBalance")}
+                        placeholder={t("opening.loanOpening.basicInfo.shareBalancePlaceholder",
+                        )}
                         readOnly
                       />
                     </div>
@@ -156,28 +166,30 @@ const LoanOpening = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Application Info Block
+                    {t("opening.loanOpening.application.title")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <DatePickerField
                       control={form.control}
                       name="applicationDate"
-                      label="Application Date"
+                      label={t("opening.loanOpening.application.applicationDate")}
                       disabled
                     />
 
                     <InputField
                       control={form.control}
                       name="applicationNo"
-                      label="Manual Application No."
-                      placeholder="Enter application no."
+                      label={t("opening.loanOpening.application.applicationNo")}
+                      placeholder={t("opening.loanOpening.application.applicationNoPlaceholder",
+                      )}
                     />
 
                     <InputField
                       control={form.control}
                       name="accountNo"
-                      label="Manual Account No."
-                      placeholder="Enter account no."
+                      label={t("opening.loanOpening.application.accountNo")}
+                      placeholder={t("opening.loanOpening.application.accountNoPlaceholder",
+                      )}
                       type="number"
                       maxLength={4}
                       isRequired
@@ -186,16 +198,19 @@ const LoanOpening = ({
                     <InputField
                       control={form.control}
                       name="ledgerFolio"
-                      label="Ledger Folio"
-                      placeholder="Enter ledger folio"
+                      label={t("opening.loanOpening.application.ledgerFolio")}
+                      placeholder={t("opening.loanOpening.application.ledgerFolioPlaceholder",
+                      )}
                     />
 
                     <DropdownField
                       control={form.control}
                       name="productId"
-                      label="Product"
+                      label={t("opening.loanOpening.application.product")}
                       options={productData}
                       optionLabelKey="Prod_Sh_Name"
+                      placeholder={t("opening.loanOpening.application.productPlaceholder",
+                      )}
                       loading={checkLoanEligibleLoading}
                       isRequired
                     />
@@ -204,8 +219,9 @@ const LoanOpening = ({
                       <InputField
                         control={form.control}
                         name="applicationAmount"
-                        label="Application Amount"
-                        placeholder="Enter application amount"
+                        label={t("opening.loanOpening.application.applicationAmount")}
+                        placeholder={t("opening.loanOpening.application.applicationAmountPlaceholder",
+                        )}
                         type="number"
                         readOnly={!loanEligible}
                         isRequired
@@ -220,8 +236,9 @@ const LoanOpening = ({
                     <InputField
                       control={form.control}
                       name="rateOfInterest"
-                      label="Rate Of Interest"
-                      placeholder="Enter rate of interest"
+                      label={t("opening.loanOpening.application.rateOfInterest")}
+                      placeholder={t("opening.loanOpening.application.rateOfInterestPlaceholder",
+                      )}
                       type="number"
                       readOnly
                       isRequired
@@ -230,8 +247,9 @@ const LoanOpening = ({
                     <InputField
                       control={form.control}
                       name="duration"
-                      label="Duration"
-                      placeholder="Enter duration"
+                      label={t("opening.loanOpening.application.duration")}
+                      placeholder={t("opening.loanOpening.application.durationPlaceholder",
+                      )}
                       type="number"
                       readOnly={!loanEligible}
                       isRequired
@@ -240,11 +258,13 @@ const LoanOpening = ({
                     <DropdownField
                       control={form.control}
                       name="durationUnit"
-                      label="Duration Unit"
+                      label={t("opening.loanOpening.application.durationUnit")}
                       options={durationUnitData}
                       optionLabelKey="Option_Value"
-                      placeholder="Select duration unit"
-                      searchPlaceholder="Search duration unit..."
+                      placeholder={t("opening.loanOpening.application.durationUnitPlaceholder",
+                      )}
+                      searchPlaceholder={t("opening.loanOpening.application.durationUnitSearch",
+                      )}
                       disabled={!form.getValues("productId") && !loanEligible}
                       isRequired
                     />
@@ -252,11 +272,13 @@ const LoanOpening = ({
                     <DropdownField
                       control={form.control}
                       name="repaymentMode"
-                      label="Repayment Mode"
+                      label={t("opening.loanOpening.application.repaymentMode")}
                       options={repaymentModeData}
                       optionLabelKey="Option_Value"
-                      placeholder="Select repayment mode"
-                      searchPlaceholder="Search repayment mode..."
+                      placeholder={t("opening.loanOpening.application.repaymentModePlaceholder",
+                      )}
+                      searchPlaceholder={t("opening.loanOpening.application.repaymentModeSearch",
+                      )}
                       disabled={!form.getValues("productId") && !loanEligible}
                       isRequired
                     />
@@ -264,8 +286,9 @@ const LoanOpening = ({
                     <InputField
                       control={form.control}
                       name="finalRepaymentDate"
-                      label="Final Repayment Date"
-                      placeholder="Enter final repayment date"
+                      label={t("opening.loanOpening.application.finalRepaymentDate")}
+                      placeholder={t("opening.loanOpening.application.finalRepaymentDatePlaceholder",
+                      )}
                       readOnly
                     />
 
@@ -273,8 +296,9 @@ const LoanOpening = ({
                       <InputField
                         control={form.control}
                         name="emiAmount"
-                        label="EMI Amount"
-                        placeholder="Enter emi amount"
+                        label={t("opening.loanOpening.application.emiAmount")}
+                        placeholder={t("opening.loanOpening.application.emiAmountPlaceholder",
+                        )}
                         readOnly
                       />
                     )}
@@ -282,16 +306,18 @@ const LoanOpening = ({
                     <InputField
                       control={form.control}
                       name="outstandingBalance"
-                      label="Outstanding Balance"
-                      placeholder="Enter outstanding balance"
+                      label={t("opening.loanOpening.application.outstandingBalance")}
+                      placeholder={t("opening.loanOpening.application.outstandingBalancePlaceholder",
+                      )}
                       isRequired
                     />
 
                     <InputField
                       control={form.control}
                       name="dueInterest"
-                      label="Due Interest"
-                      placeholder="Enter due interest"
+                      label={t("opening.loanOpening.application.dueInterest")}
+                      placeholder={t("opening.loanOpening.application.dueInterestPlaceholder",
+                      )}
                       isRequired
                     />
                   </div>
@@ -311,7 +337,7 @@ const LoanOpening = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("opening.loanOpening.buttons.add")
                   )}
                 </Button>
               )}

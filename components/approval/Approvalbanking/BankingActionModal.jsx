@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Ban, CheckCircle2, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import Spinner from "@/common/loader/Spinner";
+import { useTranslation } from "react-i18next";
 
 const BankingActionModal = ({
   open,
@@ -33,6 +34,7 @@ const BankingActionModal = ({
   bankGlData,
   loading,
 }) => {
+  const { t } = useTranslation();
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectRemarks, setRejectRemarks] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
@@ -114,7 +116,7 @@ const BankingActionModal = ({
 
   const handleRejectConfirm = () => {
     if (!rejectRemarks.trim()) {
-      toast.error("Please enter remarks for rejection.");
+      toast.error(t("bankingApproval.pleaseEnterRejectionRemarks"));
       return;
     }
     onApproveReject(2, rejectRemarks);
@@ -174,8 +176,8 @@ const BankingActionModal = ({
                   onChange={field.onChange}
                   options={bankAccountTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select Account Type"
-                  searchPlaceholder="Search account type..."
+                  placeholder={t("bankingApproval.selectAccountType")}
+                  searchPlaceholder={t("bankingApproval.searchAccountType")}
                 />
               )}
             />
@@ -196,8 +198,8 @@ const BankingActionModal = ({
                   onChange={field.onChange}
                   options={bankGlData}
                   optionLabelKey="Ledger_Name"
-                  placeholder="Select Bank GL"
-                  searchPlaceholder="Search bank gl..."
+                  placeholder={t("bankingApproval.selectBankGl")}
+                  searchPlaceholder={t("bankingApproval.searchBankGl")}
                 />
               )}
             />
@@ -219,7 +221,7 @@ const BankingActionModal = ({
     }
 
     let displayValue = value;
-    if (label && label.toLowerCase().includes("date")) {
+    if (name && String(name).toLowerCase().includes("date")) {
       displayValue = formatDate(value);
     } else if (fieldType === "account_type") {
       displayValue = getMappedName(value, bankAccountTypeData, "Option_Value");
@@ -262,11 +264,12 @@ const BankingActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-2xl font-bold text-gray-800 tracking-tight">
-                Banking Approval Portal
+                {t("bankingApproval.bankingApprovalPortal")}
               </DialogTitle>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span className="font-medium">
-                  Queue No: {selectedApplication.Queue_No}
+                  {t("bankingApproval.queueNoLabel")}{" "}
+                  {selectedApplication.Queue_No}
                 </span>
                 <span className="h-4 w-px bg-gray-300" />
                 <span className="font-semibold text-primary">
@@ -284,7 +287,7 @@ const BankingActionModal = ({
                     className="border-primary text-primary hover:bg-primary hover:text-white transition-all h-9 mt-6 mr-5"
                     onClick={() => setIsEditMode(true)}
                   >
-                    Edit Details
+                    {t("bankingApproval.editDetails")}
                   </Button>
                 ) : (
                   <Button
@@ -295,7 +298,7 @@ const BankingActionModal = ({
                       reset();
                     }}
                   >
-                    Cancel Edit
+                    {t("bankingApproval.cancelEdit")}
                   </Button>
                 )}
               </div>
@@ -312,7 +315,7 @@ const BankingActionModal = ({
                 {isNewAccount ? (
                   <>
                     {renderField(
-                      "Opening Date",
+                      t("bankingApproval.openingDate"),
                       "opening_date",
                       selectedApplication.Opening_Date ||
                         selectedApplication.openingDate ||
@@ -320,21 +323,21 @@ const BankingActionModal = ({
                       true,
                     )}
                     {renderField(
-                      "Bank Name",
+                      t("bankingApproval.bankName"),
                       "bank_name",
                       selectedApplication.Bank_Name ||
                         selectedApplication.bankName,
                       true,
                     )}
                     {renderField(
-                      "Bank Branch",
+                      t("bankingApproval.bankBranch"),
                       "branch_name",
                       selectedApplication.Bank_Branch ||
                         selectedApplication.bankBranch,
                       true,
                     )}
                     {renderField(
-                      "IFSC Code",
+                      t("bankingApproval.ifscCode"),
                       "ifsc_code",
                       selectedApplication.Bank_IFSC ||
                         selectedApplication.IFSC_Code ||
@@ -342,14 +345,14 @@ const BankingActionModal = ({
                       true,
                     )}
                     {renderField(
-                      "Account No",
+                      t("bankingApproval.accountNo"),
                       "account_no",
                       selectedApplication.Account_No ||
                         selectedApplication.accountNo,
                       true,
                     )}
                     {renderField(
-                      "Account Type",
+                      t("bankingApproval.accountType"),
                       "account_type",
                       selectedApplication.Account_Type ||
                         selectedApplication.accountType ||
@@ -358,7 +361,7 @@ const BankingActionModal = ({
                       "account_type",
                     )}
                     {renderField(
-                      "Bank GL",
+                      t("bankingApproval.bankGl"),
                       "under_gl",
                       selectedApplication.Under_Gl ||
                         selectedApplication.Bank_GL ||
@@ -370,33 +373,33 @@ const BankingActionModal = ({
                 ) : (
                   <>
                     {renderField(
-                      "Transaction Date",
+                      t("bankingApproval.transactionDate"),
                       "trans_date",
                       selectedApplication.Trans_Date,
                     )}
                     {renderField(
-                      "Queue No",
+                      t("bankingApproval.queueNo"),
                       "queue_no",
                       selectedApplication.Queue_No,
                     )}
                     {renderField(
-                      "Transaction Type",
+                      t("bankingApproval.transactionType"),
                       "trans_type",
                       selectedApplication.Trans_Type ||
                         selectedApplication.Type_Name,
                     )}
                     {renderField(
-                      "Bank Name",
+                      t("bankingApproval.bankName"),
                       "bank_name",
                       selectedApplication.Bank_Name,
                     )}
                     {renderField(
-                      "Account No",
+                      t("bankingApproval.accountNo"),
                       "account_no",
                       selectedApplication.Account_No ||
                         selectedApplication.accountNo,
                     )}
-                    {renderField("Amount", "amount", selectedApplication.Amount)}
+                    {renderField(t("bankingApproval.amount"), "amount", selectedApplication.Amount)}
                   </>
                 )}
               </div>
@@ -411,7 +414,7 @@ const BankingActionModal = ({
                   className="bg-primary hover:bg-primary/90 text-white px-6 font-semibold w-full sm:w-auto"
                   disabled={loading}
                 >
-                  Save & Update
+                  {t("bankingApproval.saveAndUpdate")}
                 </Button>
               )}
             </div>
@@ -421,14 +424,14 @@ const BankingActionModal = ({
                 onClick={() => setShowRejectModal(true)}
                 disabled={isEditMode || loading}
               >
-                <Ban className="w-4 h-4 mr-2" /> Reject
+                <Ban className="w-4 h-4 mr-2" /> {t("bankingApproval.reject")}
               </Button>
               <Button
                 className="bg-primary hover:bg-primary/90 text-white px-8 font-bold min-w-[120px] transition-all w-full sm:w-auto"
                 onClick={() => onApproveReject(1)}
                 disabled={isEditMode || loading}
               >
-                <CheckCircle2 className="w-4 h-4 mr-2" /> Approve
+                <CheckCircle2 className="w-4 h-4 mr-2" /> {t("bankingApproval.approve")}
               </Button>
             </div>
           </div>
@@ -440,16 +443,17 @@ const BankingActionModal = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-red-600">
               <AlertTriangle className="h-5 w-5" />
-              Reject Application
+              {t("bankingApproval.rejectApplication")}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <Label htmlFor="remarks" className="mb-2 block text-sm font-medium">
-              Rejection Remarks <span className="text-red-500">*</span>
+              {t("bankingApproval.rejectionRemarks")}{" "}
+              <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="remarks"
-              placeholder="Enter reason for rejection..."
+              placeholder={t("bankingApproval.enterRejectionReason")}
               value={rejectRemarks}
               onChange={(e) => setRejectRemarks(e.target.value)}
               className="min-h-[100px] focus-visible:ring-red-500"
@@ -457,13 +461,13 @@ const BankingActionModal = ({
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowRejectModal(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               className="bg-red-600 hover:bg-red-700 text-white"
               onClick={handleRejectConfirm}
             >
-              Confirm Rejection
+              {t("bankingApproval.confirmRejection")}
             </Button>
           </DialogFooter>
         </DialogContent>

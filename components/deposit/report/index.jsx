@@ -1,6 +1,8 @@
 
 
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { useSelector } from "react-redux";
@@ -65,6 +67,8 @@ const DepositReport = ({
   setIsOpenDepositReceipt,
   depositReceiptData,
 }) => {
+  const { t } = useTranslation();
+
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -280,7 +284,7 @@ const DepositReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Deposit Report</h3>
+                <h3 className="text-xl font-semibold ">{t("deposit.report.title")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -300,7 +304,7 @@ const DepositReport = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("deposit.fields.fromDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -308,7 +312,7 @@ const DepositReport = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"
+                  label={t("deposit.fields.toDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -316,31 +320,31 @@ const DepositReport = ({
                 <DropdownField
                   control={form.control}
                   name="productType"
-                  label="Product Type"
+                  label={t("deposit.fields.productType")}
                   options={productTypeData}
                   optionLabelKey="Prd_SH_Name"
-                  placeholder="Select product type"
-                  searchPlaceholder="Search product type..."
+                  placeholder={t("deposit.report.placeholders.productType")}
+                  searchPlaceholder={t("deposit.report.placeholders.searchProductType")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="reportType"
-                  label="Report Type"
+                  label={t("deposit.report.fields.reportType")}
                   options={reportTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select report type"
-                  searchPlaceholder="Search report type..."
+                  placeholder={t("deposit.report.placeholders.reportType")}
+                  searchPlaceholder={t("deposit.report.placeholders.searchReportType")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="branch"
-                  label="Branch"
+                  label={t("deposit.report.fields.branch")}
                   options={branchData}
                   optionLabelKey="Branch_Name"
-                  placeholder="Select branch"
-                  searchPlaceholder="Search branch..."
+                  placeholder={t("deposit.report.placeholders.branch")}
+                  searchPlaceholder={t("deposit.report.placeholders.searchBranch")}
                 />
 
                 <div className="w-full flex items-center gap-5 self-end">

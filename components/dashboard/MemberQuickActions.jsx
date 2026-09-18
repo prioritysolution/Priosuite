@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { ChevronRight } from "lucide-react";
 import {
   Card,
@@ -12,13 +14,14 @@ import { useRouter } from "next/navigation";
 import { memberQuickActions } from "./memberDashboardData";
 
 const MemberQuickActions = () => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   return (
     <Card className="h-full border-none shadow-sm">
       <CardHeader className="px-4 py-4 sm:px-6">
         <CardTitle className="text-sm font-semibold text-slate-800 sm:text-base">
-          Quick Actions
+          {t("dashboard.quickActions")}
         </CardTitle>
       </CardHeader>
 
@@ -42,7 +45,17 @@ const MemberQuickActions = () => {
                   <Icon className={cn("h-4 w-4", action.iconColor)} />
                 </span>
                 <span className="min-w-0 flex-1 truncate font-medium text-slate-800">
-                  {action.label}
+                  {action.id === "fund-transfer"
+                  ? t("dashboard.fundTransfer")
+                  : action.id === "open-fd"
+                    ? t("dashboard.openFixedDeposit")
+                    : action.id === "apply-loan"
+                      ? t("dashboard.applyForLoan")
+                      : action.id === "download-passbook"
+                        ? t("dashboard.downloadPassbook")
+                        : action.id === "update-kyc"
+                          ? t("dashboard.updateKyc")
+                          : action.label}
                 </span>
                 <ChevronRight className="h-4 w-4 shrink-0 text-slate-400" />
               </button>

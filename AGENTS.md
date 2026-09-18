@@ -2,6 +2,8 @@
 
 Copy this file into any new project (or keep it here). Give it to Cursor, Claude, Copilot, etc. so the agent follows the same architecture **and uses the same updated packages**.
 
+For a **plain-text drop-in** (architecture + stack + same page design), copy `PRIOSUITE_STARTER.txt` into the other repo root, and copy `.cursor/rules/*.mdc` into that project’s `.cursor/rules/`.
+
 ---
 
 ## Product
@@ -214,14 +216,34 @@ if (res.message === "Data Found" || res.message === "Success") {
 
 ---
 
-## UI conventions
+## UI conventions (all form / master / report / transaction pages must match)
 
-- Prefer existing `components/ui/*` and `common/formFields/*`.
-- Full-height screens: outer `h-full` / calc height + `ScrollArea` for content; sticky/fixed header when needed.
-- Responsive: mobile-first Tailwind 4 utilities (`grid-cols-1 sm:… lg:…`).
-- Buttons inside forms: `type="button"` unless submitting.
-- Toasts: `react-hot-toast`.
-- Loading: `ClipLoader` / shared Spinner.
+Do not invent a new look. Copy the nearest existing screen.
+
+**Chrome:** Open Sans · `--radius: 0.5rem` · primary `hsl(219 94% 20%)` · sidebar/footer `#00264D` · page card `#fefefe` · main `bg-gray-50`.
+
+**Page shell:**
+
+```jsx
+<div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+  <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+    <h3 className="text-2xl font-semibold">Page Title</h3>
+    <ScrollArea className="w-full h-full">{/* sections */}</ScrollArea>
+  </div>
+</div>
+```
+
+- Inner sections: `border border-primary rounded-lg p-3 sm:p-5` + centered `text-xl font-semibold` title
+- Fields grid: `grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3`
+- Fields: `common/formFields` only (`h-10 rounded-md`); required = red `*` via `isRequired`
+- Submit: `Button type="submit" className="w-full sm:w-1/5 self-end"` + `ClipLoader color="#d7e6f4"`
+- Tables: `components/ui/table` + `border border-primary`
+- Success: `common/dialog/SuccessMessage` · toasts top-right
+- Forms: `autoComplete="off"`; inner buttons `type="button"` unless submit
+- Full-height + `ScrollArea` (the page itself does not scroll)
+- Exceptions: login (branded) and dashboard home (`bg-slate-50` + cards) — do not force this shell
+
+Full copy-paste tokens, CSS, and exceptions: `PRIOSUITE_STARTER.txt` section 8.
 
 ---
 

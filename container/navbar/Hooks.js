@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getBranchListAPI, postLogoutAPI } from "./NavbarApis";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Cookies from "@/utils/secureCookieHelper";
 import getCookieData from "@/utils/getCookieData";
+import { getSidebarData } from "@/container/sidebar/SidebarReducer";
+import { clearStoredUserDashboard } from "@/utils/userDashboardStorage";
 
 const COOKIE_OPTIONS = {
   expires: 7,
@@ -67,6 +69,7 @@ export const useNavbarBranch = () => {
 
 export const useLogout = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [logoutLoading, setLogoutLoading] = useState(false);
 
   const postLogoutApiCall = async () => {
@@ -78,6 +81,8 @@ export const useLogout = () => {
       } else {
         toast.error(res.message);
       }
+      clearStoredUserDashboard();
+      dispatch(getSidebarData([]));
       Cookies.remove("prioBankClientToken");
       Cookies.remove("orgId");
       Cookies.remove("userName");

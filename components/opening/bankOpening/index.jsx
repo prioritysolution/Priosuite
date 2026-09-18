@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getYear } from "date-fns";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 
 const BankOpening = ({ loading, form, handleSubmit }) => {
+  const { t } = useTranslation();
   const accountTypeData = useSelector(
     (state) => state?.openBankAccount?.bankAccountTypeData
   );
@@ -22,7 +24,9 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Bank Account Opening</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("opening.bankOpening.title")}
+        </h3>
 
         <ScrollArea className="w-full h-full">
           <Form {...form}>
@@ -36,7 +40,7 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                   <DatePickerField
                     control={form.control}
                     name="openingDate"
-                    label="Opening Date"
+                    label={t("opening.bankOpening.fields.openingDate")}
                     endYear={getYear(new Date(startDate))}
                     disabledDateAfter={new Date(startDate).setDate(
                       new Date(startDate).getDate() - 1
@@ -48,32 +52,32 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                   <InputField
                     control={form.control}
                     name="bankName"
-                    label="Bank Name"
-                    placeholder="Enter bank name"
+                    label={t("opening.bankOpening.fields.bankName")}
+                    placeholder={t("opening.bankOpening.placeholders.bankName")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="bankBranch"
-                    label="Bank Branch"
-                    placeholder="Enter bank branch"
+                    label={t("opening.bankOpening.fields.bankBranch")}
+                    placeholder={t("opening.bankOpening.placeholders.bankBranch")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="ifscCode"
-                    label="IFSC Code"
-                    placeholder="Enter ifsc code"
+                    label={t("opening.bankOpening.fields.ifscCode")}
+                    placeholder={t("opening.bankOpening.placeholders.ifscCode")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="accountNo"
-                    label="Account No."
-                    placeholder="Enter account no."
+                    label={t("opening.bankOpening.fields.accountNo")}
+                    placeholder={t("opening.bankOpening.placeholders.accountNo")}
                     type="number"
                     maxLength={15}
                     isRequired
@@ -84,13 +88,14 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                     name="accountType"
                     render={({ field }) => (
                       <DropdownField
-                        label="Account Type"
+                        label={t("opening.bankOpening.fields.accountType")}
                         value={field.value}
                         onChange={field.onChange}
                         options={accountTypeData}
-                        optionLabelKey="Option_Value" // Specify the key for label
-                        placeholder="Select account type"
-                        searchPlaceholder="Search account type..."
+                        optionLabelKey="Option_Value"
+                        placeholder={t("opening.bankOpening.placeholders.accountType")}
+                        searchPlaceholder={t("opening.bankOpening.placeholders.searchAccountType"
+                        )}
                         isRequired
                       />
                     )}
@@ -101,13 +106,14 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                     name="bankGl"
                     render={({ field }) => (
                       <DropdownField
-                        label="Bank GL."
+                        label={t("opening.bankOpening.fields.bankGl")}
                         value={field.value}
                         onChange={field.onChange}
                         options={bankGlData}
-                        optionLabelKey="Ledger_Name" // Specify the key for label
-                        placeholder="Select bank gl."
-                        searchPlaceholder="Search bank gl...."
+                        optionLabelKey="Ledger_Name"
+                        placeholder={t("opening.bankOpening.placeholders.bankGl")}
+                        searchPlaceholder={t("opening.bankOpening.placeholders.searchBankGl"
+                        )}
                         isRequired
                       />
                     )}
@@ -116,8 +122,8 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                   <InputField
                     control={form.control}
                     name="openingBalance"
-                    label="Opening Balance"
-                    placeholder="Enter opening balance"
+                    label={t("opening.bankOpening.fields.openingBalance")}
+                    placeholder={t("opening.bankOpening.placeholders.openingBalance")}
                     type="number"
                     isRequired
                   />
@@ -132,7 +138,7 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                     speedMultiplier={0.7}
                   />
                 ) : (
-                  "Add"
+                  t("opening.bankOpening.buttons.add")
                 )}
               </Button>
             </form>

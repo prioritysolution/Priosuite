@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,6 +15,7 @@ import { formatINR } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export default function CashDenominationTally({ data }) {
+  const { t } = useTranslation();
   const [counts, setCounts] = useState(() =>
     Object.fromEntries(data.denominations.map((d) => [d.id, d.count])),
   );
@@ -34,13 +37,15 @@ export default function CashDenominationTally({ data }) {
       <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3 space-y-0 pb-4">
         <div>
           <CardTitle className="text-lg text-slate-900">
-            Physical Cash Denomination Tally
+            {t("dashboard.cashTallyTitle")}
           </CardTitle>
-          <p className="mt-1 text-sm text-slate-500">নগদ নোট হিসাব</p>
+          <p className="mt-1 text-sm text-slate-500">
+            {t("dashboard.cashNoteCount")}
+          </p>
         </div>
         {data.isReconciled ? (
           <Badge className="border-0 bg-emerald-50 font-medium text-emerald-700">
-            Reconciled Zero Variance
+            {t("dashboard.reconciledZero")}
           </Badge>
         ) : null}
       </CardHeader>
@@ -51,7 +56,21 @@ export default function CashDenominationTally({ data }) {
               key={row.id}
               className="rounded-lg border border-slate-200 bg-slate-50/80 p-3"
             >
-              <p className="text-xs font-medium text-slate-500">{row.label}</p>
+              <p className="text-xs font-medium text-slate-500">
+                {row.id === "500"
+                  ? t("dashboard.notes500")
+                  : row.id === "200"
+                    ? t("dashboard.notes200")
+                    : row.id === "100"
+                      ? t("dashboard.notes100")
+                      : row.id === "50"
+                        ? t("dashboard.notes50")
+                        : row.id === "20"
+                          ? t("dashboard.notes20")
+                          : row.id === "10"
+                            ? t("dashboard.notes10")
+                            : row.label}
+              </p>
               <Input
                 type="number"
                 min={0}
@@ -72,7 +91,7 @@ export default function CashDenominationTally({ data }) {
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
           <p className="text-sm font-semibold text-slate-900">
-            Total Physical Counted Cash: {formatINR(totalCounted)}
+            {t("dashboard.totalPhysicalCash")} {formatINR(totalCounted)}
           </p>
           <Badge
             className={cn(
@@ -82,7 +101,7 @@ export default function CashDenominationTally({ data }) {
                 : "bg-amber-50 text-amber-800",
             )}
           >
-            Variance: {formatINR(data.variance)} (Balanced)
+            {t("dashboard.varianceBalanced", { amount: formatINR(data.variance) })}
           </Badge>
         </div>
       </CardContent>

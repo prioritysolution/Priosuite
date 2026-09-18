@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { MdDeleteForever } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const AdjustmentVoucher = ({
   loading,
@@ -48,6 +49,8 @@ const AdjustmentVoucher = ({
   handleDeleteTableData,
   handlePostAdjustmentVoucher,
 }) => {
+  const { t } = useTranslation();
+
   const ledgerListData = useSelector(
     (state) => state?.voucherEntry?.ledgerList
   );
@@ -64,13 +67,13 @@ const AdjustmentVoucher = ({
             >
               <div className="w-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                 <h3 className="w-full text-center text-xl font-semibold">
-                  Adjustment Voucher
+                  {t("adjustmentVoucher.adjustmentVoucher")}
                 </h3>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <DatePickerField
                     control={form.control}
                     name="date"
-                    label="Voucher Date"
+                    label={t("common.voucherDate")}
                     startYear={2000}
                     endYear={2050}
                   />
@@ -80,10 +83,10 @@ const AdjustmentVoucher = ({
                     name="manVoucherNo"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Manual Voucher No.</FormLabel>
+                        <FormLabel>{t("common.manualVoucherNo")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter manual voucher no."
+                            placeholder={t("common.enterManualVoucherNo")}
                             readOnly={tableData && tableData.length > 0}
                             {...field}
                           />
@@ -98,10 +101,10 @@ const AdjustmentVoucher = ({
                     name="narration"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Narration</FormLabel>
+                        <FormLabel>{t("common.narration")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter narration"
+                            placeholder={t("common.enterNarration")}
                             readOnly={tableData && tableData.length > 0}
                             {...field}
                           />
@@ -116,13 +119,13 @@ const AdjustmentVoucher = ({
                     name="gl"
                     render={({ field }) => (
                       <DropdownField
-                        label="Gl."
+                        label={t("common.gl")}
                         value={field.value}
                         onChange={field.onChange}
                         options={ledgerListData}
                         optionLabelKey="Ledger_Name" // Specify the key for label
-                        placeholder="Select gl"
-                        searchPlaceholder="Search gl..."
+                        placeholder={t("common.selectGl")}
+                        searchPlaceholder={t("common.searchGl")}
                       />
                     )}
                   />
@@ -132,10 +135,10 @@ const AdjustmentVoucher = ({
                     name="amount"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Amount</FormLabel>
+                        <FormLabel>{t("common.amount")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter amount"
+                            placeholder={t("common.enterAmount")}
                             type="number"
                             {...field}
                           />
@@ -150,19 +153,25 @@ const AdjustmentVoucher = ({
                     name="drCr"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>DR/CR</FormLabel>
+                        <FormLabel>{t("common.drCr")}</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           value={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select dr/cr" />
+                              <SelectValue
+                                placeholder={t("common.selectDrCr")}
+                              />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value={`D`}>Debit</SelectItem>
-                            <SelectItem value={`C`}>Credit</SelectItem>
+                            <SelectItem value={`D`}>
+                              {t("common.debit")}
+                            </SelectItem>
+                            <SelectItem value={`C`}>
+                              {t("common.credit")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -171,7 +180,7 @@ const AdjustmentVoucher = ({
                   />
                 </div>
                 <Button className="self-end w-full sm:w-1/5" type="submit">
-                  Add To Table
+                  {t("common.addToTable")}
                 </Button>
               </div>
 
@@ -180,11 +189,13 @@ const AdjustmentVoucher = ({
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[100px]">SL.</TableHead>
-                        <TableHead>Gl. Name</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead>DR/CR</TableHead>
-                        <TableHead>Action</TableHead>
+                        <TableHead className="w-[100px]">
+                          {t("common.sl")}
+                        </TableHead>
+                        <TableHead>{t("common.glName")}</TableHead>
+                        <TableHead>{t("common.amount")}</TableHead>
+                        <TableHead>{t("common.drCr")}</TableHead>
+                        <TableHead>{t("common.action")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -205,7 +216,9 @@ const AdjustmentVoucher = ({
                             <TableCell>{data?.amount}</TableCell>
                             <TableCell>
                               {data.drCr &&
-                                (data.drCr === "C" ? "Credit" : "Debit")}
+                                (data.drCr === "C"
+                                  ? t("common.credit")
+                                  : t("common.debit"))}
                             </TableCell>
                             <TableCell className="text-2xl text-red-500 text-center">
                               <MdDeleteForever
@@ -219,9 +232,9 @@ const AdjustmentVoucher = ({
                     <TableFooter>
                       <TableRow>
                         <TableCell></TableCell>
-                        <TableCell>Total Credit</TableCell>
+                        <TableCell>{t("common.totalCredit")}</TableCell>
                         <TableCell>{totalCredit}</TableCell>
-                        <TableCell>Total Debit</TableCell>
+                        <TableCell>{t("common.totalDebit")}</TableCell>
                         <TableCell>{totalDebit}</TableCell>
                       </TableRow>
                     </TableFooter>
@@ -244,7 +257,7 @@ const AdjustmentVoucher = ({
                 {loading ? (
                   <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
-                  "Post"
+                  t("common.post")
                 )}
               </div>
             </form>

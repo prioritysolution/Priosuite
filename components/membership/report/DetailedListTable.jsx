@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -20,22 +21,24 @@ const DetailedListTable = ({
   handleShowLedger,
   loading,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Table className="">
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className=" text-center">Sl No.</TableHead>
-          <TableHead className="">Date</TableHead>
-          <TableHead className="">Member Type</TableHead>
-          <TableHead className="">Customer Name</TableHead>
-          <TableHead className="">Gurdian Name</TableHead>
-          <TableHead className="">Village</TableHead>
-          <TableHead className="">L/F No.</TableHead>
-          <TableHead className="">Opening</TableHead>
-          <TableHead className="">Issue</TableHead>
-          <TableHead className="">Release</TableHead>
-          <TableHead className="">Closing</TableHead>
-          <TableHead className="">Div. Bal.</TableHead>
+          <TableHead className=" text-center">{t("membership.reports.slNo")}</TableHead>
+          <TableHead className="">{t("membership.reports.date")}</TableHead>
+          <TableHead className="">{t("membership.reports.memberType")}</TableHead>
+          <TableHead className="">{t("membership.reports.customerName")}</TableHead>
+          <TableHead className="">{t("membership.reports.guardianName")}</TableHead>
+          <TableHead className="">{t("membership.reports.village")}</TableHead>
+          <TableHead className="">{t("membership.reports.lfNo")}</TableHead>
+          <TableHead className="">{t("membership.reports.opening")}</TableHead>
+          <TableHead className="">{t("membership.reports.issue")}</TableHead>
+          <TableHead className="">{t("membership.reports.release")}</TableHead>
+          <TableHead className="">{t("membership.reports.closing")}</TableHead>
+          <TableHead className="">{t("membership.reports.dividendBalance")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">
@@ -99,7 +102,7 @@ const DetailedListTable = ({
           </TableRow>
         ) : (
           <TableRow className="bg-gray-100">
-            <TableCell colSpan={7}>Total</TableCell>
+            <TableCell colSpan={7}>{t("common.total")}</TableCell>
             <TableCell>{totalOpening?.toFixed(2)}</TableCell>
             <TableCell>{totalIssue?.toFixed(2)}</TableCell>
             <TableCell>{totalRelease?.toFixed(2)}</TableCell>

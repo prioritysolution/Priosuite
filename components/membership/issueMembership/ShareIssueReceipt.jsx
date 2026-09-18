@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import getCookieData from "@/utils/getCookieData";
@@ -16,6 +17,8 @@ import { MdContentCut } from "react-icons/md";
 import { useReactToPrint } from "react-to-print";
 
 const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
+  const { t } = useTranslation();
+
   const [orgName, setOrgName] = useState(null);
   const [orgBranch, setOrgBranch] = useState(null);
   const [orgAddress, setOrgAddress] = useState(null);
@@ -26,7 +29,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
 
   const generatePDF = useReactToPrint({
     contentRef: printRef,
-    documentTitle: "Share Issue Receipt",
+    documentTitle: t("membership.shareIssueReceipt.documentTitle"),
     pageStyle: `
     body {
       display:flex;
@@ -72,7 +75,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
       >
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-medium">
-            Share Issue Receipt
+            {t("membership.shareIssueReceipt.title")}
           </DialogTitle>
         </DialogHeader>
         <div className="w-full border-t border-border" />
@@ -93,17 +96,17 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                     {orgName || ""}
                   </h3>
                   <p className="uppercase">
-                    Branch - {orgBranch} | Address - {orgAddress || ""}
+                    {t("membership.shareIssueReceipt.branchAddress")} {orgBranch} | {t("membership.shareIssueReceipt.addressLabel")} {orgAddress || ""}
                   </p>
                   <p className="">{orgReg || ""}</p>
-                  <p className="underline text-sm">Share Issue Receipt</p>
-                  <p>Member Type - {shareIssueReceiptData?.Member_Type}</p>
+                  <p className="underline text-sm">{t("membership.shareIssueReceipt.title")}</p>
+                  <p>{t("membership.shareIssueReceipt.memberTypeLabel")} {shareIssueReceiptData?.Member_Type}</p>
                 </div>
                 <div className="w-full  flex justify-between gap-1">
                   <div className=" flex-1">
                     <p>
                       <span className="relative">
-                        Name
+                        {t("membership.shareIssueReceipt.name")}
                         {Array.from({ length: 36 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -112,7 +115,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                         </span>
                       </span>{" "}
                       <span className="relative">
-                        Receipt Date
+                        {t("membership.shareIssueReceipt.receiptDate")}
                         {Array.from({ length: 17 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -127,7 +130,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                     </p>
                     <p>
                       <span className="relative">
-                        Add.
+                        {t("membership.shareIssueReceipt.add")}
                         {Array.from({ length: 65 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -138,7 +141,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                     </p>
                     <p>
                       <span className="relative">
-                        Member No.
+                        {t("membership.shareIssueReceipt.memberNo")}
                         {Array.from({ length: 15 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -147,7 +150,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                         </span>
                       </span>
                       <span className="relative">
-                        Guardian Name
+                        {t("membership.shareIssueReceipt.guardianName")}
                         {Array.from({ length: 31 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -158,7 +161,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                     </p>
                     <p>
                       <span className="relative">
-                        Balance
+                        {t("membership.shareIssueReceipt.balance")}
                         {Array.from({ length: 62 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -170,7 +173,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                   </div>
                   <div className="h-[70px] w-[80px] border-2 border-black rounded-lg text-sm ">
                     <p className=" w-full h-1/2  text-center bg-black flex items-center justify-center text-white font-semibold">
-                      Receipt No
+                      {t("membership.shareIssueReceipt.receiptNo")}
                     </p>
                     <div className="flex flex-col items-center justify-center w-full h-1/2">
                       <span>{shareIssueReceiptData?.Rec_No}</span>
@@ -181,29 +184,29 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                   {/* First Child */}
                   <div className="text-center border-r-2 border-black flex flex-col">
                     <p className="h-6 border-b-2 border-black flex items-center justify-center uppercase text-sm font-medium flex-shrink-0 flex-grow-0">
-                      Particulars
+                      {t("membership.shareIssueReceipt.particulars")}
                     </p>
                     <div className="flex flex-col justify-between w-full h-full">
                       <div className="w-full flex flex-col items-end gap-[2px]  px-3 pt-[2px]">
                         {shareIssueReceiptData?.Admission_Fees &&
                         shareIssueReceiptData?.Admission_Fees > 0 ? (
-                          <p className="">Admission Fees</p>
+                          <p className="">{t("membership.shareIssueReceipt.admissionFees")}</p>
                         ) : (
                           <></>
                         )}
-                        <p className="">Share Amount</p>
+                        <p className="">{t("membership.shareIssueReceipt.shareAmount")}</p>
                       </div>
                       <div className="w-full flex flex-col items-end gap-2 flex-shrink-0 px-3 pb-[2px] font-medium">
                         <p>
                           <span className="font-normal">
-                            (Rupees{" "}
+                            ({t("membership.shareIssueReceipt.rupees")}{" "}
                             {convertToWords(
                               (shareIssueReceiptData?.Admission_Fees || 0) +
                                 (shareIssueReceiptData?.Share_Amount || 0)
                             )}{" "}
-                            Only)
+                            {t("membership.shareIssueReceipt.only")})
                           </span>{" "}
-                          Total Rs.
+                          {t("membership.shareIssueReceipt.totalRs")}
                         </p>
                       </div>
                     </div>
@@ -211,7 +214,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                   {/* Second Child with Specific Width */}
                   <div className="text-center border-black flex flex-col">
                     <p className="h-6 border-b-2 border-black flex items-center justify-center text-sm  font-medium flex-shrink-0 flex-grow-0">
-                      AMOUNT
+                      {t("membership.shareIssueReceipt.amount")}
                     </p>
                     <div className=" w-full h-full relative flex flex-col items-end">
                       <div className="w-full h-full flex flex-col items-end gap-[2px] pt-[2px] pr-14 relative">
@@ -287,18 +290,18 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                 <div className="w-full flex justify-between mb-2">
                   <div className=" flex-1 flex flex-col justify-between">
                     <div className="w-full grid grid-cols-2 pt-2">
-                      <p>Received Mode : {shareIssueReceiptData?.Mode}</p>
-                      <p>Received By : {shareIssueReceiptData?.Received_By}</p>
+                      <p>{t("membership.shareIssueReceipt.receivedMode")} {shareIssueReceiptData?.Mode}</p>
+                      <p>{t("membership.shareIssueReceipt.receivedBy")} {shareIssueReceiptData?.Received_By}</p>
                     </div>
                     <p className="text-nowrap">
-                      Printed On : {currentDate} {currentTime}
+                      {t("membership.shareIssueReceipt.printedOn")} {currentDate} {currentTime}
                     </p>
                   </div>
                   <div className="w-1/3 self-end">
-                    <p className="w-full text-center">E. & O.E.</p>
+                    <p className="w-full text-center">{t("membership.shareIssueReceipt.eAndOe")}</p>
                     <div className="w-full border-2 border-black rounded-xl h-[60px]">
                       <p className="bg-black text-center text-sm text-white font-medium rounded-b-md w-fit px-5 pb-1 mx-auto">
-                        Cashier
+                        {t("membership.shareIssueReceipt.cashier")}
                       </p>
                     </div>
                   </div>
@@ -321,17 +324,17 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                     {orgName || ""}
                   </h3>
                   <p className="uppercase">
-                    Branch - {orgBranch} | Address - {orgAddress || ""}
+                    {t("membership.shareIssueReceipt.branchAddress")} {orgBranch} | {t("membership.shareIssueReceipt.addressLabel")} {orgAddress || ""}
                   </p>
                   <p className="">{orgReg || ""}</p>
-                  <p className="underline text-sm">Share Issue Receipt</p>
-                  <p>Member Type - {shareIssueReceiptData?.Member_Type}</p>
+                  <p className="underline text-sm">{t("membership.shareIssueReceipt.title")}</p>
+                  <p>{t("membership.shareIssueReceipt.memberTypeLabel")} {shareIssueReceiptData?.Member_Type}</p>
                 </div>
                 <div className="w-full  flex justify-between gap-1">
                   <div className=" flex-1">
                     <p>
                       <span className="relative">
-                        Name
+                        {t("membership.shareIssueReceipt.name")}
                         {Array.from({ length: 36 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -340,7 +343,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                         </span>
                       </span>{" "}
                       <span className="relative">
-                        Receipt Date
+                        {t("membership.shareIssueReceipt.receiptDate")}
                         {Array.from({ length: 17 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -355,7 +358,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                     </p>
                     <p>
                       <span className="relative">
-                        Add.
+                        {t("membership.shareIssueReceipt.add")}
                         {Array.from({ length: 65 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -366,7 +369,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                     </p>
                     <p>
                       <span className="relative">
-                        Member No.
+                        {t("membership.shareIssueReceipt.memberNo")}
                         {Array.from({ length: 15 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -375,7 +378,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                         </span>
                       </span>
                       <span className="relative">
-                        Guardian Name
+                        {t("membership.shareIssueReceipt.guardianName")}
                         {Array.from({ length: 31 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -386,7 +389,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                     </p>
                     <p>
                       <span className="relative">
-                        Balance
+                        {t("membership.shareIssueReceipt.balance")}
                         {Array.from({ length: 62 }).map((_, i) => (
                           <span key={i}> &#46;</span>
                         ))}
@@ -398,7 +401,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                   </div>
                   <div className="h-[70px] w-[80px] border-2 border-black rounded-lg text-sm ">
                     <p className=" w-full h-1/2  text-center bg-black flex items-center justify-center text-white font-semibold">
-                      Receipt No
+                      {t("membership.shareIssueReceipt.receiptNo")}
                     </p>
                     <div className="flex flex-col items-center justify-center w-full h-1/2">
                       <span>{shareIssueReceiptData?.Rec_No}</span>
@@ -409,29 +412,29 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                   {/* First Child */}
                   <div className="text-center border-r-2 border-black flex flex-col">
                     <p className="h-6 border-b-2 border-black flex items-center justify-center uppercase text-sm font-medium flex-shrink-0 flex-grow-0">
-                      Particulars
+                      {t("membership.shareIssueReceipt.particulars")}
                     </p>
                     <div className="flex flex-col justify-between w-full h-full">
                       <div className="w-full flex flex-col items-end gap-[2px]  px-3 pt-[2px]">
                         {shareIssueReceiptData?.Admission_Fees &&
                         shareIssueReceiptData?.Admission_Fees > 0 ? (
-                          <p className="">Admission Fees</p>
+                          <p className="">{t("membership.shareIssueReceipt.admissionFees")}</p>
                         ) : (
                           <></>
                         )}
-                        <p className="">Share Amount</p>
+                        <p className="">{t("membership.shareIssueReceipt.shareAmount")}</p>
                       </div>
                       <div className="w-full flex flex-col items-end gap-2 flex-shrink-0 px-3 pb-[2px] font-medium">
                         <p>
                           <span className="font-normal">
-                            (Rupees{" "}
+                            ({t("membership.shareIssueReceipt.rupees")}{" "}
                             {convertToWords(
                               (shareIssueReceiptData?.Admission_Fees || 0) +
                                 (shareIssueReceiptData?.Share_Amount || 0)
                             )}{" "}
-                            Only)
+                            {t("membership.shareIssueReceipt.only")})
                           </span>{" "}
-                          Total Rs.
+                          {t("membership.shareIssueReceipt.totalRs")}
                         </p>
                       </div>
                     </div>
@@ -439,7 +442,7 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                   {/* Second Child with Specific Width */}
                   <div className="text-center border-black flex flex-col">
                     <p className="h-6 border-b-2 border-black flex items-center justify-center text-sm  font-medium flex-shrink-0 flex-grow-0">
-                      AMOUNT
+                      {t("membership.shareIssueReceipt.amount")}
                     </p>
                     <div className=" w-full h-full relative flex flex-col items-end">
                       <div className="w-full h-full flex flex-col items-end gap-[2px] pt-[2px] pr-14 relative">
@@ -515,18 +518,18 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
                 <div className="w-full flex justify-between mb-2">
                   <div className=" flex-1 flex flex-col justify-between">
                     <div className="w-full grid grid-cols-2 pt-2">
-                      <p>Received Mode : {shareIssueReceiptData?.Mode}</p>
-                      <p>Received By : {shareIssueReceiptData?.Received_By}</p>
+                      <p>{t("membership.shareIssueReceipt.receivedMode")} {shareIssueReceiptData?.Mode}</p>
+                      <p>{t("membership.shareIssueReceipt.receivedBy")} {shareIssueReceiptData?.Received_By}</p>
                     </div>
                     <p className="text-nowrap">
-                      Printed On : {currentDate} {currentTime}
+                      {t("membership.shareIssueReceipt.printedOn")} {currentDate} {currentTime}
                     </p>
                   </div>
                   <div className="w-1/3 self-end">
-                    <p className="w-full text-center">E. & O.E.</p>
+                    <p className="w-full text-center">{t("membership.shareIssueReceipt.eAndOe")}</p>
                     <div className="w-full border-2 border-black rounded-xl h-[60px]">
                       <p className="bg-black text-center text-sm text-white font-medium rounded-b-md w-fit px-5 pb-1 mx-auto">
-                        Cashier
+                        {t("membership.shareIssueReceipt.cashier")}
                       </p>
                     </div>
                   </div>
@@ -541,13 +544,13 @@ const ShareIssueReceipt = ({ isOpen, setIsOpen, shareIssueReceiptData }) => {
             onClick={() => setIsOpen(false)}
             className="w-32 border-destructive text-destructive hover:bg-destructive hover:text-white"
           >
-            Cancel
+            {t("common.buttons.cancel")}
           </Button>
           <Button
             className="w-32"
             onClick={() => generatePDF()}
           >
-            Print
+            {t("common.buttons.print")}
           </Button>
         </DialogFooter>
       </DialogContent>

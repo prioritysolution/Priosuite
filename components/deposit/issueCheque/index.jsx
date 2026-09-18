@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import AccountSearchForm from "@/common/forms/AccountSearchForm";
 import { Button } from "@/components/ui/button";
@@ -23,10 +25,12 @@ const IssueCheque = ({
   handleCloseSuccessMessage,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Issue Cheque</h3>
+        <h3 className="text-2xl font-semibold ">{t("deposit.issueCheque.title")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
           <div className="w-full mb-10">
@@ -46,78 +50,78 @@ const IssueCheque = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Account Details
+                    {t("deposit.sections.accountDetails")}
                   </h3>
                   <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
                       name="accountNo"
-                      label="Account No."
-                      placeholder="Enter account no."
+                      label={t("deposit.fields.accountNo")}
+                      placeholder={t("deposit.placeholders.accountNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="refAccountNo"
-                      label="Ref. Account No."
-                      placeholder="Enter  ref. account no."
+                      label={t("deposit.fields.refAccountNo")}
+                      placeholder={t("deposit.placeholders.refAccountNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="memberNo"
-                      label="Member No."
-                      placeholder="Enter member no."
+                      label={t("deposit.fields.memberNo")}
+                      placeholder={t("deposit.placeholders.memberNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="cifNo"
-                      label="CIF. No."
-                      placeholder="Enter cif. no."
+                      label={t("deposit.fields.cifNoDot")}
+                      placeholder={t("deposit.placeholders.cifNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="memberName"
-                      label="Member Name"
-                      placeholder="Enter member name"
+                      label={t("deposit.fields.memberName")}
+                      placeholder={t("deposit.placeholders.memberName")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="guardianName"
-                      label="Guardian Name"
-                      placeholder="Enter guardian name"
+                      label={t("deposit.fields.guardianName")}
+                      placeholder={t("deposit.placeholders.guardianName")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="mobile"
-                      label="Mobile No."
-                      placeholder="Enter mobile no."
+                      label={t("deposit.fields.mobileNo")}
+                      placeholder={t("deposit.placeholders.mobileNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="availableBalance"
-                      label="Available Balance"
-                      placeholder="Enter available balance"
+                      label={t("deposit.fields.availableBalance")}
+                      placeholder={t("deposit.placeholders.availableBalance")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="operationMode"
-                      label="Operation Mode"
-                      placeholder="Enter operation mode"
+                      label={t("deposit.fields.operationMode")}
+                      placeholder={t("deposit.placeholders.operationMode")}
                       readOnly
                     />
                   </div>
@@ -127,14 +131,14 @@ const IssueCheque = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Cheque Details
+                    {t("deposit.sections.chequeDetails")}
                   </h3>
                   <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
                       name="fromNo"
-                      label="From No."
-                      placeholder="Enter from no."
+                      label={t("deposit.fields.fromNo")}
+                      placeholder={t("deposit.placeholders.fromNo")}
                       type="number"
                       isRequired
                     />
@@ -142,8 +146,8 @@ const IssueCheque = ({
                     <InputField
                       control={form.control}
                       name="toNo"
-                      label="To No."
-                      placeholder="Enter to no."
+                      label={t("deposit.fields.toNo")}
+                      placeholder={t("deposit.placeholders.toNo")}
                       type="number"
                       isRequired
                     />
@@ -151,23 +155,23 @@ const IssueCheque = ({
                     <InputField
                       control={form.control}
                       name="noOfLeaves"
-                      label="No. of Leaves"
-                      placeholder="Enter no. of leaves"
+                      label={t("deposit.fields.noOfLeaves")}
+                      placeholder={t("deposit.placeholders.noOfLeaves")}
                       readOnly
                     />
                     <InputField
                       control={form.control}
                       name="chargeAmount"
-                      label="Charge Amount"
-                      placeholder="Enter charge amount"
+                      label={t("deposit.fields.chargeAmount")}
+                      placeholder={t("deposit.placeholders.chargeAmount")}
                       type="number"
                     />
 
                     <TextareaField
                       control={form.control}
                       name="amountInWords"
-                      label="Amount in Words"
-                      placeholder="Total amount in words"
+                      label={t("deposit.fields.amountInWords")}
+                      placeholder={t("deposit.placeholders.totalAmount")}
                       className="text-red-500 text-base resize-none"
                       readOnly
                     />
@@ -184,7 +188,7 @@ const IssueCheque = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Save"
+                    t("common.buttons.save")
                   )}
                 </Button>
               )}

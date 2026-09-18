@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -33,6 +35,7 @@ const AccountPassbookSearchForm = ({
   generatePDF,
   pageData,
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const [activeTab, setActiveTab] = useState("memberNo");
@@ -49,14 +52,14 @@ const AccountPassbookSearchForm = ({
     if (form.getValues("dialougeMemberNo")) {
       getAccountListApiCall(2, form.getValues("dialougeMemberNo"), 1);
       setCurrentAccountPage(1);
-    } else toast.error("Please enter member no.");
+    } else toast.error(t("forms.pleaseEnterMemberNo"));
   };
 
   const handleSearchAccountListByName = () => {
     if (form.getValues("dialougeAccountName")) {
       getAccountListApiCall(1, form.getValues("dialougeAccountName"), 1);
       setCurrentAccountPage(1);
-    } else toast.error("Please enter name");
+    } else toast.error(t("forms.pleaseEnterName"));
   };
 
   const accountListData = useSelector(
@@ -105,8 +108,8 @@ const AccountPassbookSearchForm = ({
               <InputField
                 control={form.control}
                 name="accountNo"
-                label="Account No."
-                placeholder="Enter account no."
+                label={t("forms.accountNo")}
+                placeholder={t("forms.enterAccountNo")}
                 type="number"
                 isBlurUpdate
                 onInput={(e) => {
@@ -165,7 +168,7 @@ const AccountPassbookSearchForm = ({
           <DialogContent className="w-[calc(100vw-1rem)] max-w-[1000px] h-[min(90dvh,640px)] sm:h-auto sm:max-h-[85vh] p-3 sm:p-6 gap-3 overflow-hidden flex flex-col rounded-lg">
             <DialogHeader className="shrink-0 pr-8 text-left">
               <DialogTitle className="text-base sm:text-lg">
-                Search Account
+                {t("forms.searchAccount")}
               </DialogTitle>
             </DialogHeader>
             <div className="w-full min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
@@ -186,7 +189,7 @@ const AccountPassbookSearchForm = ({
                         color: activeTab === "memberNo" ? "#ffffff" : "",
                       }}
                     >
-                      By Member No.
+                      {t("forms.byMemberNo")}
                     </TabsTrigger>
                     <TabsTrigger
                       value="name"
@@ -196,7 +199,7 @@ const AccountPassbookSearchForm = ({
                         color: activeTab === "name" ? "#ffffff" : "",
                       }}
                     >
-                      By Name
+                      {t("forms.byName")}
                     </TabsTrigger>
                   </TabsList>
                   <TabsContent
@@ -206,15 +209,15 @@ const AccountPassbookSearchForm = ({
                     <InputField
                       control={form.control}
                       name="dialougeMemberNo"
-                      label="Member No."
+                      label={t("forms.memberNo")}
                       autoComplete="off"
-                      placeholder="Search by enter member no."
+                      placeholder={t("forms.searchByMemberNo")}
                     />
                     <Button
                       className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                       onClick={handleSearchAccountListByMemberNo}
                     >
-                      Search
+                      {t("forms.search")}
                     </Button>
                   </TabsContent>
                   <TabsContent
@@ -224,15 +227,15 @@ const AccountPassbookSearchForm = ({
                     <InputField
                       control={form.control}
                       name="dialougeAccountName"
-                      label="Name"
+                      label={t("forms.name")}
                       autoComplete="off"
-                      placeholder="Search by enter name"
+                      placeholder={t("forms.searchByName")}
                     />
                     <Button
                       className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                       onClick={handleSearchAccountListByName}
                     >
-                      Search
+                      {t("forms.search")}
                     </Button>
                   </TabsContent>
                 </Tabs>

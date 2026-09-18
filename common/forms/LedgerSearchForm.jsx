@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +33,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const LedgerSearchForm = ({ form, fieldName = "ledgerCode" }) => {
+  const { t } = useTranslation();
   const [dialougeOpen, setDialougeOpen] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -131,7 +134,7 @@ const LedgerSearchForm = ({ form, fieldName = "ledgerCode" }) => {
         <button
           type="button"
           className="cursor-pointer text-lg p-0 bg-transparent border-0"
-          aria-label="Search ledger"
+          aria-label={t("forms.searchLedgerAria")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -181,7 +184,7 @@ const LedgerSearchForm = ({ form, fieldName = "ledgerCode" }) => {
       >
         <DialogHeader className="shrink-0 pr-8 text-left">
           <DialogTitle className="text-base sm:text-lg">
-            Search Ledger
+            {t("forms.searchLedger")}
           </DialogTitle>
         </DialogHeader>
 
@@ -199,40 +202,40 @@ const LedgerSearchForm = ({ form, fieldName = "ledgerCode" }) => {
                 <DropdownField
                   control={searchForm.control}
                   name="acctType"
-                  label="Select Type"
+                  label={t("forms.selectType")}
                   options={acctTypeOptions}
                   optionLabelKey="Cat_Name"
-                  placeholder="Select type"
-                  searchPlaceholder="Search type..."
+                  placeholder={t("forms.selectTypePh")}
+                  searchPlaceholder={t("forms.searchType")}
                 />
 
                 <DropdownField
                   control={searchForm.control}
                   name="mainHead"
-                  label="Select Main Head"
+                  label={t("forms.selectMainHead")}
                   options={mainHeadOptions}
                   optionLabelKey="Head_Name"
-                  placeholder="Select main head"
-                  searchPlaceholder="Search main head..."
+                  placeholder={t("forms.selectMainHeadPh")}
+                  searchPlaceholder={t("forms.searchMainHead")}
                   disabled={!acctType}
                 />
 
                 <DropdownField
                   control={searchForm.control}
                   name="subHead"
-                  label="Select Sub Head"
+                  label={t("forms.selectSubHead")}
                   options={subHeadOptions}
                   optionLabelKey="Sub_Head"
-                  placeholder="Select sub head"
-                  searchPlaceholder="Search sub head..."
+                  placeholder={t("forms.selectSubHeadPh")}
+                  searchPlaceholder={t("forms.searchSubHead")}
                   disabled={!mainHead}
                 />
 
                 <InputField
                   control={searchForm.control}
                   name="keyword"
-                  label="Keyword"
-                  placeholder="Enter keyword"
+                  label={t("forms.keyword")}
+                  placeholder={t("forms.enterKeyword")}
                 />
 
                 <Button
@@ -247,7 +250,7 @@ const LedgerSearchForm = ({ form, fieldName = "ledgerCode" }) => {
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Search"
+                    t("forms.search")
                   )}
                 </Button>
               </div>
@@ -261,19 +264,19 @@ const LedgerSearchForm = ({ form, fieldName = "ledgerCode" }) => {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[60px] whitespace-nowrap">
-                        Sl
+                        {t("forms.sl")}
                       </TableHead>
                       <TableHead className="whitespace-nowrap">
-                        Category Name
+                        {t("forms.categoryName")}
                       </TableHead>
                       <TableHead className="whitespace-nowrap">
-                        Main Head
+                        {t("forms.mainHead")}
                       </TableHead>
                       <TableHead className="whitespace-nowrap">
-                        Sub Head
+                        {t("forms.subHead")}
                       </TableHead>
                       <TableHead className="whitespace-nowrap">
-                        Ledger Name
+                        {t("forms.ledgerName")}
                       </TableHead>
                     </TableRow>
                   </TableHeader>
@@ -315,7 +318,7 @@ const LedgerSearchForm = ({ form, fieldName = "ledgerCode" }) => {
                     ) : (
                       <TableRow>
                         <TableCell colSpan={5} className="h-24 text-center">
-                          No results.
+                          {t("forms.noResults")}
                         </TableCell>
                       </TableRow>
                     )}
@@ -336,7 +339,7 @@ const LedgerSearchForm = ({ form, fieldName = "ledgerCode" }) => {
                           onClick={() => goToLedgerPage(currentLedgerPage - 1)}
                           disabled={currentLedgerPage === 1}
                         >
-                          Previous
+                          {t("forms.previous")}
                         </Button>
                       </PaginationItem>
 
@@ -405,7 +408,7 @@ const LedgerSearchForm = ({ form, fieldName = "ledgerCode" }) => {
                           onClick={() => goToLedgerPage(currentLedgerPage + 1)}
                           disabled={currentLedgerPage === lastLedgerPage}
                         >
-                          Next
+                          {t("forms.next")}
                         </Button>
                       </PaginationItem>
                     </PaginationContent>

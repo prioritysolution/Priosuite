@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useState } from "react";
 import {
   flexRender,
@@ -41,6 +43,8 @@ const UnitTable = ({
   setCurrentUnitPage,
   lastUnitPage,
 }) => {
+  const { t } = useTranslation();
+
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -50,7 +54,7 @@ const UnitTable = ({
     {
       accessorKey: "serialNo",
       header: () => {
-        return <div className="text-left">Serial No</div>;
+        return <div className="text-left">{t("common.serialNo")}</div>;
       },
       cell: ({ row }) => {
         return <div className="text-left">{Number(row.id) + 1}</div>;
@@ -64,7 +68,7 @@ const UnitTable = ({
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Unit Name
+            {t("master.operationalArea.table.unitName")}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -77,14 +81,14 @@ const UnitTable = ({
     },
     {
       accessorKey: "Unit_No",
-      header: () => <div className="text-left ">Unit No.</div>,
+      header: () => <div className="text-left ">{t("master.operationalArea.table.unitNumber")}</div>,
       cell: ({ row }) => {
         return <div className="text-left">{row.getValue("Unit_No")}</div>;
       },
     },
     {
       accessorKey: "Id",
-      header: () => <div className="text-center ">Actions</div>,
+      header: () => <div className="text-center ">{t("common.actions")}</div>,
       cell: ({ row }) => {
         return (
           <div className="w-full flex justify-center  text-center">
@@ -92,7 +96,7 @@ const UnitTable = ({
               className="flex text-center items-center justify-center gap-3"
               onClick={() => handleEditData(data[row.id])}
             >
-              Edit
+              {t("common.buttons.edit")}
               <FaRegEdit />
             </Button>
           </div>
@@ -219,7 +223,7 @@ const UnitTable = ({
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {t("common.noResults")}
                   </TableCell>
                 </TableRow>
               )}
@@ -242,7 +246,7 @@ const UnitTable = ({
                 onClick={() => setCurrentUnitPage((prev) => prev - 1)}
                 disabled={currentUnitPage === 1}
               >
-                Previous
+                {t("common.previous")}
               </Button>
             </PaginationItem>
 
@@ -262,7 +266,7 @@ const UnitTable = ({
                 onClick={() => setCurrentUnitPage((prev) => prev + 1)}
                 disabled={currentUnitPage === lastUnitPage}
               >
-                Next
+                {t("common.next")}
               </Button>
             </PaginationItem>
           </PaginationContent>

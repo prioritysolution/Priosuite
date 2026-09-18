@@ -30,6 +30,7 @@ import { IoPrint } from "react-icons/io5";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const parseDateHelper = (dStr) => {
   if (!dStr) return null;
@@ -85,6 +86,7 @@ const Transaction = ({
   toDate,
   getLedgerLoading,
 }) => {
+  const { t } = useTranslation();
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   const [showInfoBlock, setShowInfoBlock] = useState(true);
   const beg_date = getCookieData("beg_date");
@@ -110,7 +112,9 @@ const Transaction = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-2 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Transaction</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("borrowings.transaction")}
+        </h3>
 
         <ScrollArea className="w-full h-full ">
           <Form {...form}>
@@ -121,7 +125,7 @@ const Transaction = ({
             >
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                 {/* <h3 className="w-full text-center text-xl font-semibold">
-                  Operation Block
+                  {t("borrowings.operationBlock")}
                 </h3> */}
                 <div className="w-full flex flex-col lg:flex-row gap-x-10 gap-y-3 ">
                   <FormField
@@ -129,7 +133,7 @@ const Transaction = ({
                     name="mode"
                     render={({ field }) => (
                       <FormItem className="flex flex-col md:flex-row md:col-span-3 items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full mt-5 h-fit self-end">
-                        <FormLabel>Select mode</FormLabel>
+                        <FormLabel>{t("borrowings.selectMode")}</FormLabel>
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
@@ -141,7 +145,7 @@ const Transaction = ({
                                 <RadioGroupItem value="disburse" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Disburse
+                                {t("borrowings.disburse")}
                               </FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-3 space-y-0">
@@ -149,7 +153,7 @@ const Transaction = ({
                                 <RadioGroupItem value="repayment" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Repayment
+                                {t("borrowings.repayment")}
                               </FormLabel>
                             </FormItem>
                           </RadioGroup>
@@ -165,13 +169,13 @@ const Transaction = ({
                     render={({ field }) => (
                       <div className="flex items-start gap-5 w-full ">
                         <DropdownField
-                          label="Account"
+                          label={t("common.account")}
                           value={field.value}
                           onChange={field.onChange}
                           options={accountData}
                           optionLabelKey="Account_No"
-                          placeholder="Select account"
-                          searchPlaceholder="Search account..."
+                          placeholder={t("borrowings.selectAccount")}
+                          searchPlaceholder={t("borrowings.searchAccount")}
                           isRequired
                         />
                         <TooltipProvider>
@@ -191,7 +195,7 @@ const Transaction = ({
                               </div>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>View Ledger</p>
+                              <p>{t("common.viewLedger")}</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -205,7 +209,7 @@ const Transaction = ({
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                 <div className="flex justify-between items-center w-full">
                   <h3 className="text-xl font-semibold w-full text-center pl-6">
-                    Account Info Block
+                    {t("borrowings.accountInfoBlock")}
                   </h3>
                   <div
                     onClick={() => setShowInfoBlock(!showInfoBlock)}
@@ -220,56 +224,56 @@ const Transaction = ({
                     <InputField
                       control={form.control}
                       name="productName"
-                      label="Product Name"
-                      placeholder="Enter product name"
+                      label={t("borrowings.productName")}
+                      placeholder={t("borrowings.enterProductName")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="bankName"
-                      label="Bank Name"
-                      placeholder="Enter bank name"
+                      label={t("common.bankName")}
+                      placeholder={t("borrowings.enterBankName")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="disburseDate"
-                      label="Disburse Date"
-                      placeholder="Enter disburse date"
+                      label={t("borrowings.disburseDate")}
+                      placeholder={t("borrowings.enterDisburseDate")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="rateOfInterest"
-                      label="Rate Of Interest"
-                      placeholder="Enter rate of interest"
+                      label={t("borrowings.rateOfInterest")}
+                      placeholder={t("borrowings.enterRateOfInterest")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="overdueRate"
-                      label="Overdue Rate"
-                      placeholder="Enter overdue rate"
+                      label={t("borrowings.overdueRate")}
+                      placeholder={t("borrowings.enterOverdueRate")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="dueDate"
-                      label="Due Date"
-                      placeholder="Enter due date"
+                      label={t("common.dueDate")}
+                      placeholder={t("borrowings.enterDueDate")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="balance"
-                      label="Balance"
-                      placeholder="Enter balance"
+                      label={t("common.balance")}
+                      placeholder={t("borrowings.enterBalance")}
                       readOnly
                     />
                   </div>
@@ -278,15 +282,19 @@ const Transaction = ({
 
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                 <h3 className="w-full text-center text-xl font-semibold">
-                  {mode === "disburse" ? "Disburse" : "Repayment"} Block
+                  {mode === "disburse"
+                    ? `${t("borrowings.disburse")} ${t("borrowings.block")}`
+                    : `${t("borrowings.repayment")} ${t("borrowings.block")}`}
                 </h3>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <DatePickerField
                     control={form.control}
                     name="date"
                     label={`${
-                      mode === "disburse" ? "Disburse" : "Repayment"
-                    } Date`}
+                      mode === "disburse"
+                        ? t("borrowings.disburse")
+                        : t("borrowings.repayment")
+                    } ${t("common.date")}`}
                     disabled={true}
                     defaultValue={parseDateHelper(beg_date) || new Date()}
                     isRequired
@@ -294,27 +302,31 @@ const Transaction = ({
                   <InputField
                     control={form.control}
                     name="particulars"
-                    label="Particulars"
-                    placeholder="Enter particulars"
+                    label={t("common.particulars")}
+                    placeholder={t("common.enterParticulars")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="refVouchNo"
-                    label="Ref. Vouch No."
-                    placeholder="Enter ref. vouch no."
+                    label={t("common.refVouchNo")}
+                    placeholder={t("common.enterRefVouchNo")}
                   />
 
                   <InputField
                     control={form.control}
                     name="principal"
                     label={`${
-                      mode === "disburse" ? "Disburse" : "Principal"
-                    } Amount`}
-                    placeholder={`Enter ${
-                      mode === "disburse" ? "Disburse" : "Principal"
-                    } amount`}
+                      mode === "disburse"
+                        ? t("borrowings.disburse")
+                        : t("borrowings.principal")
+                    } ${t("common.amount")}`}
+                    placeholder={`${t("common.enter")} ${
+                      mode === "disburse"
+                        ? t("borrowings.disburse")
+                        : t("borrowings.principal")
+                    } ${t("common.amount").toLowerCase()}`}
                     isRequired
                   />
 
@@ -324,15 +336,15 @@ const Transaction = ({
                       <InputField
                         control={form.control}
                         name="interest"
-                        label="Interest Amount"
-                        placeholder="Enter interest amount"
+                        label={t("borrowings.interestAmount")}
+                        placeholder={t("borrowings.enterInterestAmount")}
                         isRequired={form.getValues("mode") === "repayment"}
                       />
                       <InputField
                         control={form.control}
                         name="total"
-                        label="Total Amount"
-                        placeholder="Enter total amount"
+                        label={t("common.totalAmount")}
+                        placeholder={t("borrowings.enterTotalAmount")}
                         readOnly
                       />{" "}
                     </>
@@ -343,7 +355,9 @@ const Transaction = ({
                     name="transMode"
                     render={({ field }) => (
                       <FormItem className="flex flex-col md:flex-row md:col-span-2 items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full mt-5">
-                        <FormLabel>Select transanction mode</FormLabel>
+                        <FormLabel>
+                          {t("common.selectTransactionMode")}
+                        </FormLabel>
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
@@ -356,7 +370,7 @@ const Transaction = ({
                                   <RadioGroupItem value="cash" />
                                 </FormControl>
                                 <FormLabel className="font-normal">
-                                  Cash
+                                  {t("common.cash")}
                                 </FormLabel>
                               </FormItem>
                             )}
@@ -365,7 +379,7 @@ const Transaction = ({
                                 <RadioGroupItem value="bank" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Bank
+                                {t("common.bank")}
                               </FormLabel>
                             </FormItem>
                           </RadioGroup>
@@ -397,13 +411,13 @@ const Transaction = ({
                       name="bank"
                       render={({ field }) => (
                         <DropdownField
-                          label="Bank"
+                          label={t("common.bank")}
                           value={field.value}
                           onChange={field.onChange}
                           options={bankAccountData}
                           optionLabelKey="Bank_Name"
-                          placeholder="Select bank"
-                          searchPlaceholder="Search bank..."
+                          placeholder={t("borrowings.selectBank")}
+                          searchPlaceholder={t("borrowings.searchBank")}
                         />
                       )}
                     />
@@ -427,7 +441,7 @@ const Transaction = ({
                 {loading ? (
                   <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
-                  "Add"
+                  t("common.add")
                 )}
               </Button>
             </form>

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
@@ -70,6 +72,8 @@ const Deposit = ({
   depositProduct,
   getLedgerLoading,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -117,7 +121,7 @@ const Deposit = ({
             toDate={form.getValues("depositDate")}
             resetTrigger={resetTrigger}
             allowAlphanumeric
-            formLabel="Deposit"
+            formLabel={t("deposit.depositTxn.title")}
             showDateFix={true}
             operateProductData={operateProductData}
             showProduct={true}
@@ -136,7 +140,7 @@ const Deposit = ({
                 <>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
                     <h2 className="text-lg text-center font-semibold">
-                      Account Details
+                      {t("deposit.sections.accountDetails")}
                     </h2>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
@@ -158,59 +162,59 @@ const Deposit = ({
                               <InputField
                                 control={form.control}
                                 name="memberNo"
-                                label="Member No."
-                                placeholder="Enter member no."
+                                label={t("deposit.fields.memberNo")}
+                                placeholder={t("deposit.placeholders.memberNo")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="cifNo"
-                                label="CIF No."
-                                placeholder="Enter cif no."
+                                label={t("deposit.fields.cifNo")}
+                                placeholder={t("deposit.placeholders.cifNo")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="accountNo"
-                                label="Account No."
-                                placeholder="Enter account no."
+                                label={t("deposit.fields.accountNo")}
+                                placeholder={t("deposit.placeholders.accountNo")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="refAcNo"
-                                label="Manual / REF. Account No."
-                                placeholder="Enter manual / ref. account no."
+                                label={t("deposit.fields.manualRefAccountNo")}
+                                placeholder={t("deposit.placeholders.manualRefAccountNo")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="memberName"
-                                label="Member Name"
-                                placeholder="Enter member name"
+                                label={t("deposit.fields.memberName")}
+                                placeholder={t("deposit.placeholders.memberName")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="gurdianName"
-                                label="Gurdian Name"
-                                placeholder="Enter gurdian name"
+                                label={t("deposit.fields.guardianName")}
+                                placeholder={t("deposit.placeholders.guardianName")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="mobile"
-                                label="Mobile No."
-                                placeholder="Enter mobile no."
+                                label={t("deposit.fields.mobileNo")}
+                                placeholder={t("deposit.placeholders.mobileNo")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="panNo"
-                                label="Pan No."
-                                placeholder="Enter pan no."
+                                label={t("deposit.fields.panNo")}
+                                placeholder={t("deposit.placeholders.panNo")}
                                 readOnly
                               />
 
@@ -221,9 +225,9 @@ const Deposit = ({
                                   label={
                                     depositProduct?.Prod_Type === 3
                                       ? "Paid Upto"
-                                      : "Last Deposit Date"
+                                      : t("deposit.fieldsExtra.lastDepositDate")
                                   }
-                                  placeholder="Enter last deposit date"
+                                  placeholder={t("deposit.placeholders.lastDepositAmount")}
                                   readOnly
                                 />
                               )}
@@ -232,8 +236,8 @@ const Deposit = ({
                                 <InputField
                                   control={form.control}
                                   name="lastDepositAmount"
-                                  label="Last Deposit Amount"
-                                  placeholder="Enter last deposit amount"
+                                  label={t("deposit.fields.lastDepositAmount")}
+                                  placeholder={t("deposit.placeholders.lastDepositAmount")}
                                   readOnly
                                 />
                               )}
@@ -244,8 +248,8 @@ const Deposit = ({
                                   <InputField
                                     control={form.control}
                                     name="installmentAmount"
-                                    label="Installment Amount"
-                                    placeholder="Enter installment amount"
+                                    label={t("deposit.fields.installmentAmount")}
+                                    placeholder={t("deposit.placeholders.installmentAmount")}
                                     readOnly
                                   />
                                 )}
@@ -254,8 +258,8 @@ const Deposit = ({
                                 <InputField
                                   control={form.control}
                                   name="maturityDate"
-                                  label="Maturity Date"
-                                  placeholder="Enter maturity date"
+                                  label={t("deposit.fields.maturityDate")}
+                                  placeholder={t("deposit.placeholders.maturityDate")}
                                   readOnly
                                 />
                               )}
@@ -264,8 +268,8 @@ const Deposit = ({
                                 <InputField
                                   control={form.control}
                                   name="maturityAmount"
-                                  label="Maturity Amount"
-                                  placeholder="Enter maturity Amount"
+                                  label={t("deposit.fields.maturityAmount")}
+                                  placeholder={t("deposit.placeholders.maturityAmount")}
                                   readOnly
                                 />
                               )}
@@ -273,40 +277,40 @@ const Deposit = ({
                               <InputField
                                 control={form.control}
                                 name="availableBalance"
-                                label="Available Balance"
-                                placeholder="Enter available balance"
+                                label={t("deposit.fields.availableBalance")}
+                                placeholder={t("deposit.placeholders.availableBalance")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="operationMode"
-                                label="Operation Mode"
-                                placeholder="Enter operation mode"
+                                label={t("deposit.fields.operationMode")}
+                                placeholder={t("deposit.placeholders.operationMode")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="chequeFacility"
-                                label="Cheque Facility"
-                                placeholder="Enter cheque facility"
+                                label={t("deposit.fields.chequeFacility")}
+                                placeholder={t("deposit.placeholders.chequeFacility")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="rateOfInterest"
-                                label="Rate Of Interest"
-                                placeholder="Enter rate of interest"
+                                label={t("deposit.fields.rateOfInterest")}
+                                placeholder={t("deposit.placeholders.rateOfInterest")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="branchName"
-                                label="Branch Name"
-                                placeholder="Enter branch name"
+                                label={t("deposit.fields.branchName")}
+                                placeholder={t("deposit.placeholders.branchName")}
                                 readOnly
                                 className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
                               />
@@ -316,8 +320,8 @@ const Deposit = ({
                                 <InputField
                                   control={form.control}
                                   name="joint1"
-                                  label="Joint 1"
-                                  placeholder="Enter joint 1"
+                                  label={t("deposit.fields.joint1")}
+                                  placeholder={t("deposit.placeholders.joint1")}
                                   readOnly
                                 />
                               )}
@@ -325,8 +329,8 @@ const Deposit = ({
                                 <InputField
                                   control={form.control}
                                   name="joint2"
-                                  label="Joint 2"
-                                  placeholder="Enter joint 2"
+                                  label={t("deposit.fields.joint2")}
+                                  placeholder={t("deposit.placeholders.joint2")}
                                   readOnly
                                 />
                               )}
@@ -338,7 +342,7 @@ const Deposit = ({
                   </div>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
                     <h2 className="text-lg text-center font-semibold">
-                      Transaction Details
+                      {t("deposit.sections.transactionDetails")}
                     </h2>
                     <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
                       <div className=" w-full flex flex-col gap-2">
@@ -360,8 +364,8 @@ const Deposit = ({
                               <InputField
                                 control={form.control}
                                 name="depositAmount"
-                                label="Amount"
-                                placeholder="Enter deposit amount"
+                                label={t("deposit.fields.amount")}
+                                placeholder={t("deposit.placeholders.depositAmount")}
                                 type="number"
                                 autoFocus
                                 className="col-span-2"
@@ -373,7 +377,7 @@ const Deposit = ({
                                 <DatePickerField
                                   control={form.control}
                                   name="paidUpto"
-                                  label="Paid Upto"
+                                  label={t("deposit.fields.paidUpto")}
                                   horizonLabel={true}
                                 />
                               )}
@@ -382,8 +386,8 @@ const Deposit = ({
                                 <InputField
                                   control={form.control}
                                   name="fineAmount"
-                                  label="Fine"
-                                  placeholder="Enter fine amount"
+                                  label={t("deposit.fields.fine")}
+                                  placeholder={t("deposit.placeholders.findAmount")}
                                   type="number"
                                   readOnly
                                   className="col-span-2"
@@ -395,8 +399,8 @@ const Deposit = ({
                                 <InputField
                                   control={form.control}
                                   name="totalAmount"
-                                  label="Total"
-                                  placeholder="Enter total amount"
+                                  label={t("deposit.fields.total")}
+                                  placeholder={t("deposit.placeholders.totalAmount")}
                                   type="number"
                                   readOnly
                                   className="col-span-2"
@@ -407,7 +411,7 @@ const Deposit = ({
                               <TextareaField
                                 control={form.control}
                                 name="totalAmountInWords"
-                                placeholder="Total amount in words"
+                                placeholder={t("deposit.placeholders.totalAmount")}
                                 className="text-red-500 text-base resize-none"
                                 readOnly
                                 containerClassName="col-span-2"
@@ -460,7 +464,7 @@ const Deposit = ({
                               <InputField
                                 control={form.control}
                                 name="refVouchNo"
-                                placeholder="Enter ref. vouch no."
+                                placeholder={t("deposit.placeholders.refVoucherNo")}
                               />
                               {transMode === "cash" ? (
                                 isActiveDenom ? (
@@ -488,35 +492,35 @@ const Deposit = ({
                                 <DropdownField
                                   control={form.control}
                                   name="bank"
-                                  label="Bank"
+                                  label={t("deposit.fields.bank")}
                                   options={bankAccountData}
                                   optionLabelKey="Bank_Name"
-                                  placeholder="Select bank"
-                                  searchPlaceholder="Search bank..."
+                                  placeholder={t("deposit.placeholders.selectBank")}
+                                  searchPlaceholder={t("deposit.placeholders.searchBank")}
                                 />
                               ) : (
                                 <>
                                   <DropdownField
                                     control={form.control}
                                     name="savings"
-                                    label="Savings"
+                                    label={t("deposit.fields.savings")}
                                     options={savingsAccountData}
                                     optionLabelKey="Account_No"
-                                    placeholder="Select savings"
-                                    searchPlaceholder="Search savings..."
+                                    placeholder={t("deposit.placeholders.selectSavings")}
+                                    searchPlaceholder={t("deposit.placeholders.searchSavings")}
                                   />
                                   <InputField
                                     control={form.control}
                                     name="savingsName"
-                                    label="Account Holder Name"
-                                    placeholder="Enter name"
+                                    label={t("deposit.fields.accountHolderName")}
+                                    placeholder={t("deposit.placeholders.memberName")}
                                     readOnly
                                   />
                                   <InputField
                                     control={form.control}
                                     name="savingsBalance"
-                                    label="Available Balance"
-                                    placeholder="Enter balance"
+                                    label={t("deposit.fields.availableBalance")}
+                                    placeholder={t("deposit.placeholders.availableBalance")}
                                     readOnly
                                   />
                                 </>
@@ -546,7 +550,7 @@ const Deposit = ({
                                   speedMultiplier={0.7}
                                 />
                               ) : (
-                                "Save"
+                                t("common.buttons.save")
                               )}
                             </Button>
                           </>

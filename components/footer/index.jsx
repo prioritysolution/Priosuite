@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
 import { parseLocalDate } from "@/utils/dateHelpers";
+import { useTranslation } from "react-i18next";
 
 const formatOpenDate = (value) => {
   const parsed = parseLocalDate(value);
@@ -13,6 +14,8 @@ const formatOpenDate = (value) => {
 };
 
 const Footer = ({ finYearCookieVersion = 0 }) => {
+  const { t } = useTranslation();
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -45,7 +48,9 @@ const Footer = ({ finYearCookieVersion = 0 }) => {
       <div className="h-full grid grid-cols-2 lg:grid-cols-4 items-center gap-x-3 gap-y-1 text-white/50 text-[10px] sm:text-xs">
         {/* Branch */}
         <div className="min-w-0 flex items-center gap-1 overflow-hidden">
-          <span className="whitespace-nowrap flex-shrink-0">Branch:</span>
+          <span className="whitespace-nowrap flex-shrink-0">
+            {t("footer.branch")}:
+          </span>
           <span className="font-semibold text-white/70 truncate">
             {branchName ? (
               branchName
@@ -58,8 +63,10 @@ const Footer = ({ finYearCookieVersion = 0 }) => {
         {/* Open Date */}
         <div className="min-w-0 flex items-center gap-1.5 justify-end lg:justify-center overflow-hidden">
           <span className="whitespace-nowrap flex-shrink-0">
-            <span className="sm:hidden">Open:</span>
-            <span className="hidden sm:inline">Open Date:</span>
+            <span className="sm:hidden">{t("footer.open")}:</span>
+            <span className="hidden sm:inline">
+              {t("footer.openDate")}:
+            </span>
           </span>
           {!mounted ? (
             <Skeleton className="inline-block w-20 h-3 bg-white/15 rounded align-middle" />
@@ -72,7 +79,7 @@ const Footer = ({ finYearCookieVersion = 0 }) => {
 
         {/* Financial Year */}
         <div className="flex items-center gap-1.5 lg:justify-center">
-          <span className="whitespace-nowrap">FY:</span>
+          <span className="whitespace-nowrap">{t("footer.fy")}:</span>
           <span className="font-semibold text-white/70">
             {startDate ? (
               startDate.slice(0, 4)
@@ -91,7 +98,7 @@ const Footer = ({ finYearCookieVersion = 0 }) => {
         {/* Current date and time */}
         <div className="flex items-center gap-1.5 justify-end overflow-hidden">
           <span className="whitespace-nowrap hidden md:inline">
-            Current Date & Time:
+            {t("footer.currentDateTime")}:
           </span>
           <span className="font-semibold text-white/70 whitespace-nowrap">
             {mounted ? (

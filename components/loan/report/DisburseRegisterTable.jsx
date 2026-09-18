@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -20,21 +21,23 @@ const DisburseRegisterTable = ({
   totalNetDisburse,
   handleShowLedger,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Table className="min-w-[1000px] whitespace-nowrap">
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className=" text-center">Sl No.</TableHead>
-          <TableHead className="">Date</TableHead>
-          <TableHead className="">Customer Name</TableHead>
-          <TableHead className="">Gurdian Name</TableHead>
-          <TableHead className="">Account No.</TableHead>
-          <TableHead className="">Ref. Ac. No.</TableHead>
-          <TableHead className="">Disburse</TableHead>
-          <TableHead className="">Share</TableHead>
-          <TableHead className="">Ins. Amt.</TableHead>
-          <TableHead className="">Mis. Amt.</TableHead>
-          <TableHead className="">Net Disburse</TableHead>
+          <TableHead className=" text-center">{t("loan.slNo")}</TableHead>
+          <TableHead className="">{t("loan.date")}</TableHead>
+          <TableHead className="">{t("loan.customerName")}</TableHead>
+          <TableHead className="">{t("loan.gurdianName")}</TableHead>
+          <TableHead className="">{t("loan.accountNo")}</TableHead>
+          <TableHead className="">{t("loan.refAcNo")}</TableHead>
+          <TableHead className="">{t("loan.disburse")}</TableHead>
+          <TableHead className="">{t("loan.share")}</TableHead>
+          <TableHead className="">{t("loan.insAmt")}</TableHead>
+          <TableHead className="">{t("loan.misAmt")}</TableHead>
+          <TableHead className="">{t("loan.netDisburse")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">
@@ -75,7 +78,7 @@ const DisburseRegisterTable = ({
       </TableBody>
       <TableFooter className="sticky bottom-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableCell colSpan={6}>Total</TableCell>
+          <TableCell colSpan={6}>{t("loan.total")}</TableCell>
           <TableCell>{totalDisburseAmount?.toFixed(2)}</TableCell>
           <TableCell>{totalShareAmount?.toFixed(2)}</TableCell>
           <TableCell>{totalInsAmount?.toFixed(2)}</TableCell>

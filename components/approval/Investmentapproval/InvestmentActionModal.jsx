@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Ban, CheckCircle2, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import Spinner from "@/common/loader/Spinner";
+import { useTranslation } from "react-i18next";
 
 const InvestmentActionModal = ({
   open,
@@ -24,6 +25,7 @@ const InvestmentActionModal = ({
   onApproveReject,
   loading,
 }) => {
+  const { t } = useTranslation();
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectRemarks, setRejectRemarks] = useState("");
 
@@ -33,7 +35,7 @@ const InvestmentActionModal = ({
 
   const handleRejectConfirm = () => {
     if (!rejectRemarks.trim()) {
-      toast.error("Please enter remarks for rejection.");
+      toast.error(t("investmentApproval.pleaseEnterRejectionRemarks"));
       return;
     }
     onApproveReject(2, rejectRemarks);
@@ -41,9 +43,9 @@ const InvestmentActionModal = ({
     setRejectRemarks("");
   };
 
-  const renderField = (label, value) => {
+  const renderField = (label, value, isDate = false) => {
     let displayValue = value;
-    if (label && label.toLowerCase().includes("date")) {
+    if (isDate || (label && label.toLowerCase().includes("date"))) {
       displayValue = formatDate(value);
     }
     return (
@@ -75,17 +77,18 @@ const InvestmentActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-2xl font-bold text-gray-800 tracking-tight">
-                Investment Approval
+                {t("investmentApproval.investmentApproval")}
               </DialogTitle>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span className="font-medium">
-                  Queue No: {selectedApplication.Queue_No || "N/A"}
+                  {t("investmentApproval.queueNoLabel")}{" "}
+                  {selectedApplication.Queue_No || "N/A"}
                 </span>
                 <span className="h-4 w-px bg-gray-300" />
                 <span className="font-semibold text-primary">
                   {selectedApplication.Type_Name ||
                     selectedApplication.Trans_Type ||
-                    `Type ${type}`}
+                    t("investmentApproval.typeFallback", { type })}
                 </span>
               </div>
             </div>
@@ -101,49 +104,51 @@ const InvestmentActionModal = ({
                 {type === 0 && (
                   <>
                     {renderField(
-                      "Investment Type",
+                      t("investmentApproval.investmentType"),
                       selectedApplication.Invest_Type ||
                         selectedApplication.Invest_Type_Name ||
                         selectedApplication.Type_Name,
                     )}
-                    {renderField("Bank Name", selectedApplication.Bank_Name)}
-                    {renderField("Account No", selectedApplication.Account_No)}
-                    {renderField("Opening Date", selectedApplication.Open_Date)}
+                    {renderField(t("investmentApproval.bankName"), selectedApplication.Bank_Name)}
+                    {renderField(t("investmentApproval.accountNo"), selectedApplication.Account_No)}
+                    {renderField(t("investmentApproval.openingDate"), selectedApplication.Open_Date, true)}
                     {renderField(
-                      "Investment Amount",
+                      t("investmentApproval.investmentAmount"),
                       selectedApplication.Invest_Amt ||
                         selectedApplication.Amount,
                     )}
                     {renderField(
-                      "ROI",
+                      t("investmentApproval.roi"),
                       selectedApplication.ROI || selectedApplication.Roi,
                     )}
                     {renderField(
-                      "Duration (Month)",
+                      t("investmentApproval.durationMonth"),
                       selectedApplication.Duration ||
                         selectedApplication.Duration_Month,
                     )}
                     {renderField(
-                      "Maturity Date",
+                      t("investmentApproval.maturityDate"),
                       selectedApplication.Mature_Date,
+                      true,
                     )}
                     {renderField(
-                      "Maturity Value",
+                      t("investmentApproval.maturityValue"),
                       selectedApplication.Mature_Val,
                     )}
                     {renderField(
-                      "Voucher Date",
+                      t("investmentApproval.voucherDate"),
                       selectedApplication.Trans_Date ||
                         selectedApplication.Voucher_Date,
+                      true,
                     )}
                     {renderField(
-                      "Transaction Mode",
+                      t("investmentApproval.transactionMode"),
                       selectedApplication.Trans_Mode,
                     )}
                     {String(selectedApplication.Bank_No) !== "" &&
                       selectedApplication.Bank_No !== null &&
                       renderField(
-                        "From Bank Account",
+                        t("investmentApproval.fromBankAccount"),
                         selectedApplication.Bank_No,
                       )}
                   </>
@@ -152,44 +157,47 @@ const InvestmentActionModal = ({
                 {type === 1 && (
                   <>
                     {renderField(
-                      "Investment Type",
+                      t("investmentApproval.investmentType"),
                       selectedApplication.Invest_Type ||
                         selectedApplication.Invest_Type_Name ||
                         selectedApplication.Type_Name,
                     )}
-                    {renderField("Bank Name", selectedApplication.Bank_Name)}
-                    {renderField("Account No", selectedApplication.Account_No)}
+                    {renderField(t("investmentApproval.bankName"), selectedApplication.Bank_Name)}
+                    {renderField(t("investmentApproval.accountNo"), selectedApplication.Account_No)}
                     {renderField(
-                      "Opening Date",
+                      t("investmentApproval.openingDate"),
                       selectedApplication.Opening_Date,
+                      true,
                     )}
                     {renderField(
-                      "Investment Amount",
+                      t("investmentApproval.investmentAmount"),
                       selectedApplication.Invest_Amt ||
                         selectedApplication.Amount,
                     )}
                     {renderField(
-                      "ROI",
+                      t("investmentApproval.roi"),
                       selectedApplication.ROI || selectedApplication.Roi,
                     )}
                     {renderField(
-                      "Duration (Month)",
+                      t("investmentApproval.durationMonth"),
                       selectedApplication.Duration ||
                         selectedApplication.Duration_Month,
                     )}
                     {renderField(
-                      "Maturity Date",
+                      t("investmentApproval.maturityDate"),
                       selectedApplication.Maturity_Date,
+                      true,
                     )}
                     {renderField(
-                      "Maturity Value",
+                      t("investmentApproval.maturityValue"),
                       selectedApplication.Maturity_Val ||
                         selectedApplication.Maturity_Value,
                     )}
                     {renderField(
-                      "Voucher Date",
+                      t("investmentApproval.voucherDate"),
                       selectedApplication.Trans_Date ||
                         selectedApplication.Voucher_Date,
+                      true,
                     )}
                   </>
                 )}
@@ -197,26 +205,27 @@ const InvestmentActionModal = ({
                 {type === 2 && (
                   <>
                     {renderField(
-                      "Investment Type",
+                      t("investmentApproval.investmentType"),
                       selectedApplication.Invest_Type ||
                         selectedApplication.Invest_Type_Name ||
                         selectedApplication.Type_Name,
                     )}
-                    {renderField("Bank Name", selectedApplication.Bank_Name)}
-                    {renderField("Account No", selectedApplication.Account_No)}
+                    {renderField(t("investmentApproval.bankName"), selectedApplication.Bank_Name)}
+                    {renderField(t("investmentApproval.accountNo"), selectedApplication.Account_No)}
                     {renderField(
-                      "Transaction Type",
+                      t("investmentApproval.transactionType"),
                       selectedApplication.Trans_Type,
                     )}
                     {renderField(
-                      "Amount",
+                      t("investmentApproval.amount"),
                       selectedApplication.Amount ||
                         selectedApplication.Invest_Amt,
                     )}
                     {renderField(
-                      "Voucher Date",
+                      t("investmentApproval.voucherDate"),
                       selectedApplication.Trans_Date ||
                         selectedApplication.Voucher_Date,
+                      true,
                     )}
                   </>
                 )}
@@ -231,14 +240,14 @@ const InvestmentActionModal = ({
                 onClick={() => setShowRejectModal(true)}
                 disabled={loading}
               >
-                <Ban className="w-4 h-4 mr-2" /> Reject
+                <Ban className="w-4 h-4 mr-2" /> {t("investmentApproval.reject")}
               </Button>
               <Button
                 className="bg-primary hover:bg-primary/90 text-white px-8 font-bold min-w-[120px] transition-all w-full sm:w-auto"
                 onClick={() => onApproveReject(1)}
                 disabled={loading}
               >
-                <CheckCircle2 className="w-4 h-4 mr-2" /> Approve
+                <CheckCircle2 className="w-4 h-4 mr-2" /> {t("investmentApproval.approve")}
               </Button>
             </div>
           </div>
@@ -250,16 +259,17 @@ const InvestmentActionModal = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-red-600">
               <AlertTriangle className="h-5 w-5" />
-              Reject Application
+              {t("investmentApproval.rejectApplication")}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <Label htmlFor="remarks" className="mb-2 block text-sm font-medium">
-              Rejection Remarks <span className="text-red-500">*</span>
+              {t("investmentApproval.rejectionRemarks")}{" "}
+              <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="remarks"
-              placeholder="Enter reason for rejection..."
+              placeholder={t("investmentApproval.enterRejectionReason")}
               value={rejectRemarks}
               onChange={(e) => setRejectRemarks(e.target.value)}
               className="min-h-[100px] focus-visible:ring-red-500"
@@ -267,13 +277,13 @@ const InvestmentActionModal = ({
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowRejectModal(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               className="bg-red-600 hover:bg-red-700 text-white"
               onClick={handleRejectConfirm}
             >
-              Confirm Rejection
+              {t("investmentApproval.confirmRejection")}
             </Button>
           </DialogFooter>
         </DialogContent>

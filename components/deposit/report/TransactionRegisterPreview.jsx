@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import {
   Table,
   TableBody,
@@ -18,6 +20,8 @@ const TransactionRegisterPreview = ({
   fromDate,
   toDate,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -133,34 +137,34 @@ const TransactionRegisterPreview = ({
           <TableHeader>
             <TableRow className="h-[40px]">
               <TableHead className="text-black p-0 border-black text-center w-[40px]">
-                SL. NO.
+                {t("deposit.reports.print.slNo")}
               </TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
-                CUSTOMER NAME
+                {t("deposit.reports.print.customerName")}
               </TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                ACCOUNT NO.
+                {t("deposit.reports.print.accountNo")}
               </TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                REF. AC. NO.
+                {t("deposit.reports.print.refAcNo")}
               </TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center">
-                L/F. NO.
+                {t("deposit.reports.print.lfNo")}
               </TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                TRANS. MODE
+                {t("deposit.reports.print.transMode")}
               </TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
-                DEPOSIT
+                {t("deposit.reports.print.deposit")}
               </TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
-                WITHDRAWN
+                {t("deposit.reports.print.withdrawn")}
               </TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
-                INTEREST
+                {t("deposit.reports.print.interest")}
               </TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
-                NARRATION
+                {t("deposit.reports.print.narration")}
               </TableHead>
             </TableRow>
           </TableHeader>

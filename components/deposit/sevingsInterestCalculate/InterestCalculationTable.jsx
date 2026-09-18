@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 // // import React from "react";
 // // import { ArrowUpDown, Search } from "lucide-react";
 
@@ -80,6 +81,8 @@
 // // );
 
 // // const InterestCalculationTable = ({ interestDetails = [] }) => {
+  const { t } = useTranslation();
+
 // //   // Local state for sorting and search
 // //   const [searchTerm, setSearchTerm] = React.useState("");
 // //   const [sortKey, setSortKey] = React.useState("");
@@ -323,7 +326,7 @@
 // //       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
 // //         <div>
 // //           <h4 className="text-lg font-bold text-slate-800">
-// //             Calculated Interest Records
+// //             {t("deposit.common.calculatedInterestRecords")}
 // //           </h4>
 // //           <p className="text-xs text-slate-400 mt-0.5">
 // //             Found {filteredRows.length} matches of {interestDetails.length} records total
@@ -337,7 +340,7 @@
 // //           </span>
 // //           <input
 // //             type="text"
-// //             placeholder="Search name or account no..."
+// //             placeholder={t("deposit.placeholders.searchNameOrAccount")}
 // //             value={searchTerm}
 // //             onChange={(e) => setSearchTerm(e.target.value)}
 // //             className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
@@ -803,7 +806,7 @@
 //       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
 //         <div>
 //           <h4 className="text-lg font-bold text-slate-800">
-//             Calculated Interest Records
+//             {t("deposit.common.calculatedInterestRecords")}
 //           </h4>
 //           <p className="text-xs text-slate-400 mt-0.5">
 //             {filteredRows.length === interestDetails.length
@@ -819,7 +822,7 @@
 //           </span>
 //           <input
 //             type="text"
-//             placeholder="Search name or account no..."
+//             placeholder={t("deposit.placeholders.searchNameOrAccount")}
 //             value={searchTerm}
 //             onChange={(e) => setSearchTerm(e.target.value)}
 //             className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all bg-white"
@@ -828,7 +831,7 @@
 //             <button
 //               onClick={() => setSearchTerm("")}
 //               className="absolute inset-y-0 right-3 flex items-center text-slate-300 hover:text-slate-500 transition-colors"
-//               aria-label="Clear search"
+//               aria-label={t("deposit.buttons.clear") + " search"}
 //             >
 //               ×
 //             </button>
@@ -995,12 +998,12 @@ const InterestCalculationTable = ({ interestDetails = [] }) => {
 
   const COLS = [
     { label: "#", key: null },
-    { label: "Account No.", key: "Account_No" },
-    { label: "Ref. Account No.", key: "Ref_Ac_No" },
-    { label: "Member Name", key: "Full_Name" },
-    { label: "Current Balance", key: "Curr_Balance", right: true },
-    { label: "Interest Amount", key: "interest_amount", right: true },
-    { label: "Total", key: "total", right: true },
+    { label: t("deposit.fields.accountNo"), key: "Account_No" },
+    { label: t("deposit.fields.refAccountNo"), key: "Ref_Ac_No" },
+    { label: t("deposit.fields.memberName"), key: "Full_Name" },
+    { label: t("deposit.fields.availableBalance"), key: "Curr_Balance", right: true },
+    { label: t("deposit.fields.interestAmount"), key: "interest_amount", right: true },
+    { label: t("deposit.fields.total"), key: "total", right: true },
   ];
 
   // ── Desktop Table ─────────────────────────────────────────────────────────
@@ -1186,16 +1189,16 @@ const InterestCalculationTable = ({ interestDetails = [] }) => {
             <div className="grid grid-cols-3 gap-3">
               {[
                 {
-                  label: "Balance",
+                  label: t("deposit.common.balance"),
                   value: grandBalance,
                   color: "text-slate-700",
                 },
                 {
-                  label: "Interest",
+                  label: t("deposit.fields.interest"),
                   value: grandInterest,
                   color: "text-emerald-600",
                 },
-                { label: "Total", value: grandTotal, color: "text-blue-700" },
+                { label: t("deposit.fields.total"), value: grandTotal, color: "text-blue-700" },
               ].map(({ label, value, color }) => (
                 <div key={label}>
                   <p className="text-[10px] text-slate-400 mb-1">{label}</p>
@@ -1218,7 +1221,7 @@ const InterestCalculationTable = ({ interestDetails = [] }) => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
           <h4 className="text-lg font-semibold text-slate-800">
-            Calculated Interest Records
+            {t("deposit.common.calculatedInterestRecords")}
           </h4>
           <p className="text-xs text-slate-400 mt-0.5">
             {filteredRows.length === interestDetails.length
@@ -1246,7 +1249,7 @@ const InterestCalculationTable = ({ interestDetails = [] }) => {
           </span>
           <input
             type="text"
-            placeholder="Search name or account…"
+            placeholder={t("deposit.placeholders.searchNameOrAccount") + "…"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-8 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition-all"
@@ -1255,7 +1258,7 @@ const InterestCalculationTable = ({ interestDetails = [] }) => {
             <button
               onClick={() => setSearch("")}
               className="absolute inset-y-0 right-3 flex items-center text-slate-300 hover:text-slate-500 text-lg leading-none"
-              aria-label="Clear"
+              aria-label={t("deposit.buttons.clear")}
             >
               ×
             </button>

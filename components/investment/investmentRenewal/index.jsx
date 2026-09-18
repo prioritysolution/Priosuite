@@ -28,6 +28,7 @@ import { IoPrint, IoCalculator } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import getCookieData from "@/utils/getCookieData";
+import { useTranslation } from "react-i18next";
 
 const InvestmentRenewal = ({
   loading,
@@ -53,6 +54,8 @@ const InvestmentRenewal = ({
   toDate,
   getLedgerLoading,
 }) => {
+  const { t } = useTranslation();
+
   const investmentAccountData = useSelector(
     (state) => state?.investmentInterest?.investmentAccountData,
   );
@@ -73,7 +76,9 @@ const InvestmentRenewal = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Investment Renewal</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("investment.investmentRenewal")}
+        </h3>
 
         <ScrollArea className="w-full h-full ">
           <Form {...form}>
@@ -87,11 +92,11 @@ const InvestmentRenewal = ({
                   <DropdownField
                     control={form.control}
                     name="accountNo"
-                    label="Account No."
+                    label={t("common.accountNo")}
                     options={investmentAccountData}
                     optionLabelKey="Accout_No"
-                    placeholder="Select account no."
-                    searchPlaceholder="Search account no...."
+                    placeholder={t("investment.selectAccountNo")}
+                    searchPlaceholder={t("investment.searchAccountNo")}
                   />
 
                   <TooltipProvider>
@@ -111,7 +116,7 @@ const InvestmentRenewal = ({
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>View Ledger</p>
+                        <p>{t("common.viewLedger")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -120,54 +125,54 @@ const InvestmentRenewal = ({
 
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                 <h3 className="w-full text-center text-xl font-semibold">
-                  Basic Info Block
+                  {t("investment.basicInfoBlock")}
                 </h3>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <InputField
                     control={form.control}
                     name="openingDate"
-                    label="Open Date"
-                    placeholder="Enter open date"
+                    label={t("investment.openDate")}
+                    placeholder={t("investment.enterOpenDate")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="investmentAmount"
-                    label="Investment Amount"
-                    placeholder="Enter investment amount"
+                    label={t("investment.investmentAmount")}
+                    placeholder={t("investment.enterInvestmentAmount")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="rateOfInterest"
-                    label="Rate Of Interest"
-                    placeholder="Enter rate of interest"
+                    label={t("investment.rateOfInterest")}
+                    placeholder={t("investment.enterRateOfInterest")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="maturityDate"
-                    label="Maturity Date"
-                    placeholder="Enter maturity date"
+                    label={t("investment.maturityDate")}
+                    placeholder={t("investment.enterMaturityDate")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="maturityAmount"
-                    label="Maturity Amount"
-                    placeholder="Enter maturity amount"
+                    label={t("investment.maturityAmount")}
+                    placeholder={t("investment.enterMaturityAmount")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="interestAmount"
-                    label="Interest Amount"
-                    placeholder="Enter interest amount"
+                    label={t("investment.interestAmount")}
+                    placeholder={t("investment.enterInterestAmount")}
                     readOnly
                   />
                 </div>
@@ -175,39 +180,39 @@ const InvestmentRenewal = ({
 
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                 <h3 className="w-full text-center text-xl font-semibold">
-                  Renewal Info Block
+                  {t("investment.renewalInfoBlock")}
                 </h3>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <DatePickerField
                     control={form.control}
                     name="renewalDate"
-                    label="Renewal Date"
+                    label={t("investment.renewalDate")}
                     disabled={true}
                   />
 
                   <InputField
                     control={form.control}
                     name="effectDate"
-                    label="Effect Date"
-                    placeholder="Enter effect date"
+                    label={t("investment.effectDate")}
+                    placeholder={t("investment.enterEffectDate")}
                     readOnly
                   />
 
                   <DropdownField
                     control={form.control}
                     name="interestType"
-                    label="Interest Type"
+                    label={t("investment.interestType")}
                     options={interestTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder="Select interest type"
-                    searchPlaceholder="Search interest type..."
+                    placeholder={t("investment.selectInterestType")}
+                    searchPlaceholder={t("investment.searchInterestType")}
                   />
 
                   <InputField
                     control={form.control}
                     name="duration"
-                    label="Duration"
-                    placeholder="Enter duration"
+                    label={t("investment.duration")}
+                    placeholder={t("investment.enterDuration")}
                     type="number"
                     min={0}
                     isRequired
@@ -216,27 +221,27 @@ const InvestmentRenewal = ({
                   <DropdownField
                     control={form.control}
                     name="durtype"
-                    label="Duration Type"
+                    label={t("investment.durationType")}
                     options={durationTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder="Select duration type"
-                    searchPlaceholder="Search duration type..."
+                    placeholder={t("investment.selectDurationType")}
+                    searchPlaceholder={t("investment.searchDurationType")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="newRateOfInterest"
-                    label="Rate Of Interest"
-                    placeholder="Enter rate of interest"
+                    label={t("investment.rateOfInterest")}
+                    placeholder={t("investment.enterRateOfInterest")}
                     type="number"
                   />
 
                   <InputField
                     control={form.control}
                     name="tdsAmount"
-                    label="TDS Amount"
-                    placeholder="Enter tds amount"
+                    label={t("investment.tdsAmount")}
+                    placeholder={t("investment.enterTdsAmount")}
                     type="number"
                     disabled={!isTdsEnabled}
                   />
@@ -244,16 +249,16 @@ const InvestmentRenewal = ({
                   <InputField
                     control={form.control}
                     name="newInvestmentAmount"
-                    label="Investment Amount"
-                    placeholder="Enter investment amount"
+                    label={t("investment.investmentAmount")}
+                    placeholder={t("investment.enterInvestmentAmount")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="matureDate"
-                    label="Mature Date"
-                    placeholder="Mature date"
+                    label={t("investment.matureDate")}
+                    placeholder={t("investment.matureDatePlaceholder")}
                     readOnly
                     displayValue={form.watch("matureDate") || ""}
                   />
@@ -264,13 +269,13 @@ const InvestmentRenewal = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Mature Amount
+                          {t("investment.matureAmount")}
                           <span className="text-red-500 ml-1">*</span>
                         </FormLabel>
                         <FormControl>
                           <div className="flex items-center gap-3">
                             <Input
-                              placeholder="Enter mature amount"
+                              placeholder={t("investment.enterMatureAmount")}
                               type="number"
                               name={field.name}
                               ref={field.ref}
@@ -289,7 +294,7 @@ const InvestmentRenewal = ({
                                   </div>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>Calculate Mature Amount</p>
+                                  <p>{t("investment.calculateMatureAmount")}</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
@@ -314,7 +319,7 @@ const InvestmentRenewal = ({
                 {loading ? (
                   <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
-                  "Add"
+                  t("common.add")
                 )}
               </Button>
             </form>

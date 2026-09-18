@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import getCookieData from "@/utils/getCookieData";
 import convertToWords from "@/utils/numberToWords";
@@ -15,6 +16,8 @@ import { MdContentCut } from "react-icons/md";
 import { useReactToPrint } from "react-to-print";
 
 const DepositReceipt = ({ isOpen, setIsOpen, depositReceiptData }) => {
+  const { t } = useTranslation();
+
   const [orgName, setOrgName] = useState(null);
   const [orgBranch, setOrgBranch] = useState(null);
   const [orgAddress, setOrgAddress] = useState(null);

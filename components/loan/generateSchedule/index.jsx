@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import LoanAccountSearchForm from "@/common/forms/LoanAccountSearchForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -24,6 +26,8 @@ const GenerateSchedule = ({
   tableData,
   date,
 }) => {
+  const { t } = useTranslation();
+
   const printRef = useRef(null);
 
   const handleGeneratePDF = useReactToPrint({
@@ -34,7 +38,7 @@ const GenerateSchedule = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-1 w-full gap-5 overflow-hidden">
-        {/* <h3 className="text-2xl font-semibold ">Generate Schedule</h3> */}
+        {/* <h3 className="text-2xl font-semibold ">{t("loan.generateSchedule")}</h3> */}
 
         <ScrollArea className="w-full h-full px-1">
           <div className="w-full mb-10">
@@ -45,48 +49,46 @@ const GenerateSchedule = ({
               printButtonLabel={<HiMiniPrinter />}
               handlePrint={handleGeneratePDF}
               disablePrintButton={!personalData || !(tableData.length > 0)}
-              formLabel="Generate Schedule"
+              formLabel={t("loan.generateSchedule")}
             />
           </div>
 
           {(personalData || (tableData && tableData.length > 0)) && (
             <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:p-5 gap-5">
-              <h3 className="w-full text-center text-xl font-semibold">
-                Loan Repayment Schedule
-              </h3>
+              <h3 className="w-full text-center text-xl font-semibold">{t("loan.loanRepaymentSchedule")}</h3>
               {personalData && (
                 <div className="w-full flex flex-col gap-3 bg-[#D7E6F4] p-3 border border-black border-dashed">
                   <div className="w-full grid grid-cols-3 gap-5">
                     <p>
-                      <span className="font-medium">Name : </span>
+                      <span className="font-medium">{t("loan.memberNameColon")}</span>
                       <span>{personalData.member_name}</span>
                     </p>
                     <p>
-                      <span className="font-medium">Relation Name : </span>
+                      <span className="font-medium">{t("loan.relationNameColon")}</span>
                       <span>{personalData.relation_name}</span>
                     </p>
                     <p className="col-span-3">
-                      <span className="font-medium">Address : </span>
+                      <span className="font-medium">{t("loan.addressColon")}</span>
                       <span>{personalData.address}</span>
                     </p>
                   </div>
                   <div className="w-full grid grid-cols-3 gap-5">
                     <p>
-                      <span className="font-medium">Product Name : </span>
+                      <span className="font-medium">{t("loan.productNameColon")}</span>
                       <span>{personalData.loan_product}</span>
                     </p>
                     <p>
-                      <span className="font-medium">Account No. : </span>
+                      <span className="font-medium">{t("loan.accountNoColon")}</span>
                       <span>{personalData.account_no}</span>
                     </p>
                     <p>
-                      <span className="font-medium">ROI : </span>
+                      <span className="font-medium">{t("loan.roiColon")}</span>
                       <span>{personalData.roi}</span>
                     </p>
                   </div>
                   <div className="w-full grid grid-cols-3 gap-5">
                     <p>
-                      <span className="font-medium">Disburse Date : </span>
+                      <span className="font-medium">{t("loan.disburseDateColon")}</span>
                       <span>
                         {personalData.disbursement_date &&
                           format(
@@ -96,12 +98,12 @@ const GenerateSchedule = ({
                       </span>
                     </p>
                     <p>
-                      <span className="font-medium">Disburse Amount : </span>
+                      <span className="font-medium">{t("loan.disburseAmountColon")}</span>
                       <span>{personalData.disbursed_amount}</span>
                     </p>
                     <p>
                       <span className="font-medium">
-                        Number Of Installment :{" "}
+                        {t("loan.numberOfInstallmentColon")}
                       </span>
                       <span>{personalData.no_of_installment}</span>
                     </p>
@@ -112,16 +114,12 @@ const GenerateSchedule = ({
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[150px] text-center">
-                        Instalment No.
-                      </TableHead>
-                      <TableHead className="text-center">Due Date</TableHead>
-                      <TableHead className="text-center">Principal</TableHead>
-                      <TableHead className="text-center">Interest</TableHead>
-                      <TableHead className="text-center">
-                        Total Instalment Amount
-                      </TableHead>
-                      <TableHead className="text-center">Balance</TableHead>
+                      <TableHead className="w-[150px] text-center">{t("loan.instalmentNo")}</TableHead>
+                      <TableHead className="text-center">{t("loan.dueDate")}</TableHead>
+                      <TableHead className="text-center">{t("loan.principal")}</TableHead>
+                      <TableHead className="text-center">{t("loan.interest")}</TableHead>
+                      <TableHead className="text-center">{t("loan.totalInstalmentAmount")}</TableHead>
+                      <TableHead className="text-center">{t("loan.balance")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

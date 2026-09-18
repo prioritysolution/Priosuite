@@ -12,6 +12,7 @@ import {
 import getCookieData from "@/utils/getCookieData";
 import convertToWords from "@/utils/numberToWords";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const PreviewModal = ({
   printRef,
@@ -28,6 +29,8 @@ const PreviewModal = ({
   totalPayment,
   cashBalanceData,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -106,7 +109,9 @@ const PreviewModal = ({
               <p>{branchName}</p>
               <p>{address}</p>
               <p>{regNo}</p>
-              <p className="text-sm">Daybook As On {toDate}</p>
+              <p className="text-sm">
+                {t("report.daybook.daybookAsOn")} {toDate}
+              </p>
             </div>
 
             {/* Table wrapper containing tables and footer wordings */}
@@ -127,31 +132,33 @@ const PreviewModal = ({
                               rowSpan={2}
                               className="border border-black  text-black p-0 text-center w-[30px]"
                             >
-                              V. NO.
+                              {t("report.daybook.print.vNo")}
                             </TableHead>
                             <TableHead
                               rowSpan={2}
                               className="border border-black  text-black p-0 border-x  text-center"
                             >
-                              PARTICULARS
+                              {t("report.daybook.print.particulars")}
                             </TableHead>
 
                             <TableHead
                               colSpan={3}
                               className="  border-l text-black p-0 text-center h-[40px]"
                             >
-                              {tableIndex === 0 ? "RECEIPTS" : "PAYMENTS"}
+                              {tableIndex === 0
+                                ? t("report.daybook.print.receipts")
+                                : t("report.daybook.print.payments")}
                             </TableHead>
                           </TableRow>
                           <TableRow className="h-[40px]">
                             <TableHead className="border border-black text-black p-0 text-center w-[100px] h-[40px]">
-                              CASH
+                              {t("report.daybook.print.cash")}
                             </TableHead>
                             <TableHead className="border border-black text-black  p-0 border-l text-center w-[100px] h-[40px]">
-                              TRANSFER
+                              {t("report.daybook.print.transfer")}
                             </TableHead>
                             <TableHead className="border border-black text-black p-0 border-l text-center w-[100px] h-[40px]">
-                              TOTAL
+                              {t("report.daybook.print.total")}
                             </TableHead>
                           </TableRow>
                         </TableHeader>
@@ -189,7 +196,7 @@ const PreviewModal = ({
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
                               >
-                                Total
+                                {t("report.daybook.total")}
                               </TableCell>
                               <TableCell className="border border-black p-0 pr-[2px] text-right">
                                 {totalCashReceived?.toFixed(2)}
@@ -206,7 +213,7 @@ const PreviewModal = ({
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
                               >
-                                Opening Balance
+                                {t("report.daybook.openingBalance")}
                               </TableCell>
                               <TableCell className="border border-black p-0 pr-[2px] text-right">
                                 {cashBalanceData?.Opening
@@ -221,7 +228,7 @@ const PreviewModal = ({
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
                               >
-                                Grand Total
+                                {t("report.daybook.grandTotal")}
                               </TableCell>
                               <TableCell className="border border-black p-0 pr-[2px] text-right">
                                 {(
@@ -249,7 +256,7 @@ const PreviewModal = ({
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
                               >
-                                Total
+                                {t("report.daybook.total")}
                               </TableCell>
                               <TableCell className="border border-black p-0 pr-[2px] text-right">
                                 {totalCashPayment?.toFixed(2)}
@@ -266,7 +273,7 @@ const PreviewModal = ({
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
                               >
-                                Closing Balance
+                                {t("report.daybook.closingBalance")}
                               </TableCell>
                               <TableCell className="border border-black p-0 pr-[2px] text-right">
                                 {cashBalanceData?.Closing
@@ -281,7 +288,7 @@ const PreviewModal = ({
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
                               >
-                                Grand Total
+                                {t("report.daybook.grandTotal")}
                               </TableCell>
                               <TableCell className="border border-black p-0 pr-[2px] text-right">
                                 {(
@@ -310,23 +317,25 @@ const PreviewModal = ({
                 Math.max(leftTablePages.length, rightTablePages.length, 1) -
                   1 && (
                 <p className="h-8 border-t border-black w-full text-[11px] flex justify-end items-center px-2 bg-white">
-                  Closing Balance In Words:{" "}
+                  {t("report.daybook.closingBalanceInWords")}{" "}
                   {cashBalanceData?.Closing &&
                   parseFloat(cashBalanceData.Closing) > 0
-                    ? `Rupees ${convertToWords(
+                    ? `${t("common.rupees")} ${convertToWords(
                         Number(cashBalanceData.Closing),
-                      )} Only`
-                    : "Zero"}
+                      )} ${t("common.only")}`
+                    : t("report.daybook.zero")}
                 </p>
               )}
             </div>
             <div className=" w-full h-[30px] absolute bottom-2 left-0 flex items-end pb-1 justify-between px-2 text-xs">
-              <p className="text-nowrap">Generated By : {userName}</p>
+              <p className="text-nowrap">
+                {t("report.daybook.generatedBy")} {userName}
+              </p>
               <p className="italic text-nowrap" style={{ color: "#4b5563" }}>
-                This report is generated by PrioSuite.
+                {t("report.daybook.reportGeneratedByPrioSuite")}
               </p>
               <p className="text-nowrap">
-                Generated On : {currentDate} {currentTime}
+                {t("report.daybook.generatedOn")} {currentDate} {currentTime}
               </p>
             </div>
           </div>
@@ -338,22 +347,22 @@ const PreviewModal = ({
       >
         <div className="w-[350px] ml-20">
           <p className="text-[11px] text-center flex items-center justify-center h-[40px]">
-            Physical Denomination
+            {t("report.daybook.physicalDenomination")}
           </p>
           <Table className="w-full border border-black text-[11px]">
             <TableHeader>
               <TableRow className=" text-black  h-[40px] ">
                 <TableHead className=" border-black text-black p-0 text-center w-[50px]">
-                  Sl. NO.
+                  {t("report.daybook.print.slNo")}
                 </TableHead>
                 <TableHead className=" border-black text-black p-0 border-x  text-center w-[100px]">
-                  Denomination
+                  {t("report.daybook.print.denomination")}
                 </TableHead>
                 <TableHead className=" border-black  border-l text-black p-0 text-center w-[100px]">
-                  Quantity
+                  {t("report.daybook.print.quantity")}
                 </TableHead>
                 <TableHead className=" border-black  border-l text-black p-0 text-center w-[100px]">
-                  Value
+                  {t("report.daybook.print.value")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -381,7 +390,7 @@ const PreviewModal = ({
                   className="border border-black p-0 text-center"
                   colSpan={2}
                 >
-                  Total
+                  {t("report.daybook.total")}
                 </TableCell>
                 <TableCell className="border border-black p-0 text-center"></TableCell>
                 <TableCell className="border border-black p-0 text-center">
@@ -394,12 +403,14 @@ const PreviewModal = ({
           </Table>
         </div>
         <div className=" w-full h-[30px] absolute bottom-2 left-0 flex items-end pb-1 justify-between px-2 text-xs">
-          <p className="text-nowrap">Generated By : {userName}</p>
+          <p className="text-nowrap">
+            {t("report.daybook.generatedBy")} {userName}
+          </p>
           <p className="italic text-nowrap" style={{ color: "#4b5563" }}>
-            This report is generated by PrioSuite.
+            {t("report.daybook.reportGeneratedByPrioSuite")}
           </p>
           <p className="text-nowrap">
-            Generated On : {currentDate} {currentTime}
+            {t("report.daybook.generatedOn")} {currentDate} {currentTime}
           </p>
         </div>
       </div>

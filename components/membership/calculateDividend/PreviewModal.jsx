@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import {
   Table,
   TableBody,
@@ -11,6 +13,8 @@ import {
 } from "@/components/ui/table";
 
 const PreviewModal = ({ tableData, printRef }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="w-[210mm] h-full " ref={printRef}>
       {Array.from({ length: Math.ceil(tableData?.length / 17) }).map(
@@ -27,27 +31,13 @@ const PreviewModal = ({ tableData, printRef }) => {
               <Table className="border-collapse border-black">
                 <TableHeader>
                   <TableRow className="h-[60px]">
-                    <TableHead className="text-black border border-black p-0 text-center w-[50px]">
-                      Sl.
-                    </TableHead>
-                    <TableHead className="text-black border border-black p-0 text-center w-[80px]">
-                      Member Code
-                    </TableHead>
-                    <TableHead className="text-black border border-black p-0 text-center w-[160px]">
-                      Member Name
-                    </TableHead>
-                    <TableHead className="text-black border border-black p-0 text-center w-[160px]">
-                      Guardian Name
-                    </TableHead>
-                    <TableHead className="text-black border border-black p-0 text-center">
-                      Village
-                    </TableHead>
-                    <TableHead className="text-black border border-black p-0 text-center w-[100px]">
-                      Share Balance
-                    </TableHead>
-                    <TableHead className="text-black border border-black p-0 text-center w-[100px]">
-                      Dividend Amount
-                    </TableHead>
+                    <TableHead className="text-black border border-black p-0 text-center w-[50px]">{t("membership.calculateDividend.table.sl")}</TableHead>
+                    <TableHead className="text-black border border-black p-0 text-center w-[80px]">{t("membership.calculateDividend.table.memberCode")}</TableHead>
+                    <TableHead className="text-black border border-black p-0 text-center w-[160px]">{t("membership.calculateDividend.table.memberName")}</TableHead>
+                    <TableHead className="text-black border border-black p-0 text-center w-[160px]">{t("membership.calculateDividend.table.guardianName")}</TableHead>
+                    <TableHead className="text-black border border-black p-0 text-center">{t("membership.calculateDividend.table.village")}</TableHead>
+                    <TableHead className="text-black border border-black p-0 text-center w-[100px]">{t("membership.calculateDividend.table.shareBalance")}</TableHead>
+                    <TableHead className="text-black border border-black p-0 text-center w-[100px]">{t("membership.calculateDividend.table.dividendAmount")}</TableHead>
                   </TableRow>
                 </TableHeader>
 
@@ -94,9 +84,7 @@ const PreviewModal = ({ tableData, printRef }) => {
                       <TableCell
                         colSpan={6}
                         className=" p-0 text-center border border-black"
-                      >
-                        Total
-                      </TableCell>
+                      >{t("common.total")}</TableCell>
                       <TableCell className="text-right p-0 pr-[2px] border border-black">
                         {tableData
                           .reduce((sum, item) => sum + item.Dividend, 0)

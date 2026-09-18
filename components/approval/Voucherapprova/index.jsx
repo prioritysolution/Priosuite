@@ -17,6 +17,7 @@ import Spinner from "@/common/loader/Spinner";
 import VoucherActionModal from "./VoucherActionModal";
 import { Input } from "@/components/ui/input";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
+import { useTranslation } from "react-i18next";
 
 const VoucherapprovaComponent = ({
   kycList,
@@ -41,11 +42,13 @@ const VoucherapprovaComponent = ({
   orgId,
   branchId,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="p-6 space-y-6 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5">
         <h2 className="text-2xl font-bold tracking-tight text-gray-800">
-          Voucher Approval
+          {t("voucherApproval.voucherApproval")}
         </h2>
         <div className="relative w-full sm:w-auto flex items-center">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -56,7 +59,7 @@ const VoucherapprovaComponent = ({
               paginate(1);
             }}
             className="w-full sm:w-64 pl-10 bg-white border-gray-300 focus:border-primary"
-            placeholder="Search by queue no, type..."
+            placeholder={t("voucherApproval.searchPlaceholder")}
           />
         </div>
       </div>
@@ -66,13 +69,27 @@ const VoucherapprovaComponent = ({
           <Table>
             <TableHeader className="bg-background z-10">
               <TableRow className="bg-gray-100">
-                <TableHead className="w-[50px] font-semibold">Sl</TableHead>
-                <TableHead className="font-semibold">Queue No</TableHead>
-                <TableHead className="font-semibold">Transaction Date</TableHead>
-                <TableHead className="font-semibold">Type</TableHead>
-                <TableHead className="font-semibold">Particulars</TableHead>
-                <TableHead className="font-semibold">Amount</TableHead>
-                <TableHead className="text-right font-semibold">Action</TableHead>
+                <TableHead className="w-[50px] font-semibold">
+                  {t("common.sl")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("voucherApproval.queueNo")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("voucherApproval.transactionDate")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("voucherApproval.type")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("common.particulars")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("common.amount")}
+                </TableHead>
+                <TableHead className="text-right font-semibold">
+                  {t("common.action")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -117,7 +134,7 @@ const VoucherapprovaComponent = ({
                   <TableCell colSpan={7} className="h-32 text-center text-gray-500">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Search className="h-8 w-8 text-gray-300" />
-                      <p>No pending approvals found matching your search.</p>
+                      <p>{t("voucherApproval.noPendingApprovals")}</p>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -129,9 +146,13 @@ const VoucherapprovaComponent = ({
         {!loading && totalPages > 0 && (
           <div className="flex items-center justify-between px-4 py-4 border-t bg-gray-50/50">
             <div className="text-sm text-gray-500">
-              Showing{" "}
-              {kycList.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-              {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} entries
+              {t("common.showing")}{" "}
+              {kycList.length > 0
+                ? (currentPage - 1) * itemsPerPage + 1
+                : 0}{" "}
+              {t("common.to")}{" "}
+              {Math.min(currentPage * itemsPerPage, totalItems)}{" "}
+              {t("common.of")} {totalItems} {t("common.entries")}
             </div>
 
             <div className="flex items-center gap-2">

@@ -39,6 +39,7 @@ import { IoPrint } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const BankDeposit = ({
   loading,
@@ -72,7 +73,10 @@ const BankDeposit = ({
   transferTableData,
   handleDeleteTransferTable,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
+
   useEffect(() => {
     // Initialize form values or perform any setup needed
     if (window !== "undefined") {
@@ -98,7 +102,9 @@ const BankDeposit = ({
 
   return (
     <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">Bank Deposit</h3>
+      <h3 className="text-2xl font-semibold text-center">
+        {t("bank.bankDeposit")}
+      </h3>
 
       <ScrollArea className="w-full h-full">
         <Form {...form}>
@@ -107,7 +113,7 @@ const BankDeposit = ({
             className="w-full flex flex-col items-center pb-6"
             autoComplete="off"
           >
-            <div className="w-full  bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
+            <div className="w-full bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
               {/* Main Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Bank Account */}
@@ -118,16 +124,17 @@ const BankDeposit = ({
                     <div className="flex gap-3 items-end w-full">
                       <div className="flex-1">
                         <DropdownField
-                          label="Bank Account"
+                          label={t("bank.bankAccount")}
                           value={field.value}
                           onChange={field.onChange}
                           options={bankAccountData}
                           optionLabelKey="Bank_Name"
-                          placeholder="Select bank account"
-                          searchPlaceholder="Search bank account..."
+                          placeholder={t("bank.selectBankAccount")}
+                          searchPlaceholder={t("bank.searchBankAccount")}
                           isRequired
                         />
                       </div>
+
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -145,8 +152,9 @@ const BankDeposit = ({
                               <IoPrint />
                             </div>
                           </TooltipTrigger>
+
                           <TooltipContent>
-                            <p>View Ledger</p>
+                            <p>{t("bank.viewLedger")}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -158,7 +166,7 @@ const BankDeposit = ({
                 <DatePickerField
                   control={form.control}
                   name="depositDate"
-                  label="Deposit Date"
+                  label={t("bank.depositDate")}
                   startYear={getYear(new Date(startDate))}
                   disabledDateAfter={
                     new Date(endDate) > new Date()
@@ -174,8 +182,8 @@ const BankDeposit = ({
                 <InputField
                   control={form.control}
                   name="availableBalance"
-                  label="Available Balance"
-                  placeholder="Enter available balance"
+                  label={t("bank.availableBalance")}
+                  placeholder={t("bank.enterAvailableBalance")}
                   readOnly
                 />
 
@@ -183,8 +191,8 @@ const BankDeposit = ({
                 <InputField
                   control={form.control}
                   name="depositAmount"
-                  label="Deposit Amount"
-                  placeholder="Enter deposit amount"
+                  label={t("bank.depositAmount")}
+                  placeholder={t("bank.enterDepositAmount")}
                   type="number"
                   readOnly={
                     form.getValues("transMode") === "transfer" &&
@@ -197,8 +205,8 @@ const BankDeposit = ({
                 <InputField
                   control={form.control}
                   name="refVouchNo"
-                  label="Ref. Vouch No."
-                  placeholder="Enter ref. vouch no."
+                  label={t("bank.refVouchNo")}
+                  placeholder={t("bank.enterRefVouchNo")}
                 />
 
                 {/* Transaction Mode */}
@@ -207,7 +215,10 @@ const BankDeposit = ({
                   name="transMode"
                   render={({ field }) => (
                     <FormItem className="flex flex-col justify-end h-full">
-                      <FormLabel className="mb-2">Transaction Mode</FormLabel>
+                      <FormLabel className="mb-2">
+                        {t("bank.transactionMode")}
+                      </FormLabel>
+
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -218,20 +229,24 @@ const BankDeposit = ({
                             <FormControl>
                               <RadioGroupItem value="cash" />
                             </FormControl>
+
                             <FormLabel className="font-normal cursor-pointer">
-                              Cash
+                              {t("common.cash")}
                             </FormLabel>
                           </FormItem>
+
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="transfer" />
                             </FormControl>
+
                             <FormLabel className="font-normal cursor-pointer">
-                              Transfer
+                              {t("common.transfer")}
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -243,8 +258,8 @@ const BankDeposit = ({
                 <InputField
                   control={form.control}
                   name="totalDepositInWords"
-                  label="Total Amount In Words"
-                  placeholder="Total amount in words"
+                  label={t("bank.totalAmountInWords")}
+                  placeholder={t("bank.totalAmountInWordsPlaceholder")}
                   className="text-red-500 font-medium text-sm"
                   readOnly
                 />
@@ -254,8 +269,9 @@ const BankDeposit = ({
               {form.getValues("transMode") === "cash" && isActiveDenom && (
                 <div className="w-full border border-slate-100 rounded-xl p-4 bg-slate-50/50 mt-2">
                   <h5 className="text-sm font-semibold text-slate-700 mb-3">
-                    Cash Denomination
+                    {t("bank.cashDenomination")}
                   </h5>
+
                   <CashDenomTable
                     notes={notes}
                     denominators={denominators}
@@ -273,7 +289,7 @@ const BankDeposit = ({
                 <div className="w-full border border-slate-200 rounded-xl p-5 bg-slate-50/30 flex flex-col gap-5 mt-2">
                   <div className="border-b border-slate-100 pb-2">
                     <h5 className="text-sm font-semibold text-slate-700">
-                      Transfer Details
+                      {t("bank.transferDetails")}
                     </h5>
                   </div>
 
@@ -281,8 +297,8 @@ const BankDeposit = ({
                     <InputField
                       control={form.control}
                       name="narration"
-                      label="Narration"
-                      placeholder="Enter narration"
+                      label={t("bank.narration")}
+                      placeholder={t("bank.enterNarration")}
                       isRequired={form.getValues("transMode") === "transfer"}
                     />
 
@@ -291,13 +307,13 @@ const BankDeposit = ({
                       name="gl"
                       render={({ field }) => (
                         <DropdownField
-                          label="GL"
+                          label={t("common.gl")}
                           value={field.value}
                           onChange={field.onChange}
                           options={ledgerListData}
                           optionLabelKey="Ledger_Name"
-                          placeholder="Select gl"
-                          searchPlaceholder="Search gl..."
+                          placeholder={t("bank.selectGl")}
+                          searchPlaceholder={t("bank.searchGl")}
                           disabled={transferTableData.length > 0}
                           isRequired={
                             form.getValues("transMode") === "transfer"
@@ -311,15 +327,18 @@ const BankDeposit = ({
                       name="subGl"
                       render={({ field }) => (
                         <SearchDropdownField
-                          label="Sub Ledger"
+                          label={t("bank.subLedger")}
                           value={field.value}
                           onChange={field.onChange}
                           options={subLedgerListData}
-                          placeholder="Select sub ledger"
+                          placeholder={t("bank.selectSubLedger")}
                           optionLabelKey="Ledger_Name"
                           disabled={
                             !form.getValues("gl") ||
-                            !(subLedgerListData && subLedgerListData.length > 0)
+                            !(
+                              subLedgerListData &&
+                              subLedgerListData.length > 0
+                            )
                           }
                           input={subLedgerInput}
                           setInput={setSubLedgerInput}
@@ -333,8 +352,8 @@ const BankDeposit = ({
                       <InputField
                         control={form.control}
                         name="subLedgerNarration"
-                        label="Subledger Narration"
-                        placeholder="Enter narration"
+                        label={t("bank.subledgerNarration")}
+                        placeholder={t("bank.enterNarration")}
                       />
                     )}
 
@@ -342,8 +361,8 @@ const BankDeposit = ({
                       <InputField
                         control={form.control}
                         name="ledgerAmount"
-                        label="Amount"
-                        placeholder="Enter amount"
+                        label={t("common.amount")}
+                        placeholder={t("bank.enterAmount")}
                         type="number"
                       />
                     )}
@@ -355,7 +374,7 @@ const BankDeposit = ({
                           onClick={handleAddTransferTable}
                           className="w-full flex items-center justify-center text-white bg-primary rounded-lg h-10 font-medium transition-colors hover:brightness-95 text-sm"
                         >
-                          Add To Table
+                          {t("bank.addToTable")}
                         </button>
                       </div>
                     )}
@@ -368,25 +387,40 @@ const BankDeposit = ({
                           <TableHeader className="bg-slate-50">
                             <TableRow>
                               <TableHead className="w-[80px]">
-                                Sl. No.
+                                {t("common.slNo")}
                               </TableHead>
-                              <TableHead>Sub Ledger</TableHead>
-                              <TableHead>Narration</TableHead>
-                              <TableHead>Amount</TableHead>
+
+                              <TableHead>
+                                {t("bank.subLedger")}
+                              </TableHead>
+
+                              <TableHead>
+                                {t("bank.narration")}
+                              </TableHead>
+
+                              <TableHead>
+                                {t("common.amount")}
+                              </TableHead>
+
                               <TableHead className="text-right">
-                                Action
+                                {t("common.action")}
                               </TableHead>
                             </TableRow>
                           </TableHeader>
+
                           <TableBody>
                             {transferTableData.map((data, i) => (
                               <TableRow key={i}>
                                 <TableCell className="font-medium">
                                   {i + 1}
                                 </TableCell>
+
                                 <TableCell>{data?.subGlName}</TableCell>
+
                                 <TableCell>{data?.narration}</TableCell>
+
                                 <TableCell>{data?.amount}</TableCell>
+
                                 <TableCell className="text-right">
                                   <button
                                     type="button"
@@ -428,7 +462,7 @@ const BankDeposit = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("common.add")
                   )}
                 </Button>
               </div>

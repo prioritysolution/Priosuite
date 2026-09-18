@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
@@ -63,6 +65,8 @@ const InterestPayout = ({
   postingType,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -88,18 +92,18 @@ const InterestPayout = ({
   );
 
   const monthList = [
-    { Id: "1", label: "January" },
-    { Id: "2", label: "February" },
-    { Id: "3", label: "March" },
-    { Id: "4", label: "April" },
-    { Id: "5", label: "May" },
-    { Id: "6", label: "June" },
-    { Id: "7", label: "July" },
-    { Id: "8", label: "August" },
-    { Id: "9", label: "September" },
-    { Id: "10", label: "October" },
-    { Id: "11", label: "November" },
-    { Id: "12", label: "December" },
+    { Id: "1", label: t("deposit.months.january") },
+    { Id: "2", label: t("deposit.months.february") },
+    { Id: "3", label: t("deposit.months.march") },
+    { Id: "4", label: t("deposit.months.april") },
+    { Id: "5", label: t("deposit.months.may") },
+    { Id: "6", label: t("deposit.months.june") },
+    { Id: "7", label: t("deposit.months.july") },
+    { Id: "8", label: t("deposit.months.august") },
+    { Id: "9", label: t("deposit.months.september") },
+    { Id: "10", label: t("deposit.months.october") },
+    { Id: "11", label: t("deposit.months.november") },
+    { Id: "12", label: t("deposit.months.december") },
   ];
 
   const startDate = getCookieData("fin_start_date");
@@ -109,7 +113,7 @@ const InterestPayout = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Interest Payout</h3>
+        <h3 className="text-2xl font-semibold ">{t("deposit.interestPayout.title")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
           <div className="flex flex-col  w-full ">
@@ -126,7 +130,7 @@ const InterestPayout = ({
                       name="payoutOn"
                       render={({ field }) => (
                         <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full">
-                          <FormLabel>Select payout on</FormLabel>
+                          <FormLabel>{t("deposit.interestPayout.selectPayoutOn")}</FormLabel>
                           <FormControl>
                             <RadioGroup
                               onValueChange={field.onChange}
@@ -162,7 +166,7 @@ const InterestPayout = ({
                       name="postingType"
                       render={({ field }) => (
                         <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full">
-                          <FormLabel>Select posting type</FormLabel>
+                          <FormLabel>{t("deposit.interestPayout.selectPostingType")}</FormLabel>
                           <FormControl>
                             <RadioGroup
                               onValueChange={field.onChange}
@@ -198,7 +202,7 @@ const InterestPayout = ({
                         <DatePickerField
                           control={optionForm.control}
                           name="payoutDate"
-                          label="Payout Date"
+                          label={t("deposit.fields.payoutDate")}
                           startYear={getYear(new Date(startDate))}
                           disabledDateAfter={
                             new Date(endDate) > new Date()
@@ -210,17 +214,17 @@ const InterestPayout = ({
                         <DropdownField
                           control={optionForm.control}
                           name="month"
-                          label="Month"
+                          label={t("deposit.fields.month")}
                           options={monthList}
                           optionLabelKey="label"
-                          placeholder="Select month"
-                          searchPlaceholder="Search month..."
+                          placeholder={t("deposit.placeholders.selectMonth")}
+                          searchPlaceholder={t("deposit.placeholders.searchMonth")}
                         />
                         <InputField
                           control={optionForm.control}
                           name="year"
-                          label="Year"
-                          placeholder="Enter year"
+                          label={t("deposit.fields.year")}
+                          placeholder={t("deposit.placeholders.year")}
                           type="number"
                           min={1900}
                           max={2100}
@@ -251,16 +255,16 @@ const InterestPayout = ({
             {showBulkAccountTable && (
               <div className="w-full h-full flex flex-col border border-primary rounded-lg py-5 gap-5">
                 <h3 className="w-full text-center text-xl font-semibold">
-                  Interest Details
+                  {t("deposit.interestPayout.interestDetails")}
                 </h3>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[100px]">Serial No.</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Account No.</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Amount</TableHead>
+                      <TableHead className="w-[100px]">{t("deposit.interestPayout.serialNo")}</TableHead>
+                      <TableHead>{t("deposit.interestPayout.name")}</TableHead>
+                      <TableHead>{t("deposit.fields.accountNo")}</TableHead>
+                      <TableHead>{t("deposit.interestPayout.date")}</TableHead>
+                      <TableHead>{t("deposit.fields.amount")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -295,7 +299,7 @@ const InterestPayout = ({
                     )}
                     {bulkAccountData.length > 0 ? (
                       <TableRow>
-                        <TableCell colSpan={4}>Total</TableCell>
+                        <TableCell colSpan={4}>{t("deposit.interestPayout.total")}</TableCell>
                         <TableCell>
                           {bulkAccountData
                             ?.reduce((total, item) => {
@@ -329,18 +333,18 @@ const InterestPayout = ({
                     {visibleBlock && (
                       <div className="w-full h-full flex flex-col border border-primary rounded-lg py-5 gap-5">
                         <h3 className="w-full text-center text-xl font-semibold">
-                          Interest Details
+                          {t("deposit.interestPayout.interestDetails")}
                         </h3>
                         <Table>
                           <TableHeader>
                             <TableRow>
                               <TableHead className="w-[100px]">
-                                Serial No.
+                                {t("deposit.interestPayout.serialNo")}
                               </TableHead>
-                              <TableHead>Name</TableHead>
-                              <TableHead>Account No.</TableHead>
-                              <TableHead>Date</TableHead>
-                              <TableHead>Amount</TableHead>
+                              <TableHead>{t("deposit.interestPayout.name")}</TableHead>
+                              <TableHead>{t("deposit.fields.accountNo")}</TableHead>
+                              <TableHead>{t("deposit.interestPayout.date")}</TableHead>
+                              <TableHead>{t("deposit.fields.amount")}</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -375,7 +379,7 @@ const InterestPayout = ({
                             )}
                             {singleAccountData.length > 0 ? (
                               <TableRow>
-                                <TableCell colSpan={4}>Total</TableCell>
+                                <TableCell colSpan={4}>{t("deposit.interestPayout.total")}</TableCell>
                                 <TableCell>
                                   {singleAccountData
                                     ?.reduce((total, item) => {
@@ -395,21 +399,21 @@ const InterestPayout = ({
                     {visibleBlock && (
                       <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                         <h3 className="w-full text-center text-xl font-semibold">
-                          Payout Info Block
+                          {t("deposit.sections.payoutInfo")}
                         </h3>
                         <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                           <DatePickerField
                             control={form.control}
                             name="paidDate"
-                            label="Paid Date"
+                            label={t("deposit.fields.paidDate")}
                             disabled
                           />
 
                           <InputField
                             control={form.control}
                             name="interestAmount"
-                            label="Interest Amount"
-                            placeholder="Enter interest amount"
+                            label={t("deposit.fields.interestAmount")}
+                            placeholder={t("deposit.placeholders.interestAmount")}
                             readOnly
                           />
                         </div>
@@ -419,7 +423,7 @@ const InterestPayout = ({
                     {visibleBlock && (
                       <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:p-5 gap-5">
                         <h3 className="w-full text-center text-xl font-semibold">
-                          Transanction Block
+                          {t("deposit.sections.transaction")}
                         </h3>
                         <div className="w-full border border-primary rounded-md p-5 mb-5 flex flex-col gap-3">
                           <FormField
@@ -427,7 +431,7 @@ const InterestPayout = ({
                             name="transMode"
                             render={({ field }) => (
                               <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full lg:w-fit">
-                                <FormLabel>Select transanction mode</FormLabel>
+                                <FormLabel>{t("deposit.common.selectTransanctionMode")}</FormLabel>
                                 <FormControl>
                                   <RadioGroup
                                     onValueChange={field.onChange}
@@ -467,8 +471,8 @@ const InterestPayout = ({
                           <InputField
                             control={form.control}
                             name="refVouchNo"
-                            label="Ref. Vouch No."
-                            placeholder="Enter ref. vouch no."
+                            label={t("deposit.fields.refVoucherNo")}
+                            placeholder={t("deposit.placeholders.refVoucherNo")}
                             className="w-fit"
                           />
                         </div>
@@ -501,11 +505,11 @@ const InterestPayout = ({
                             <DropdownField
                               control={form.control}
                               name="bank"
-                              label="Bank"
+                              label={t("deposit.fields.bank")}
                               options={bankAccountData}
                               optionLabelKey="Bank_Name"
-                              placeholder="Select bank"
-                              searchPlaceholder="Search bank..."
+                              placeholder={t("deposit.placeholders.selectBank")}
+                              searchPlaceholder={t("deposit.placeholders.searchBank")}
                             />
                           </div>
                         ) : (
@@ -513,11 +517,11 @@ const InterestPayout = ({
                             <DropdownField
                               control={form.control}
                               name="savings"
-                              label="Savings"
+                              label={t("deposit.fields.savings")}
                               options={savingsAccountData}
                               optionLabelKey="Account_No"
-                              placeholder="Select savings"
-                              searchPlaceholder="Search savings..."
+                              placeholder={t("deposit.placeholders.selectSavings")}
+                              searchPlaceholder={t("deposit.placeholders.searchSavings")}
                             />
                           </div>
                         )}

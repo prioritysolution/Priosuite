@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -97,6 +99,7 @@ const AccountSearchForm = ({
   showProduct = false,
   getLedgerLoading,
 }) => {
+  const { t } = useTranslation();
   const startDate = getCookieData("fin_start_date");
 
   const endDate = getCookieData("fin_end_date");
@@ -234,14 +237,14 @@ const AccountSearchForm = ({
     if (form.getValues("dialougeMemberNo")) {
       getAccountListApiCall(2, form.getValues("dialougeMemberNo"), 1);
       setCurrentAccountPage(1);
-    } else toast.error("Please enter member no.");
+    } else toast.error(t("forms.pleaseEnterMemberNo"));
   };
 
   const handleSearchAccountListByName = () => {
     if (form.getValues("dialougeAccountName")) {
       getAccountListApiCall(1, form.getValues("dialougeAccountName"), 1);
       setCurrentAccountPage(1);
-    } else toast.error("Please enter name");
+    } else toast.error(t("forms.pleaseEnterName"));
   };
 
   const handleSelectClick = (data) => {
@@ -315,11 +318,11 @@ const AccountSearchForm = ({
                   <DropdownField
                     control={form.control}
                     name="productId"
-                    label="Product"
+                    label={t("forms.product")}
                     options={operateProductData}
                     optionLabelKey="Product_Name"
                     optionValueKey="Id"
-                    placeholder="Select Product"
+                    placeholder={t("forms.selectProduct")}
                   />
                 </div>
               )}
@@ -328,7 +331,7 @@ const AccountSearchForm = ({
                   <DatePickerField
                     control={form.control}
                     name="date"
-                    label="Date"
+                    label={t("common.date")}
                     startYear={getYear(parseFlexDate(startDate))}
                     endYear={getYear(parseFlexDate(endDate))}
                     disabledDateAfter={
@@ -353,14 +356,14 @@ const AccountSearchForm = ({
                 name="accountNo"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Account No.</FormLabel>
+                    <FormLabel>{t("forms.accountNo")}</FormLabel>
 
                     <FormControl>
                       <div className="">
                         <div className="">
                           <div className="relative w-full">
                             <Input
-                              placeholder="Enter account no."
+                              placeholder={t("forms.enterAccountNo")}
                               className="w-full "
                               type={allowAlphanumeric ? "text" : "number"}
                               onInput={(e) => {
@@ -403,7 +406,7 @@ const AccountSearchForm = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Next"
+                    t("forms.next")
                   )}
                 </Button>
 
@@ -419,7 +422,7 @@ const AccountSearchForm = ({
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>View Ledger</p>
+                        <p>{t("common.viewLedger")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -446,7 +449,7 @@ const AccountSearchForm = ({
             <DialogContent className="w-[calc(100vw-1rem)] max-w-[1000px] h-[min(90dvh,640px)] sm:h-auto sm:max-h-[85vh] p-3 sm:p-6 gap-3 overflow-hidden flex flex-col rounded-lg">
               <DialogHeader className="shrink-0 pr-8 text-left">
                 <DialogTitle className="text-base sm:text-lg">
-                  Search Account
+                  {t("forms.searchAccount")}
                 </DialogTitle>
               </DialogHeader>
               <div className="w-full min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
@@ -467,7 +470,7 @@ const AccountSearchForm = ({
                           color: activeTab === "memberNo" ? "#ffffff" : "",
                         }}
                       >
-                        By Member No.
+                        {t("forms.byMemberNo")}
                       </TabsTrigger>
                       <TabsTrigger
                         value="name"
@@ -478,7 +481,7 @@ const AccountSearchForm = ({
                           color: activeTab === "name" ? "#ffffff" : "",
                         }}
                       >
-                        By Name
+                        {t("forms.byName")}
                       </TabsTrigger>
                     </TabsList>
                     <TabsContent
@@ -490,11 +493,11 @@ const AccountSearchForm = ({
                         name="dialougeMemberNo"
                         render={({ field }) => (
                           <FormItem className="w-full min-w-0">
-                            <FormLabel>Member No.</FormLabel>
+                            <FormLabel>{t("forms.memberNo")}</FormLabel>
                             <FormControl>
                               <Input
                                 autoComplete="off"
-                                placeholder="Search by enter member no."
+                                placeholder={t("forms.searchByMemberNo")}
                                 {...field}
                               />
                             </FormControl>
@@ -506,7 +509,7 @@ const AccountSearchForm = ({
                         className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                         onClick={handleSearchAccountListByMemberNo}
                       >
-                        Search
+                        {t("forms.search")}
                       </Button>
                     </TabsContent>
                     <TabsContent
@@ -518,11 +521,11 @@ const AccountSearchForm = ({
                         name="dialougeAccountName"
                         render={({ field }) => (
                           <FormItem className="w-full min-w-0">
-                            <FormLabel>Name</FormLabel>
+                            <FormLabel>{t("forms.name")}</FormLabel>
                             <FormControl>
                               <Input
                                 autoComplete="off"
-                                placeholder="Search by enter name"
+                                placeholder={t("forms.searchByName")}
                                 {...field}
                               />
                             </FormControl>
@@ -534,7 +537,7 @@ const AccountSearchForm = ({
                         className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                         onClick={handleSearchAccountListByName}
                       >
-                        Search
+                        {t("forms.search")}
                       </Button>
                     </TabsContent>
                   </Tabs>

@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useWatch } from "react-hook-form";
 import Spinner from "@/common/loader/Spinner";
+import { useTranslation } from "react-i18next";
 
 const KycActionModal = ({
   open,
@@ -41,12 +42,20 @@ const KycActionModal = ({
   fetchLocationDetails,
   loading,
 }) => {
+  const { t } = useTranslation();
   const { control, handleSubmit, getValues, reset } = form;
 
   // Watch values for dependent dropdowns
   const watchedStateId = useWatch({ control, name: "stateId" });
   const watchedDistrictId = useWatch({ control, name: "districtId" });
   const watchedBlockId = useWatch({ control, name: "blockId" });
+
+  const watchedPresentStateId = useWatch({ control, name: "presentStateId" });
+  const watchedPresentDistrictId = useWatch({
+    control,
+    name: "presentDistrictId",
+  });
+  const watchedPresentBlockId = useWatch({ control, name: "presentBlockId" });
 
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectRemarks, setRejectRemarks] = useState("");
@@ -130,9 +139,7 @@ const KycActionModal = ({
       // Debug: Log the values for troubleshooting
       console.log("Original values:", originalValues);
       console.log("Current values:", getValues());
-      toast.error(
-        "No changes detected. Please modify at least one field before updating.",
-      );
+      toast.error(t("kycApproval.noChangesDetected"));
       return;
     }
     onUpdate(data);
@@ -144,55 +151,9 @@ const KycActionModal = ({
   const getFieldsConfig = () => {
     const config = {
       profile: [],
-      location: [
-        {
-          name: "stateId",
-          label: "State",
-          type: "dropdown",
-          optionsList: masterDataLists.states,
-          labelKey: "State_Name",
-        },
-        {
-          name: "districtId",
-          label: "District",
-          type: "dropdown",
-          optionsList: masterDataLists.districts,
-          labelKey: "Dist_Name",
-          isDisabled: !watchedStateId,
-        },
-        {
-          name: "blockId",
-          label: "Block",
-          type: "dropdown",
-          optionsList: masterDataLists.blocks,
-          labelKey: "Block_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "policeStationId",
-          label: "Police Station",
-          type: "dropdown",
-          optionsList: masterDataLists.policeStations,
-          labelKey: "STation_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "postOfficeId",
-          label: "Post Office",
-          type: "dropdown",
-          optionsList: masterDataLists.postOffices,
-          labelKey: "Post_Off_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "villageId",
-          label: "Village",
-          type: "dropdown",
-          optionsList: masterDataLists.villages,
-          labelKey: "Vill_Name",
-          isDisabled: !watchedBlockId,
-        },
-      ],
+      location: [],
+      permanentLocation: [],
+      presentLocation: [],
       identity: [],
     };
 
@@ -200,111 +161,311 @@ const KycActionModal = ({
       config.profile = [
         {
           name: "grp_no",
-          label: "Group No.",
+          label: t("kycApproval.fields.groupNo"),
           fieldType: "text",
           isDisabled: true,
           maxLength: 5,
         },
         {
           name: "cust_type",
-          label: "Group Type",
+          label: t("kycApproval.fields.groupType"),
           fieldType: "dropdown",
           optionsList: masterDataLists.groupTypes,
           labelKey: "Option_Value",
         },
-        { name: "grp_name", label: "Group Name" },
-        { name: "gerp_dob", label: "Date of Formation", fieldType: "date" },
-        { name: "grp_ben", label: "No Of Beneficiary", fieldType: "number" },
+        { name: "grp_name", label: t("kycApproval.fields.groupName") },
+        { name: "gerp_dob", label: t("kycApproval.fields.dateOfFormation"), fieldType: "date" },
+        { name: "grp_ben", label: t("kycApproval.fields.noOfBeneficiary"), fieldType: "number" },
         {
           name: "grp_mob",
-          label: "Mobile No.",
+          label: t("kycApproval.fields.mobileNo"),
           fieldType: "number",
           maxLength: 10,
         },
-        { name: "grp_add", label: "Address" },
-        { name: "grp_doc", label: "Reg. / Document No" },
+        { name: "grp_add", label: t("kycApproval.fields.address") },
+        { name: "grp_doc", label: t("kycApproval.fields.regDocumentNo") },
+      ];
+      config.location = [
+        {
+          name: "stateId",
+          label: t("kycApproval.fields.state"),
+          type: "dropdown",
+          optionsList: masterDataLists.states,
+          labelKey: "State_Name",
+        },
+        {
+          name: "districtId",
+          label: t("kycApproval.fields.district"),
+          type: "dropdown",
+          optionsList: masterDataLists.districts,
+          labelKey: "Dist_Name",
+          isDisabled: !watchedStateId,
+        },
+        {
+          name: "blockId",
+          label: t("kycApproval.fields.block"),
+          type: "dropdown",
+          optionsList: masterDataLists.blocks,
+          labelKey: "Block_Name",
+          isDisabled: !watchedDistrictId,
+        },
+        {
+          name: "policeStationId",
+          label: t("kycApproval.fields.policeStation"),
+          type: "dropdown",
+          optionsList: masterDataLists.policeStations,
+          labelKey: "STation_Name",
+          isDisabled: !watchedDistrictId,
+        },
+        {
+          name: "postOfficeId",
+          label: t("kycApproval.fields.postOffice"),
+          type: "dropdown",
+          optionsList: masterDataLists.postOffices,
+          labelKey: "Post_Off_Name",
+          isDisabled: !watchedDistrictId,
+        },
+        {
+          name: "villageId",
+          label: t("kycApproval.fields.villageWardNo"),
+          type: "dropdown",
+          optionsList: masterDataLists.villages,
+          labelKey: "Vill_Name",
+          isDisabled: !watchedBlockId,
+        },
       ];
     } else if (type === "4") {
       config.profile = [
-        { name: "inst_name", label: "Institution Name" },
-        { name: "inst_dob", label: "Date of Formation", fieldType: "date" },
-        { name: "inst_ben", label: "No Of Beneficiary", fieldType: "number" },
+        { name: "inst_name", label: t("kycApproval.fields.institutionName") },
+        { name: "inst_dob", label: t("kycApproval.fields.dateOfFormation"), fieldType: "date" },
+        { name: "inst_ben", label: t("kycApproval.fields.noOfBeneficiary"), fieldType: "number" },
         {
           name: "inst_mob",
-          label: "Mobile No.",
+          label: t("kycApproval.fields.mobileNo"),
           fieldType: "number",
           maxLength: 10,
         },
-        { name: "inst_add", label: "Address" },
-        { name: "inst_doc", label: "Reg. / Document No" },
+        { name: "inst_add", label: t("kycApproval.fields.address") },
+        { name: "inst_doc", label: t("kycApproval.fields.regDocumentNo") },
+      ];
+      config.location = [
+        {
+          name: "stateId",
+          label: t("kycApproval.fields.state"),
+          type: "dropdown",
+          optionsList: masterDataLists.states,
+          labelKey: "State_Name",
+        },
+        {
+          name: "districtId",
+          label: t("kycApproval.fields.district"),
+          type: "dropdown",
+          optionsList: masterDataLists.districts,
+          labelKey: "Dist_Name",
+          isDisabled: !watchedStateId,
+        },
+        {
+          name: "blockId",
+          label: t("kycApproval.fields.block"),
+          type: "dropdown",
+          optionsList: masterDataLists.blocks,
+          labelKey: "Block_Name",
+          isDisabled: !watchedDistrictId,
+        },
+        {
+          name: "policeStationId",
+          label: t("kycApproval.fields.policeStation"),
+          type: "dropdown",
+          optionsList: masterDataLists.policeStations,
+          labelKey: "STation_Name",
+          isDisabled: !watchedDistrictId,
+        },
+        {
+          name: "postOfficeId",
+          label: t("kycApproval.fields.postOffice"),
+          type: "dropdown",
+          optionsList: masterDataLists.postOffices,
+          labelKey: "Post_Off_Name",
+          isDisabled: !watchedDistrictId,
+        },
+        {
+          name: "villageId",
+          label: t("kycApproval.fields.villageWardNo"),
+          type: "dropdown",
+          optionsList: masterDataLists.villages,
+          labelKey: "Vill_Name",
+          isDisabled: !watchedBlockId,
+        },
       ];
     } else {
       config.profile = [
         {
           name: "memberNo",
-          label: "Member No.",
+          label: t("kycApproval.fields.memberNo"),
           fieldType: "text",
           maxLength: 5,
         },
         {
           name: "memberType",
-          label: "Member Type",
+          label: t("kycApproval.fields.memberType"),
           fieldType: "dropdown",
           optionsList: masterDataLists.memberTypes,
           labelKey: "Option_Value",
         },
-        { name: "firstName", label: "First Name" },
-        { name: "middleName", label: "Middle Name" },
-        { name: "lastName", label: "Last Name" },
-        { name: "relationName", label: "Relation Name" },
+        { name: "firstName", label: t("kycApproval.fields.firstName") },
+        { name: "middleName", label: t("kycApproval.fields.middleName") },
+        { name: "lastName", label: t("kycApproval.fields.lastName") },
+        { name: "relationName", label: t("kycApproval.fields.relationName") },
         {
           name: "relationType",
-          label: "Relation Type",
+          label: t("kycApproval.fields.relationType"),
           fieldType: "dropdown",
           optionsList: masterDataLists.relationTypes,
           labelKey: "Option_Value",
         },
-        { name: "dob", label: "Date of Birth", fieldType: "date" },
+        { name: "dob", label: t("kycApproval.fields.dateOfBirth"), fieldType: "date" },
         {
           name: "gender",
-          label: "Gender",
+          label: t("kycApproval.fields.gender"),
           fieldType: "dropdown",
           optionsList: masterDataLists.genders,
           labelKey: "Option_Value",
         },
         {
           name: "caste",
-          label: "Caste",
+          label: t("kycApproval.fields.caste"),
           fieldType: "dropdown",
           optionsList: masterDataLists.castes,
           labelKey: "Option_Value",
         },
         {
           name: "religion",
-          label: "Religion",
+          label: t("kycApproval.fields.religion"),
           fieldType: "dropdown",
           optionsList: masterDataLists.religions,
           labelKey: "Option_Value",
         },
         {
           name: "mobile",
-          label: "Mobile No.",
+          label: t("kycApproval.fields.mobileNo"),
           fieldType: "number",
           maxLength: 10,
         },
-        { name: "email", label: "Email" },
-        { name: "address", label: "Address" },
+        { name: "email", label: t("kycApproval.fields.email") },
       ];
+
+      config.permanentLocation = [
+        { name: "address", label: t("kycApproval.fields.address"), fieldType: "text" },
+        {
+          name: "stateId",
+          label: t("kycApproval.fields.state"),
+          type: "dropdown",
+          optionsList: masterDataLists.states,
+          labelKey: "State_Name",
+        },
+        {
+          name: "districtId",
+          label: t("kycApproval.fields.district"),
+          type: "dropdown",
+          optionsList: masterDataLists.districts,
+          labelKey: "Dist_Name",
+          isDisabled: !watchedStateId,
+        },
+        {
+          name: "blockId",
+          label: t("kycApproval.fields.block"),
+          type: "dropdown",
+          optionsList: masterDataLists.blocks,
+          labelKey: "Block_Name",
+          isDisabled: !watchedDistrictId,
+        },
+        {
+          name: "policeStationId",
+          label: t("kycApproval.fields.policeStation"),
+          type: "dropdown",
+          optionsList: masterDataLists.policeStations,
+          labelKey: "STation_Name",
+          isDisabled: !watchedDistrictId,
+        },
+        {
+          name: "postOfficeId",
+          label: t("kycApproval.fields.postOffice"),
+          type: "dropdown",
+          optionsList: masterDataLists.postOffices,
+          labelKey: "Post_Off_Name",
+          isDisabled: !watchedDistrictId,
+        },
+        {
+          name: "villageId",
+          label: t("kycApproval.fields.villageWardNo"),
+          type: "dropdown",
+          optionsList: masterDataLists.villages,
+          labelKey: "Vill_Name",
+          isDisabled: !watchedBlockId,
+        },
+      ];
+
+      config.presentLocation = [
+        { name: "presentAddress", label: t("kycApproval.fields.address"), fieldType: "text" },
+        {
+          name: "presentStateId",
+          label: t("kycApproval.fields.state"),
+          type: "dropdown",
+          optionsList: masterDataLists.states,
+          labelKey: "State_Name",
+        },
+        {
+          name: "presentDistrictId",
+          label: t("kycApproval.fields.district"),
+          type: "dropdown",
+          optionsList: masterDataLists.presentDistricts,
+          labelKey: "Dist_Name",
+          isDisabled: !watchedPresentStateId,
+        },
+        {
+          name: "presentBlockId",
+          label: t("kycApproval.fields.block"),
+          type: "dropdown",
+          optionsList: masterDataLists.presentBlocks,
+          labelKey: "Block_Name",
+          isDisabled: !watchedPresentDistrictId,
+        },
+        {
+          name: "presentPoliceStationId",
+          label: t("kycApproval.fields.policeStation"),
+          type: "dropdown",
+          optionsList: masterDataLists.presentPoliceStations,
+          labelKey: "STation_Name",
+          isDisabled: !watchedPresentDistrictId,
+        },
+        {
+          name: "presentPostOfficeId",
+          label: t("kycApproval.fields.postOffice"),
+          type: "dropdown",
+          optionsList: masterDataLists.presentPostOffices,
+          labelKey: "Post_Off_Name",
+          isDisabled: !watchedPresentDistrictId,
+        },
+        {
+          name: "presentVillageId",
+          label: t("kycApproval.fields.villageWardNo"),
+          type: "dropdown",
+          optionsList: masterDataLists.presentVillages,
+          labelKey: "Vill_Name",
+          isDisabled: !watchedPresentBlockId,
+        },
+      ];
+
       config.identity = [
         {
           name: "aadhaarNo",
-          label: "Aadhaar No.",
+          label: t("kycApproval.fields.aadhaarNo"),
           fieldType: "number",
           maxLength: 12,
         },
-        { name: "voterId", label: "Voter Id", uppercase: true },
-        { name: "rationNo", label: "Ration Card", uppercase: true },
-        { name: "panNo", label: "Pan Card", uppercase: true },
+        { name: "voterId", label: t("kycApproval.fields.voterId"), uppercase: true },
+        { name: "rationNo", label: t("kycApproval.fields.rationCard"), uppercase: true },
+        { name: "panNo", label: t("kycApproval.fields.panCard"), uppercase: true },
       ];
     }
 
@@ -320,7 +481,7 @@ const KycActionModal = ({
       value === null ||
       value === undefined
     ) {
-      return value || "N/A";
+      return value || t("common.notAvailable");
     }
 
     const found = optionsList.find((opt) => String(opt.Id) === String(value));
@@ -353,7 +514,9 @@ const KycActionModal = ({
         try {
           const dateVal = new Date(rawValue);
           if (!isNaN(dateVal.getTime())) {
-            displayValue = dateVal.toLocaleDateString("en-GB").replace(/\//g, "-");
+            displayValue = dateVal
+              .toLocaleDateString("en-GB")
+              .replace(/\//g, "-");
           } else {
             displayValue = rawValue;
           }
@@ -372,7 +535,7 @@ const KycActionModal = ({
             displayValue !== undefined &&
             displayValue !== ""
               ? displayValue
-              : "N/A"}
+              : t("common.notAvailable")}
           </div>
         </div>
       );
@@ -419,7 +582,7 @@ const KycActionModal = ({
         name={name}
         label={label}
         type={fieldType === "number" ? "number" : "text"}
-        placeholder={`Enter ${label.toLowerCase()}`}
+        placeholder={t("kycApproval.enterField", { field: label })}
         disabled={isDisabled}
         maxLength={maxLength}
         isUpper={uppercase}
@@ -429,7 +592,7 @@ const KycActionModal = ({
 
   const handleRejectConfirm = () => {
     if (!rejectRemarks.trim()) {
-      toast.error("Please enter remarks for rejection.");
+      toast.error(t("kycApproval.pleaseEnterRejectionRemarks"));
       return;
     }
     onApproveReject(2, rejectRemarks);
@@ -453,13 +616,13 @@ const KycActionModal = ({
           <DialogHeader className="shrink-0 border-b bg-white space-y-0 text-left p-0">
             <div className="flex flex-col gap-2.5 w-full min-w-0 p-3 pr-10 sm:p-4 sm:pr-12 lg:p-5 lg:pr-14">
               <DialogTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 tracking-tight leading-tight">
-                KYC Approval
+                {t("kycApproval.kycApproval")}
               </DialogTitle>
 
               <div className="flex flex-col gap-2 min-w-0 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
                 <div className="min-w-0 space-y-1">
                   <p className="text-xs sm:text-sm text-gray-500 leading-snug break-all">
-                    <span className="text-gray-400">App No:</span>{" "}
+                    <span className="text-gray-400">{t("kycApproval.appNo")}</span>{" "}
                     <span className="font-medium text-gray-700">
                       {selectedApplication?.Appl_No ||
                         selectedApplication?.Application_No ||
@@ -484,7 +647,7 @@ const KycActionModal = ({
                       disabled={loading}
                     >
                       <Edit className="w-4 h-4 mr-2 shrink-0" />
-                      Update Profile
+                      {t("kycApproval.updateProfile")}
                     </Button>
                   ) : (
                     <Button
@@ -499,7 +662,7 @@ const KycActionModal = ({
                       disabled={loading}
                     >
                       <XCircle className="w-4 h-4 mr-2 shrink-0" />
-                      Cancel Edit
+                      {t("kycApproval.cancelEdit")}
                     </Button>
                   )}
                 </div>
@@ -527,26 +690,57 @@ const KycActionModal = ({
                         "ring-1 ring-primary/20 border-primary/30 shadow-md",
                     )}
                   >
-                    {fieldsConfig.profile.map((field) => renderSmartField(field))}
-
-                    {fieldsConfig.location.length > 0 && (
-                      <>
-                        <div className="col-span-full border-t border-gray-100 my-1 sm:my-2 pt-3 sm:pt-4">
-                          <h4 className="text-xs sm:text-sm font-bold text-primary/80 uppercase tracking-tighter">
-                            Location Details
-                          </h4>
-                        </div>
-                        {fieldsConfig.location.map((field) =>
-                          renderSmartField(field),
-                        )}
-                      </>
+                    {fieldsConfig.profile.map((field) =>
+                      renderSmartField(field),
                     )}
+
+                    {fieldsConfig.location &&
+                      fieldsConfig.location.length > 0 && (
+                        <>
+                          <div className="col-span-full border-t border-gray-100 my-1 sm:my-2 pt-3 sm:pt-4">
+                            <h4 className="text-xs sm:text-sm font-bold text-primary/80 uppercase tracking-tighter">
+                              {t("kycApproval.locationDetails")}
+                            </h4>
+                          </div>
+                          {fieldsConfig.location.map((field) =>
+                            renderSmartField(field),
+                          )}
+                        </>
+                      )}
+
+                    {fieldsConfig.permanentLocation &&
+                      fieldsConfig.permanentLocation.length > 0 && (
+                        <>
+                          <div className="col-span-full border-t border-gray-100 my-1 sm:my-2 pt-3 sm:pt-4">
+                            <h4 className="text-xs sm:text-sm font-bold text-primary/80 uppercase tracking-tighter">
+                              {t("kycApproval.permanentAddress")}
+                            </h4>
+                          </div>
+                          {fieldsConfig.permanentLocation.map((field) =>
+                            renderSmartField(field),
+                          )}
+                        </>
+                      )}
+
+                    {fieldsConfig.presentLocation &&
+                      fieldsConfig.presentLocation.length > 0 && (
+                        <>
+                          <div className="col-span-full border-t border-gray-100 my-1 sm:my-2 pt-3 sm:pt-4">
+                            <h4 className="text-xs sm:text-sm font-bold text-primary/80 uppercase tracking-tighter">
+                              {t("kycApproval.presentAddress")}
+                            </h4>
+                          </div>
+                          {fieldsConfig.presentLocation.map((field) =>
+                            renderSmartField(field),
+                          )}
+                        </>
+                      )}
 
                     {fieldsConfig.identity.length > 0 && (
                       <>
                         <div className="col-span-full border-t border-gray-100 my-1 sm:my-2 pt-3 sm:pt-4">
                           <h4 className="text-xs sm:text-sm font-bold text-primary/80 uppercase tracking-tighter">
-                            Identity Documents
+                            {t("kycApproval.identityDocuments")}
                           </h4>
                         </div>
                         {fieldsConfig.identity.map((field) =>
@@ -568,7 +762,7 @@ const KycActionModal = ({
                 className="bg-primary hover:bg-primary/90 px-4 sm:px-6 font-semibold w-full sm:w-auto"
                 disabled={loading}
               >
-                <Save className="w-4 h-4 mr-2 shrink-0" /> Save & Update
+                <Save className="w-4 h-4 mr-2 shrink-0" /> {t("kycApproval.saveAndUpdate")}
               </Button>
             ) : (
               <div className="hidden sm:block" />
@@ -580,14 +774,14 @@ const KycActionModal = ({
                 onClick={() => setShowRejectModal(true)}
                 disabled={isEditMode || loading}
               >
-                <Ban className="w-4 h-4 mr-2 shrink-0" /> Reject
+                <Ban className="w-4 h-4 mr-2 shrink-0" /> {t("kycApproval.reject")}
               </Button>
               <Button
                 className="bg-primary hover:bg-primary/90 text-white px-4 sm:px-8 font-bold min-w-0 sm:min-w-[120px] transition-all flex-1 sm:flex-none sm:w-auto"
                 onClick={() => onApproveReject(1)}
                 disabled={isEditMode || loading}
               >
-                <CheckCircle2 className="w-4 h-4 mr-2 shrink-0" /> Approve
+                <CheckCircle2 className="w-4 h-4 mr-2 shrink-0" /> {t("kycApproval.approve")}
               </Button>
             </div>
           </div>
@@ -599,16 +793,17 @@ const KycActionModal = ({
           <DialogHeader className="text-left pr-8">
             <DialogTitle className="flex items-center gap-2 text-red-600 text-base sm:text-lg">
               <AlertTriangle className="h-5 w-5 shrink-0" />
-              Reject Application
+              {t("kycApproval.rejectApplication")}
             </DialogTitle>
           </DialogHeader>
           <div className="py-3 sm:py-4">
             <Label htmlFor="remarks" className="mb-2 block text-sm font-medium">
-              Rejection Remarks <span className="text-red-500">*</span>
+              {t("kycApproval.rejectionRemarks")}{" "}
+              <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="remarks"
-              placeholder="Enter reason for rejection..."
+              placeholder={t("kycApproval.enterRejectionReason")}
               value={rejectRemarks}
               onChange={(e) => setRejectRemarks(e.target.value)}
               className="min-h-[100px] focus-visible:ring-red-500"
@@ -620,13 +815,13 @@ const KycActionModal = ({
               className="w-full sm:w-auto"
               onClick={() => setShowRejectModal(false)}
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto"
               onClick={handleRejectConfirm}
             >
-              Confirm Rejection
+              {t("kycApproval.confirmRejection")}
             </Button>
           </DialogFooter>
         </DialogContent>

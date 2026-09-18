@@ -37,6 +37,7 @@ import "./globals.css";
 import { ModalProvider } from "../utils/ContextProvider";
 import { ReduxProvider } from "../redux/ReduxProvider";
 import ToasterProvider from "../common/ToasterProvider";
+import I18nProvider from "../common/I18nProvider";
 import DevToolsProtection from "./DevToolsProtection";
 
 const style = Open_Sans({
@@ -59,9 +60,11 @@ export default function RootLayout({ children }) {
         <ToasterProvider>
           <main className="h-screen w-full overflow-hidden">
             {/* <DevToolsProtection /> */}
-            <ReduxProvider>
-              <ModalProvider>{children}</ModalProvider>
-            </ReduxProvider>
+            <I18nProvider>
+              <ReduxProvider>
+                <ModalProvider>{children}</ModalProvider>
+              </ReduxProvider>
+            </I18nProvider>
           </main>
         </ToasterProvider>
       </body>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useState } from "react";
 import {
   flexRender,
@@ -41,6 +43,8 @@ const PostOfficeTable = ({
   setCurrentPostOfficePage,
   lastPostOfficePage,
 }) => {
+  const { t } = useTranslation();
+
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -50,7 +54,7 @@ const PostOfficeTable = ({
     {
       accessorKey: "serialNo",
       header: () => {
-        return <div className="text-left">Serial No</div>;
+        return <div className="text-left">{t("common.serialNo")}</div>;
       },
       cell: ({ row }) => {
         return <div className="text-left">{Number(row.id) + 1}</div>;
@@ -64,7 +68,7 @@ const PostOfficeTable = ({
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Post Office Name
+            {t("master.operationalArea.table.postOfficeName")}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -77,28 +81,28 @@ const PostOfficeTable = ({
     },
     {
       accessorKey: "Pin_Code",
-      header: () => <div className="text-left ">PIN Code</div>,
+      header: () => <div className="text-left ">{t("master.operationalArea.table.pinCode")}</div>,
       cell: ({ row }) => {
         return <div className="text-left">{row.getValue("Pin_Code")}</div>;
       },
     },
     {
       accessorKey: "Dist_Name",
-      header: () => <div className="text-left ">District Name</div>,
+      header: () => <div className="text-left ">{t("master.operationalArea.table.districtName")}</div>,
       cell: ({ row }) => {
         return <div className="text-left">{row.getValue("Dist_Name")}</div>;
       },
     },
     {
       accessorKey: "State_Name",
-      header: () => <div className="text-left ">State Name</div>,
+      header: () => <div className="text-left ">{t("master.operationalArea.table.stateName")}</div>,
       cell: ({ row }) => {
         return <div className="text-left">{row.getValue("State_Name")}</div>;
       },
     },
     {
       accessorKey: "Id",
-      header: () => <div className="text-center ">Actions</div>,
+      header: () => <div className="text-center ">{t("common.actions")}</div>,
       cell: ({ row }) => {
         return (
           <div className="w-full flex justify-center  text-center">
@@ -106,7 +110,7 @@ const PostOfficeTable = ({
               className="flex text-center items-center justify-center gap-3"
               onClick={() => handleEditData(data[row.id])}
             >
-              Edit
+              {t("common.buttons.edit")}
               <FaRegEdit />
             </Button>
           </div>
@@ -233,7 +237,7 @@ const PostOfficeTable = ({
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {t("common.noResults")}
                   </TableCell>
                 </TableRow>
               )}
@@ -256,7 +260,7 @@ const PostOfficeTable = ({
                 onClick={() => setCurrentPostOfficePage((prev) => prev - 1)}
                 disabled={currentPostOfficePage === 1}
               >
-                Previous
+                {t("common.previous")}
               </Button>
             </PaginationItem>
 
@@ -279,7 +283,7 @@ const PostOfficeTable = ({
                 onClick={() => setCurrentPostOfficePage((prev) => prev + 1)}
                 disabled={currentPostOfficePage === lastPostOfficePage}
               >
-                Next
+                {t("common.next")}
               </Button>
             </PaginationItem>
           </PaginationContent>

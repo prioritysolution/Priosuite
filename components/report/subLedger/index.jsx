@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ const SubLedger = ({
   subLedgerInput,
   setSubLedgerInput,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
@@ -85,7 +87,9 @@ const SubLedger = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Sub Ledger Report</h3>
+                <h3 className="text-xl font-semibold ">
+                  {t("report.subLedger.subLedgerReport")}
+                </h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -106,7 +110,7 @@ const SubLedger = ({
                   <DatePickerField
                     control={form.control}
                     name="fromDate"
-                    label="From Date"
+                    label={t("common.fromDate")}
                     startYear={2000}
                     endYear={2050}
                   />
@@ -116,7 +120,7 @@ const SubLedger = ({
                   <DatePickerField
                     control={form.control}
                     name="toDate"
-                    label="To Date"
+                    label={t("common.toDate")}
                     startYear={2000}
                     endYear={2050}
                   />
@@ -128,13 +132,13 @@ const SubLedger = ({
                     name="branch"
                     render={({ field }) => (
                       <DropdownField
-                        label="Branch"
+                        label={t("common.branch")}
                         value={field.value}
                         onChange={field.onChange}
                         options={branchData}
                         optionLabelKey="Branch_Name" // Specify the key for label
-                        placeholder="Select branch"
-                        searchPlaceholder="Search branch..."
+                        placeholder={t("common.selectBranch")}
+                        searchPlaceholder={t("common.searchBranch")}
                       />
                     )}
                   />
@@ -146,7 +150,7 @@ const SubLedger = ({
                     name="subLedger"
                     render={({ field }) => (
                       <SearchDropdownField
-                        label="Sub Ledger"
+                        label={t("common.subLedger")}
                         value={field.value}
                         onChange={field.onChange}
                         options={subLedgerData}
@@ -204,25 +208,25 @@ const SubLedger = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className=" text-white text-center w-16">
-                      Sl
+                      {t("common.sl")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center">
-                      Trans. Date
+                      {t("report.subLedger.transDate")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      Voucher No.
+                      {t("common.voucherNo")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      Narration
+                      {t("common.narration")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      Debit
+                      {t("common.debit")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      Credit
+                      {t("common.credit")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      Balance
+                      {t("common.balance")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -293,7 +297,7 @@ const SubLedger = ({
                       colSpan={4}
                       className="font-medium border border-secondary"
                     >
-                      Total
+                      {t("common.total")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {totalDebit}
@@ -315,25 +319,33 @@ const SubLedger = ({
           <div className="py-4">
             <div className="w-full grid grid-cols-3 gap-2 pb-5 text-sm">
               <p>
-                <span className="font-semibold">Voucher Type :</span>{" "}
+                <span className="font-semibold">
+                  {t("voucher.voucherType")} :
+                </span>{" "}
                 {voucherDetailsData &&
                   voucherDetailsData.length > 0 &&
                   voucherDetailsData[0]?.Vouch_type}
               </p>
               <p>
-                <span className="font-semibold">Voucher No. :</span>{" "}
+                <span className="font-semibold">
+                  {t("voucher.voucherNo")} :
+                </span>{" "}
                 {voucherDetailsData &&
                   voucherDetailsData.length > 0 &&
                   voucherDetailsData[0]?.Vouch_No}
               </p>
               <p>
-                <span className="font-semibold">Ref. Vc. No :</span>{" "}
+                <span className="font-semibold">
+                  {t("voucher.refVcNo")} :
+                </span>{" "}
                 {voucherDetailsData &&
                   voucherDetailsData.length > 0 &&
                   voucherDetailsData[0]?.Ref_Vouch_No}
               </p>
               <p>
-                <span className="font-semibold">Voucher Date :</span>{" "}
+                <span className="font-semibold">
+                  {t("common.voucherDate")} :
+                </span>{" "}
                 {voucherDetailsData &&
                   voucherDetailsData.length > 0 &&
                   voucherDetailsData[0].Trans_Date &&
@@ -344,10 +356,12 @@ const SubLedger = ({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[100px]">Sl.</TableHead>
-                    <TableHead>Head Of Account</TableHead>
-                    <TableHead>Dr. Amount</TableHead>
-                    <TableHead>Cr. Amount</TableHead>
+                    <TableHead className="w-[100px]">
+                      {t("common.sl")}
+                    </TableHead>
+                    <TableHead>{t("common.headOfAccount")}</TableHead>
+                    <TableHead>{t("common.drAmount")}</TableHead>
+                    <TableHead>{t("common.crAmount")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -370,7 +384,7 @@ const SubLedger = ({
                 </TableBody>
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={2}>Total</TableCell>
+                    <TableCell colSpan={2}>{t("common.total")}</TableCell>
                     <TableCell>{totalDrAmount}</TableCell>
                     <TableCell>{totalCrAmount}</TableCell>
                   </TableRow>
@@ -378,7 +392,9 @@ const SubLedger = ({
               </Table>
             </ScrollArea>
             <p>
-              <span className="font-semibold">Narration : </span>
+              <span className="font-semibold">
+                {t("common.narration")} :{" "}
+              </span>
               {voucherDetailsData &&
                 voucherDetailsData.length > 0 &&
                 voucherDetailsData[0]?.Particular}

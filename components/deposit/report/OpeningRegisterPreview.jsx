@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -40,6 +41,8 @@ const chunkPagesWithFooterLogic = (rows) => {
 };
 
 const OpeningRegisterPreview = ({ printRef, tableData, fromDate, toDate }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -107,31 +110,31 @@ const OpeningRegisterPreview = ({ printRef, tableData, fromDate, toDate }) => {
               <TableHeader>
                 <TableRow className="h-[50px] border-black">
                   <TableHead className="text-black p-0 border-black text-center w-[40px]">
-                    SL. NO.
+                    {t("deposit.reports.print.slNo")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    DATE
+                    {t("deposit.reports.print.date")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[180px]">
-                    CUSTOMER NAME
+                    {t("deposit.reports.print.customerName")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[180px]">
-                    GUARDIAN NAME
+                    {t("deposit.reports.print.guardianName")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
-                    ACCOUNT NO.
+                    {t("deposit.reports.print.accountNo")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
-                    REF. AC. NO.
+                    {t("deposit.reports.print.refAcNo")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center">
-                    L/F. NO.
+                    {t("deposit.reports.print.lfNo")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[180px]">
-                    NOMINEE
+                    {t("deposit.reports.print.nominee")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    OPERATION MODE
+                    {t("deposit.reports.print.operationMode")}
                   </TableHead>
                 </TableRow>
               </TableHeader>

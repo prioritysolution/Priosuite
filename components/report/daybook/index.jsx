@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -74,6 +75,7 @@ const Daybook = ({
   setCurrentPage,
   lastPage,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -109,7 +111,7 @@ const Daybook = ({
     const host = printHostRef.current;
 
     if (!element) {
-      toast.error("Nothing to download. Please generate the report first.");
+      toast.error(t("report.daybook.nothingToDownload"));
       return;
     }
 
@@ -119,7 +121,7 @@ const Daybook = ({
       !!cashBalanceData;
 
     if (!hasData) {
-      toast.error("No daybook data to download.");
+      toast.error(t("report.daybook.noDaybookData"));
       return;
     }
 
@@ -186,18 +188,18 @@ const Daybook = ({
       }
 
       if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
+        toast.error(t("report.daybook.failedToCapturePdf"));
         return;
       }
 
       pdf.save(`Daybook-${toDate || "report"}.pdf`);
-      toast.success("PDF downloaded");
+      toast.success(t("report.daybook.pdfDownloaded"));
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
-          ? `Failed to download PDF: ${error.message}`
-          : "Failed to download PDF",
+          ? `${t("report.daybook.failedToDownloadPdf")}: ${error.message}`
+          : t("report.daybook.failedToDownloadPdf"),
       );
     } finally {
       if (host) host.setAttribute("style", prevHostStyle);
@@ -241,7 +243,7 @@ const Daybook = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Daybook Report</h3>
+                <h3 className="text-xl font-semibold ">{t("report.daybook.daybookReport")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -261,7 +263,7 @@ const Daybook = ({
                 <DatePickerField
                   control={form.control}
                   name="date"
-                  label="Date"
+                  label={t("common.date")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -271,13 +273,13 @@ const Daybook = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label="Branch"
+                      label={t("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("common.selectBranch")}
+                      searchPlaceholder={t("common.searchBranch")}
                     />
                   )}
                 />
@@ -374,31 +376,31 @@ const Daybook = ({
                       rowSpan={2}
                       className=" text-white text-center w-16"
                     >
-                      V. NO.
+                      {t("report.daybook.vNo")}
                     </TableHead>
                     <TableHead
                       rowSpan={2}
                       className=" text-white  border-x border-white text-center"
                     >
-                      PARTICULARS
+                      {t("report.daybook.particulars")}
                     </TableHead>
 
                     <TableHead
                       colSpan={3}
                       className=" text-white border-l  border-white text-center"
                     >
-                      RECEIPTS
+                      {t("report.daybook.receipts")}
                     </TableHead>
                   </TableRow>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className=" text-white text-center w-[100px]">
-                      CASH
+                      {t("report.daybook.cash")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center w-[100px]">
-                      TRANSFER
+                      {t("report.daybook.transfer")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center w-[100px]">
-                      TOTAL
+                      {t("report.daybook.totalUpper")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -455,7 +457,7 @@ const Daybook = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Total
+                      {t("report.daybook.total")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {totalCashReceived}
@@ -472,7 +474,7 @@ const Daybook = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Opening Balance
+                      {t("report.daybook.openingBalance")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {cashBalanceData && cashBalanceData?.Opening}
@@ -485,7 +487,7 @@ const Daybook = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Grand Total
+                      {t("report.daybook.grandTotal")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {parseFloat(totalCashReceived) +
@@ -513,30 +515,30 @@ const Daybook = ({
                       rowSpan={2}
                       className=" text-white text-center w-16"
                     >
-                      V. NO.
+                      {t("report.daybook.vNo")}
                     </TableHead>
                     <TableHead
                       rowSpan={2}
                       className=" text-white  border-x border-white text-center w-[250px]"
                     >
-                      PARTICULARS
+                      {t("report.daybook.particulars")}
                     </TableHead>
                     <TableHead
                       colSpan={3}
                       className=" text-white border-l border-white text-center"
                     >
-                      PAYMENTS
+                      {t("report.daybook.payments")}
                     </TableHead>
                   </TableRow>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className=" text-white text-center w-[100px]">
-                      CASH
+                      {t("report.daybook.cash")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center w-[100px]">
-                      TRANSFER
+                      {t("report.daybook.transfer")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center w-[100px]">
-                      TOTAL
+                      {t("report.daybook.totalUpper")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -593,7 +595,7 @@ const Daybook = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Total
+                      {t("report.daybook.total")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {totalCashPayment}
@@ -610,7 +612,7 @@ const Daybook = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Closing Balance
+                      {t("report.daybook.closingBalance")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {cashBalanceData && cashBalanceData?.Closing}
@@ -623,7 +625,7 @@ const Daybook = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Grand Total
+                      {t("report.daybook.grandTotal")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {parseFloat(totalCashPayment) +
@@ -646,19 +648,19 @@ const Daybook = ({
             </div>
             <p className="self-end pr-5">
               <span className="font-semibold">
-                Closing Cash Balance in Word :{" "}
+                {t("report.daybook.closingCashBalanceInWord")}{" "}
               </span>
               {cashBalanceData &&
               cashBalanceData.Closing &&
               parseFloat(cashBalanceData.Closing) > 0
-                ? `Rupees ${convertToWords(
+                ? `${t("common.rupees")} ${convertToWords(
                     Number(cashBalanceData.Closing),
-                  )} Only`
+                  )} ${t("common.only")}`
                 : ""}
             </p>
             {denomData?.length > 0 ? (
               <div className="w-[300px] ml-20 text-center">
-                <p>Physical Denomination</p>
+                <p>{t("report.daybook.physicalDenomination")}</p>
                 <Table className="border border-collapse mt-2">
                   <TableBody>
                     {denomData?.map((data) => (
@@ -682,7 +684,7 @@ const Daybook = ({
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px]">
           <DialogHeader>
             <DialogTitle className="w-full text-center">
-              List Of Vouchers For The Day On {toDate}
+              {t("report.daybook.listOfVouchersForTheDayOn")} {toDate}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
@@ -695,11 +697,11 @@ const Daybook = ({
                 <Table className="">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[100px]">Sl.</TableHead>
-                      <TableHead>Voucher No.</TableHead>
-                      <TableHead>Transanction Type</TableHead>
-                      <TableHead>Receipts</TableHead>
-                      <TableHead>Narration</TableHead>
+                      <TableHead className="w-[100px]">{t("report.daybook.sl")}</TableHead>
+                      <TableHead>{t("report.daybook.voucherNo")}</TableHead>
+                      <TableHead>{t("report.daybook.transactionType")}</TableHead>
+                      <TableHead>{t("report.daybook.receiptsLabel")}</TableHead>
+                      <TableHead>{t("report.daybook.narration")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -735,7 +737,7 @@ const Daybook = ({
                             onClick={() => setCurrentPage((prev) => prev - 1)}
                             disabled={currentPage === 1}
                           >
-                            Previous
+                            {t("report.daybook.previous")}
                           </Button>
                         </PaginationItem>
 
@@ -794,7 +796,7 @@ const Daybook = ({
                             onClick={() => setCurrentPage((prev) => prev + 1)}
                             disabled={currentPage === lastPage}
                           >
-                            Next
+                            {t("report.daybook.next")}
                           </Button>
                         </PaginationItem>
                       </PaginationContent>
@@ -816,29 +818,37 @@ const Daybook = ({
                     onClick={generateVoucherPrint}
                     className="w-32 self-end mb-5 mt-2"
                   >
-                    Print
+                    {t("report.daybook.printBtn")}
                   </Button>
                   <div className="w-full grid grid-cols-3 gap-2 pb-5 text-sm">
                     <p>
-                      <span className="font-semibold">Voucher Type :</span>{" "}
+                      <span className="font-semibold">
+                        {t("report.daybook.voucherType")} :
+                      </span>{" "}
                       {voucherDetailsData &&
                         voucherDetailsData.length > 0 &&
                         voucherDetailsData[0]?.Vouch_type}
                     </p>
                     <p>
-                      <span className="font-semibold">Voucher No. :</span>{" "}
+                      <span className="font-semibold">
+                        {t("report.daybook.voucherNo")} :
+                      </span>{" "}
                       {voucherDetailsData &&
                         voucherDetailsData.length > 0 &&
                         voucherDetailsData[0]?.Vouch_No}
                     </p>
                     <p>
-                      <span className="font-semibold">Ref. Vc. No :</span>{" "}
+                      <span className="font-semibold">
+                        {t("report.daybook.refVcNo")} :
+                      </span>{" "}
                       {voucherDetailsData &&
                         voucherDetailsData.length > 0 &&
                         voucherDetailsData[0]?.Ref_Vouch_No}
                     </p>
                     <p>
-                      <span className="font-semibold">Voucher Date :</span>{" "}
+                      <span className="font-semibold">
+                        {t("report.daybook.voucherDate")} :
+                      </span>{" "}
                       {voucherDetailsData &&
                         voucherDetailsData.length > 0 &&
                         voucherDetailsData[0].Trans_Date &&
@@ -850,10 +860,10 @@ const Daybook = ({
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-[100px]">Sl.</TableHead>
-                          <TableHead>Head Of Account</TableHead>
-                          <TableHead>Dr. Amount</TableHead>
-                          <TableHead>Cr. Amount</TableHead>
+                          <TableHead className="w-[100px]">{t("report.daybook.sl")}</TableHead>
+                          <TableHead>{t("report.daybook.headOfAccount")}</TableHead>
+                          <TableHead>{t("report.daybook.drAmount")}</TableHead>
+                          <TableHead>{t("report.daybook.crAmount")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -876,7 +886,9 @@ const Daybook = ({
                       </TableBody>
                       <TableFooter>
                         <TableRow>
-                          <TableCell colSpan={2}>Total</TableCell>
+                          <TableCell colSpan={2}>
+                            {t("report.daybook.total")}
+                          </TableCell>
                           <TableCell>{totalDrAmount}</TableCell>
                           <TableCell>{totalCrAmount}</TableCell>
                         </TableRow>
@@ -884,7 +896,9 @@ const Daybook = ({
                     </Table>
                   </ScrollArea>
                   <p>
-                    <span className="font-semibold">Narration : </span>
+                    <span className="font-semibold">
+                      {t("report.daybook.narration")} :{" "}
+                    </span>
                     {voucherDetailsData &&
                       voucherDetailsData.length > 0 &&
                       voucherDetailsData[0]?.Particular}

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import AccountSearchForm from "@/common/forms/AccountSearchForm";
 import AccountSearchTable from "@/common/tables/AccountSearchTable";
 import CashDenomTable from "@/common/tables/CashDenomTable";
@@ -107,6 +109,8 @@ const Mature = ({
   setActiveTab,
   getLedgerLoading,
 }) => {
+  const { t } = useTranslation();
+
 
   // console.log("depositReceiptData=", depositReceiptData);
 
@@ -139,7 +143,7 @@ const Mature = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Close / Mature</h3>
+        <h3 className="text-2xl font-semibold ">{t("deposit.mature.title")}</h3>
 
         <Form {...optionForm}>
           <form
@@ -155,7 +159,7 @@ const Mature = ({
                   name="operationType"
                   render={({ field }) => (
                     <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full">
-                      <FormLabel>Operation Type</FormLabel>
+                      <FormLabel>{t("deposit.mature.operationType")}</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -167,14 +171,14 @@ const Mature = ({
                             <FormControl>
                               <RadioGroupItem value="close" />
                             </FormControl>
-                            <FormLabel className="font-normal">Close</FormLabel>
+                            <FormLabel className="font-normal">{t("deposit.mature.close")}</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-3 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="mature" />
                             </FormControl>
                             <FormLabel className="font-normal">
-                              Mature
+                              {t("deposit.mature.mature")}
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
@@ -230,8 +234,8 @@ const Mature = ({
                 allowAlphanumeric
                 formLabel={
                   optionForm.getValues("operationType") === "close"
-                    ? "Close"
-                    : "Mature"
+                    ? t("deposit.mature.close")
+                    : t("deposit.mature.mature")
                 }
                 showDateFix={true}
                 operateProductData={operateProductData}
@@ -248,7 +252,7 @@ const Mature = ({
                 {visibleBlock && (
                   <div className="w-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
                     <h3 className="w-full text-center text-xl font-semibold">
-                      Basic Info Block
+                      {t("deposit.sections.basicInfo")}
                     </h3>
                     {getMatureLoading ? (
                       <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -273,60 +277,60 @@ const Mature = ({
                         <InputField
                           control={form.control}
                           name="memberNo"
-                          label="Member No."
-                          placeholder="Enter member no."
+                          label={t("deposit.fields.memberNo")}
+                          placeholder={t("deposit.placeholders.memberNo")}
                           readOnly
                         />
                         <InputField
                           control={form.control}
                           name="cifNo"
-                          label="CIF No."
-                          placeholder="Enter cif no."
+                          label={t("deposit.fields.cifNo")}
+                          placeholder={t("deposit.placeholders.cifNo")}
                           readOnly
                         />
                         <InputField
                           control={form.control}
                           name="refAcNo"
-                          label="Manual / REF. Account No."
-                          placeholder="Enter manual / ref. account no."
+                          label={t("deposit.fields.manualRefAccountNo")}
+                          placeholder={t("deposit.placeholders.manualRefAccountNo")}
                           readOnly
                         />
                         <InputField
                           control={form.control}
                           name="memberName"
-                          label="Member Name"
-                          placeholder="Enter member name"
+                          label={t("deposit.fields.memberName")}
+                          placeholder={t("deposit.placeholders.memberName")}
                           readOnly
                         />
                         <InputField
                           control={form.control}
                           name="gurdianName"
-                          label="Gurdian Name"
-                          placeholder="Enter gurdian name"
+                          label={t("deposit.fields.guardianName")}
+                          placeholder={t("deposit.placeholders.guardianName")}
                           readOnly
                         />
 
                         <InputField
                           control={form.control}
                           name="mobile"
-                          label="Mobile No."
-                          placeholder="Enter mobile no."
+                          label={t("deposit.fields.mobileNo")}
+                          placeholder={t("deposit.placeholders.mobileNo")}
                           readOnly
                         />
 
                         <InputField
                           control={form.control}
                           name="panNo"
-                          label="Pan No."
-                          placeholder="Enter pan no."
+                          label={t("deposit.fields.panNo")}
+                          placeholder={t("deposit.placeholders.panNo")}
                           readOnly
                         />
 
                         <InputField
                           control={form.control}
                           name="rateOfInterest"
-                          label="Rate Of Interest"
-                          placeholder="Enter rate of interest"
+                          label={t("deposit.fields.rateOfInterest")}
+                          placeholder={t("deposit.placeholders.rateOfInterest")}
                           readOnly
                         />
 
@@ -335,16 +339,16 @@ const Mature = ({
                             <InputField
                               control={form.control}
                               name="maturityDate"
-                              label="Maturity Date"
-                              placeholder="Enter maturity date"
+                              label={t("deposit.fields.maturityDate")}
+                              placeholder={t("deposit.placeholders.maturityDate")}
                               readOnly
                             />
 
                             <InputField
                               control={form.control}
                               name="maturityAmount"
-                              label="Maturity Amount"
-                              placeholder="Enter maturity amount"
+                              label={t("deposit.fields.maturityAmount")}
+                              placeholder={t("deposit.placeholders.maturityAmount")}
                               readOnly
                             />
                           </>
@@ -353,8 +357,8 @@ const Mature = ({
                         <InputField
                           control={form.control}
                           name="availableBalance"
-                          label="Available Balance"
-                          placeholder="Enter available balance"
+                          label={t("deposit.fields.availableBalance")}
+                          placeholder={t("deposit.placeholders.availableBalance")}
                           readOnly
                         />
 
@@ -364,13 +368,13 @@ const Mature = ({
                               onClick={handleSeeSpecimen}
                               className="self-end"
                             >
-                              See Specimen
+                              {t("deposit.buttons.seeSpecimen")}
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[925px]">
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
                               <div className="flex flex-col items-center gap-2 text-center font-semibold">
-                                <h3>Photo</h3>
+                                <h3>{t("deposit.common.photo")}</h3>
 
                                 <div className=" w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] xl:w-[400px] xl:h-[400px] border border-primary mx-auto relative flex items-center justify-center">
                                   {getSpecimenLoading ? (
@@ -389,7 +393,7 @@ const Mature = ({
                                 </div>
                               </div>
                               <div className="flex flex-col items-center gap-2 text-center font-semibold">
-                                <h3>Signature</h3>
+                                <h3>{t("deposit.common.signature")}</h3>
 
                                 <div className="w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] xl:w-[400px] xl:h-[400px] border border-primary mx-auto relative flex items-center justify-center">
                                   {getSpecimenLoading ? (
@@ -418,7 +422,7 @@ const Mature = ({
                 {visibleBlock && (
                   <div className="w-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
                     <h3 className="w-full text-center text-xl font-semibold">
-                      Close Info Block
+                      {t("deposit.sections.closeInfo")}
                     </h3>
                     {getMatureLoading ? (
                       <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -440,7 +444,7 @@ const Mature = ({
                         <DatePickerField
                           control={form.control}
                           name="closeDate"
-                          label="Close Date"
+                          label={t("deposit.fields.closeDate")}
                           startYear={2000}
                           endYear={2050}
                           disabled
@@ -449,16 +453,16 @@ const Mature = ({
                         <InputField
                           control={form.control}
                           name="amount"
-                          label="Princpal Amount"
-                          placeholder="Enter amount"
+                          label={t("deposit.fields.principalAmount")}
+                          placeholder={t("deposit.placeholders.amount")}
                           readOnly
                         />
 
                         <InputField
                           control={form.control}
                           name="interest"
-                          label="Interest"
-                          placeholder="Enter interest"
+                          label={t("deposit.fields.interest")}
+                          placeholder={t("deposit.placeholders.interest")}
                           type="number"
                           className="w-full"
                           containerClassName="w-full"
@@ -469,8 +473,8 @@ const Mature = ({
                           <InputField
                             control={form.control}
                             name="bonusInterest"
-                            label="Bonus Interest"
-                            placeholder="Enter bonus interest"
+                            label={t("deposit.fields.bonusInterest")}
+                            placeholder={t("deposit.placeholders.bonusInterest")}
                             className="w-full"
                             containerClassName="w-full"
                           />
@@ -482,8 +486,8 @@ const Mature = ({
                           <InputField
                             control={form.control}
                             name="findAmount"
-                            label="Find Amount"
-                            placeholder="Enter find amount"
+                            label={t("deposit.fields.findAmount")}
+                            placeholder={t("deposit.placeholders.findAmount")}
                             type="number"
                             className="w-full"
                             containerClassName="w-full"
@@ -498,7 +502,7 @@ const Mature = ({
                               ? "Total Amount ( - Find Amount)"
                               : "Total Amount"
                           }
-                          placeholder="Enter total amount"
+                          placeholder={t("deposit.placeholders.totalAmount")}
                           className="w-full"
                           containerClassName="w-full"
                           readOnly
@@ -516,7 +520,7 @@ const Mature = ({
                               : undefined
                           }
                         >
-                          <p>Calculate Interest</p>
+                          <p>{t("deposit.buttons.calculateInterest")}</p>
                         </div>
                       </div>
                     )}
@@ -526,7 +530,7 @@ const Mature = ({
                 {visibleBlock && (
                   <div className="w-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
                     <h3 className="w-full text-center text-xl font-semibold">
-                      Transanction Block
+                      {t("deposit.sections.transaction")}
                     </h3>
                     {getMatureLoading ? (
                       <div className="w-full border border-primary rounded-md p-2 sm:p-5 mb-5 flex flex-col gap-3">
@@ -543,7 +547,7 @@ const Mature = ({
                           name="transMode"
                           render={({ field }) => (
                             <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full lg:w-fit">
-                              <FormLabel>Select transanction mode</FormLabel>
+                              <FormLabel>{t("deposit.common.selectTransanctionMode")}</FormLabel>
                               <FormControl>
                                 <RadioGroup
                                   onValueChange={field.onChange}
@@ -584,8 +588,8 @@ const Mature = ({
                           <InputField
                             control={form.control}
                             name="refVouchNo"
-                            label="Ref. Vouch No."
-                            placeholder="Enter ref. vouch no."
+                            label={t("deposit.fields.refVoucherNo")}
+                            placeholder={t("deposit.placeholders.refVoucherNo")}
                           />
                           {transMode === "cash" ? (
                             isActiveDenom ? (
@@ -616,11 +620,11 @@ const Mature = ({
                             <DropdownField
                               control={form.control}
                               name="bank"
-                              label="Bank"
+                              label={t("deposit.fields.bank")}
                               options={bankAccountData}
                               optionLabelKey="Bank_Name"
-                              placeholder="Select bank"
-                              searchPlaceholder="Search bank..."
+                              placeholder={t("deposit.placeholders.selectBank")}
+                              searchPlaceholder={t("deposit.placeholders.searchBank")}
                             />
                           ) : transMode === "savings" ? (
                             <>
@@ -629,7 +633,7 @@ const Mature = ({
                                 name="savingsAccountType"
                                 render={({ field }) => (
                                   <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full">
-                                    <FormLabel>Account Type</FormLabel>
+                                    <FormLabel>{t("deposit.fields.accountType")}</FormLabel>
                                     <FormControl>
                                       <RadioGroup
                                         onValueChange={field.onChange}
@@ -674,14 +678,14 @@ const Mature = ({
                                     name="savingsAccountNo"
                                     render={({ field }) => (
                                       <FormItem>
-                                        <FormLabel>Account No.</FormLabel>
+                                        <FormLabel>{t("deposit.fields.accountNo")}</FormLabel>
 
                                         <FormControl>
                                           <div className="flex flex-col sm:flex-row items-end gap-5">
                                             <div className="w-full">
                                               <div className="relative w-full">
                                                 <Input
-                                                  placeholder="Enter account no."
+                                                  placeholder={t("deposit.placeholders.accountNo")}
                                                   className="w-full "
                                                   type="number"
                                                   // onInput={(e) => {
@@ -720,7 +724,7 @@ const Mature = ({
                                     <DialogHeader
                                       className={`w-full flex items-center justify-center`}
                                     >
-                                      <DialogTitle>Search Account</DialogTitle>
+                                      <DialogTitle>{t("deposit.common.searchAccount")}</DialogTitle>
                                     </DialogHeader>
                                     <div className="w-full overflow-y-scroll">
                                       <div className="w-full ">
@@ -759,7 +763,7 @@ const Mature = ({
                                                   <FormControl>
                                                     <Input
                                                       autoComplete="off"
-                                                      placeholder="Search by enter member no."
+                                                      placeholder={t("deposit.placeholders.searchByMemberNo")}
                                                       {...field}
                                                     />
                                                   </FormControl>
@@ -785,11 +789,11 @@ const Mature = ({
                                               name="dialougeAccountName"
                                               render={({ field }) => (
                                                 <FormItem className="w-full">
-                                                  <FormLabel>Name</FormLabel>
+                                                  <FormLabel>{t("deposit.common.name")}</FormLabel>
                                                   <FormControl>
                                                     <Input
                                                       autoComplete="off"
-                                                      placeholder="Search by enter name"
+                                                      placeholder={t("deposit.placeholders.searchByName")}
                                                       {...field}
                                                     />
                                                   </FormControl>
@@ -828,11 +832,11 @@ const Mature = ({
                                 <DropdownField
                                   control={form.control}
                                   name="savings"
-                                  label="Savings"
+                                  label={t("deposit.fields.savings")}
                                   options={savingsAccountData}
                                   optionLabelKey="Account_No"
-                                  placeholder="Select savings"
-                                  searchPlaceholder="Search savings..."
+                                  placeholder={t("deposit.placeholders.selectSavings")}
+                                  searchPlaceholder={t("deposit.placeholders.searchSavings")}
                                 />
                               )}
 
@@ -841,8 +845,8 @@ const Mature = ({
                                 <InputField
                                   control={form.control}
                                   name="savingsName"
-                                  label="Account Name"
-                                  placeholder="Enter name"
+                                  label={t("deposit.fields.accountName")}
+                                  placeholder={t("deposit.placeholders.memberName")}
                                   className="w-full"
                                   containerClassName="w-full"
                                   readOnly
@@ -856,8 +860,8 @@ const Mature = ({
                                 <InputField
                                   control={form.control}
                                   name="savingsBalance"
-                                  label="Account Balance"
-                                  placeholder="Enter balance"
+                                  label={t("deposit.fields.accountBalance")}
+                                  placeholder={t("deposit.placeholders.availableBalance")}
                                   className="w-full"
                                   containerClassName="w-full"
                                   readOnly
@@ -872,8 +876,8 @@ const Mature = ({
                                 <InputField
                                   control={form.control}
                                   name="savingsAccountName"
-                                  label="Name"
-                                  placeholder="Enter name"
+                                  label={t("deposit.fields.memberName")}
+                                  placeholder={t("deposit.placeholders.memberName")}
                                   value={savingsAccountFullName}
                                   readOnly
                                 />
@@ -887,8 +891,8 @@ const Mature = ({
                                 <InputField
                                   control={form.control}
                                   name="savingsAccountBalance"
-                                  label="Balance"
-                                  placeholder="Enter balance"
+                                  label={t("deposit.fields.accountBalance")}
+                                  placeholder={t("deposit.placeholders.availableBalance")}
                                   value={savingsAccountBalance}
                                   readOnly
                                 />
@@ -933,9 +937,9 @@ const Mature = ({
                         speedMultiplier={0.7}
                       />
                     ) : optionForm.getValues("operationType") === "close" ? (
-                      "Process To Close"
+                      t("deposit.mature.processToClose")
                     ) : (
-                      "Process To Mature"
+                      t("deposit.mature.processToMature")
                     )}
                   </Button>
                 )}
@@ -956,28 +960,28 @@ const Mature = ({
       <Dialog open={showMatureDialog} onOpenChange={setShowMatureDialog}>
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[425px]">
           <DialogTitle className="w-full text-center">
-            Mature Date Exceeds
+            {t("deposit.mature.maturityDateExceeds")}
           </DialogTitle>
           <div className="w-full flex flex-col gap-5 items-center justify-center">
             <p className="w-full text-center">
-              Your maturity date is{" "}
+              {t("deposit.mature.maturityDateMessage")}{" "}
               <span className="font-semibold">
                 {form.getValues("maturityDate")}.
               </span>{" "}
-              Do you want to pre-mature this account ?
+              {t("deposit.mature.prematureConfirm")}
             </p>
             <div className="w-full flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2">
               <Button
                 className="w-full sm:w-auto px-6 bg-destructive hover:bg-destructive/90"
                 onClick={handleCancelPremature}
               >
-                No
+                {t("deposit.buttons.no")}
               </Button>
               <Button
                 className="w-full sm:w-auto px-6"
                 onClick={() => setShowMatureDialog(false)}
               >
-                Yes
+                {t("deposit.buttons.yes")}
               </Button>
             </div>
           </div>
@@ -987,20 +991,20 @@ const Mature = ({
       <Dialog open={showBonusDialog} onOpenChange={setShowBonusDialog}>
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[425px]">
           <DialogTitle className="w-full text-center">
-            Bonus Interest
+            {t("deposit.mature.bonusInterestTitle")}
           </DialogTitle>
           <div className="w-full flex flex-col gap-5 items-center justify-center">
             <p className="w-full text-center">
-              Your maturity date is{" "}
+              {t("deposit.mature.maturityDateMessage")}{" "}
               <span className="font-semibold">
                 {form.getValues("closeDate") &&
                   format(form.getValues("closeDate"), "dd-MM-yyyy")}
                 .
               </span>
-              Do you want bonus interest to this account ?
+              {t("deposit.mature.bonusInterestQuestion")}
             </p>
             <Input
-              placeholder="Enter bonus interest"
+              placeholder={t("deposit.placeholders.bonusInterest")}
               type="number"
               value={bonusInterest}
               onChange={(e) => setBonusInterest(e.target.value)}
@@ -1011,7 +1015,7 @@ const Mature = ({
                 className="w-full sm:w-auto px-6 bg-destructive hover:bg-destructive/90"
                 onClick={() => setShowBonusDialog(false)}
               >
-                No
+                {t("deposit.buttons.no")}
               </Button>
               <Button
                 className="w-full sm:w-auto px-6"
@@ -1019,7 +1023,7 @@ const Mature = ({
                   getDepositMaturityBonusInterestApiCall(bonusInterest)
                 }
               >
-                Yes
+                {t("deposit.buttons.yes")}
               </Button>
             </div>
           </div>
@@ -1032,14 +1036,14 @@ const Mature = ({
       >
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[425px]">
           <DialogTitle className="w-full text-center">
-            Payout Interest
+            {t("deposit.mature.payoutInterest")}
           </DialogTitle>
           <div className="w-full flex flex-col gap-5 items-center justify-center">
             <p className="w-full text-center">
-              This Is a premature account, please enter payout interest.
+              {t("deposit.mature.prematureMessage")}
             </p>
             <Input
-              placeholder="Enter payout interest"
+              placeholder={t("deposit.placeholders.interest")}
               type="number"
               value={payoutInterest}
               onChange={(e) => setPayoutInterest(e.target.value)}
@@ -1050,7 +1054,7 @@ const Mature = ({
                 className="w-full sm:w-auto px-6 bg-destructive hover:bg-destructive/90"
                 onClick={() => setShowPayoutInterestDialog(false)}
               >
-                Cancel
+                {t("deposit.buttons.cancel")}
               </Button>
               <Button
                 className="w-full sm:w-auto px-6"
@@ -1058,7 +1062,7 @@ const Mature = ({
                   getDepositMaturityInterestApiCall(payoutInterest)
                 }
               >
-                Next
+                {t("deposit.buttons.next")}
               </Button>
             </div>
           </div>

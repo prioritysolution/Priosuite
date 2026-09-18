@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import {
   Card,
@@ -22,13 +24,14 @@ import { useRouter } from "next/navigation";
 import { formatCurrency, memberTransactions } from "./memberDashboardData";
 
 const MemberTransactionTable = () => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   return (
     <Card className="flex h-full min-h-0 flex-col border-none shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 py-4 sm:px-6">
         <CardTitle className="text-sm font-semibold text-slate-800 sm:text-base">
-          Recent Transactions
+          {t("dashboard.recentTransactions")}
         </CardTitle>
         <Button
           type="button"
@@ -36,7 +39,7 @@ const MemberTransactionTable = () => {
           className="h-auto p-0 text-sm text-emerald-600"
           onClick={() => router.push("/report/daybook")}
         >
-          View All
+          {t("dashboard.viewAll")}
         </Button>
       </CardHeader>
 
@@ -45,12 +48,12 @@ const MemberTransactionTable = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="whitespace-nowrap">Date</TableHead>
-                <TableHead className="whitespace-nowrap">Description</TableHead>
-                <TableHead className="whitespace-nowrap">A/c No.</TableHead>
-                <TableHead className="whitespace-nowrap">Type</TableHead>
-                <TableHead className="whitespace-nowrap text-right">Amount</TableHead>
-                <TableHead className="whitespace-nowrap text-right">Balance</TableHead>
+                <TableHead className="whitespace-nowrap">{t("dashboard.date")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("dashboard.description")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("dashboard.acNo")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("dashboard.type")}</TableHead>
+                <TableHead className="whitespace-nowrap text-right">{t("dashboard.amount")}</TableHead>
+                <TableHead className="whitespace-nowrap text-right">{t("dashboard.balance")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -79,7 +82,7 @@ const MemberTransactionTable = () => {
                         ) : (
                           <ArrowUpRight className="h-3.5 w-3.5" />
                         )}
-                        {isCredit ? "Credit" : "Debit"}
+                        {isCredit ? t("dashboard.credit") : t("dashboard.debit")}
                       </span>
                     </TableCell>
                     <TableCell

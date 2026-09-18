@@ -21,6 +21,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { IoCalculator } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 
@@ -33,6 +34,7 @@ const InvestmentOpening = ({
   handleCloseSuccessMessage,
   handleCalculateMatureAmount,
 }) => {
+  const { t } = useTranslation();
   const investmentTypeData = useSelector(
     (state) => state.investmentOpenAccount.investmentTypeData
   );
@@ -59,7 +61,9 @@ const InvestmentOpening = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Open Investment Account</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("opening.investmentOpening.title")}
+        </h3>
 
         <ScrollArea className="w-full h-full">
           <Form {...form}>
@@ -73,37 +77,41 @@ const InvestmentOpening = ({
                   <DropdownField
                     control={form.control}
                     name="investmentType"
-                    label="Investment Type"
+                    label={t("opening.investmentOpening.fields.investmentType")}
                     options={investmentTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder="Select investment type"
-                    searchPlaceholder="Search investment type..."
+                    placeholder={t("opening.investmentOpening.placeholders.investmentType"
+                    )}
+                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchInvestmentType"
+                    )}
                     isRequired
                   />
                   <DropdownField
                     control={form.control}
                     name="accountType"
-                    label="Account Type"
+                    label={t("opening.investmentOpening.fields.accountType")}
                     options={accountTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder="Select account type"
-                    searchPlaceholder="Search account type..."
+                    placeholder={t("opening.investmentOpening.placeholders.accountType"
+                    )}
+                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchAccountType"
+                    )}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="bankName"
-                    label="Bank Name"
-                    placeholder="Enter bank name"
+                    label={t("opening.investmentOpening.fields.bankName")}
+                    placeholder={t("opening.investmentOpening.placeholders.bankName")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="accountNo"
-                    label="Account No."
-                    placeholder="Enter account no."
+                    label={t("opening.investmentOpening.fields.accountNo")}
+                    placeholder={t("opening.investmentOpening.placeholders.accountNo")}
                     type="number"
                     maxLength={15}
                     isRequired
@@ -112,7 +120,7 @@ const InvestmentOpening = ({
                   <DatePickerField
                     control={form.control}
                     name="openingDate"
-                    label="Opening Date"
+                    label={t("opening.investmentOpening.fields.openingDate")}
                     isBackDate={true}
                     isRequired
                   />
@@ -120,8 +128,8 @@ const InvestmentOpening = ({
                   <InputField
                     control={form.control}
                     name="amount"
-                    label="Amount"
-                    placeholder="Enter amount"
+                    label={t("opening.investmentOpening.fields.amount")}
+                    placeholder={t("opening.investmentOpening.placeholders.amount")}
                     type="number"
                     isRequired
                   />
@@ -129,8 +137,9 @@ const InvestmentOpening = ({
                   <InputField
                     control={form.control}
                     name="rateOfInterest"
-                    label="Rate Of Interest"
-                    placeholder="Enter rate of interest"
+                    label={t("opening.investmentOpening.fields.rateOfInterest")}
+                    placeholder={t("opening.investmentOpening.placeholders.rateOfInterest"
+                    )}
                     type="number"
                     isRequired
                   />
@@ -138,19 +147,21 @@ const InvestmentOpening = ({
                   <DropdownField
                     control={form.control}
                     name="interestType"
-                    label="Interest Type"
+                    label={t("opening.investmentOpening.fields.interestType")}
                     options={interestTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder="Select interest type"
-                    searchPlaceholder="Search interest type..."
+                    placeholder={t("opening.investmentOpening.placeholders.interestType"
+                    )}
+                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchInterestType"
+                    )}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="duration"
-                    label="Duration"
-                    placeholder="Enter duration"
+                    label={t("opening.investmentOpening.fields.duration")}
+                    placeholder={t("opening.investmentOpening.placeholders.duration")}
                     type="number"
                     isRequired
                   />
@@ -158,19 +169,22 @@ const InvestmentOpening = ({
                   <DropdownField
                     control={form.control}
                     name="durtype"
-                    label="Duration Type"
+                    label={t("opening.investmentOpening.fields.durationType")}
                     options={durationTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder="Select duration type"
-                    searchPlaceholder="Search duration type..."
+                    placeholder={t("opening.investmentOpening.placeholders.durationType"
+                    )}
+                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchDurationType"
+                    )}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="matureDate"
-                    label="Mature Date"
-                    placeholder="Mature date"
+                    label={t("opening.investmentOpening.fields.matureDate")}
+                    placeholder={t("opening.investmentOpening.placeholders.matureDate"
+                    )}
                     readOnly
                     isRequired
                     displayValue={form.watch("matureDate") || ""}
@@ -180,8 +194,9 @@ const InvestmentOpening = ({
                     <InputField
                       control={form.control}
                       name="matureAmount"
-                      label="Mature Amount"
-                      placeholder="Enter mature amount"
+                      label={t("opening.investmentOpening.fields.matureAmount")}
+                      placeholder={t("opening.investmentOpening.placeholders.matureAmount"
+                      )}
                       type="number"
                       endContent={
                         <TooltipProvider>
@@ -195,7 +210,10 @@ const InvestmentOpening = ({
                               </div>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Calculate Mature Amount</p>
+                              <p>
+                                {t("opening.investmentOpening.tooltips.calculateMatureAmount"
+                                )}
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -207,22 +225,26 @@ const InvestmentOpening = ({
                   <DropdownField
                     control={form.control}
                     name="principalLedger"
-                    label="Principal Ledger"
+                    label={t("opening.investmentOpening.fields.principalLedger")}
                     options={principalLedgerData}
                     optionLabelKey="Ledger_Name"
-                    placeholder="Select principal ledger"
-                    searchPlaceholder="Search principal ledger..."
+                    placeholder={t("opening.investmentOpening.placeholders.principalLedger"
+                    )}
+                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchPrincipalLedger"
+                    )}
                     isRequired
                   />
 
                   <DropdownField
                     control={form.control}
                     name="interestLedger"
-                    label="Interest Ledger"
+                    label={t("opening.investmentOpening.fields.interestLedger")}
                     options={interestLedgerData}
                     optionLabelKey="Ledger_Name"
-                    placeholder="Select interest ledger"
-                    searchPlaceholder="Search interest ledger..."
+                    placeholder={t("opening.investmentOpening.placeholders.interestLedger"
+                    )}
+                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchInterestLedger"
+                    )}
                     isRequired
                   />
                 </div>
@@ -240,7 +262,7 @@ const InvestmentOpening = ({
                     speedMultiplier={0.7}
                   />
                 ) : (
-                  "Add"
+                  t("opening.investmentOpening.buttons.add")
                 )}
               </Button>
             </form>

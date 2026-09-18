@@ -19,6 +19,7 @@ import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useTranslation } from "react-i18next";
 
 const InvestmentReport = ({
   loading,
@@ -40,6 +41,7 @@ const InvestmentReport = ({
   currentTime,
   fromDate,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
@@ -117,7 +119,9 @@ const InvestmentReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Investment Report</h3>
+                <h3 className="text-xl font-semibold ">
+                  {t("investment.investmentReport")}
+                </h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -136,7 +140,7 @@ const InvestmentReport = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("common.fromDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -144,7 +148,7 @@ const InvestmentReport = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"
+                  label={t("common.toDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -152,21 +156,21 @@ const InvestmentReport = ({
                 <DropdownField
                   control={form.control}
                   name="reportType"
-                  label="Report Type"
+                  label={t("common.reportType")}
                   options={reportTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select report type"
-                  searchPlaceholder="Search report type..."
+                  placeholder={t("common.selectReportType")}
+                  searchPlaceholder={t("common.searchReportType")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="branch"
-                  label="Branch"
+                  label={t("common.branch")}
                   options={branchData}
                   optionLabelKey="Branch_Name"
-                  placeholder="Select branch"
-                  searchPlaceholder="Search branch..."
+                  placeholder={t("common.selectBranch")}
+                  searchPlaceholder={t("common.searchBranch")}
                 />
 
                 <div className="w-full flex items-center gap-5 self-end">

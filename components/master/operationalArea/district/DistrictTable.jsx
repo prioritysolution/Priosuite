@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useState } from "react";
 import {
   flexRender,
@@ -41,6 +43,8 @@ const DistrictTable = ({
   setCurrentDistrictPage,
   lastDistrictPage,
 }) => {
+  const { t } = useTranslation();
+
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -50,7 +54,7 @@ const DistrictTable = ({
     {
       accessorKey: "serialNo",
       header: () => {
-        return <div className="text-left">Serial No</div>;
+        return <div className="text-left">{t("common.serialNo")}</div>;
       },
       cell: ({ row }) => {
         return <div className="text-left">{Number(row.id) + 1}</div>;
@@ -64,7 +68,7 @@ const DistrictTable = ({
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            District Name
+            {t("master.operationalArea.table.districtName")}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -77,14 +81,14 @@ const DistrictTable = ({
     },
     {
       accessorKey: "State_Name",
-      header: () => <div className="text-left ">State Name</div>,
+      header: () => <div className="text-left ">{t("master.operationalArea.table.stateName")}</div>,
       cell: ({ row }) => {
         return <div className="text-left">{row.getValue("State_Name")}</div>;
       },
     },
     {
       accessorKey: "Id",
-      header: () => <div className="text-center ">Actions</div>,
+      header: () => <div className="text-center ">{t("common.actions")}</div>,
       cell: ({ row }) => {
         return (
           <div className="w-full flex justify-center  text-center">
@@ -92,7 +96,7 @@ const DistrictTable = ({
               className="flex text-center items-center justify-center gap-3"
               onClick={() => handleEditData(data[row.id])}
             >
-              Edit
+              {t("common.buttons.edit")}
               <FaRegEdit />
             </Button>
           </div>
@@ -217,7 +221,7 @@ const DistrictTable = ({
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {t("common.noResults")}
                   </TableCell>
                 </TableRow>
               )}
@@ -240,7 +244,7 @@ const DistrictTable = ({
                 onClick={() => setCurrentDistrictPage((prev) => prev - 1)}
                 disabled={currentDistrictPage === 1}
               >
-                Previous
+                {t("common.previous")}
               </Button>
             </PaginationItem>
 
@@ -263,7 +267,7 @@ const DistrictTable = ({
                 onClick={() => setCurrentDistrictPage((prev) => prev + 1)}
                 disabled={currentDistrictPage === lastDistrictPage}
               >
-                Next
+                {t("common.next")}
               </Button>
             </PaginationItem>
           </PaginationContent>

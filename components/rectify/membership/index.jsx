@@ -19,6 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
+import { useTranslation } from "react-i18next";
 
 const Membership = ({
   loading,
@@ -33,6 +34,8 @@ const Membership = ({
   handleCloseSuccessMessage,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
+
   const rectifyTypeData = useSelector(
     (state) => state?.rectifyMembership?.rectifyTypeData
   );
@@ -40,7 +43,9 @@ const Membership = ({
   return (
     <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Rectify Membership</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("membership.rectifyMembership")}
+        </h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
           <Form {...form}>
@@ -56,13 +61,13 @@ const Membership = ({
                     name="rectifyTypeId"
                     render={({ field }) => (
                       <DropdownField
-                        label="Rectify Type"
+                        label={t("membership.rectifyType")}
                         value={field.value}
                         onChange={field.onChange}
                         options={rectifyTypeData}
                         optionLabelKey="Option_Value" // Specify the key for label
-                        placeholder="Select rectify type"
-                        searchPlaceholder="Search rectify type..."
+                        placeholder={t("membership.selectRectifyType")}
+                        searchPlaceholder={t("membership.searchRectifyType")}
                       />
                     )}
                   />
@@ -87,7 +92,7 @@ const Membership = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Basic Info Block
+                    {t("membership.basicInfoBlock")}
                   </h3>
 
                   {getMemberDataLoading ? (
@@ -122,7 +127,7 @@ const Membership = ({
                       <DatePickerField
                         control={form.control}
                         name="transDate"
-                        label="Transaction Date"
+                        label={t("common.transactionDate")}
                         disabled
                       />
 
@@ -131,10 +136,10 @@ const Membership = ({
                         name="memberName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Member Name</FormLabel>
+                            <FormLabel>{t("membership.memberName")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter member name"
+                                placeholder={t("membership.enterMemberName")}
                                 {...field}
                                 readOnly
                               />
@@ -149,10 +154,10 @@ const Membership = ({
                         name="gurdianName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Gurdian Name</FormLabel>
+                            <FormLabel>{t("membership.gurdianName")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter gurdian name"
+                                placeholder={t("membership.enterGurdianName")}
                                 {...field}
                                 readOnly
                               />
@@ -166,10 +171,10 @@ const Membership = ({
                         name="address"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Address</FormLabel>
+                            <FormLabel>{t("common.address")}</FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="Enter address"
+                                placeholder={t("membership.enterAddress")}
                                 {...field}
                                 className="resize-none"
                                 readOnly
@@ -185,10 +190,10 @@ const Membership = ({
                         name="transMode"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Trans Mode</FormLabel>
+                            <FormLabel>{t("common.transMode")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter trans mode"
+                                placeholder={t("membership.enterTransMode")}
                                 {...field}
                                 readOnly
                               />
@@ -203,10 +208,10 @@ const Membership = ({
                         name="amount"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Amount</FormLabel>
+                            <FormLabel>{t("common.amount")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter amount"
+                                placeholder={t("membership.enterAmount")}
                                 readOnly
                                 {...field}
                               />
@@ -240,7 +245,7 @@ const Membership = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Rectify"
+                    t("membership.rectify")
                   )}
                 </Button>
               )}

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +17,8 @@ import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 
 const ShareProduct = ({ loading, form, handleSubmit }) => {
+  const { t } = useTranslation();
+
   const memberTypeData = useSelector(
     (state) => state?.shareProduct?.memberTypeData,
   );
@@ -22,7 +26,7 @@ const ShareProduct = ({ loading, form, handleSubmit }) => {
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold">Share Product</h3>
+        <h3 className="text-2xl font-semibold">{t("master.shareProduct.title")}</h3>
         <div className="w-full h-full">
           <Form {...form}>
             <form
@@ -35,26 +39,26 @@ const ShareProduct = ({ loading, form, handleSubmit }) => {
                   <DropdownField
                     control={form.control}
                     name="memberType"
-                    label="Member Type"
+                    label={t("master.shareProduct.fields.memberType")}
                     options={memberTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder="Select member type"
-                    searchPlaceholder="Search member type..."
+                    placeholder={t("master.shareProduct.placeholders.memberType")}
+                    searchPlaceholder={t("master.shareProduct.placeholders.searchMemberType")}
                   />
 
                   <InputField
                     control={form.control}
                     name="admissionFees"
-                    label="Admission Fees"
-                    placeholder="Enter admission fees"
+                    label={t("master.shareProduct.fields.admissionFees")}
+                    placeholder={t("master.shareProduct.placeholders.admissionFees")}
                     type="number"
                   />
 
                   <InputField
                     control={form.control}
                     name="ratePerShare"
-                    label="Rate Per Share"
-                    placeholder="Enter rate per share"
+                    label={t("master.shareProduct.fields.ratePerShare")}
+                    placeholder={t("master.shareProduct.placeholders.ratePerShare")}
                     type="number"
                   />
                 </div>
@@ -70,7 +74,7 @@ const ShareProduct = ({ loading, form, handleSubmit }) => {
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("master.shareProduct.buttons.add")
                   )}
                 </Button>
               </div>

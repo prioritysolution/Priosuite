@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const VoucherActionModal = ({
   open,
@@ -32,6 +33,7 @@ const VoucherActionModal = ({
   onApproveReject,
   loading,
 }) => {
+  const { t } = useTranslation();
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectRemarks, setRejectRemarks] = useState("");
 
@@ -39,7 +41,7 @@ const VoucherActionModal = ({
 
   const handleRejectConfirm = () => {
     if (!rejectRemarks.trim()) {
-      toast.error("Please enter remarks for rejection.");
+      toast.error(t("voucherApproval.pleaseEnterRejectionRemarks"));
       return;
     }
     onApproveReject(2, rejectRemarks);
@@ -71,7 +73,9 @@ const VoucherActionModal = ({
     if (!selectedDetails?.subledger_details) return {};
     const grouped = {};
     selectedDetails.subledger_details.forEach((item) => {
-      const ledgerName = item.Ledger_Name || `Ledger ID: ${item.Ledger_Id}`;
+      const ledgerName =
+        item.Ledger_Name ||
+        t("voucherApproval.ledgerId", { id: item.Ledger_Id });
       if (!grouped[ledgerName]) {
         grouped[ledgerName] = [];
       }
@@ -110,11 +114,12 @@ const VoucherActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-2xl font-bold text-gray-800 tracking-tight">
-                Voucher Approval
+                {t("voucherApproval.voucherApproval")}
               </DialogTitle>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span className="font-medium">
-                  Queue No: {selectedApplication.Queue_No || "N/A"}
+                  {t("voucherApproval.queueNoLabel")}{" "}
+                  {selectedApplication.Queue_No || "N/A"}
                 </span>
                 <span className="h-4 w-px bg-gray-300" />
                 <span className="font-semibold text-primary">
@@ -127,19 +132,19 @@ const VoucherActionModal = ({
           <div className="flex-1 overflow-y-auto bg-gray-50/50 p-6 space-y-6 max-h-[65vh]">
             {/* Voucher Header Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-6 rounded-2xl border border-gray-200 bg-white shadow-sm">
-              {renderField("Transaction Date", formatDate(selectedApplication.Trans_Date))}
-              {renderField("Queue No", selectedApplication.Queue_No)}
-              {renderField("Type", selectedApplication.Type)}
-              {renderField("Amount", selectedApplication.Amount)}
+              {renderField(t("voucherApproval.transactionDate"), formatDate(selectedApplication.Trans_Date))}
+              {renderField(t("voucherApproval.queueNo"), selectedApplication.Queue_No)}
+              {renderField(t("voucherApproval.type"), selectedApplication.Type)}
+              {renderField(t("voucherApproval.amount"), selectedApplication.Amount)}
               <div className="sm:col-span-2 md:col-span-3">
-                {renderField("Particulars", selectedApplication.Particular)}
+                {renderField(t("voucherApproval.particulars"), selectedApplication.Particular)}
               </div>
             </div>
 
             {/* Voucher Details Section */}
             <div className="p-6 rounded-2xl border border-gray-200 bg-white shadow-sm space-y-4">
               <h3 className="text-lg font-bold text-gray-800 border-b pb-2">
-                Voucher Details
+                {t("voucherApproval.voucherDetails")}
               </h3>
               {detailsLoading ? (
                 <div className="flex items-center justify-center py-8">
@@ -150,10 +155,10 @@ const VoucherActionModal = ({
                   <Table>
                     <TableHeader className="bg-gray-50">
                       <TableRow>
-                        <TableHead className="w-[50px] font-semibold text-gray-700">Sl</TableHead>
-                        <TableHead className="font-semibold text-gray-700">Ledger Name</TableHead>
-                        <TableHead className="font-semibold text-gray-700 text-right">Debit</TableHead>
-                        <TableHead className="font-semibold text-gray-700 text-right">Credit</TableHead>
+                        <TableHead className="w-[50px] font-semibold text-gray-700">{t("common.sl")}</TableHead>
+                        <TableHead className="font-semibold text-gray-700">{t("voucherApproval.ledgerName")}</TableHead>
+                        <TableHead className="font-semibold text-gray-700 text-right">{t("voucherApproval.debit")}</TableHead>
+                        <TableHead className="font-semibold text-gray-700 text-right">{t("voucherApproval.credit")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -178,7 +183,7 @@ const VoucherActionModal = ({
                       {/* Total Row */}
                       <TableRow className="bg-gray-50/50 font-bold border-t-2">
                         <TableCell colSpan={2} className="text-left text-gray-800">
-                          Total
+                          {t("voucherApproval.total")}
                         </TableCell>
                         <TableCell className="text-right text-primary">
                           {totalDebit.toFixed(2)}
@@ -192,7 +197,7 @@ const VoucherActionModal = ({
                 </div>
               ) : (
                 <p className="text-sm text-gray-500 text-center py-4">
-                  No voucher details found.
+                  {t("voucherApproval.noVoucherDetails")}
                 </p>
               )}
             </div>
@@ -206,18 +211,18 @@ const VoucherActionModal = ({
                     className="p-6 rounded-2xl border border-gray-200 bg-white shadow-sm space-y-4"
                   >
                     <h3 className="text-md font-bold text-gray-800 border-b pb-2">
-                      Subledger List ({ledgerName})
+                      {t("voucherApproval.subledgerList", { name: ledgerName })}
                     </h3>
                     <div className="overflow-x-auto border rounded-lg">
                       <Table>
                         <TableHeader className="bg-gray-50">
                           <TableRow>
-                            <TableHead className="w-[50px] font-semibold text-gray-700">Sl</TableHead>
-                            <TableHead className="font-semibold text-gray-700">Account No</TableHead>
-                            <TableHead className="font-semibold text-gray-700">Name</TableHead>
-                            <TableHead className="font-semibold text-gray-700">Type</TableHead>
-                            <TableHead className="font-semibold text-gray-700 text-right">Amount</TableHead>
-                            <TableHead className="font-semibold text-gray-700">Remarks</TableHead>
+                            <TableHead className="w-[50px] font-semibold text-gray-700">{t("common.sl")}</TableHead>
+                            <TableHead className="font-semibold text-gray-700">{t("voucherApproval.accountNo")}</TableHead>
+                            <TableHead className="font-semibold text-gray-700">{t("voucherApproval.name")}</TableHead>
+                            <TableHead className="font-semibold text-gray-700">{t("voucherApproval.type")}</TableHead>
+                            <TableHead className="font-semibold text-gray-700 text-right">{t("common.amount")}</TableHead>
+                            <TableHead className="font-semibold text-gray-700">{t("voucherApproval.remarks")}</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -257,14 +262,14 @@ const VoucherActionModal = ({
                 onClick={() => setShowRejectModal(true)}
                 disabled={loading || detailsLoading}
               >
-                <Ban className="w-4 h-4 mr-2" /> Reject
+                <Ban className="w-4 h-4 mr-2" /> {t("voucherApproval.reject")}
               </Button>
               <Button
                 className="bg-primary hover:bg-primary/90 text-white px-8 font-bold min-w-[120px] transition-all w-full sm:w-auto"
                 onClick={() => onApproveReject(1)}
                 disabled={loading || detailsLoading}
               >
-                <CheckCircle2 className="w-4 h-4 mr-2" /> Approve
+                <CheckCircle2 className="w-4 h-4 mr-2" /> {t("voucherApproval.approve")}
               </Button>
             </div>
           </div>
@@ -276,16 +281,17 @@ const VoucherActionModal = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-red-600">
               <AlertTriangle className="h-5 w-5" />
-              Reject Voucher
+              {t("voucherApproval.rejectVoucher")}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <Label htmlFor="remarks" className="mb-2 block text-sm font-medium">
-              Rejection Remarks <span className="text-red-500">*</span>
+              {t("voucherApproval.rejectionRemarks")}{" "}
+              <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="remarks"
-              placeholder="Enter reason for rejection..."
+              placeholder={t("voucherApproval.enterRejectionReason")}
               value={rejectRemarks}
               onChange={(e) => setRejectRemarks(e.target.value)}
               className="min-h-[100px] focus-visible:ring-red-500"
@@ -293,13 +299,13 @@ const VoucherActionModal = ({
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowRejectModal(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               className="bg-red-600 hover:bg-red-700 text-white"
               onClick={handleRejectConfirm}
             >
-              Confirm Rejection
+              {t("voucherApproval.confirmRejection")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import {
   Table,
   TableBody,
@@ -24,6 +25,8 @@ const PreviewModal = ({
   totalPayment,
   cashBalanceData,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -103,7 +106,9 @@ const PreviewModal = ({
               <p>{branchName}</p>
               <p>{address}</p>
               <p>{regNo}</p>
-              <p className="text-sm">Cashbook As On {toDate}</p>
+              <p className="text-sm">
+                {t("report.cashbook.cashbookAsOn")} {toDate}
+              </p>
             </div>
 
             {/* Two tables side by side */}
@@ -123,24 +128,26 @@ const PreviewModal = ({
                             colSpan={5}
                             className="border border-black text-black p-0 text-center w-full h-[40px]"
                           >
-                            {tableIndex === 0 ? "RECEIPT" : "PAYMENT"}
+                            {tableIndex === 0
+                              ? t("report.cashbook.print.receipt")
+                              : t("report.cashbook.print.payment")}
                           </TableHead>
                         </TableRow>
                         <TableRow className="  h-[40px] border border-black">
                           <TableHead className=" border-black text-black p-0 text-center h-[40px] w-[30px]">
-                            SL.
+                            {t("report.cashbook.print.sl")}
                           </TableHead>
                           <TableHead className=" border-black text-black p-0 border-l text-center h-[40px] w-[80px]">
-                            Vouch No.
+                            {t("report.cashbook.print.vouchNo")}
                           </TableHead>
                           <TableHead className=" border-black text-black p-0 border-l text-center h-[40px] w-[120px]">
-                            Ledger Name
+                            {t("report.cashbook.print.ledgerName")}
                           </TableHead>
                           <TableHead className=" border-black text-black p-0 border-l text-center h-[40px]">
-                            PARTICULARS
+                            {t("report.cashbook.print.particulars")}
                           </TableHead>
                           <TableHead className=" border-black text-black p-0 border-l text-center h-[40px] w-[100px]">
-                            AMOUNT
+                            {t("report.cashbook.print.amount")}
                           </TableHead>
                         </TableRow>
                       </TableHeader>
@@ -178,7 +185,7 @@ const PreviewModal = ({
                               colSpan={4}
                               className="font-medium border border-black text-center p-0"
                             >
-                              Total
+                              {t("common.total")}
                             </TableCell>
                             <TableCell className=" border border-black text-right p-0 pr-[2px]">
                               {totalReceived?.toFixed(2)}
@@ -189,7 +196,7 @@ const PreviewModal = ({
                               colSpan={4}
                               className="font-medium border border-black text-center p-0"
                             >
-                              Opening Balance
+                              {t("common.openingBalance")}
                             </TableCell>
                             <TableCell className=" border border-black text-right p-0 pr-[2px]">
                               {cashBalanceData &&
@@ -207,7 +214,7 @@ const PreviewModal = ({
                               colSpan={4}
                               className="font-medium border border-black text-center p-0"
                             >
-                              Total
+                              {t("common.total")}
                             </TableCell>
                             <TableCell className=" border border-black text-right p-0 pr-[2px]">
                               {totalPayment?.toFixed(2)}
@@ -218,7 +225,7 @@ const PreviewModal = ({
                               colSpan={4}
                               className="font-medium border border-black text-center p-0"
                             >
-                              Closing Balance
+                              {t("common.closingBalance")}
                             </TableCell>
                             <TableCell className=" border border-black text-right p-0 pr-[2px]">
                               {cashBalanceData &&
@@ -239,22 +246,24 @@ const PreviewModal = ({
               Math.max(leftTablePages.length, rightTablePages.length, 1) -
                 1 && (
               <p className="h-8 border border-t-0 border-black w-full text-[11px] flex self-end justify-end items-center px-2">
-                Closing Balance In Words:{" "}
+                {t("report.cashbook.closingBalanceInWords")}:{" "}
                 {cashBalanceData?.Closing &&
                 parseFloat(cashBalanceData.Closing) > 0
-                  ? `Rupees ${convertToWords(
+                  ? `${t("common.rupees")} ${convertToWords(
                       Number(cashBalanceData.Closing),
-                    )} Only`
-                  : "Zero"}
+                    )} ${t("common.only")}`
+                  : t("common.zero")}
               </p>
             )}
             <div className=" w-full h-[30px] absolute bottom-2 left-0 flex items-end pb-1 justify-between px-2 text-xs">
-              <p className="text-nowrap">Generated By : {userName}</p>
+              <p className="text-nowrap">
+                {t("common.generatedBy")} : {userName}
+              </p>
               <p className="italic text-nowrap" style={{ color: "#4b5563" }}>
-                This report is generated by PrioSuite.
+                {t("common.thisReportIsGeneratedByPrioSuite")}
               </p>
               <p className="text-nowrap">
-                Generated On : {currentDate} {currentTime}
+                {t("common.generatedOn")} : {currentDate} {currentTime}
               </p>
             </div>
           </div>
@@ -266,22 +275,22 @@ const PreviewModal = ({
       >
         <div className="w-[350px] ml-20">
           <p className="text-[11px] text-center flex items-center justify-center h-[40px]">
-            Physical Denomination
+            {t("report.cashbook.physicalDenomination")}
           </p>
           <Table className="w-full border border-black text-[11px]">
             <TableHeader>
               <TableRow className=" text-black  h-[40px] ">
                 <TableHead className=" border-black text-black p-0 text-center w-[50px]">
-                  Sl. NO.
+                  {t("report.cashbook.print.slNo")}
                 </TableHead>
                 <TableHead className=" border-black text-black p-0 border-x  text-center w-[100px]">
-                  Denomination
+                  {t("report.cashbook.print.denomination")}
                 </TableHead>
                 <TableHead className=" border-black  border-l text-black p-0 text-center w-[100px]">
-                  Quantity
+                  {t("report.cashbook.print.quantity")}
                 </TableHead>
                 <TableHead className=" border-black  border-l text-black p-0 text-center w-[100px]">
-                  Value
+                  {t("report.cashbook.print.value")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -309,7 +318,7 @@ const PreviewModal = ({
                   className="border border-black p-0 text-center"
                   colSpan={2}
                 >
-                  Total
+                  {t("common.total")}
                 </TableCell>
                 <TableCell className="border border-black p-0 text-center"></TableCell>
                 <TableCell className="border border-black p-0 text-center">
@@ -322,12 +331,14 @@ const PreviewModal = ({
           </Table>
         </div>
         <div className=" w-full h-[30px] absolute bottom-2 left-0 flex items-end pb-1 justify-between px-2 text-xs">
-          <p className="text-nowrap">Generated By : {userName}</p>
+          <p className="text-nowrap">
+            {t("common.generatedBy")} : {userName}
+          </p>
           <p className="italic text-nowrap" style={{ color: "#4b5563" }}>
-            This report is generated by PrioSuite.
+            {t("common.thisReportIsGeneratedByPrioSuite")}
           </p>
           <p className="text-nowrap">
-            Generated On : {currentDate} {currentTime}
+            {t("common.generatedOn")} : {currentDate} {currentTime}
           </p>
         </div>
       </div>

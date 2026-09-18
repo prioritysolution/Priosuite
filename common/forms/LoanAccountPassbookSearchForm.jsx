@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -32,6 +34,7 @@ const LoanAccountPassbookSearchForm = ({
   dialougeOpen,
   setDialougeOpen,
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const [activeTab, setActiveTab] = useState("memberNo");
@@ -47,14 +50,14 @@ const LoanAccountPassbookSearchForm = ({
     if (form.getValues("dialougeMemberNo")) {
       getLoanAccountListApiCall(2, form.getValues("dialougeMemberNo"), 1);
       setCurrentAccountPage(1);
-    } else toast.error("Please enter member no.");
+    } else toast.error(t("forms.pleaseEnterMemberNo"));
   };
 
   const handleSearchAccountListByName = () => {
     if (form.getValues("dialougeAccountName")) {
       getLoanAccountListApiCall(1, form.getValues("dialougeAccountName"), 1);
       setCurrentAccountPage(1);
-    } else toast.error("Please enter name");
+    } else toast.error(t("forms.pleaseEnterName"));
   };
 
   const accountListData = useSelector(
@@ -93,13 +96,13 @@ const LoanAccountPassbookSearchForm = ({
                 name="accountNo"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Account No.</FormLabel>
+                    <FormLabel>{t("forms.accountNo")}</FormLabel>
                     <FormControl>
                       <div className="">
                         <div className="">
                           <div className="relative w-full">
                             <Input
-                              placeholder="Enter account no."
+                              placeholder={t("forms.enterAccountNo")}
                               className="w-full "
                               type="number"
                               onInput={(e) => {
@@ -130,7 +133,7 @@ const LoanAccountPassbookSearchForm = ({
             <DialogContent className="w-[calc(100vw-1rem)] max-w-[1000px] h-[min(90dvh,640px)] sm:h-auto sm:max-h-[85vh] p-3 sm:p-6 gap-3 overflow-hidden flex flex-col rounded-lg">
               <DialogHeader className="shrink-0 pr-8 text-left">
                 <DialogTitle className="text-base sm:text-lg">
-                  Search Account
+                  {t("forms.searchAccount")}
                 </DialogTitle>
               </DialogHeader>
               <div className="w-full min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
@@ -151,7 +154,7 @@ const LoanAccountPassbookSearchForm = ({
                           color: activeTab === "memberNo" ? "#ffffff" : "",
                         }}
                       >
-                        By Member No.
+                        {t("forms.byMemberNo")}
                       </TabsTrigger>
                       <TabsTrigger
                         value="name"
@@ -162,7 +165,7 @@ const LoanAccountPassbookSearchForm = ({
                           color: activeTab === "name" ? "#ffffff" : "",
                         }}
                       >
-                        By Name
+                        {t("forms.byName")}
                       </TabsTrigger>
                     </TabsList>
                     <TabsContent
@@ -174,11 +177,11 @@ const LoanAccountPassbookSearchForm = ({
                         name="dialougeMemberNo"
                         render={({ field }) => (
                           <FormItem className="w-full min-w-0">
-                            <FormLabel>Member No.</FormLabel>
+                            <FormLabel>{t("forms.memberNo")}</FormLabel>
                             <FormControl>
                               <Input
                                 autoComplete="off"
-                                placeholder="Search by enter member no."
+                                placeholder={t("forms.searchByMemberNo")}
                                 {...field}
                               />
                             </FormControl>
@@ -190,7 +193,7 @@ const LoanAccountPassbookSearchForm = ({
                         className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                         onClick={handleSearchAccountListByMemberNo}
                       >
-                        Search
+                        {t("forms.search")}
                       </Button>
                     </TabsContent>
                     <TabsContent
@@ -202,11 +205,11 @@ const LoanAccountPassbookSearchForm = ({
                         name="dialougeAccountName"
                         render={({ field }) => (
                           <FormItem className="w-full min-w-0">
-                            <FormLabel>Name</FormLabel>
+                            <FormLabel>{t("forms.name")}</FormLabel>
                             <FormControl>
                               <Input
                                 autoComplete="off"
-                                placeholder="Search by enter name"
+                                placeholder={t("forms.searchByName")}
                                 {...field}
                               />
                             </FormControl>
@@ -218,7 +221,7 @@ const LoanAccountPassbookSearchForm = ({
                         className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                         onClick={handleSearchAccountListByName}
                       >
-                        Search
+                        {t("forms.search")}
                       </Button>
                     </TabsContent>
                   </Tabs>

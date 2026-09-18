@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import DropdownField from "@/common/formFields/DropdownField";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,15 +27,16 @@ export default function BranchLiquidityTable({
   form,
   openingLedgerBranchData,
 }) {
+  const { t } = useTranslation();
   return (
     <Card className="w-full min-w-0 border-slate-200/80 shadow-sm">
       <CardHeader className="flex flex-col gap-3 space-y-0 pb-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <CardTitle className="text-lg text-slate-900">
-            Multi-Branch Operations &amp; Liquidity Matrix
+            {t("dashboard.branchLiquidityTitle")}
           </CardTitle>
           <CardDescription>
-            Branch-wise loan book, collection, and vault cash
+            {t("dashboard.branchLiquidityDesc")}
           </CardDescription>
         </div>
         <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:items-end">
@@ -45,13 +48,13 @@ export default function BranchLiquidityTable({
                   name="branchName"
                   render={({ field }) => (
                     <DropdownField
-                      label="Branch"
+                      label={t("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={openingLedgerBranchData}
                       optionLabelKey="Branch_Name"
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("dashboard.selectBranch")}
+                      searchPlaceholder={t("dashboard.searchBranch")}
                       labeldisable={true}
                       searchable={true}
                     />
@@ -61,7 +64,7 @@ export default function BranchLiquidityTable({
             </div>
           ) : null}
           <span className="text-sm font-medium text-slate-500">
-            {branches.length} Active Branches
+            {t("dashboard.activeBranches", { count: branches.length })}
           </span>
         </div>
       </CardHeader>
@@ -70,22 +73,22 @@ export default function BranchLiquidityTable({
           <TableHeader>
             <TableRow className="border-slate-100 hover:bg-transparent">
               <TableHead className="pl-6 text-xs font-medium text-slate-500">
-                Branch Name
+                {t("dashboard.branchName")}
               </TableHead>
               <TableHead className="text-xs font-medium text-slate-500">
-                Active Loan Book (₹)
+                {t("dashboard.activeLoanBook")}
               </TableHead>
               <TableHead className="text-xs font-medium text-slate-500">
-                Today&apos;s Collection (₹)
+                {t("dashboard.todaysCollection")}
               </TableHead>
               <TableHead className="text-xs font-medium text-slate-500">
-                Branch Vault Cash (₹)
+                {t("dashboard.branchVaultCash")}
               </TableHead>
               <TableHead className="text-xs font-medium text-slate-500">
-                Open Loans
+                {t("dashboard.openLoans")}
               </TableHead>
               <TableHead className="pr-6 text-xs font-medium text-slate-500">
-                Recovery %
+                {t("dashboard.recoveryPct")}
               </TableHead>
             </TableRow>
           </TableHeader>

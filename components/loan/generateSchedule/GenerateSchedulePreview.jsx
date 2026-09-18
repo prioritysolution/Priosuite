@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -40,6 +41,8 @@ const GenerateSchedulePreview = ({
   personalData,
   tableData,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -98,32 +101,32 @@ const GenerateSchedulePreview = ({
           <div className="h-[100px] w-full border border-black my-1 px-2 py-1 grid grid-cols-3 gap-1 text-xs text-start">
             <div className="col-span-3 flex justify-around items-start w-full gap-1">
               <div className="w-full flex gap-1">
-                <p className="font-semibold text-nowrap">Member Name : </p>
+                <p className="font-semibold text-nowrap">{t("loan.memberNameColon")}</p>
                 <p>{personalData?.member_name || ""}</p>
               </div>
               <div className="w-full flex gap-1 items-start justify-start">
-                <p className="font-semibold text-nowrap">Guardian Name : </p>
+                <p className="font-semibold text-nowrap">{t("loan.guardianNameColon")}</p>
                 <p>{personalData?.relation_name || ""}</p>
               </div>
             </div>
             <div className="w-full flex gap-1 col-span-3">
-              <p className="font-semibold text-nowrap">Address : </p>
+              <p className="font-semibold text-nowrap">{t("loan.address")}</p>
               <p>{personalData?.address || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Product Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.productNameColon")}</p>
               <p>{personalData?.loan_product || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Account No. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.accountNoColon")}</p>
               <p>{personalData?.account_no || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">ROI : </p>
+              <p className="font-semibold text-nowrap">{t("loan.roiColon")}</p>
               <p>{personalData?.roi || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Disburse Date : </p>
+              <p className="font-semibold text-nowrap">{t("loan.disburseDateColon")}</p>
               <p>
                 {personalData?.disbursement_date
                   ? format(new Date(personalData?.disbursement_date), "dd-MM-yyyy")
@@ -132,12 +135,12 @@ const GenerateSchedulePreview = ({
             </div>
             <div className="w-full flex gap-1">
               <p className="font-semibold text-nowrap">
-                Disbursement Amount :{" "}
+                {t("loan.disbursementAmountColon")}
               </p>
               <p>{personalData?.disbursed_amount || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">No. of Installment : </p>
+              <p className="font-semibold text-nowrap">{t("loan.noOfInstallmentColon")}</p>
               <p>{personalData?.no_of_installment || ""}</p>
             </div>
           </div>
@@ -148,24 +151,12 @@ const GenerateSchedulePreview = ({
               {/* Main Header Every Page */}
               <TableHeader>
                 <TableRow className="h-[50px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[80px]">
-                    INSTALMENT NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    DUE DATE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[150px]">
-                    PRINCIPAL
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[150px]">
-                    INTEREST
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[150px]">
-                    TOTAL INSTALMENT AMOUNT
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center">
-                    BALANCE
-                  </TableHead>
+                  <TableHead className="text-black p-0 border-black text-center w-[80px]">{t("loan.print.instalmentNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.dueDate")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[150px]">{t("loan.print.principal")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[150px]">{t("loan.print.interest")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[150px]">{t("loan.print.totalInstalmentAmount")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center">{t("loan.print.balance")}</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -198,12 +189,10 @@ const GenerateSchedulePreview = ({
 
           {/* Footer */}
           <div className="w-full h-[40px] mt-2 flex items-end justify-between text-xs relative">
-            <p className="text-nowrap">Generated By: {userName}</p>
-            <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">
-              This report is generated by PrioSuite.
-            </p>
+            <p className="text-nowrap">{t("loan.generatedByColon")} {userName}</p>
+            <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">{t("loan.reportGeneratedByPrioSuite")}</p>
             <p className="text-nowrap">
-              Generated On: {currentDate} {currentTime}
+              {t("loan.generatedOnColon")} {currentDate} {currentTime}
             </p>
           </div>
         </div>

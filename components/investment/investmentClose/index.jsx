@@ -28,6 +28,7 @@ import { getYear } from "date-fns";
 import { IoCalculator, IoPrint } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const InvestmentClose = ({
   loading,
@@ -51,6 +52,8 @@ const InvestmentClose = ({
   toDate,
   getLedgerLoading,
 }) => {
+  const { t } = useTranslation();
+
   const investmentAccountData = useSelector(
     (state) => state?.investmentInterest?.investmentAccountData,
   );
@@ -62,7 +65,9 @@ const InvestmentClose = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Investment Close</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("investment.investmentClose")}
+        </h3>
 
         <ScrollArea className="w-full h-full ">
           <Form {...form}>
@@ -78,11 +83,11 @@ const InvestmentClose = ({
                     <DropdownField
                       control={form.control}
                       name="accountNo"
-                      label="Account No."
+                      label={t("common.accountNo")}
                       options={investmentAccountData}
                       optionLabelKey="Accout_No"
-                      placeholder="Select account no."
-                      searchPlaceholder="Search account no...."
+                      placeholder={t("investment.selectAccountNo")}
+                      searchPlaceholder={t("investment.searchAccountNo")}
                     />
                   </div>
 
@@ -105,7 +110,7 @@ const InvestmentClose = ({
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>View Ledger</p>
+                        <p>{t("common.viewLedger")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -114,46 +119,46 @@ const InvestmentClose = ({
 
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3">
                 <h3 className="w-full text-center text-xl font-semibold">
-                  Basic Info Block
+                  {t("investment.basicInfoBlock")}
                 </h3>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <InputField
                     control={form.control}
                     name="openingDate"
-                    label="Open Date"
-                    placeholder="Enter open date"
+                    label={t("investment.openDate")}
+                    placeholder={t("investment.enterOpenDate")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="investmentAmount"
-                    label="Investmest Amount"
-                    placeholder="Enter investmest amount"
+                    label={t("investment.investmentAmount")}
+                    placeholder={t("investment.enterInvestmentAmount")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="rateOfInterest"
-                    label="Rate Of Interest"
-                    placeholder="Enter rate of interest"
+                    label={t("investment.rateOfInterest")}
+                    placeholder={t("investment.enterRateOfInterest")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="maturityDate"
-                    label="Maturity Date"
-                    placeholder="Enter maturity date"
+                    label={t("investment.maturityDate")}
+                    placeholder={t("investment.enterMaturityDate")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="maturityAmount"
-                    label="Maturity Amount"
-                    placeholder="Enter maturity amount"
+                    label={t("investment.maturityAmount")}
+                    placeholder={t("investment.enterMaturityAmount")}
                     readOnly
                   />
                 </div>
@@ -161,29 +166,29 @@ const InvestmentClose = ({
 
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3">
                 <h3 className="w-full text-center text-xl font-semibold">
-                  Closing Info Block
+                  {t("investment.closingInfoBlock")}
                 </h3>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <DatePickerField
                     control={form.control}
                     name="closingDate"
-                    label="Closing Date"
+                    label={t("investment.closingDate")}
                     disabled={true}
                   />
 
                   <InputField
                     control={form.control}
                     name="newInvestmentAmount"
-                    label="Investment Amount"
-                    placeholder="Enter investment amount"
+                    label={t("investment.investmentAmount")}
+                    placeholder={t("investment.enterInvestmentAmount")}
                     readOnly
                   />
 
                   <InputField
                     control={form.control}
                     name="closingInterest"
-                    label="Closing Interest"
-                    placeholder="Enter closing interest"
+                    label={t("investment.closingInterest")}
+                    placeholder={t("investment.enterClosingInterest")}
                     type="number"
                     endContent={
                       <TooltipProvider>
@@ -197,7 +202,7 @@ const InvestmentClose = ({
                             </div>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Calculate Mature Amount</p>
+                            <p>{t("investment.calculateMatureAmount")}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -207,16 +212,16 @@ const InvestmentClose = ({
                   <InputField
                     control={form.control}
                     name="tdsAmount"
-                    label="TDS Amount"
-                    placeholder="Enter tds amount"
+                    label={t("investment.tdsAmount")}
+                    placeholder={t("investment.enterTdsAmount")}
                     type="number"
                   />
 
                   <InputField
                     control={form.control}
                     name="totalPayble"
-                    label="Total Payble"
-                    placeholder="Enter total payble"
+                    label={t("investment.totalPayble")}
+                    placeholder={t("investment.enterTotalPayble")}
                     readOnly
                   />
 
@@ -225,7 +230,9 @@ const InvestmentClose = ({
                     name="transMode"
                     render={({ field }) => (
                       <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full lg:w-fit h-fit self-end">
-                        <FormLabel>Select transanction mode</FormLabel>
+                        <FormLabel>
+                          {t("investment.selectTransactionMode")}
+                        </FormLabel>
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
@@ -237,7 +244,7 @@ const InvestmentClose = ({
                                 <RadioGroupItem value="bank" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Bank
+                                {t("common.bank")}
                               </FormLabel>
                             </FormItem>
                           </RadioGroup>
@@ -249,17 +256,17 @@ const InvestmentClose = ({
                   <InputField
                     control={form.control}
                     name="refVouchNo"
-                    label="Ref. Vouch No."
-                    placeholder="Enter ref. vouch no."
+                    label={t("common.refVouchNo")}
+                    placeholder={t("common.enterRefVouchNo")}
                   />
                   <DropdownField
                     control={form.control}
                     name="bank"
-                    label="Bank"
+                    label={t("common.bank")}
                     options={bankAccountData}
                     optionLabelKey="Bank_Name"
-                    placeholder="Select bank"
-                    searchPlaceholder="Search bank..."
+                    placeholder={t("investment.selectBank")}
+                    searchPlaceholder={t("investment.searchBank")}
                   />
                 </div>
               </div>
@@ -272,7 +279,7 @@ const InvestmentClose = ({
                 {loading ? (
                   <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
-                  "Add"
+                  t("common.add")
                 )}
               </Button>
             </form>

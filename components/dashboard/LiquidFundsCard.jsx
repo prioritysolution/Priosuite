@@ -1,8 +1,11 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { formatINR } from "@/lib/format";
 
 export default function LiquidFundsCard({ data }) {
+  const { t } = useTranslation();
   return (
     <div
       className="flex h-full min-h-[260px] w-full flex-col justify-between rounded-xl p-6 shadow-sm"
@@ -13,7 +16,7 @@ export default function LiquidFundsCard({ data }) {
           className="text-xs font-semibold uppercase tracking-wide"
           style={{ color: "#34d399" }}
         >
-          {data.totalLabel}
+          {t("dashboard.totalLiquidFunds")}
         </p>
         <p className="mt-2 text-3xl font-bold tracking-tight text-white">
           {formatINR(data.total)}
@@ -25,7 +28,7 @@ export default function LiquidFundsCard({ data }) {
               style={{ backgroundColor: "#34d399" }}
             />
             <span style={{ color: "#e2e8f0" }}>
-              Cash In Hand (Branch Vaults):{" "}
+              {t("dashboard.cashInHand")}{" "}
               <span className="font-semibold text-white">
                 {formatINR(data.cashInHand)}
               </span>
@@ -37,7 +40,7 @@ export default function LiquidFundsCard({ data }) {
               style={{ backgroundColor: "#38bdf8" }}
             />
             <span style={{ color: "#e2e8f0" }}>
-              Bank Balances (Commercial Banks):{" "}
+              {t("dashboard.bankBalances")}{" "}
               <span className="font-semibold text-white">
                 {formatINR(data.bankBalance)}
               </span>
@@ -50,14 +53,14 @@ export default function LiquidFundsCard({ data }) {
         style={{ borderColor: "rgba(255,255,255,0.1)" }}
       >
         <span className="text-xs" style={{ color: "#94a3b8" }}>
-          {data.footerLabel}
+          {t("dashboard.realtimeCbs")}
         </span>
         <button
           type="button"
           className="text-sm font-medium hover:opacity-90"
           style={{ color: "#34d399" }}
         >
-          {data.footerLinkText}
+          {t("dashboard.openFullLedger")}
         </button>
       </div>
     </div>

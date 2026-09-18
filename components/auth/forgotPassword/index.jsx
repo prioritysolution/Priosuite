@@ -19,6 +19,7 @@ import Image from "next/image";
 import InputField from "@/common/formFields/InputField";
 import BrandMark from "@/common/BrandMark";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 const FeatureStripItem = ({ icon: Icon, label, className }) => (
   <div className={`flex flex-1 flex-col items-center gap-1.5 text-center ${className}`}>
@@ -45,6 +46,7 @@ const ForgotPassword = ({
   showResendOtp,
   handleResendOtp,
 }) => {
+  const { t } = useTranslation();
   const isResetStep = page !== 1;
 
   return (
@@ -70,20 +72,19 @@ const ForgotPassword = ({
           <div className="relative z-20 shrink-0 px-10 pt-8 xl:px-14 xl:pt-10 2xl:px-16">
             <BrandMark />
             <h1 className="mt-7 whitespace-nowrap text-[22px] font-extrabold tracking-tight text-[#163A5F] xl:mt-8 xl:text-[26px] 2xl:text-[28px]">
-              Smarter Banking
+              {t("auth.smarterBanking")}
               <span className="mx-2.5 font-medium text-[#1B74D6]">|</span>
-              Stronger Communities
+              {t("auth.strongerCommunities")}
             </h1>
             <p className="mt-3 max-w-[460px] text-[13px] leading-[1.55] text-[#6B849E] xl:text-[14px]">
-              A complete, secure and scalable Core Banking Solution
-              designed to simplify modern financial operations.
+              {t("auth.subtitle")}
             </p>
           </div>
 
           <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-0 py-2">
             <Image
               src="/floginpageimg.png"
-              alt="PrioSuite banking illustration"
+              alt={t("auth.illustrationAlt")}
               width={1536}
               height={1024}
               priority
@@ -95,10 +96,10 @@ const ForgotPassword = ({
           {/* Bottom feature strip — solid gradient bar, full width, pinned to bottom */}
           <div className="relative z-20 mt-auto w-full shrink-0  px-10 py-5 xl:px-14 xl:py-6 2xl:px-16">
             <div className="mx-auto flex w-full max-w-[720px] items-start justify-between gap-4">
-              <FeatureStripItem icon={ShieldCheck} label="Secure & Reliable"  className="border-r-2 border-r-[#1B74D6]" />
-              <FeatureStripItem icon={IoIosCloudOutline} label="Scalable Architecture"  className="border-r-2 border-r-[#1B74D6]" />
-              <FeatureStripItem icon={Zap} label="Faster Operations"  className="border-r-2 border-r-[#1B74D6]" />
-              <FeatureStripItem icon={Users} label="Better Member Service"  />
+              <FeatureStripItem icon={ShieldCheck} label={t("auth.secureReliable")}  className="border-r-2 border-r-[#1B74D6]" />
+              <FeatureStripItem icon={IoIosCloudOutline} label={t("auth.scalableArchitecture")}  className="border-r-2 border-r-[#1B74D6]" />
+              <FeatureStripItem icon={Zap} label={t("auth.fasterOperations")}  className="border-r-2 border-r-[#1B74D6]" />
+              <FeatureStripItem icon={Users} label={t("auth.betterMemberService")}  />
             </div>
           </div>
         </section>
@@ -112,7 +113,7 @@ const ForgotPassword = ({
             <div className="mb-2 flex items-center justify-end">
               <span className="inline-flex items-center gap-1 rounded-full bg-[#F3F8FD] px-2 py-0.5 text-[10px] font-medium text-[#6F87A3] sm:text-[11px]">
                 <Lock className="h-3 w-3" />
-                Secure Reset
+                {t("auth.secureReset")}
               </span>
             </div>
 
@@ -122,12 +123,14 @@ const ForgotPassword = ({
 
             <div className="mb-5">
               <h2 className="text-[22px] font-extrabold leading-tight text-[#163A5F] sm:text-[24px]">
-                {isResetStep ? "Reset Password" : "Forgot Password"}
+                {isResetStep
+                  ? t("auth.resetPassword")
+                  : t("auth.forgotPassword")}
               </h2>
               <p className="mt-1 text-[12px] text-[#7A93B0] sm:text-[13px]">
                 {isResetStep
-                  ? "Enter the code sent to your email and set a new password"
-                  : "Enter your email to receive a reset code"}
+                  ? t("auth.resetSubtitle")
+                  : t("auth.forgotSubtitle")}
               </p>
             </div>
 
@@ -141,8 +144,8 @@ const ForgotPassword = ({
                   <InputField
                     control={form.control}
                     name="email"
-                    label="Email"
-                    placeholder="Enter your email"
+                    label={t("auth.email")}
+                    placeholder={t("auth.enterEmail")}
                     autoComplete="email"
                     autoFocus
                     isRequired
@@ -153,8 +156,8 @@ const ForgotPassword = ({
                     <InputField
                       control={form.control}
                       name="code"
-                      label="Code"
-                      placeholder="Enter code"
+                      label={t("auth.code")}
+                      placeholder={t("auth.enterCode")}
                       type="number"
                       maxLength={6}
                       disabled={mailVerified}
@@ -187,15 +190,15 @@ const ForgotPassword = ({
                         onClick={handleResendOtp}
                         className="self-start text-[12px] font-medium text-[#1B74D6] transition-colors hover:text-[#0D5FBF] hover:underline sm:text-[13px]"
                       >
-                        Resend OTP
+                        {t("auth.resendOtp")}
                       </button>
                     )}
 
                     <InputField
                       control={form.control}
                       name="password"
-                      label="New Password"
-                      placeholder="Enter new password"
+                      label={t("auth.newPassword")}
+                      placeholder={t("auth.enterNewPassword")}
                       type="password"
                       disabled={!mailVerified}
                       isRequired
@@ -205,8 +208,8 @@ const ForgotPassword = ({
                     <InputField
                       control={form.control}
                       name="confirmPassword"
-                      label="Confirm Password"
-                      placeholder="Confirm new password"
+                      label={t("auth.confirmPassword")}
+                      placeholder={t("auth.confirmNewPassword")}
                       type="password"
                       disabled={!mailVerified}
                       isRequired
@@ -224,7 +227,7 @@ const ForgotPassword = ({
                     <ClipLoader color="#fff" size={22} speedMultiplier={0.7} />
                   ) : (
                     <span className="inline-flex items-center gap-2">
-                      {isResetStep ? "Submit" : "Next"}
+                      {isResetStep ? t("auth.submit") : t("auth.next")}
                       <ArrowRight className="h-4 w-4" />
                     </span>
                   )}
@@ -235,7 +238,7 @@ const ForgotPassword = ({
                     href="/login"
                     className="text-[12px] font-medium text-[#1B74D6] transition-colors hover:text-[#0D5FBF] hover:underline sm:text-[13px]"
                   >
-                    Back to Sign In
+                    {t("auth.backToSignIn")}
                   </Link>
                 </div>
               </form>
@@ -254,7 +257,7 @@ const ForgotPassword = ({
                 target="_blank"
                 className="text-[#9AADC2] hover:text-[#1B74D6]"
               >
-                Powered by Priority Solutions
+                {t("auth.poweredBy")}
               </Link>
             </div>
           </div>

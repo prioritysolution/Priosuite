@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ const Balancing = ({
   borrowingsList,
   asOnDate,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -67,12 +69,12 @@ const Balancing = ({
     const host = printHostRef.current;
 
     if (!element) {
-      toast.error("Nothing to download. Please generate the report first.");
+      toast.error(t("report.balancing.nothingToDownload"));
       return;
     }
 
     if (!hasReportData) {
-      toast.error("No balancing data to download.");
+      toast.error(t("report.balancing.noDataToDownload"));
       return;
     }
 
@@ -140,18 +142,20 @@ const Balancing = ({
       }
 
       if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
+        toast.error(t("report.balancing.failedToCapturePdf"));
         return;
       }
 
       pdf.save(`Balancing-${asOnDate || "report"}.pdf`);
-      toast.success("PDF downloaded");
+      toast.success(t("report.balancing.pdfDownloaded"));
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
-          ? `Failed to download PDF: ${error.message}`
-          : "Failed to download PDF",
+          ? t("report.balancing.failedToDownloadPdfWithError", {
+              error: error.message,
+            })
+          : t("report.balancing.failedToDownloadPdf"),
       );
     } finally {
       if (host) host.setAttribute("style", prevHostStyle);
@@ -179,7 +183,7 @@ const Balancing = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">GL Balancing Report</h3>
+                <h3 className="text-xl font-semibold ">{t("report.balancing.glBalancingReport")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -199,7 +203,7 @@ const Balancing = ({
                 <DatePickerField
                   control={form.control}
                   name="date"
-                  label="Date"
+                  label={t("common.date")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -209,13 +213,13 @@ const Balancing = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label="Branch"
+                      label={t("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("common.selectBranch")}
+                      searchPlaceholder={t("common.searchBranch")}
                     />
                   )}
                 />
@@ -306,22 +310,22 @@ const Balancing = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className=" text-white text-center w-16">
-                      SL. NO.
+                      {t("report.balancing.print.slNo")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center w-[220px]">
-                      PRODUCT NAME
+                      {t("report.balancing.print.productName")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center w-[380px]">
-                      GL HEAD
+                      {t("report.balancing.print.glHead")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      GL BALANCE
+                      {t("report.balancing.print.glBalance")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      SUB-LEDGER
+                      {t("report.balancing.print.subLedger")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      DIFFERENCE
+                      {t("report.balancing.print.difference")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -357,7 +361,7 @@ const Balancing = ({
                               colSpan={6}
                               className="text-white border-l border-white text-center"
                             >
-                              PRODUCT TYPE : SHARE
+                              {t("report.balancing.productType")} : SHARE
                             </TableHead>
                           </TableRow>
                         </TableHeader>
@@ -419,7 +423,7 @@ const Balancing = ({
                               colSpan={6}
                               className="text-white border-l border-white text-center"
                             >
-                              PRODUCT TYPE : DEPOSIT
+                              {t("report.balancing.productType")} : DEPOSIT
                             </TableHead>
                           </TableRow>
                         </TableHeader>
@@ -481,7 +485,7 @@ const Balancing = ({
                               colSpan={6}
                               className="text-white border-l border-white text-center"
                             >
-                              PRODUCT TYPE : LOAN
+                              {t("report.balancing.productType")} : LOAN
                             </TableHead>
                           </TableRow>
                         </TableHeader>
@@ -544,7 +548,7 @@ const Balancing = ({
                               colSpan={6}
                               className="text-white border-l border-white text-center"
                             >
-                              PRODUCT TYPE : INVESTMENT
+                              {t("report.balancing.productType")} : INVESTMENT
                             </TableHead>
                           </TableRow>
                         </TableHeader>
@@ -606,7 +610,7 @@ const Balancing = ({
                               colSpan={6}
                               className="text-white border-l border-white text-center"
                             >
-                              PRODUCT TYPE : BORROWINGS
+                              {t("report.balancing.productType")} : BORROWINGS
                             </TableHead>
                           </TableRow>
                         </TableHeader>

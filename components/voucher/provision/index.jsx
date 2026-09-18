@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const Provision = ({
   loading,
@@ -25,6 +26,8 @@ const Provision = ({
   showSuccessMessage,
   handleCloseSuccessMessage,
 }) => {
+  const { t } = useTranslation();
+
   const ledgerListData = useSelector(
     (state) => state?.voucherEntry?.ledgerList
   );
@@ -41,13 +44,13 @@ const Provision = ({
             >
               <div className="w-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                 <h3 className="w-full text-center text-xl font-semibold">
-                  Provision
+                  {t("provision.provision")}
                 </h3>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <DatePickerField
                     control={form.control}
                     name="date"
-                    label="Date"
+                    label={t("common.date")}
                     // startYear={2000}
                     // endYear={2050}
                     disabled
@@ -58,13 +61,13 @@ const Provision = ({
                     name="ledger"
                     render={({ field }) => (
                       <DropdownField
-                        label="Ledger"
+                        label={t("common.ledger")}
                         value={field.value}
                         onChange={field.onChange}
                         options={ledgerListData || []}
                         optionLabelKey="Ledger_Name" // Specify the key for label
-                        placeholder="Select ledger"
-                        searchPlaceholder="Search ledger..."
+                        placeholder={t("provision.selectLedger")}
+                        searchPlaceholder={t("provision.searchLedger")}
                       />
                     )}
                   />
@@ -74,7 +77,7 @@ const Provision = ({
                     name="provisionType"
                     render={({ field }) => (
                       <DropdownField
-                        label="Provision Type"
+                        label={t("provision.provisionType")}
                         value={field.value}
                         onChange={field.onChange}
                         options={[
@@ -82,8 +85,8 @@ const Provision = ({
                           { Id: "D", Label: "Dr" },
                         ]}
                         optionLabelKey="Label" // Specify the key for label
-                        placeholder="Select provision type"
-                        searchPlaceholder="Search provision type..."
+                        placeholder={t("provision.selectProvisionType")}
+                        searchPlaceholder={t("provision.searchProvisionType")}
                       />
                     )}
                   />
@@ -93,10 +96,10 @@ const Provision = ({
                     name="percent"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Provision Percent</FormLabel>
+                        <FormLabel>{t("provision.provisionPercent")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter provision percent"
+                            placeholder={t("provision.enterProvisionPercent")}
                             type="number"
                             {...field}
                           />
@@ -111,10 +114,10 @@ const Provision = ({
                     name="amount"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Provision Amount</FormLabel>
+                        <FormLabel>{t("provision.provisionAmount")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter provision amount"
+                            placeholder={t("provision.enterProvisionAmount")}
                             type="number"
                             {...field}
                           />
@@ -129,7 +132,7 @@ const Provision = ({
                 {loading ? (
                   <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
-                  "Post"
+                  t("common.post")
                 )}
               </Button>
             </form>

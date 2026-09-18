@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -8,6 +10,8 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 const DemandMaster = ({ loading }) => {
+  const { t } = useTranslation();
+
   const form = useForm();
   const handleSubmit = () => {};
   const successMessage = "";
@@ -21,7 +25,7 @@ const DemandMaster = ({ loading }) => {
   return (
     <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Demand Master</h3>
+        <h3 className="text-2xl font-semibold ">{t("master.demandMaster.title")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
           <Form {...form}>
@@ -34,21 +38,21 @@ const DemandMaster = ({ loading }) => {
                 <DropdownField
                   control={form.control}
                   name="loanProduct"
-                  label="Loan Product"
+                  label={t("master.demandMaster.fields.loanProduct")}
                   options={bankAccountData}
                   optionLabelKey="Bank_Name"
-                  placeholder="Select loan product"
-                  searchPlaceholder="Search loan product..."
+                  placeholder={t("master.demandMaster.placeholders.loanProduct")}
+                  searchPlaceholder={t("master.demandMaster.placeholders.searchLoanProduct")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="depositProduct"
-                  label="Deposit Product"
+                  label={t("master.demandMaster.fields.depositProduct")}
                   options={bankAccountData}
                   optionLabelKey="Bank_Name"
-                  placeholder="Select deposit product"
-                  searchPlaceholder="Search deposit product..."
+                  placeholder={t("master.demandMaster.placeholders.depositProduct")}
+                  searchPlaceholder={t("master.demandMaster.placeholders.searchDepositProduct")}
                 />
 
                 <Button
@@ -60,7 +64,7 @@ const DemandMaster = ({ loading }) => {
                   //   Number(form.getValues("openingAmount"))
                   // }
                 >
-                  Add
+                  {t("master.demandMaster.buttons.add")}
                 </Button>
               </div>
             </form>

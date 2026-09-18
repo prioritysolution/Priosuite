@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
@@ -31,6 +33,8 @@ const GenerateCertificate = (
     // handleSubmit,
   }
 ) => {
+  const { t } = useTranslation();
+
   const printRef = useRef(null);
 
   const form = useForm();
@@ -133,7 +137,7 @@ const GenerateCertificate = (
 
   //   // Certificate Info
   //   y += lineHeight * 2;
-  //   doc.text("Share Certificate No.: 01", marginX + padding, y);
+  //   doc.text("{t("membership.generateCertificate.certificate.shareCertificateNo")} No.: 01", marginX + padding, y);
   //   doc.text("Members Copy", pageWidth - marginX - padding, y, {
   //     align: "right",
   //   });
@@ -142,7 +146,7 @@ const GenerateCertificate = (
   //   y += lineHeight * 2;
   //   doc.setFontSize(18); // text-3xl
   //   doc.setTextColor(59, 130, 246); // blue-500
-  //   doc.text("Share Certificate", pageWidth / 2, y, { align: "center" });
+  //   doc.text("{t("membership.generateCertificate.certificate.shareCertificateNo")}", pageWidth / 2, y, { align: "center" });
 
   //   y += lineHeight;
   //   doc.setFontSize(10);
@@ -163,7 +167,7 @@ const GenerateCertificate = (
   //   doc.setFontSize(12);
 
   //   const bodyParts = [
-  //     { text: "This is to certify that ", color: [0, 0, 0], font: normalFont },
+  //     { text: "{t("membership.generateCertificate.certificate.bodyPrefix")} ", color: [0, 0, 0], font: normalFont },
   //     { text: "Chandrakanta Waghair", color: [0, 0, 0], font: boldFont },
   //     { text: " is allotted Unit no. ", color: [0, 0, 0], font: normalFont },
   //     { text: "01", color: [0, 0, 0], font: boldFont },
@@ -280,7 +284,7 @@ const GenerateCertificate = (
   return (
     <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Generate Certificate</h3>
+        <h3 className="text-2xl font-semibold ">{t("membership.generateCertificate.title")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20 ">
           <Form {...form}>
@@ -293,12 +297,12 @@ const GenerateCertificate = (
                 <InputField
                   control={form.control}
                   name="memberNo"
-                  label="Member No."
-                  placeholder="Enter member no."
+                  label={t("membership.generateCertificate.fields.memberNo")}
+                  placeholder={t("membership.generateCertificate.placeholders.memberNo")}
                   className="flex-1 w-full"
                 />
                 <div className="flex-1 w-full flex">
-                  <Button className="w-full lg:w-1/3 ">Generate</Button>
+                  <Button className="w-full lg:w-1/3 ">{t("common.buttons.generate")}</Button>
                 </div>
               </div>
             </form>
@@ -309,11 +313,11 @@ const GenerateCertificate = (
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px] text-center">
-                    Serial No.
+                    {t("membership.generateCertificate.table.serialNo")}
                   </TableHead>
-                  <TableHead className="text-center">Issue Date</TableHead>
-                  <TableHead className="text-center">Issue Amount</TableHead>
-                  <TableHead className="text-center">Action</TableHead>
+                  <TableHead className="text-center">{t("membership.generateCertificate.table.issueDate")}</TableHead>
+                  <TableHead className="text-center">{t("membership.generateCertificate.table.issueAmount")}</TableHead>
+                  <TableHead className="text-center">{t("membership.generateCertificate.table.action")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -350,7 +354,7 @@ const GenerateCertificate = (
               className="bg-primary px-8 py-3 text-white cursor-pointer w-fit rounded-md mb-5"
               onClick={generateCertificatePDF}
             >
-              Print
+              {t("common.buttons.print")}
             </div>
             <div className=" gap-4 w-[210mm] h-[149mm] p-1" ref={printRef}>
               <div className="h-full flex flex-col justify-between items-center w-full border border-black py-2">
@@ -363,12 +367,12 @@ const GenerateCertificate = (
                 </div>
                 <div className="px-5 w-full h-full flex flex-col">
                   <div className=" flex items-center justify-between w-full px-10 py-4">
-                    <p>Share Certificate No. : 01</p>
-                    <p className="font-semibold">Members Copy</p>
+                    <p>{t("membership.generateCertificate.certificate.shareCertificateNo")} No. : 01</p>
+                    <p className="font-semibold">{t("membership.generateCertificate.certificate.membersCopy")}</p>
                   </div>
                   <div className="w-full text-center">
                     <h2 className="text-3xl font-semibold text-blue-500 mb-2">
-                      Share Certificate
+                      {t("membership.generateCertificate.certificate.shareCertificateNo")}
                     </h2>
                     <p className="text-sm capitalize">
                       Authorised Share Capital RS.160000/-
@@ -382,7 +386,7 @@ const GenerateCertificate = (
                   </div>
                   <div className=" flex flex-col gap-10 flex-grow justify-center">
                     <p>
-                      <span className="text-2xl">This is to certify that </span>{" "}
+                      <span className="text-2xl">{t("membership.generateCertificate.certificate.bodyPrefix")} </span>{" "}
                       <span className="font-bold">Chandrakanta Waghair</span> is
                       alloted Unit no. <span className="font-bold">01</span> in
                       building <span className="font-bold">Basement</span> and
@@ -401,14 +405,14 @@ const GenerateCertificate = (
                   </div>
                 </div>
                 <div className="flex items-center justify-between px-10 w-full text-center text-sm pb-5">
-                  <p>Seal</p>
+                  <p>{t("membership.generateCertificate.certificate.seal")}</p>
                   <p>
                     Authorized
                     <br />
                     M.C. Member
                   </p>
-                  <p>Chairman</p>
-                  <p>Secretary</p>
+                  <p>{t("membership.generateCertificate.certificate.chairman")}</p>
+                  <p>{t("membership.generateCertificate.certificate.secretary")}</p>
                 </div>
               </div>
             </div>

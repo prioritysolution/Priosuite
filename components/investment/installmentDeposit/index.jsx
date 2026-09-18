@@ -30,6 +30,7 @@ import { useEffect, useState } from "react";
 import { IoPrint } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const InstallmentDeposit = ({
   loading,
@@ -57,6 +58,7 @@ const InstallmentDeposit = ({
   fromDate,
   getLedgerLoading,
 }) => {
+  const { t } = useTranslation();
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -84,7 +86,7 @@ const InstallmentDeposit = ({
   return (
     <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
       <h3 className="text-2xl font-semibold text-center">
-        Installment Deposit
+        {t("investment.installmentDeposit")}
       </h3>
 
       <ScrollArea className="w-full h-full">
@@ -103,11 +105,11 @@ const InstallmentDeposit = ({
                     <DropdownField
                       control={form.control}
                       name="accountNo"
-                      label="Account No."
+                      label={t("common.accountNo")}
                       options={investmentAccountData}
                       optionLabelKey="Accout_No"
-                      placeholder="Select account no."
-                      searchPlaceholder="Search account no...."
+                      placeholder={t("investment.selectAccountNo")}
+                      searchPlaceholder={t("investment.searchAccountNo")}
                     />
                   </div>
                   <TooltipProvider>
@@ -128,7 +130,7 @@ const InstallmentDeposit = ({
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>View Ledger</p>
+                        <p>{t("common.viewLedger")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -138,7 +140,7 @@ const InstallmentDeposit = ({
                 <DatePickerField
                   control={form.control}
                   name="postingDate"
-                  label="Posting Date"
+                  label={t("investment.postingDate")}
                   disabled={true}
                 />
 
@@ -146,8 +148,8 @@ const InstallmentDeposit = ({
                 <InputField
                   control={form.control}
                   name="installmentAmount"
-                  label="Installment Amount"
-                  placeholder="Enter installment amount"
+                  label={t("investment.installmentAmount")}
+                  placeholder={t("investment.enterInstallmentAmount")}
                   type="number"
                 />
 
@@ -168,7 +170,7 @@ const InstallmentDeposit = ({
                               <RadioGroupItem value="cash" />
                             </FormControl>
                             <FormLabel className="font-normal text-sm cursor-pointer">
-                              Cash
+                              {t("common.cash")}
                             </FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2 space-y-0">
@@ -176,7 +178,7 @@ const InstallmentDeposit = ({
                               <RadioGroupItem value="bank" />
                             </FormControl>
                             <FormLabel className="font-normal text-sm cursor-pointer">
-                              Bank
+                              {t("common.bank")}
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
@@ -190,8 +192,8 @@ const InstallmentDeposit = ({
                 <InputField
                   control={form.control}
                   name="refVouchNo"
-                  label="Ref. Vouch No."
-                  placeholder="Enter ref. vouch no."
+                  label={t("common.refVouchNo")}
+                  placeholder={t("common.enterRefVouchNo")}
                 />
 
                 {/* Bank dropdown if transMode is bank */}
@@ -199,11 +201,11 @@ const InstallmentDeposit = ({
                   <DropdownField
                     control={form.control}
                     name="bank"
-                    label="Bank"
+                    label={t("common.bank")}
                     options={bankAccountData}
                     optionLabelKey="Bank_Name"
-                    placeholder="Select bank"
-                    searchPlaceholder="Search bank..."
+                    placeholder={t("investment.selectBank")}
+                    searchPlaceholder={t("investment.searchBank")}
                   />
                 )}
               </div>
@@ -212,7 +214,7 @@ const InstallmentDeposit = ({
               {transMode === "cash" && isActiveDenom && (
                 <div className="w-full flex flex-col gap-5 p-4 md:p-6 rounded-xl border border-slate-200 bg-slate-50 mt-4">
                   <h4 className="text-sm font-semibold text-slate-700">
-                    Denomination Details
+                    {t("investment.denominationDetails")}
                   </h4>
                   <CashDenomTable
                     notes={notes}
@@ -248,7 +250,7 @@ const InstallmentDeposit = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("common.add")
                   )}
                 </Button>
               </div>

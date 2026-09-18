@@ -28,26 +28,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
+  const { t } = useTranslation();
+
   const userData = useSelector((state) => state?.createUser?.allUserData);
   const userRoleData = useSelector((state) => state?.createUser?.userRoleData);
 
   return (
     <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
       <div className=" flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Create User</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("createUser.createUser")}
+        </h3>
 
         <ScrollArea className="w-full px-2 sm:px-10 2xl:px-20">
           <div className="w-full flex flex-col gap-5 items-end">
             <Dialog open={showForm} onOpenChange={setShowForm}>
               <DialogTrigger asChild>
-                <Button className="">Add User</Button>
+                <Button className="">{t("createUser.addUser")}</Button>
               </DialogTrigger>
               <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[425px]">
                 <DialogHeader>
                   <DialogTitle className="text-center">
-                    Add New User
+                    {t("createUser.addNewUser")}
                   </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
@@ -61,9 +66,12 @@ const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Name</FormLabel>
+                          <FormLabel>{t("common.name")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter name" {...field} />
+                            <Input
+                              placeholder={t("createUser.enterName")}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -75,11 +83,11 @@ const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>{t("common.email")}</FormLabel>
                           <FormControl>
                             <Input
                               type="email"
-                              placeholder="Enter email"
+                              placeholder={t("createUser.enterEmail")}
                               {...field}
                             />
                           </FormControl>
@@ -93,9 +101,12 @@ const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
                       name="mobile"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Mobile</FormLabel>
+                          <FormLabel>{t("common.mobile")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter mobile" {...field} />
+                            <Input
+                              placeholder={t("createUser.enterMobile")}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -107,11 +118,11 @@ const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel>{t("common.password")}</FormLabel>
                           <FormControl>
                             <Input
                               type="password"
-                              placeholder="Enter password"
+                              placeholder={t("createUser.enterPassword")}
                               {...field}
                             />
                           </FormControl>
@@ -125,11 +136,15 @@ const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Confirm Password</FormLabel>
+                          <FormLabel>
+                            {t("createUser.confirmPassword")}
+                          </FormLabel>
                           <FormControl>
                             <Input
                               type="password"
-                              placeholder="Enter confirm password"
+                              placeholder={t(
+                                "createUser.enterConfirmPassword"
+                              )}
                               {...field}
                             />
                           </FormControl>
@@ -143,19 +158,19 @@ const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
                       name="role"
                       render={({ field }) => (
                         <DropdownField
-                          label="User Role"
+                          label={t("createUser.userRole")}
                           value={field.value}
                           onChange={field.onChange}
                           options={userRoleData}
                           optionLabelKey="Role_Name" // Specify the key for label
-                          placeholder="Select role"
-                          searchPlaceholder="Search role..."
+                          placeholder={t("createUser.selectRole")}
+                          searchPlaceholder={t("createUser.searchRole")}
                         />
                       )}
                     />
 
                     <Button type="submit" className="w-full">
-                      Add
+                      {t("common.add")}
                     </Button>
                   </form>
                 </Form>
@@ -167,12 +182,12 @@ const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[100px] text-center">
-                      Serial No.
+                      {t("common.serialNo")}
                     </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Mail</TableHead>
-                    <TableHead>Mobile</TableHead>
-                    <TableHead>Role</TableHead>
+                    <TableHead>{t("common.name")}</TableHead>
+                    <TableHead>{t("common.mail")}</TableHead>
+                    <TableHead>{t("common.mobile")}</TableHead>
+                    <TableHead>{t("common.role")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 // import { Skeleton } from "@/components/ui/skeleton";
 // import {
 //   Table,
@@ -11,19 +12,21 @@
 // import { format } from "date-fns";
 
 // const OpeningRegisterTable = ({ loading, tableData, handleShowLedger }) => {
+  const { t } = useTranslation();
+
 //   return (
 //     <Table className="w-full">
 //       <TableHeader className="sticky top-0 bg-background z-10">
 //         <TableRow className="bg-gray-100">
-//           <TableHead className=" text-center">Sl No.</TableHead>
-//           <TableHead className="">Date</TableHead>
-//           <TableHead className="">Customer Name</TableHead>
-//           <TableHead className="">Gurdian Name</TableHead>
-//           <TableHead className="">Account No.</TableHead>
-//           <TableHead className="">Ref. Ac. No.</TableHead>
-//           <TableHead className="">L/F No.</TableHead>
-//           <TableHead className="">Nominee</TableHead>
-//           <TableHead className="">Operation Mode</TableHead>
+//           <TableHead className=" text-center">{t("deposit.reports.slNo")}</TableHead>
+//           <TableHead className="">{t("deposit.reports.date")}</TableHead>
+//           <TableHead className="">{t("deposit.reports.customerName")}</TableHead>
+//           <TableHead className="">{t("deposit.reports.guardianName")}</TableHead>
+//           <TableHead className="">{t("deposit.reports.accountNo")}</TableHead>
+//           <TableHead className="">{t("deposit.reports.refAcNo")}</TableHead>
+//           <TableHead className="">{t("deposit.reports.lfNo")}</TableHead>
+//           <TableHead className="">{t("deposit.reports.nominee")}</TableHead>
+//           <TableHead className="">{t("deposit.reports.operationMode")}</TableHead>
 //         </TableRow>
 //       </TableHeader>
 //       <TableBody className="overflow-y-scroll">
@@ -82,15 +85,15 @@ const OpeningRegisterTable = ({ loading, tableData, handleShowLedger }) => {
     <Table>
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className=" text-center">Sl No.</TableHead>
-          <TableHead className="">Date</TableHead>
-          <TableHead className="">Customer Name</TableHead>
-          <TableHead className="">Gurdian Name</TableHead>
-          <TableHead className="">Account No.</TableHead>
-          <TableHead className="">Ref. Ac. No.</TableHead>
-          <TableHead className="">L/F No.</TableHead>
-          <TableHead className="">Nominee</TableHead>
-          <TableHead className="">Operation Mode</TableHead>
+          <TableHead className=" text-center">{t("deposit.reports.slNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.date")}</TableHead>
+          <TableHead className="">{t("deposit.reports.customerName")}</TableHead>
+          <TableHead className="">{t("deposit.reports.guardianName")}</TableHead>
+          <TableHead className="">{t("deposit.reports.accountNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.refAcNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.lfNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.nominee")}</TableHead>
+          <TableHead className="">{t("deposit.reports.operationMode")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">

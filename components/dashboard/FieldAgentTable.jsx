@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { Wallet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -21,6 +23,7 @@ import { formatINR } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export default function FieldAgentTable({ agents }) {
+  const { t } = useTranslation();
   return (
     <Card className="w-full min-w-0 overflow-hidden border-slate-200/80 shadow-sm">
       <CardHeader className="flex flex-col gap-3 space-y-0 pb-4 sm:flex-row sm:items-start sm:justify-between">
@@ -30,15 +33,15 @@ export default function FieldAgentTable({ agents }) {
           </div>
           <div className="min-w-0">
             <CardTitle className="text-base text-slate-900 sm:text-lg">
-              Field Collection Agent Performance &amp; Live Wallet
+              {t("dashboard.fieldAgentTitle")}
             </CardTitle>
             <CardDescription className="mt-1">
-              Real-time tracking of field collection targets and wallet balances
+              {t("dashboard.fieldAgentDesc")}
             </CardDescription>
           </div>
         </div>
         <Badge className="w-fit shrink-0 border-0 bg-blue-50 font-medium text-blue-700">
-          {agents.length} Field Agents Active
+          {t("dashboard.fieldAgentsActive", { count: agents.length })}
         </Badge>
       </CardHeader>
       <CardContent className="overflow-x-auto px-0 pb-4">
@@ -46,22 +49,22 @@ export default function FieldAgentTable({ agents }) {
           <TableHeader>
             <TableRow className="border-slate-100 hover:bg-transparent">
               <TableHead className="pl-6 text-xs font-medium text-slate-500">
-                Agent Name
+                {t("dashboard.agentName")}
               </TableHead>
               <TableHead className="text-xs font-medium text-slate-500">
-                Assigned Kendras
+                {t("dashboard.assignedKendras")}
               </TableHead>
               <TableHead className="text-xs font-medium text-slate-500">
-                Today Target
+                {t("dashboard.todayTarget")}
               </TableHead>
               <TableHead className="text-xs font-medium text-slate-500">
-                Collected
+                {t("dashboard.collected")}
               </TableHead>
               <TableHead className="text-xs font-medium text-slate-500">
-                Live Field Wallet
+                {t("dashboard.liveFieldWallet")}
               </TableHead>
               <TableHead className="pr-6 text-xs font-medium text-slate-500">
-                Status
+                {t("dashboard.status")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -93,7 +96,11 @@ export default function FieldAgentTable({ agents }) {
                         : "bg-orange-50 text-orange-700",
                     )}
                   >
-                    {agent.status}
+                    {agent.status === "In Field"
+                      ? t("dashboard.inField")
+                      : agent.status === "Returning to Vault"
+                        ? t("dashboard.returningToVault")
+                        : agent.status}
                   </Badge>
                 </TableCell>
               </TableRow>

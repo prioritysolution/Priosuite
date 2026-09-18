@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -14,6 +15,8 @@ const PostOfficeForm = ({
   districtData,
   onCancel,
 }) => {
+  const { t } = useTranslation();
+
   const isEdit = editData && Object.keys(editData).length > 0;
 
   return (
@@ -26,34 +29,34 @@ const PostOfficeForm = ({
         <InputField
           control={form.control}
           name="name"
-          label="Post Office Name"
-          placeholder="Enter post office name"
+          label={t("master.operationalArea.fields.postOfficeName")}
+          placeholder={t("master.operationalArea.placeholders.postOfficeName")}
           isRequired
         />
         <InputField
           control={form.control}
           name="pin"
-          label="Pin Code"
-          placeholder="Enter pin code"
+          label={t("master.operationalArea.fields.pinCode")}
+          placeholder={t("master.operationalArea.placeholders.pinCode")}
           isRequired
         />
         <DropdownField
           control={form.control}
           name="stateId"
-          label="State"
+          label={t("master.operationalArea.fields.state")}
           options={stateData}
           optionLabelKey="State_Name"
-          placeholder="Select state"
-          searchPlaceholder="Search state..."
+          placeholder={t("master.operationalArea.placeholders.state")}
+          searchPlaceholder={t("master.operationalArea.placeholders.searchState")}
         />
         <DropdownField
           control={form.control}
           name="districtId"
-          label="District"
+          label={t("master.operationalArea.fields.district")}
           options={districtData}
           optionLabelKey="Dist_Name"
-          placeholder="Select district"
-          searchPlaceholder="Search district..."
+          placeholder={t("master.operationalArea.placeholders.district")}
+          searchPlaceholder={t("master.operationalArea.placeholders.searchDistrict")}
           disabled={
             !districtData ||
             !(districtData.length > 0) ||
@@ -68,7 +71,7 @@ const PostOfficeForm = ({
             onClick={onCancel}
             disabled={postLoading || updateLoading}
           >
-            Cancel
+            {t("common.buttons.cancel")}
           </Button>
           <Button
             type="submit"
@@ -78,9 +81,9 @@ const PostOfficeForm = ({
             {postLoading || updateLoading ? (
               <ClipLoader color="#fff" size={18} speedMultiplier={0.7} />
             ) : isEdit ? (
-              "Update"
+              t("common.buttons.update")
             ) : (
-              "Add"
+              t("common.buttons.add")
             )}
           </Button>
         </div>

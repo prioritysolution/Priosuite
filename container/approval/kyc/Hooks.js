@@ -51,6 +51,11 @@ export const useKycApproval = () => {
     policeStations: [],
     postOffices: [],
     villages: [],
+    presentDistricts: [],
+    presentBlocks: [],
+    presentPoliceStations: [],
+    presentPostOffices: [],
+    presentVillages: [],
   });
 
   const orgId = getCookieData("orgId");
@@ -116,6 +121,9 @@ export const useKycApproval = () => {
     stateId: null,
     districtId: null,
     blockId: null,
+    presentStateId: null,
+    presentDistrictId: null,
+    presentBlockId: null,
   });
 
   const fetchKycList = useCallback(async () => {
@@ -138,6 +146,10 @@ export const useKycApproval = () => {
   const watchedStateId = form.watch("stateId");
   const watchedDistrictId = form.watch("districtId");
   const watchedBlockId = form.watch("blockId");
+  
+  const watchedPresentStateId = form.watch("presentStateId");
+  const watchedPresentDistrictId = form.watch("presentDistrictId");
+  const watchedPresentBlockId = form.watch("presentBlockId");
 
   // Fetch districts when state changes
   useEffect(() => {
@@ -206,6 +218,72 @@ export const useKycApproval = () => {
       });
     }
   }, [watchedBlockId, isEditMode, orgId]);
+
+  // --- PRESENT ADDRESS DEPENDENT DROPDOWN LOGIC ---
+  useEffect(() => {
+    if (
+      isEditMode &&
+      watchedPresentStateId &&
+      watchedPresentStateId !== fetchedIdsRef.current.presentStateId
+    ) {
+      fetchedIdsRef.current.presentStateId = watchedPresentStateId;
+      getDistrictAPI(watchedPresentStateId, orgId).then((res) => {
+        setLocalMasterData((prev) => ({
+          ...prev,
+          presentDistricts: normalizeData(res?.details, "Dist_Id"),
+        }));
+      });
+    }
+  }, [watchedPresentStateId, isEditMode, orgId]);
+
+  useEffect(() => {
+    if (
+      isEditMode &&
+      watchedPresentDistrictId &&
+      watchedPresentDistrictId !== fetchedIdsRef.current.presentDistrictId
+    ) {
+      fetchedIdsRef.current.presentDistrictId = watchedPresentDistrictId;
+      
+      getPoliceStationAPI(orgId, watchedPresentDistrictId).then((res) => {
+        setLocalMasterData((prev) => ({
+          ...prev,
+          presentPoliceStations: normalizeData(res?.details, "Police_Station_Id"),
+        }));
+      });
+      
+      getPostOfficeAPI(orgId, watchedPresentDistrictId).then((res) => {
+        setLocalMasterData((prev) => ({
+          ...prev,
+          presentPostOffices: normalizeData(res?.details, "Post_Office_Id"),
+        }));
+      });
+      
+      if (watchedPresentStateId) {
+        getBlockAPI(orgId, watchedPresentDistrictId, watchedPresentStateId).then((res) => {
+          setLocalMasterData((prev) => ({
+            ...prev,
+            presentBlocks: normalizeData(res?.details, "Block_Id"),
+          }));
+        });
+      }
+    }
+  }, [watchedPresentDistrictId, watchedPresentStateId, isEditMode, orgId]);
+
+  useEffect(() => {
+    if (
+      isEditMode &&
+      watchedPresentBlockId &&
+      watchedPresentBlockId !== fetchedIdsRef.current.presentBlockId
+    ) {
+      fetchedIdsRef.current.presentBlockId = watchedPresentBlockId;
+      getVillageAPI(orgId, watchedPresentBlockId).then((res) => {
+        setLocalMasterData((prev) => ({
+          ...prev,
+          presentVillages: normalizeData(res?.details, "Village_Id"),
+        }));
+      });
+    }
+  }, [watchedPresentBlockId, isEditMode, orgId]);
   // ----------------------------------------------
 
   useEffect(() => {
@@ -247,10 +325,18 @@ export const useKycApproval = () => {
       const distId = item.Cust_Dist;
       const blockId = item.Cust_Blk;
 
+      const preStateId = item.Cust_Pre_State;
+      const preDistId = item.Cust_Pre_Dist;
+      const preBlockId = item.Cust_Pre_Blk;
+
       // Update refs to avoid re-fetching in useEffect if already loaded
       fetchedIdsRef.current.stateId = stateId;
       fetchedIdsRef.current.districtId = distId;
       fetchedIdsRef.current.blockId = blockId;
+
+      fetchedIdsRef.current.presentStateId = preStateId;
+      fetchedIdsRef.current.presentDistrictId = preDistId;
+      fetchedIdsRef.current.presentBlockId = preBlockId;
 
       const promises = [];
 
@@ -288,6 +374,46 @@ export const useKycApproval = () => {
         promises.push(
           getVillageAPI(orgId, blockId).then((res) => ({
             key: "villages",
+            data: normalizeData(res?.details, "Village_Id"),
+          })),
+        );
+      }
+
+      // Present Location APIs
+      if (preStateId) {
+        promises.push(
+          getDistrictAPI(preStateId, orgId).then((res) => ({
+            key: "presentDistricts",
+            data: normalizeData(res?.details, "Dist_Id"),
+          })),
+        );
+      }
+      if (preDistId) {
+        promises.push(
+          getPoliceStationAPI(orgId, preDistId).then((res) => ({
+            key: "presentPoliceStations",
+            data: normalizeData(res?.details, "Police_Station_Id"),
+          })),
+        );
+        promises.push(
+          getPostOfficeAPI(orgId, preDistId).then((res) => ({
+            key: "presentPostOffices",
+            data: normalizeData(res?.details, "Post_Office_Id"),
+          })),
+        );
+        if (preStateId) {
+          promises.push(
+            getBlockAPI(orgId, preDistId, preStateId).then((res) => ({
+              key: "presentBlocks",
+              data: normalizeData(res?.details, "Block_Id"),
+            })),
+          );
+        }
+      }
+      if (preBlockId) {
+        promises.push(
+          getVillageAPI(orgId, preBlockId).then((res) => ({
+            key: "presentVillages",
             data: normalizeData(res?.details, "Village_Id"),
           })),
         );
@@ -384,6 +510,13 @@ export const useKycApproval = () => {
         villageId: item.Cust_Vill,
         policeStationId: item.Cust_Police,
         postOfficeId: item.Cust_Post,
+        presentAddress: item.Cust_Pre_Add,
+        presentStateId: item.Cust_Pre_State,
+        presentDistrictId: item.Cust_Pre_Dist,
+        presentBlockId: item.Cust_Pre_Blk,
+        presentVillageId: item.Cusr_Pre_Vill,
+        presentPoliceStationId: item.Cust_Pre_Police,
+        presentPostOfficeId: item.Cust_Pre_Post,
         mobile: item.Cust_Mob,
         email: item.Cust_Mail,
         aadhaarNo: item.Cust_Aadar,
@@ -463,6 +596,13 @@ export const useKycApproval = () => {
         mem_village: data.villageId,
         mem_police: data.policeStationId,
         mem_post: data.postOfficeId,
+        mem_pres_add: data.presentAddress,
+        mem_pres_state: data.presentStateId,
+        mem_pres_dist: data.presentDistrictId,
+        mem_pres_block: data.presentBlockId,
+        mem_pres_village: data.presentVillageId,
+        mem_pres_police: data.presentPoliceStationId,
+        mem_pres_post: data.presentPostOfficeId,
         org_id: orgId,
         mem_mob: data.mobile,
         mem_mail: data.email,

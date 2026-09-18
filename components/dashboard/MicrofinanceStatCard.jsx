@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import {
   AlertTriangle,
   TrendingUp,
@@ -37,6 +39,7 @@ const accentMap = {
 };
 
 export default function MicrofinanceStatCard({ card }) {
+  const { t } = useTranslation();
   const Icon = iconMap[card.icon] || Wallet;
   const accent = accentMap[card.accentColor] || accentMap.blue;
 
@@ -49,15 +52,41 @@ export default function MicrofinanceStatCard({ card }) {
     >
       <CardContent className="flex items-start justify-between gap-3 p-5">
         <div className="min-w-0 space-y-2">
-          <p className="text-sm font-medium text-slate-500">{card.label}</p>
+          <p className="text-sm font-medium text-slate-500">
+            {card.id === "glp"
+              ? t("dashboard.grossLoanPortfolio")
+              : card.id === "collection"
+                ? t("dashboard.collectionEfficiency")
+                : card.id === "par"
+                  ? t("dashboard.par30")
+                  : card.id === "borrowers"
+                    ? t("dashboard.activeBorrowers")
+                    : card.label}
+          </p>
           <p className="text-2xl font-bold tracking-tight text-slate-900">
-            {card.value}
+            {card.id === "borrowers" ? t("dashboard.clients1") : card.value}
           </p>
           {card.subLabel ? (
-            <p className="text-xs text-slate-500">{card.subLabel}</p>
+            <p className="text-xs text-slate-500">
+              {card.id === "glp"
+                ? t("dashboard.disbursed")
+                : card.id === "collection"
+                  ? t("dashboard.mtd")
+                  : card.id === "par"
+                    ? t("dashboard.par90")
+                    : card.id === "borrowers"
+                      ? t("dashboard.kendras1")
+                      : card.subLabel}
+            </p>
           ) : null}
           {card.extraLabel ? (
-            <p className="text-xs text-slate-500">{card.extraLabel}</p>
+            <p className="text-xs text-slate-500">
+              {card.id === "collection"
+                ? t("dashboard.todayAmt")
+                : card.id === "borrowers"
+                  ? t("dashboard.activeJlgs1")
+                  : card.extraLabel}
+            </p>
           ) : null}
           {card.badge ? (
             <Badge
@@ -67,7 +96,11 @@ export default function MicrofinanceStatCard({ card }) {
                   "bg-emerald-50 text-emerald-700",
               )}
             >
-              {card.badge.text}
+              {card.id === "glp"
+                  ? t("dashboard.qualifying100")
+                  : card.id === "par"
+                    ? t("dashboard.healthyAsset")
+                    : card.badge.text}
             </Badge>
           ) : null}
         </div>

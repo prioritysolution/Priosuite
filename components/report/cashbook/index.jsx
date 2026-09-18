@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,7 @@ const Cashbook = ({
   totalCrAmount,
   denomData,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -85,7 +87,7 @@ const Cashbook = ({
     const host = printHostRef.current;
 
     if (!element) {
-      toast.error("Nothing to download. Please generate the report first.");
+      toast.error(t("report.cashbook.nothingToDownload"));
       return;
     }
 
@@ -95,7 +97,7 @@ const Cashbook = ({
       !!cashBalanceData;
 
     if (!hasData) {
-      toast.error("No cashbook data to download.");
+      toast.error(t("report.cashbook.noDataToDownload"));
       return;
     }
 
@@ -160,18 +162,18 @@ const Cashbook = ({
       }
 
       if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
+        toast.error(t("report.cashbook.failedToCapturePdf"));
         return;
       }
 
       pdf.save(`Cashbook-${toDate || "report"}.pdf`);
-      toast.success("PDF downloaded");
+      toast.success(t("report.cashbook.pdfDownloaded"));
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
-          ? `Failed to download PDF: ${error.message}`
-          : "Failed to download PDF",
+          ? `${t("report.cashbook.failedToDownloadPdf")}: ${error.message}`
+          : t("report.cashbook.failedToDownloadPdf"),
       );
     } finally {
       if (host) host.setAttribute("style", prevHostStyle);
@@ -199,7 +201,7 @@ const Cashbook = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Cashbook Report</h3>
+                <h3 className="text-xl font-semibold ">{t("report.cashbook.cashbookReport")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -219,7 +221,7 @@ const Cashbook = ({
                 <DatePickerField
                   control={form.control}
                   name="date"
-                  label="Date"
+                  label={t("common.date")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -229,13 +231,13 @@ const Cashbook = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label="Branch"
+                      label={t("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("common.selectBranch")}
+                      searchPlaceholder={t("common.searchBranch")}
                     />
                   )}
                 />
@@ -329,24 +331,24 @@ const Cashbook = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead colSpan={5} className=" text-white text-center">
-                      Receipt
+                      {t("report.cashbook.receipt")}
                     </TableHead>
                   </TableRow>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className=" text-white text-center w-12">
-                      SL. NO.
+                      {t("report.cashbook.slNo")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center ">
-                      Vouch No.
+                      {t("report.cashbook.vouchNo")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center ">
-                      Ledger Name
+                      {t("report.cashbook.ledgerName")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center w-[280px]">
-                      PARTICULARS
+                      {t("report.cashbook.particulars")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      AMOUNT
+                      {t("report.cashbook.amount")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -404,7 +406,7 @@ const Cashbook = ({
                       colSpan={4}
                       className="font-medium border border-secondary"
                     >
-                      Total
+                      {t("report.cashbook.total")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {totalReceived}
@@ -415,7 +417,7 @@ const Cashbook = ({
                       colSpan={4}
                       className="font-medium border border-secondary"
                     >
-                      Opening Balance
+                      {t("report.cashbook.openingBalance")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {cashBalanceData && cashBalanceData?.Opening}
@@ -428,24 +430,24 @@ const Cashbook = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead colSpan={5} className=" text-white text-center">
-                      Payment
+                      {t("report.cashbook.payment")}
                     </TableHead>
                   </TableRow>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className=" text-white text-center w-12">
-                      SL. NO.
+                      {t("report.cashbook.slNo")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center ">
-                      Vouch No.
+                      {t("report.cashbook.vouchNo")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center ">
-                      Ledger Name
+                      {t("report.cashbook.ledgerName")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center w-[280px]">
-                      PARTICULARS
+                      {t("report.cashbook.particulars")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      AMOUNT
+                      {t("report.cashbook.amount")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -503,7 +505,7 @@ const Cashbook = ({
                       colSpan={4}
                       className="font-medium border border-secondary"
                     >
-                      Total
+                      {t("report.cashbook.total")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {totalPayment}
@@ -514,7 +516,7 @@ const Cashbook = ({
                       colSpan={4}
                       className="font-medium border border-secondary"
                     >
-                      Closing Balance
+                      {t("report.cashbook.closingBalance")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {cashBalanceData && cashBalanceData?.Closing}
@@ -525,19 +527,19 @@ const Cashbook = ({
             </div>
             <p className="self-end pr-5">
               <span className="font-semibold">
-                Closing Cash Balance in Word :{" "}
+                {t("report.cashbook.closingCashBalanceInWords")} :{" "}
               </span>
               {cashBalanceData &&
               cashBalanceData.Closing &&
               parseFloat(cashBalanceData.Closing) > 0
-                ? `Rupees ${convertToWords(
+                ? `${t("common.rupees")} ${convertToWords(
                     Number(cashBalanceData.Closing),
-                  )} Only`
+                  )} ${t("common.only")}`
                 : ""}
             </p>
             {denomData?.length > 0 ? (
               <div className="w-[300px] ml-20 text-center">
-                <p>Physical Denomination</p>
+                <p>{t("report.cashbook.physicalDenomination")}</p>
                 <Table className="border border-collapse mt-2">
                   <TableBody>
                     {denomData?.map((data) => (
@@ -569,29 +571,37 @@ const Cashbook = ({
                 onClick={generateVoucherPrint}
                 className="w-32 self-end mb-5 mt-2"
               >
-                Print
+                {t("common.print")}
               </Button>
               <div className="w-full grid grid-cols-3 gap-2 pb-5 text-sm">
                 <p>
-                  <span className="font-semibold">Voucher Type :</span>{" "}
+                  <span className="font-semibold">
+                    {t("voucher.voucherType")} :
+                  </span>{" "}
                   {voucherDetailsData &&
                     voucherDetailsData.length > 0 &&
                     voucherDetailsData[0]?.Vouch_type}
                 </p>
                 <p>
-                  <span className="font-semibold">Voucher No. :</span>{" "}
+                  <span className="font-semibold">
+                    {t("voucher.voucherNo")} :
+                  </span>{" "}
                   {voucherDetailsData &&
                     voucherDetailsData.length > 0 &&
                     voucherDetailsData[0]?.Vouch_No}
                 </p>
                 <p>
-                  <span className="font-semibold">Ref. Vc. No :</span>{" "}
+                  <span className="font-semibold">
+                    {t("voucher.refVcNo")} :
+                  </span>{" "}
                   {voucherDetailsData &&
                     voucherDetailsData.length > 0 &&
                     voucherDetailsData[0]?.Ref_Vouch_No}
                 </p>
                 <p>
-                  <span className="font-semibold">Voucher Date :</span>{" "}
+                  <span className="font-semibold">
+                    {t("common.voucherDate")} :
+                  </span>{" "}
                   {voucherDetailsData &&
                     voucherDetailsData.length > 0 &&
                     voucherDetailsData[0].Trans_Date &&
@@ -602,10 +612,12 @@ const Cashbook = ({
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[100px]">Sl.</TableHead>
-                      <TableHead>Head Of Account</TableHead>
-                      <TableHead>Dr. Amount</TableHead>
-                      <TableHead>Cr. Amount</TableHead>
+                      <TableHead className="w-[100px]">
+                        {t("common.sl")}
+                      </TableHead>
+                      <TableHead>{t("common.headOfAccount")}</TableHead>
+                      <TableHead>{t("common.drAmount")}</TableHead>
+                      <TableHead>{t("common.crAmount")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -628,7 +640,9 @@ const Cashbook = ({
                   </TableBody>
                   <TableFooter>
                     <TableRow>
-                      <TableCell colSpan={2}>Total</TableCell>
+                      <TableCell colSpan={2}>
+                        {t("common.total")}
+                      </TableCell>
                       <TableCell>{totalDrAmount}</TableCell>
                       <TableCell>{totalCrAmount}</TableCell>
                     </TableRow>
@@ -636,7 +650,9 @@ const Cashbook = ({
                 </Table>
               </ScrollArea>
               <p>
-                <span className="font-semibold">Narration : </span>
+                <span className="font-semibold">
+                  {t("common.narration")} :{" "}
+                </span>
                 {voucherDetailsData &&
                   voucherDetailsData.length > 0 &&
                   voucherDetailsData[0]?.Particular}

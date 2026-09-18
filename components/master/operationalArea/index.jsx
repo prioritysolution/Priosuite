@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { Button } from "@/components/ui/button";
 import StateForm from "./state/StateForm";
 import StateTable from "./state/StateTable";
@@ -74,6 +76,8 @@ const OperationalArea = ({
   setCurrentUnitPage,
   lastUnitPage,
 }) => {
+  const { t } = useTranslation();
+
   const stateListData = useSelector(
     (state) =>
       state.operationalArea.stateData && state.operationalArea.stateData,
@@ -124,7 +128,7 @@ const OperationalArea = ({
 
   const formList = [
     {
-      label: "State",
+      label: t("master.operationalArea.tabs.state"),
       form: (
         <StateForm
           postLoading={postLoading}
@@ -144,7 +148,7 @@ const OperationalArea = ({
       ),
     },
     {
-      label: "District",
+      label: t("master.operationalArea.tabs.district"),
       form: (
         <DistrictForm
           postLoading={postLoading}
@@ -168,7 +172,7 @@ const OperationalArea = ({
       ),
     },
     {
-      label: "Block",
+      label: t("master.operationalArea.tabs.block"),
       form: (
         <BlockForm
           postLoading={postLoading}
@@ -193,7 +197,7 @@ const OperationalArea = ({
       ),
     },
     {
-      label: "Police Station",
+      label: t("master.operationalArea.tabs.policeStation"),
       form: (
         <PoliceStationForm
           postLoading={postLoading}
@@ -218,7 +222,7 @@ const OperationalArea = ({
       ),
     },
     {
-      label: "Post Office",
+      label: t("master.operationalArea.tabs.postOffice"),
       form: (
         <PostOfficeForm
           postLoading={postLoading}
@@ -243,7 +247,7 @@ const OperationalArea = ({
       ),
     },
     {
-      label: "Village",
+      label: t("master.operationalArea.tabs.village"),
       form: (
         <VillageForm
           postLoading={postLoading}
@@ -269,7 +273,7 @@ const OperationalArea = ({
       ),
     },
     {
-      label: "Unit",
+      label: t("master.operationalArea.tabs.unit"),
       form: (
         <UnitForm
           postLoading={postLoading}
@@ -321,13 +325,13 @@ const OperationalArea = ({
             >
               <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-lg font-semibold text-[#163A5F] sm:text-xl">
-                  Operational Area — {item.label}
+                  {t("master.operationalArea.heading", { name: item.label })}
                 </h2>
                 <Button
                   className="h-10 shrink-0 px-5 text-sm sm:h-11 sm:px-6 sm:text-base"
                   onClick={() => setOpenDialouge(true)}
                 >
-                  Add {item.label}
+                  {t("master.operationalArea.addItem", { name: item.label })}
                 </Button>
               </div>
 
@@ -352,8 +356,8 @@ const OperationalArea = ({
                 editPostOfficeData ||
                 editVillageData ||
                 editUnitData
-                  ? "Update"
-                  : "Add"}{" "}
+                  ? t("common.buttons.update")
+                  : t("common.buttons.add")}{" "}
                 {formList[activeForm].label}
               </DialogTitle>
               <DialogDescription className="mt-1 text-[13px] text-[#7A93B0]">
@@ -364,8 +368,12 @@ const OperationalArea = ({
                 editPostOfficeData ||
                 editVillageData ||
                 editUnitData
-                  ? `Update the selected ${formList[activeForm].label.toLowerCase()} details below.`
-                  : `Fill in the details to add a new ${formList[activeForm].label.toLowerCase()}.`}
+                  ? t("master.operationalArea.dialogUpdate", {
+                      name: formList[activeForm].label.toLowerCase(),
+                    })
+                  : t("master.operationalArea.dialogAdd", {
+                      name: formList[activeForm].label.toLowerCase(),
+                    })}
               </DialogDescription>
             </DialogHeader>
             <div className="px-5 py-5 sm:px-6 sm:py-6">

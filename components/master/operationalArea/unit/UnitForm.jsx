@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
@@ -11,6 +12,8 @@ const UnitForm = ({
   editData,
   onCancel,
 }) => {
+  const { t } = useTranslation();
+
   const isEdit = editData && Object.keys(editData).length > 0;
 
   return (
@@ -23,16 +26,16 @@ const UnitForm = ({
         <InputField
           control={form.control}
           name="name"
-          label="Unit Name"
-          placeholder="Enter unit name"
+          label={t("master.operationalArea.fields.unitName")}
+          placeholder={t("master.operationalArea.placeholders.unitName")}
           maxLength={20}
           isRequired
         />
         <InputField
           control={form.control}
           name="number"
-          label="Unit Number"
-          placeholder="Enter unit number"
+          label={t("master.operationalArea.fields.unitNumber")}
+          placeholder={t("master.operationalArea.placeholders.unitNumber")}
           type="number"
           isRequired
           onInput={(e) => {
@@ -49,7 +52,7 @@ const UnitForm = ({
             onClick={onCancel}
             disabled={postLoading || updateLoading}
           >
-            Cancel
+            {t("common.buttons.cancel")}
           </Button>
           <Button
             type="submit"
@@ -59,9 +62,9 @@ const UnitForm = ({
             {postLoading || updateLoading ? (
               <ClipLoader color="#fff" size={18} speedMultiplier={0.7} />
             ) : isEdit ? (
-              "Update"
+              t("common.buttons.update")
             ) : (
-              "Add"
+              t("common.buttons.add")
             )}
           </Button>
         </div>

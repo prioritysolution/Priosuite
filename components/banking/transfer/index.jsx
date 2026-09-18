@@ -18,6 +18,7 @@ import { getYear } from "date-fns";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import getCookieData from "@/utils/getCookieData";
+import { useTranslation } from "react-i18next";
 
 const Transfer = ({
   loading,
@@ -40,6 +41,8 @@ const Transfer = ({
   fromDate,
   getBankLoading,
 }) => {
+  const { t } = useTranslation();
+
   const bankAccountData = useSelector(
     (state) => state?.bankDeposit?.bankAccountData,
   );
@@ -50,7 +53,9 @@ const Transfer = ({
 
   return (
     <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">Bank Transfer</h3>
+      <h3 className="text-2xl font-semibold text-center">
+        {t("bank.bankTransfer")}
+      </h3>
 
       <ScrollArea className="w-full h-full">
         <Form {...form}>
@@ -66,7 +71,7 @@ const Transfer = ({
                 <DatePickerField
                   control={form.control}
                   name="transferDate"
-                  label="Transfer Date"
+                  label={t("bank.transferDate")}
                   disabled
                 />
 
@@ -77,19 +82,20 @@ const Transfer = ({
                     name="senderBankAccount"
                     render={({ field }) => (
                       <DropdownField
-                        label="Sender Bank Account"
+                        label={t("bank.senderBankAccount")}
                         value={field.value}
                         onChange={field.onChange}
                         options={bankAccountData}
                         optionLabelKey="Bank_Name"
-                        placeholder="Select bank account"
-                        searchPlaceholder="Search bank account..."
+                        placeholder={t("bank.selectBankAccount")}
+                        searchPlaceholder={t("bank.searchBankAccount")}
                       />
                     )}
                   />
+
                   {sendersAvailableBalance !== null && (
                     <span className="text-xs font-semibold text-slate-500 mt-1">
-                      Available Balance:{" "}
+                      {t("bank.availableBalance")}:{" "}
                       <span className="text-green-600">
                         {sendersAvailableBalance}
                       </span>
@@ -103,7 +109,7 @@ const Transfer = ({
                   name="receiverBankAccount"
                   render={({ field }) => (
                     <DropdownField
-                      label="Receiver Bank Account"
+                      label={t("bank.receiverBankAccount")}
                       value={field.value}
                       onChange={field.onChange}
                       options={
@@ -116,8 +122,8 @@ const Transfer = ({
                           : []
                       }
                       optionLabelKey="Bank_Name"
-                      placeholder="Select bank account"
-                      searchPlaceholder="Search bank account..."
+                      placeholder={t("bank.selectBankAccount")}
+                      searchPlaceholder={t("bank.searchBankAccount")}
                       disabled={!form.getValues("senderBankAccount")}
                     />
                   )}
@@ -129,10 +135,10 @@ const Transfer = ({
                   name="transferAmount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Amount</FormLabel>
+                      <FormLabel>{t("common.amount")}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter amount"
+                          placeholder={t("bank.enterAmount")}
                           type="number"
                           readOnly={!form.getValues("senderBankAccount")}
                           {...field}
@@ -150,10 +156,12 @@ const Transfer = ({
                   name="totalTransferInWords"
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                      <FormLabel>Total Amount In Words</FormLabel>
+                      <FormLabel>
+                        {t("bank.totalAmountInWords")}
+                      </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Total amount in words"
+                          placeholder={t("bank.totalAmountInWordsPlaceholder")}
                           readOnly
                           {...field}
                           className="h-10 text-red-500 font-medium text-sm"
@@ -183,7 +191,7 @@ const Transfer = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("common.add")
                   )}
                 </Button>
               </div>

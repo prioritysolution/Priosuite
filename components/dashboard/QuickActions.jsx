@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useEffect, useState } from "react";
 import { ChevronRight, LayoutGrid } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -25,6 +27,7 @@ import { quickActions } from "./dashboardData";
 import getCookieData from "@/utils/getCookieData";
 
 const QuickActions = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -62,7 +65,7 @@ const QuickActions = () => {
                 <button
                   type="button"
                   className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/75 transition-all duration-150 ease-out hover:bg-white/10 hover:text-white active:scale-90 sm:h-9 sm:w-9"
-                  aria-label="Quick Actions"
+                  aria-label={t("dashboard.quickActions")}
                 >
                   <LayoutGrid className="h-5 w-5" />
                 </button>
@@ -70,16 +73,16 @@ const QuickActions = () => {
             </span>
           </TooltipTrigger>
           <TooltipContent side="bottom" className="sm:block">
-            Quick Actions
+            {t("dashboard.quickActions")}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
       <DrawerContent className="flex h-[min(88dvh,640px)] md:h-full md:max-h-none md:w-[min(100%,24rem)] lg:w-[min(100%,28rem)]">
         <DrawerHeader className="border-b border-slate-100 px-4 pb-3 text-left sm:px-5">
-          <DrawerTitle className="text-slate-800">Quick Actions</DrawerTitle>
+          <DrawerTitle className="text-slate-800">{t("dashboard.quickActions")}</DrawerTitle>
           <DrawerDescription>
-            Jump to the most used banking tasks
+            {t("dashboard.quickActionsDesc")}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -104,11 +107,35 @@ const QuickActions = () => {
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-semibold text-slate-800">
-                      {action.label}
+                      {action.id === "add-member"
+                        ? t("dashboard.addMember")
+                        : action.id === "open-account"
+                          ? t("dashboard.openAccount")
+                          : action.id === "new-deposit"
+                            ? t("dashboard.newDeposit")
+                            : action.id === "new-loan"
+                              ? t("dashboard.newLoan")
+                              : action.id === "send-notice"
+                                ? t("dashboard.sendNotice")
+                                : action.id === "view-reports"
+                                  ? t("dashboard.viewReports")
+                                  : action.label}
                     </span>
                     {action.description ? (
                       <span className="mt-0.5 block text-[11px] leading-snug text-slate-500 sm:text-xs">
-                        {action.description}
+                        {action.id === "add-member"
+                          ? t("dashboard.addMemberDesc")
+                          : action.id === "open-account"
+                            ? t("dashboard.openAccountDesc")
+                            : action.id === "new-deposit"
+                              ? t("dashboard.newDepositDesc")
+                              : action.id === "new-loan"
+                                ? t("dashboard.newLoanDesc")
+                                : action.id === "send-notice"
+                                  ? t("dashboard.sendNoticeDesc")
+                                  : action.id === "view-reports"
+                                    ? t("dashboard.viewReportsDesc")
+                                    : action.description}
                       </span>
                     ) : null}
                   </span>
@@ -122,7 +149,7 @@ const QuickActions = () => {
         <div className="border-t border-slate-100 p-3 sm:p-4 md:hidden">
           <DrawerClose asChild>
             <Button type="button" variant="outline" className="h-10 w-full">
-              Close
+              {t("dashboard.close")}
             </Button>
           </DrawerClose>
         </div>

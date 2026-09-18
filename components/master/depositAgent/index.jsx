@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +19,8 @@ import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 
 const DepositAgent = ({ loading, handleSubmit, form }) => {
+  const { t } = useTranslation();
+
   const paymentTypeData = useSelector(
     (state) => state?.depositAgent?.paymentTypeData
   );
@@ -24,7 +28,7 @@ const DepositAgent = ({ loading, handleSubmit, form }) => {
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold">Deposit Agent</h3>
+        <h3 className="text-2xl font-semibold">{t("master.depositAgent.title")}</h3>
         <ScrollArea className="w-full h-full">
           <Form {...form}>
             <form
@@ -37,23 +41,23 @@ const DepositAgent = ({ loading, handleSubmit, form }) => {
                   <InputField
                     control={form.control}
                     name="agentName"
-                    label="Agent Name"
-                    placeholder="Enter agent name"
+                    label={t("master.depositAgent.fields.agentName")}
+                    placeholder={t("master.depositAgent.placeholders.agentName")}
                   />
 
                   <TextareaField
                     control={form.control}
                     name="address"
-                    label="Address"
-                    placeholder="Enter address"
+                    label={t("master.depositAgent.fields.address")}
+                    placeholder={t("master.depositAgent.placeholders.address")}
                     className="resize-none"
                   />
 
                   <InputField
                     control={form.control}
                     name="mobile"
-                    label="Mobile No."
-                    placeholder="Enter mobile no."
+                    label={t("master.depositAgent.fields.mobileNo")}
+                    placeholder={t("master.depositAgent.placeholders.mobileNo")}
                     type="number"
                     onInput={(e) => {
                       if (e.target.value.length > 10) {
@@ -65,50 +69,50 @@ const DepositAgent = ({ loading, handleSubmit, form }) => {
                   <InputField
                     control={form.control}
                     name="email"
-                    label="Email"
-                    placeholder="Enter email"
+                    label={t("master.depositAgent.fields.email")}
+                    placeholder={t("master.depositAgent.placeholders.email")}
                     type="email"
                   />
 
                   <InputField
                     control={form.control}
                     name="depositAmount"
-                    label="Deposit Amount"
-                    placeholder="Enter deposit amount"
+                    label={t("master.depositAgent.fields.depositAmount")}
+                    placeholder={t("master.depositAgent.placeholders.depositAmount")}
                     type="number"
                   />
 
                   <InputField
                     control={form.control}
                     name="maximumDays"
-                    label="Maximum Days"
-                    placeholder="Enter maximum days"
+                    label={t("master.depositAgent.fields.maximumDays")}
+                    placeholder={t("master.depositAgent.placeholders.maximumDays")}
                     type="number"
                   />
 
                   <InputField
                     control={form.control}
                     name="maximumDeposit"
-                    label="Maximum Deposit"
-                    placeholder="Enter maximum deposit"
+                    label={t("master.depositAgent.fields.maximumDeposit")}
+                    placeholder={t("master.depositAgent.placeholders.maximumDeposit")}
                     type="number"
                   />
 
                   <DropdownField
                     control={form.control}
                     name="paymentType"
-                    label="Payment Type"
+                    label={t("master.depositAgent.fields.paymentType")}
                     options={paymentTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder="Select payment type"
-                    searchPlaceholder="Search payment type..."
+                    placeholder={t("master.depositAgent.placeholders.paymentType")}
+                    searchPlaceholder={t("master.depositAgent.placeholders.searchPaymentType")}
                   />
 
                   <InputField
                     control={form.control}
                     name="payoutAmount"
-                    label="Payout Amount"
-                    placeholder="Enter payout amount"
+                    label={t("master.depositAgent.fields.payoutAmount")}
+                    placeholder={t("master.depositAgent.placeholders.payoutAmount")}
                     type="number"
                   />
                 </div>
@@ -121,7 +125,7 @@ const DepositAgent = ({ loading, handleSubmit, form }) => {
                     speedMultiplier={0.7}
                   />
                 ) : (
-                  "Add"
+                  t("master.depositAgent.buttons.add")
                 )}
               </Button>
             </form>

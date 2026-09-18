@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -67,6 +69,8 @@ const GuarantorDetails = ({
   totalGuarantorOdBalance,
   totalGuarantorOdInterest,
 }) => {
+  const { t } = useTranslation();
+
   const [showForm, setShowForm] = useState(true);
 
   const memberDataByName = useSelector(
@@ -106,7 +110,7 @@ const GuarantorDetails = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Guarantor Details</h3>
+                <h3 className="text-xl font-semibold ">{t("loan.guarantorDetails")}</h3>
                 <div
                   onClick={() => setShowForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -125,7 +129,7 @@ const GuarantorDetails = ({
                 <DatePickerField
                   control={form.control}
                   name="date"
-                  label="Date"
+                  label={t("loan.date")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -136,12 +140,12 @@ const GuarantorDetails = ({
                     name="memberNo"
                     render={({ field }) => (
                       <FormItem className=" flex flex-col items-start justify-center">
-                        <FormLabel>Member No.</FormLabel>
+                        <FormLabel>{t("loan.memberNo2")}</FormLabel>
                         <FormControl>
                           <div className="flex flex-col lg:flex-row items-center gap-x-10 gap-2 w-full">
                             <div className=" w-full relative ">
                               <Input
-                                placeholder="Enter member no."
+                                placeholder={t("loan.enterMemberNo")}
                                 className="w-full"
                                 type="number"
                                 onInput={(e) => {
@@ -169,23 +173,21 @@ const GuarantorDetails = ({
 
                   <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px] max-h-[min(90dvh,600px)] overflow-y-auto">
                     <DialogHeader>
-                      <DialogTitle>Search Members</DialogTitle>
+                      <DialogTitle>{t("loan.searchMembers")}</DialogTitle>
                     </DialogHeader>
                     <div className="w-full ">
                       <div className="w-full flex flex-col sm:flex-row items-end gap-2 gap-x-10 ">
                         <InputField
                           control={form.control}
                           name="dialougeMemberName"
-                          label="Member Name"
-                          placeholder="Search by enter member name"
+                          label={t("loan.memberName")}
+                          placeholder={t("loan.searchByEnterMemberName")}
                           autoComplete="off"
                         />
                         <div
                           className="w-full sm:w-auto px-10 py-2 text-white bg-primary rounded-md cursor-pointer text-center"
                           onClick={handleSearchMember}
-                        >
-                          Search
-                        </div>
+                        >{t("loan.search")}</div>
                       </div>
                       <div className="w-full ">
                         <MemberSearchTable
@@ -247,29 +249,21 @@ const GuarantorDetails = ({
                 <div className="flex justify-between items-start mb-2 w-full h-fit">
                   <div className="w-full"></div>
                   <div className="w-full flex gap-1 items-start justify-start">
-                    <p className="font-semibold text-nowrap">Max Loan : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.maxLoanColon")}</p>
                     <p>{personalData?.Max_Loan || ""}</p>
                   </div>
                 </div>
                 <div className="flex justify-between gap-1">
                   <div className="h-full grid grid-cols-2 gap-1 gap-y-2">
-                    <p className="font-semibold text-nowrap">
-                      Customer Code :{" "}
-                    </p>
+                    <p className="font-semibold text-nowrap">{t("loan.customerCodeColon")}</p>
                     <p>{personalData?.CIf_No || ""}</p>
-                    <p className="font-semibold text-nowrap">
-                      Customer Name :{" "}
-                    </p>
+                    <p className="font-semibold text-nowrap">{t("loan.customerNameColon")}</p>
                     <p>{personalData?.Member_Name || ""}</p>
-                    <p className="font-semibold text-nowrap">
-                      Guardian Name :{" "}
-                    </p>
+                    <p className="font-semibold text-nowrap">{t("loan.guardianNameColon")}</p>
                     <p>{personalData?.Gurdain_Name || ""}</p>
-                    <p className="font-semibold text-nowrap">Member No : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.memberNoColon")}</p>
                     <p>{personalData?.Member_No || ""}</p>
-                    <p className="font-semibold text-nowrap">
-                      Admission Date :{" "}
-                    </p>
+                    <p className="font-semibold text-nowrap">{t("loan.admissionDateColon")}</p>
                     <p>
                       {personalData?.Admission_Date
                         ? format(personalData?.Admission_Date, "dd-MM-yyyy")
@@ -277,22 +271,18 @@ const GuarantorDetails = ({
                     </p>
                   </div>
                   <div className="h-full grid grid-cols-2 gap-1  gap-y-2">
-                    <p className="font-semibold text-nowrap">
-                      Share Balance :{" "}
-                    </p>
+                    <p className="font-semibold text-nowrap">{t("loan.shareBalanceColon")}</p>
                     <p>{personalData?.Share_Balance || ""}</p>
-                    <p className="font-semibold text-nowrap">TF Paid : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.tFPaidColon")}</p>
                     <p>
                       {" "}
                       {personalData?.Tf_Paid
                         ? format(personalData?.Tf_Paid, "dd-MM-yyyy")
                         : ""}
                     </p>
-                    <p className="font-semibold text-nowrap">
-                      GF Account No. :{" "}
-                    </p>
+                    <p className="font-semibold text-nowrap">{t("loan.gfAccountNoColon")}</p>
                     <p>{personalData?.Gf_Acct_No || ""}</p>
-                    <p className="font-semibold text-nowrap">GF Balance : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.gFBalanceColon")}</p>
                     <p>{personalData?.gf_Balance || ""}</p>
                     <p className="font-semibold text-nowrap">
                       Savings Account No. :{" "}
@@ -300,29 +290,29 @@ const GuarantorDetails = ({
                     <p>{personalData?.Sb_Acct_No || ""}</p>
                   </div>
                   <div className="h-full grid grid-cols-2 gap-1  gap-y-2">
-                    <p className="font-semibold text-nowrap">Account No. : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.accountNoColon")}</p>
                     <p>{maxLoanAccount?.Account_No || ""}</p>
-                    <p className="font-semibold text-nowrap">Scheme Name : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.schemeName")}</p>
                     <p>{maxLoanAccount?.Product_Name || ""}</p>
-                    <p className="font-semibold text-nowrap">Issue Date : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.issueDateColon")}</p>
                     <p>
                       {maxLoanAccount?.Issue_Date
                         ? format(maxLoanAccount?.Issue_Date, "dd-MM-yyyy")
                         : "30-03-2022"}
                     </p>
-                    <p className="font-semibold text-nowrap">Issue Amount : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.issueAmountColon")}</p>
                     <p>{maxLoanAccount?.Loan_Amount || ""}</p>
-                    <p className="font-semibold text-nowrap">Outs. Bal. : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.outsBalColon")}</p>
                     <p>{maxLoanAccount?.Outs_Bal || ""}</p>
                   </div>
                   <div className="h-full grid grid-cols-2 gap-1  gap-y-2">
-                    <p className="font-semibold text-nowrap">CP Bal : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.cPBalColon")}</p>
                     <p>{maxLoanAccount?.Curr_Balance || ""}</p>
-                    <p className="font-semibold text-nowrap">CI Bal : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.cIBalColon")}</p>
                     <p>{maxLoanAccount?.Curr_Intt || ""}</p>
-                    <p className="font-semibold text-nowrap">OP Bal : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.oPBalColon")}</p>
                     <p>{maxLoanAccount?.Od_Balance || ""}</p>
-                    <p className="font-semibold text-nowrap">OI Bal : </p>
+                    <p className="font-semibold text-nowrap">{t("loan.oIBalColon")}</p>
                     <p>{maxLoanAccount?.Od_Intt || "0"}</p>
                   </div>
                 </div>
@@ -331,24 +321,24 @@ const GuarantorDetails = ({
                 {/* Main Header Every Page */}
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ACCOUNT NO.</TableHead>
-                    <TableHead>SCHEME NAME</TableHead>
-                    <TableHead>NAME</TableHead>
-                    <TableHead>MEMBER NO.</TableHead>
-                    <TableHead>ISSUE DATE</TableHead>
-                    <TableHead>ISSUE AMOUNT</TableHead>
-                    <TableHead>OUTSTANDING BALANCE</TableHead>
-                    <TableHead>CP BAL</TableHead>
-                    <TableHead>CI BAL</TableHead>
-                    <TableHead>OP BAL</TableHead>
-                    <TableHead>OI BAL</TableHead>
-                    <TableHead>INST. DUE</TableHead>
+                    <TableHead>{t("loan.print.accountNo")}</TableHead>
+                    <TableHead>{t("loan.print.schemeName")}</TableHead>
+                    <TableHead>{t("loan.print.name")}</TableHead>
+                    <TableHead>{t("loan.print.memberNo")}</TableHead>
+                    <TableHead>{t("loan.print.issueDate")}</TableHead>
+                    <TableHead>{t("loan.print.issueAmount")}</TableHead>
+                    <TableHead>{t("loan.print.outstandingBalance")}</TableHead>
+                    <TableHead>{t("loan.print.cpBal")}</TableHead>
+                    <TableHead>{t("loan.print.ciBal")}</TableHead>
+                    <TableHead>{t("loan.print.opBal")}</TableHead>
+                    <TableHead>{t("loan.print.oiBal")}</TableHead>
+                    <TableHead>{t("loan.print.instDue")}</TableHead>
                   </TableRow>
                 </TableHeader>
 
                 <TableBody>
                   <TableRow>
-                    <TableCell colSpan={12}>Loan Type - Guarantor</TableCell>
+                    <TableCell colSpan={12}>{t("loan.loanTypeGuarantor")}</TableCell>
                   </TableRow>
                   {guarantorTableData.map((guarantor, i) => (
                     <TableRow
@@ -376,9 +366,7 @@ const GuarantorDetails = ({
                     </TableRow>
                   ))}
                   <TableRow>
-                    <TableCell colSpan={5} className="text-right">
-                      Total
-                    </TableCell>
+                    <TableCell colSpan={5} className="text-right">{t("loan.total")}</TableCell>
                     <TableCell>{totalGuarantorIssueAmount || ""}</TableCell>
                     <TableCell></TableCell>
                     <TableCell>{totalGuarantorCurrentBalance || ""}</TableCell>
@@ -387,7 +375,7 @@ const GuarantorDetails = ({
                     <TableCell>{totalGuarantorOdInterest || ""}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell colSpan={12}>Loan Type - Own</TableCell>
+                    <TableCell colSpan={12}>{t("loan.loanTypeOwn")}</TableCell>
                   </TableRow>
                   {ownTableData.map((own, i) => (
                     <TableRow
@@ -415,9 +403,7 @@ const GuarantorDetails = ({
                     </TableRow>
                   ))}
                   <TableRow>
-                    <TableCell colSpan={5} className="text-right">
-                      Total
-                    </TableCell>
+                    <TableCell colSpan={5} className="text-right">{t("loan.total")}</TableCell>
                     <TableCell>{totalOwnIssueAmount || ""}</TableCell>
                     <TableCell></TableCell>
                     <TableCell>{totalOwnCurrentBalance || ""}</TableCell>
@@ -426,9 +412,7 @@ const GuarantorDetails = ({
                     <TableCell>{totalOwnOdInterest || ""}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell colSpan={5} className="text-right">
-                      Total Outstanding
-                    </TableCell>
+                    <TableCell colSpan={5} className="text-right">{t("loan.totalOutstanding")}</TableCell>
                     <TableCell>
                       {totalOwnIssueAmount + totalGuarantorIssueAmount || ""}
                     </TableCell>

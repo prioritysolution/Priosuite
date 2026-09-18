@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import MemberSearchForm from "@/common/forms/MemberSearchForm";
 import CashDenomTable from "@/common/tables/CashDenomTable";
 import { Button } from "@/components/ui/button";
@@ -75,6 +77,8 @@ const MembershipWithdrawn = ({
   getLedgerLoading,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   const [showBasicInfo, setShowBasicInfo] = useState(true);
   useEffect(() => {
@@ -108,11 +112,11 @@ const MembershipWithdrawn = ({
             handleSubmit={handleMemberFormSubmit}
             loading={getMemberDataLoading}
             showDate
-            label="Transaction Date"
+            label={t("membership.withdrawn.fields.transactionDate")}
             resetTrigger={resetTrigger}
             showLedger={showLedger}
             handleShowLedger={handleShowLedger}
-            formLabel="Membership Withdrawn"
+            formLabel={t("membership.withdrawn.title")}
             showDateFix={true}
           />
         </div>
@@ -130,7 +134,7 @@ const MembershipWithdrawn = ({
                   <div className="grid grid-cols-3">
                     <div />
                     <h3 className="w-full text-center text-xl font-semibold">
-                      Basic Info Block
+                      {t("membership.withdrawn.sections.basicInfoBlock")}
                     </h3>
                     <div className=" w-full flex items-center justify-end">
                       <button
@@ -175,36 +179,36 @@ const MembershipWithdrawn = ({
                         <InputField
                           control={form.control}
                           name="memberNo"
-                          label="Member No."
-                          placeholder="Enter member no."
+                          label={t("membership.withdrawn.fields.memberNo")}
+                          placeholder={t("membership.withdrawn.placeholders.memberNo")}
                           readOnly
                         />
                         <InputField
                           control={form.control}
                           name="cifNo"
-                          label="CIF No."
-                          placeholder="Enter cif no."
+                          label={t("membership.withdrawn.fields.cifNo")}
+                          placeholder={t("membership.withdrawn.placeholders.cifNo")}
                           readOnly
                         />
                         <InputField
                           control={form.control}
                           name="memberName"
-                          label="Member Name"
-                          placeholder="Enter member name"
+                          label={t("membership.withdrawn.fields.memberName")}
+                          placeholder={t("membership.withdrawn.placeholders.memberName")}
                           readOnly
                         />
                         <InputField
                           control={form.control}
                           name="gurdianName"
-                          label="Gurdian Name"
-                          placeholder="Enter gurdian name"
+                          label={t("membership.withdrawn.fields.gurdianName")}
+                          placeholder={t("membership.withdrawn.placeholders.gurdianName")}
                           readOnly
                         />
                         <TextareaField
                           control={form.control}
                           name="address"
-                          label="Address"
-                          placeholder="Enter address"
+                          label={t("membership.withdrawn.fields.address")}
+                          placeholder={t("membership.withdrawn.placeholders.address")}
                           className="resize-none"
                           readOnly
                         />
@@ -212,16 +216,16 @@ const MembershipWithdrawn = ({
                         <InputField
                           control={form.control}
                           name="mobile"
-                          label="Mobile No."
-                          placeholder="Enter mobile no."
+                          label={t("membership.withdrawn.fields.mobileNo")}
+                          placeholder={t("membership.withdrawn.placeholders.mobileNo")}
                           readOnly
                         />
 
                         <InputField
                           control={form.control}
                           name="branchName"
-                          label="Branch Name"
-                          placeholder="Enter branch name"
+                          label={t("membership.withdrawn.fields.branchName")}
+                          placeholder={t("membership.withdrawn.placeholders.branchName")}
                           readOnly
                           className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
                         />
@@ -234,7 +238,7 @@ const MembershipWithdrawn = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Nominee Block
+                    {t("membership.withdrawn.sections.nomineeBlock")}
                   </h3>
                   {getMemberDataLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -253,24 +257,24 @@ const MembershipWithdrawn = ({
                       <InputField
                         control={form.control}
                         name="nomineeName"
-                        label="Nominee Name"
-                        placeholder="Enter nominee name"
+                        label={t("membership.withdrawn.fields.nomineeName")}
+                        placeholder={t("membership.withdrawn.placeholders.nomineeName")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="nomineeRelation"
-                        label="Nominee Relation"
-                        placeholder="Enter nominee relation"
+                        label={t("membership.withdrawn.fields.nomineeRelation")}
+                        placeholder={t("membership.withdrawn.placeholders.nomineeRelation")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="nomineeAge"
-                        label="Nominee Age"
-                        placeholder="Enter nominee age"
+                        label={t("membership.withdrawn.fields.nomineeAge")}
+                        placeholder={t("membership.withdrawn.placeholders.nomineeAge")}
                         type="number"
                         readOnly
                       />
@@ -282,7 +286,7 @@ const MembershipWithdrawn = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Withdraw Details Block
+                    {t("membership.withdrawn.sections.withdrawDetailsBlock")}
                   </h3>
                   {getMemberDataLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -305,16 +309,16 @@ const MembershipWithdrawn = ({
                       <InputField
                         control={form.control}
                         name="ledgerFolio"
-                        label="Ledger Folio"
-                        placeholder="Enter ledger folio"
+                        label={t("membership.withdrawn.fields.ledgerFolio")}
+                        placeholder={t("membership.withdrawn.placeholders.ledgerFolio")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="shareBalance"
-                        label="Share Balance"
-                        placeholder="Enter share balance"
+                        label={t("membership.withdrawn.fields.shareBalance")}
+                        placeholder={t("membership.withdrawn.placeholders.shareBalance")}
                         type="number"
                         readOnly
                       />
@@ -322,8 +326,8 @@ const MembershipWithdrawn = ({
                       <InputField
                         control={form.control}
                         name="divBalance"
-                        label="Dividend Balance"
-                        placeholder="Enter dividend balance"
+                        label={t("membership.withdrawn.fields.dividendBalance")}
+                        placeholder={t("membership.withdrawn.placeholders.dividendBalance")}
                         type="number"
                         readOnly
                       />
@@ -331,8 +335,8 @@ const MembershipWithdrawn = ({
                       <TextareaField
                         control={form.control}
                         name="reason"
-                        label="Withdraw Reason"
-                        placeholder="Enter withdraw reason"
+                        label={t("membership.withdrawn.fields.withdrawReason")}
+                        placeholder={t("membership.withdrawn.placeholders.withdrawReason")}
                         type="number"
                         className="resize-none"
                       />
@@ -344,7 +348,7 @@ const MembershipWithdrawn = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Transanction Block
+                    {t("membership.withdrawn.sections.transanctionBlock")}
                   </h3>
                   {getMemberDataLoading ? (
                     <div className="w-full border border-primary rounded-md p-2 sm:p-5 mb-5 flex flex-col gap-3">
@@ -361,7 +365,7 @@ const MembershipWithdrawn = ({
                         name="transMode"
                         render={({ field }) => (
                           <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full lg:w-fit">
-                            <FormLabel>Select transanction mode</FormLabel>
+                            <FormLabel>{t("membership.withdrawn.fields.selectTransanctionMode")}</FormLabel>
                             <FormControl>
                               <RadioGroup
                                 onValueChange={field.onChange}
@@ -401,8 +405,8 @@ const MembershipWithdrawn = ({
                       <InputField
                         control={form.control}
                         name="refVouchNo"
-                        label="Ref. Vouch No."
-                        placeholder="Enter ref. vouch no."
+                        label={t("membership.withdrawn.fields.refVouchNo")}
+                        placeholder={t("membership.withdrawn.placeholders.refVouchNo")}
                         formItemClassName="w-fit"
                       />
                     </div>
@@ -433,11 +437,11 @@ const MembershipWithdrawn = ({
                       <DropdownField
                         control={form.control}
                         name="bank"
-                        label="Bank"
+                        label={t("membership.withdrawn.fields.bank")}
                         options={bankAccountData}
                         optionLabelKey="Bank_Name"
-                        placeholder="Select bank"
-                        searchPlaceholder="Search bank..."
+                        placeholder={t("membership.withdrawn.placeholders.bank")}
+                        searchPlaceholder={t("membership.withdrawn.placeholders.searchBank")}
                       />
                     </div>
                   ) : (
@@ -445,17 +449,17 @@ const MembershipWithdrawn = ({
                       <DropdownField
                         control={form.control}
                         name="savings"
-                        label="Savings"
+                        label={t("membership.withdrawn.fields.savings")}
                         options={savingsAccountData}
                         optionLabelKey="Account_No"
-                        placeholder="Select savings"
-                        searchPlaceholder="Search savings..."
+                        placeholder={t("membership.withdrawn.placeholders.savings")}
+                        searchPlaceholder={t("membership.withdrawn.placeholders.searchSavings")}
                       />
                       <InputField
                         control={form.control}
                         name="savingsName"
-                        label="Account Holder Name"
-                        placeholder="Enter name"
+                        label={t("membership.withdrawn.fields.accountHolderName")}
+                        placeholder={t("membership.withdrawn.placeholders.accountHolderName")}
                         readOnly
                       />
                     </div>
@@ -485,7 +489,7 @@ const MembershipWithdrawn = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("common.buttons.add")
                   )}
                 </Button>
               )}

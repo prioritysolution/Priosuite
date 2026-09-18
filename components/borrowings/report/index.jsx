@@ -20,6 +20,7 @@ import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useTranslation } from "react-i18next";
 
 const BorrowingsReport = ({
   loading,
@@ -42,6 +43,7 @@ const BorrowingsReport = ({
   currentTime,
   fromDate,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
@@ -119,7 +121,9 @@ const BorrowingsReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Borrowings Report</h3>
+                <h3 className="text-xl font-semibold ">
+                  {t("borrowings.borrowingsReport")}
+                </h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -138,7 +142,7 @@ const BorrowingsReport = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("common.fromDate")}
                   startYear={2000}
                   endYear={2050}
                   isRequired
@@ -147,7 +151,7 @@ const BorrowingsReport = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"
+                  label={t("common.toDate")}
                   startYear={2000}
                   endYear={2050}
                   isRequired
@@ -158,13 +162,13 @@ const BorrowingsReport = ({
                   name="reportType"
                   render={({ field }) => (
                     <DropdownField
-                      label="Report Type"
+                      label={t("common.reportType")}
                       value={field.value}
                       onChange={field.onChange}
                       options={reportTypeData}
                       optionLabelKey="Option_Value"
-                      placeholder="Select report type"
-                      searchPlaceholder="Search report type..."
+                      placeholder={t("common.selectReportType")}
+                      searchPlaceholder={t("common.searchReportType")}
                       isRequired
                     />
                   )}
@@ -175,13 +179,13 @@ const BorrowingsReport = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label="Branch"
+                      label={t("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name"
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("common.selectBranch")}
+                      searchPlaceholder={t("common.searchBranch")}
                       isRequired
                     />
                   )}

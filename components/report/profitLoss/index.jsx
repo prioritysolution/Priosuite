@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ const ProfitLoss = ({
   fromDate,
   toDate,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -61,12 +63,12 @@ const ProfitLoss = ({
     const host = printHostRef.current;
 
     if (!element) {
-      toast.error("Nothing to download. Please generate the report first.");
+      toast.error(t("common.nothingToDownload"));
       return;
     }
 
     if (!hasReportData) {
-      toast.error("No profit & loss data to download.");
+      toast.error(t("report.profitLoss.noProfitLossData"));
       return;
     }
 
@@ -134,18 +136,20 @@ const ProfitLoss = ({
       }
 
       if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
+        toast.error(t("common.failedToCaptureReportForPdf"));
         return;
       }
 
       pdf.save(`ProfitLoss-${toDate || "report"}.pdf`);
-      toast.success("PDF downloaded");
+      toast.success(t("common.pdfDownloaded"));
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
-          ? `Failed to download PDF: ${error.message}`
-          : "Failed to download PDF",
+          ? t("common.failedToDownloadPdfWithError", {
+              error: error.message,
+            })
+          : t("common.failedToDownloadPdf"),
       );
     } finally {
       if (host) host.setAttribute("style", prevHostStyle);
@@ -174,7 +178,7 @@ const ProfitLoss = ({
               >
                 <div />
                 <h3 className="text-xl font-semibold ">
-                  Profit &amp; Loss Report
+                  {t("report.profitLoss.profitLossReport")}
                 </h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
@@ -195,7 +199,7 @@ const ProfitLoss = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="As On Date"
+                  label={t("report.profitLoss.asOnDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -205,13 +209,13 @@ const ProfitLoss = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label="Branch"
+                      label={t("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("common.selectBranch")}
+                      searchPlaceholder={t("common.searchBranch")}
                     />
                   )}
                 />
@@ -291,13 +295,13 @@ const ProfitLoss = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className="text-white text-center">
-                      Expenditure
+                      {t("report.profitLoss.expenditure")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      Break Up
+                      {t("common.breakUp")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      Balance
+                      {t("common.balance")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -345,7 +349,7 @@ const ProfitLoss = ({
                       colSpan={2}
                       className="font-semibold border border-secondary"
                     >
-                      Sub Total
+                      {t("common.subTotal")}
                     </TableCell>
                     <TableCell className="font-semibold border border-secondary">
                       {ledgerExpenditureTableData &&
@@ -382,7 +386,7 @@ const ProfitLoss = ({
                       colSpan={2}
                       className="font-semibold border border-secondary"
                     >
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell className="font-semibold border border-secondary">
                       {(
@@ -411,13 +415,13 @@ const ProfitLoss = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className="text-white text-center">
-                      Income
+                      {t("report.profitLoss.income")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      Break Up
+                      {t("common.breakUp")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      Balance
+                      {t("common.balance")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -463,7 +467,7 @@ const ProfitLoss = ({
                       colSpan={2}
                       className="font-semibold border border-secondary"
                     >
-                      Sub Total
+                      {t("common.subTotal")}
                     </TableCell>
                     <TableCell className="font-semibold border border-secondary">
                       {ledgerIncomeTableData &&
@@ -498,7 +502,7 @@ const ProfitLoss = ({
                       colSpan={2}
                       className="font-semibold border border-secondary"
                     >
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell className="font-semibold border border-secondary">
                       {(

@@ -29,6 +29,7 @@ import { useEffect, useState } from "react";
 import { IoPrint } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const CloseAccount = ({
   loading,
@@ -56,7 +57,10 @@ const CloseAccount = ({
   fromDate,
   getBankLoading,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
+
   useEffect(() => {
     // Initialize form values or perform any setup needed
     if (window !== "undefined") {
@@ -76,7 +80,9 @@ const CloseAccount = ({
 
   return (
     <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">Close Account</h3>
+      <h3 className="text-2xl font-semibold text-center">
+        {t("bank.closeAccount")}
+      </h3>
 
       <ScrollArea className="w-full h-full">
         <Form {...form}>
@@ -96,16 +102,17 @@ const CloseAccount = ({
                     <div className="flex gap-3 items-end w-full">
                       <div className="flex-1">
                         <DropdownField
-                          label="Bank Account"
+                          label={t("bank.bankAccount")}
                           value={field.value}
                           onChange={field.onChange}
                           options={bankAccountData}
                           optionLabelKey="Bank_Name"
-                          placeholder="Select bank account"
-                          searchPlaceholder="Search bank account..."
+                          placeholder={t("bank.selectBankAccount")}
+                          searchPlaceholder={t("bank.searchBankAccount")}
                           isRequired
                         />
                       </div>
+
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -123,8 +130,9 @@ const CloseAccount = ({
                               <IoPrint />
                             </div>
                           </TooltipTrigger>
+
                           <TooltipContent>
-                            <p>View Ledger</p>
+                            <p>{t("bank.viewLedger")}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -136,8 +144,7 @@ const CloseAccount = ({
                 <DatePickerField
                   control={form.control}
                   name="closingDate"
-                  label="Closing Date"
-               
+                  label={t("bank.closingDate")}
                   isRequired
                   disabled
                 />
@@ -146,8 +153,8 @@ const CloseAccount = ({
                 <InputField
                   control={form.control}
                   name="availableBalance"
-                  label="Available Balance"
-                  placeholder="Enter available balance"
+                  label={t("bank.availableBalance")}
+                  placeholder={t("bank.enterAvailableBalance")}
                   readOnly
                 />
 
@@ -155,8 +162,8 @@ const CloseAccount = ({
                 <InputField
                   control={form.control}
                   name="closingAmount"
-                  label="Closing Amount"
-                  placeholder="Enter closing amount"
+                  label={t("bank.closingAmount")}
+                  placeholder={t("bank.enterClosingAmount")}
                   type="number"
                   isRequired
                 />
@@ -165,8 +172,8 @@ const CloseAccount = ({
                 <InputField
                   control={form.control}
                   name="refVouchNo"
-                  label="Ref. Vouch No."
-                  placeholder="Enter ref. vouch no."
+                  label={t("bank.refVouchNo")}
+                  placeholder={t("bank.enterRefVouchNo")}
                 />
 
                 {/* Transaction Mode */}
@@ -175,7 +182,10 @@ const CloseAccount = ({
                   name="transMode"
                   render={({ field }) => (
                     <FormItem className="flex flex-col justify-end h-full">
-                      <FormLabel className="mb-2">Transaction Mode</FormLabel>
+                      <FormLabel className="mb-2">
+                        {t("bank.transactionMode")}
+                      </FormLabel>
+
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -186,27 +196,33 @@ const CloseAccount = ({
                             !Number.isInteger(
                               parseFloat(form.getValues("availableBalance")),
                             ) &&
-                            !form.getValues("availableBalance").endsWith(".00")
+                            !form
+                              .getValues("availableBalance")
+                              .endsWith(".00")
                           ) && (
                             <FormItem className="flex items-center space-x-2 space-y-0">
                               <FormControl>
                                 <RadioGroupItem value="cash" />
                               </FormControl>
+
                               <FormLabel className="font-normal cursor-pointer">
-                                Cash
+                                {t("common.cash")}
                               </FormLabel>
                             </FormItem>
                           )}
+
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="bank" />
                             </FormControl>
+
                             <FormLabel className="font-normal cursor-pointer">
-                              Bank
+                              {t("common.bank")}
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -222,15 +238,18 @@ const CloseAccount = ({
                 isActiveDenom && (
                   <div className="w-full border border-slate-100 rounded-xl p-4 bg-slate-50/50 mt-2">
                     <h5 className="text-sm font-semibold text-slate-700 mb-3">
-                      Cash Denomination
+                      {t("bank.cashDenomination")}
                     </h5>
+
                     <CashDenomTable
                       notes={notes}
                       denominators={denominators}
                       totalAmount={cashTransactionTotal}
                       cashTransactionGrandTotal={cashTransactionGrandTotal}
                       handleDenominatorChange={handleDenominatorChange}
-                      amountTobePaid={Number(form.getValues("closingAmount"))}
+                      amountTobePaid={Number(
+                        form.getValues("closingAmount"),
+                      )}
                       outTable={false}
                       tableType="out"
                     />
@@ -243,7 +262,7 @@ const CloseAccount = ({
                     name="bank"
                     render={({ field }) => (
                       <DropdownField
-                        label="Bank"
+                        label={t("common.bank")}
                         value={field.value}
                         onChange={field.onChange}
                         options={
@@ -257,8 +276,8 @@ const CloseAccount = ({
                         }
                         disabled={!form.getValues("bankAccount")}
                         optionLabelKey="Bank_Name"
-                        placeholder="Select bank"
-                        searchPlaceholder="Search bank..."
+                        placeholder={t("bank.selectBank")}
+                        searchPlaceholder={t("bank.searchBank")}
                         isRequired
                       />
                     )}
@@ -288,7 +307,7 @@ const CloseAccount = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("common.add")
                   )}
                 </Button>
               </div>
@@ -320,4 +339,5 @@ const CloseAccount = ({
     </div>
   );
 };
+
 export default CloseAccount;

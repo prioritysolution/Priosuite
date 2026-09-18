@@ -2,6 +2,7 @@ import axios from "axios";
 import Cookies from "./secureCookieHelper";
 import getCookieData from "./getCookieData";
 import toast from "react-hot-toast";
+import { clearStoredUserDashboard } from "./userDashboardStorage";
 
 const makeApiCall = async (method, data, content = "application/json") => {
   try {
@@ -73,6 +74,7 @@ const makeApiCall = async (method, data, content = "application/json") => {
 
     if (error.response?.status === 401) {
       Cookies.remove("prioBankClientToken");
+      clearStoredUserDashboard();
       if (typeof window !== "undefined") {
         window.location.href = "/login"; // Redirect to login page
       }

@@ -1,10 +1,13 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export default function NpaCards({ metrics }) {
+  const { t } = useTranslation();
   return (
     <Card className="border-slate-200/80 shadow-sm">
       <CardContent className="space-y-4 p-5">
@@ -17,14 +20,22 @@ export default function NpaCards({ metrics }) {
             >
               <div>
                 <p className="text-sm font-medium text-slate-500">
-                  {metric.label}
+                  {metric.id === "gross"
+                    ? t("dashboard.grossNpa")
+                    : metric.id === "net"
+                      ? t("dashboard.netNpa")
+                      : metric.label}
                 </p>
                 <p className="mt-1 text-xl font-bold text-slate-900">
                   {metric.value}
                 </p>
                 {metric.subLabel ? (
                   <p className="mt-0.5 text-xs text-slate-500">
-                    {metric.subLabel}
+                    {metric.id === "gross"
+                      ? t("dashboard.grossNpaSub")
+                      : metric.id === "net"
+                        ? t("dashboard.netNpaSub")
+                        : metric.subLabel}
                   </p>
                 ) : null}
               </div>

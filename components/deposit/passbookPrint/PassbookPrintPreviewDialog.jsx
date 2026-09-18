@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -42,6 +44,8 @@ const safeArray = (len) => {
 
 // ─── First Page Preview ───────────────────────────────────────────────────────
 const FirstPagePrint = ({ param, frontPageDetail, printRef }) => {
+  const { t } = useTranslation();
+
   if (!frontPageDetail) return null;
 
   const formattedOpeningDate = frontPageDetail.Opening_Date

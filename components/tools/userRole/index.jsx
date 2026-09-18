@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
 import { FaMinusCircle, FaPlusCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const UserRole = ({
   // loading,
@@ -18,6 +19,8 @@ const UserRole = ({
   openModuleId,
   setOpenModuleId,
 }) => {
+  const { t } = useTranslation();
+
   const userListData = useSelector((state) => state?.userRole?.userData);
 
   const [parentStates, setParentStates] = useState({});
@@ -53,7 +56,9 @@ const UserRole = ({
   return (
     <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
       <div className=" flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">User Role</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("userRole.userRole")}
+        </h3>
 
         <ScrollArea className="w-full px-2 sm:px-10 2xl:px-20">
           <div className="w-full">
@@ -66,13 +71,13 @@ const UserRole = ({
                       name="user"
                       render={({ field }) => (
                         <DropdownField
-                          label="User"
+                          label={t("userRole.user")}
                           value={field.value}
                           onChange={field.onChange}
                           options={userListData}
                           optionLabelKey="User_Mail" // Specify the key for label
-                          placeholder="Select user"
-                          searchPlaceholder="Search user..."
+                          placeholder={t("userRole.selectUser")}
+                          searchPlaceholder={t("userRole.searchUser")}
                         />
                       )}
                     />
@@ -81,11 +86,13 @@ const UserRole = ({
                       className="self-end w-1/2 "
                       onClick={form.handleSubmit(handleSubmit)}
                     >
-                      Add
+                      {t("common.add")}
                     </Button>
                   </div>
                   <div className="w-full border border-primary rounded-lg p-5 flex flex-col items-start gap-1">
-                    <h3 className="font-semibold text-lg pb-5">Select Role</h3>
+                    <h3 className="font-semibold text-lg pb-5">
+                      {t("userRole.selectRole")}
+                    </h3>
                     {roleAssignList.map((module) => {
                       const isParentChecked =
                         parentStates[module.Module_Id] || false;

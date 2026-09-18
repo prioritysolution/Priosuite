@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -52,6 +53,8 @@ const DetailedListPreview = ({
   fromDate,
   toDate,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -119,49 +122,49 @@ const DetailedListPreview = ({
               <TableHeader>
                 <TableRow className="h-[60px] border-black">
                   <TableHead className="text-black p-0 border-black text-center w-[40px]">
-                    SL. NO.
+                    {t("deposit.reports.print.slNo")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    CUSTOMER NAME
+                    {t("deposit.reports.print.customerName")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    GUARDIAN NAME
+                    {t("deposit.reports.print.guardianName")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[50px]">
-                    ACC. NO.
+                    {t("deposit.reports.print.accNo")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[40px]">
-                    REF. AC. NO.
+                    {t("deposit.reports.print.refAcNo")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center ">
-                    L/F. NO.
+                    {t("deposit.reports.print.lfNo")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[70px]">
-                    OPENING DATE
+                    {t("deposit.reports.print.openingDate")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[40px]">
-                    ROI.
+                    {t("deposit.reports.print.roi")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[70px]">
-                    MATURITY DATE
+                    {t("deposit.reports.print.maturityDate")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    OPENING
+                    {t("deposit.reports.print.opening")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    DEPOSIT
+                    {t("deposit.reports.print.deposit")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    WITHDRAWN
+                    {t("deposit.reports.print.withdrawn")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    CLOSING
+                    {t("deposit.reports.print.closing")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    PAID INTT.
+                    {t("deposit.reports.print.paidIntt")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    DUE INTT.
+                    {t("deposit.reports.print.dueIntt")}
                   </TableHead>
                 </TableRow>
               </TableHeader>

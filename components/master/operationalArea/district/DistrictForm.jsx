@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -13,6 +14,8 @@ const DistrictForm = ({
   stateData,
   onCancel,
 }) => {
+  const { t } = useTranslation();
+
   const isEdit = editData && Object.keys(editData).length > 0;
 
   return (
@@ -25,18 +28,18 @@ const DistrictForm = ({
         <InputField
           control={form.control}
           name="name"
-          label="District Name"
-          placeholder="Enter district name"
+          label={t("master.operationalArea.fields.districtName")}
+          placeholder={t("master.operationalArea.placeholders.districtName")}
           isRequired
         />
         <DropdownField
           control={form.control}
           name="stateId"
-          label="State"
+          label={t("master.operationalArea.fields.state")}
           options={stateData}
           optionLabelKey="State_Name"
-          placeholder="Select state"
-          searchPlaceholder="Search state..."
+          placeholder={t("master.operationalArea.placeholders.state")}
+          searchPlaceholder={t("master.operationalArea.placeholders.searchState")}
         />
         <div className="flex items-center justify-end gap-3 pt-1">
           <Button
@@ -46,7 +49,7 @@ const DistrictForm = ({
             onClick={onCancel}
             disabled={postLoading || updateLoading}
           >
-            Cancel
+            {t("common.buttons.cancel")}
           </Button>
           <Button
             type="submit"
@@ -56,9 +59,9 @@ const DistrictForm = ({
             {postLoading || updateLoading ? (
               <ClipLoader color="#fff" size={18} speedMultiplier={0.7} />
             ) : isEdit ? (
-              "Update"
+              t("common.buttons.update")
             ) : (
-              "Add"
+              t("common.buttons.add")
             )}
           </Button>
         </div>

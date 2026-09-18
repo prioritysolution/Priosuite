@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -19,21 +20,23 @@ const TransactionRegisterTable = ({
   handleShowLedger,
   handleGenerateDepositReceipt,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Table>
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className="text-center">Sl No.</TableHead>
-          <TableHead className="">Customer Name</TableHead>
-          <TableHead className="">Account No.</TableHead>
-          <TableHead className="">Ref. Ac. No.</TableHead>
-          <TableHead className="">L/F No.</TableHead>
-          <TableHead className="">Trans. Mode</TableHead>
-          <TableHead className="">Deposit</TableHead>
-          <TableHead className="">Withdrawn</TableHead>
-          <TableHead className="">Interest</TableHead>
-          <TableHead className="">Narration</TableHead>
-          <TableHead className="">Action</TableHead>
+          <TableHead className="text-center">{t("deposit.reports.slNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.customerName")}</TableHead>
+          <TableHead className="">{t("deposit.reports.accountNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.refAcNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.lfNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.transMode")}</TableHead>
+          <TableHead className="">{t("deposit.reports.deposit")}</TableHead>
+          <TableHead className="">{t("deposit.reports.withdrawn")}</TableHead>
+          <TableHead className="">{t("deposit.reports.interest")}</TableHead>
+          <TableHead className="">{t("deposit.reports.narration")}</TableHead>
+          <TableHead className="">{t("deposit.reports.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">

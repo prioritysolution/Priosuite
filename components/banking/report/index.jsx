@@ -19,6 +19,7 @@ import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import { ClipLoader } from "react-spinners";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useTranslation } from "react-i18next";
 
 const BankingReport = ({
   loading,
@@ -40,6 +41,7 @@ const BankingReport = ({
   currentTime,
   fromDate,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
@@ -117,7 +119,7 @@ const BankingReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Bank Report</h3>
+                <h3 className="text-xl font-semibold ">{t("bank.bankReport")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -136,7 +138,7 @@ const BankingReport = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("bank.fromDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -144,7 +146,7 @@ const BankingReport = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"
+                  label={t("bank.toDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -154,13 +156,13 @@ const BankingReport = ({
                   name="reportType"
                   render={({ field }) => (
                     <DropdownField
-                      label="Report Type"
+                      label={t("bank.reportType")}
                       value={field.value}
                       onChange={field.onChange}
                       options={reportTypeData}
                       optionLabelKey="Option_Value" // Specify the key for label
-                      placeholder="Select report type"
-                      searchPlaceholder="Search report type..."
+                      placeholder={t("bank.selectReportType")}
+                      searchPlaceholder={t("bank.searchReportType")}
                     />
                   )}
                 />
@@ -170,13 +172,13 @@ const BankingReport = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label="Branch"
+                      label={t("bank.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("bank.selectBranch")}
+                      searchPlaceholder={t("bank.searchBranch")}
                     />
                   )}
                 />

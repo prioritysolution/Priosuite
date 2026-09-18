@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -16,18 +17,20 @@ const DividendListTable = ({
   handleShowLedger,
   loading,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Table>
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className=" text-center">Sl No.</TableHead>
-          <TableHead className="">Date</TableHead>
-          <TableHead className="">Member Type</TableHead>
-          <TableHead className="">Customer Name</TableHead>
-          <TableHead className="">Gurdian Name</TableHead>
-          <TableHead className="">Village</TableHead>
-          <TableHead className="">L/F No.</TableHead>
-          <TableHead className="">Balance</TableHead>
+          <TableHead className=" text-center">{t("membership.reports.slNo")}</TableHead>
+          <TableHead className="">{t("membership.reports.date")}</TableHead>
+          <TableHead className="">{t("membership.reports.memberType")}</TableHead>
+          <TableHead className="">{t("membership.reports.customerName")}</TableHead>
+          <TableHead className="">{t("membership.reports.guardianName")}</TableHead>
+          <TableHead className="">{t("membership.reports.village")}</TableHead>
+          <TableHead className="">{t("membership.reports.lfNo")}</TableHead>
+          <TableHead className="">{t("membership.reports.balance")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">
@@ -75,7 +78,7 @@ const DividendListTable = ({
           </TableRow>
         ) : (
           <TableRow className="bg-gray-100">
-            <TableCell colSpan={7}>Total</TableCell>
+            <TableCell colSpan={7}>{t("common.total")}</TableCell>
             <TableCell>{totalBalance?.toFixed(2)}</TableCell>
           </TableRow>
         )}

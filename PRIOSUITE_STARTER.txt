@@ -1,0 +1,361 @@
+PRIOSUITE / PRIO_BANK — COPY THIS FILE INTO ANY OTHER PROJECT
+==============================================================
+Use this as the single source of truth so a new app follows the SAME
+architecture, package stack, folder layout, AND page design/style.
+
+How to use in another project:
+  1. Copy this file to the new repo root (keep the name or rename to AGENTS.md).
+  2. Copy these Cursor rules into .cursor/rules/ :
+       - project-architecture.mdc
+       - ui-design-system.mdc
+       - forms-api-conventions.mdc
+  3. Scaffold with the folder map and package.json versions below.
+  4. Every new screen MUST use the page shell in section 8 so all pages look the same.
+
+Product: Next.js frontend for cooperative banking (UI + orchestration only).
+Remote REST API: NEXT_PUBLIC_BASE_API_URL
+Path alias: @/*  ->  project root
+
+
+1) STACK (DO NOT DOWNGRADE OR SWAP UNLESS THE USER ASKS)
+--------------------------------------------------------
+Framework     next@^15.2.4
+UI            react / react-dom @^18.3.1
+Language      typescript@5.8.2  (JSX is allowed; most screens are .jsx)
+CSS           tailwindcss@^4.3.3
+PostCSS       @tailwindcss/postcss@^4.3.3  +  postcss@^8.5.26
+Forms         react-hook-form@^7.52.1  +  @hookform/resolvers@^3.9.0  +  yup@^1.7.1
+State         @reduxjs/toolkit@^2.11.2  +  react-redux@^9.2.0
+HTTP          axios@^1.16.0
+Dates         date-fns@^3.6.0
+Calendar      react-day-picker@8.10.1   (PIN v8 ONLY — not v9)
+Tables        @tanstack/react-table@^8.19.3
+Toasts        react-hot-toast@^2.6.0
+Icons         lucide-react@^1.14.0  /  react-icons@^5.6.0
+Charts        recharts@^3.0.0  /  ag-charts-react@^13.1.0
+Motion        framer-motion@^12.38.0
+Class utils   clsx@^2.1.1  /  tailwind-merge@^3.6.0  /  class-variance-authority@^0.7.0
+Cookies       js-cookie@^3.0.5  /  crypto-es@^3.1.3
+Print/PDF     react-to-print@^3.0.5  /  jspdf@^4.2.1  /  html2canvas@^1.4.1
+Images        sharp@^0.35.3
+Lint          eslint@^9.39.4  /  eslint-config-next@^15.2.4
+Spinners      react-spinners@^0.14.1
+Drawers       vaul@^1.1.2
+Command       cmdk@1.0.0
+
+UI primitives: existing @radix-ui/react-* (dialog, popover, select, scroll-area,
+checkbox, tabs, tooltip, alert-dialog, dropdown-menu, radio-group, switch, collapsible).
+Prefer components/ui/* wrappers over raw Radix in screens.
+
+Also available (use ONLY when needed):
+  HeroUI  @heroui/*   (autocomplete, modal, theme)
+  Ant Design  antd@^6.3.1   (legacy/specific screens only)
+  Emotion  @emotion/react, @emotion/styled
+
+DO NOT introduce: Next 12/13, React 17, Tailwind 3, Formik, Zustand, MUI as default.
+
+Scripts:
+  "dev":   "next dev -p 8000"
+  "build": "next build"
+  "start": "next start -p 8000"
+  "lint":  "next lint"
+
+
+2) FOLDER MAP (DO NOT INVENT A DIFFERENT STRUCTURE)
+---------------------------------------------------
+app/                 Routes only (thin pages + layouts)
+container/           Feature logic: index, Hooks, *Apis, optional *Reducer
+components/          Screen UI (presentational only)
+common/              Shared formFields, tables, charts, dialogs, ledgers
+redux/               configureStore + ReduxProvider
+utils/               apiConfig, endPoints, cookies, dateHelpers, validationRegex
+lib/                 Small helpers (cn)
+hooks/               Generic hooks
+public/              Static assets
+components/ui/       Radix / shadcn-style primitives (Button, Table, Dialog, …)
+
+
+3) MANDATORY FEATURE FLOW
+-------------------------
+app/(dashboard)/<domain>/<feature>/page.jsx
+  -> container/<domain>/<feature>/index.jsx
+       -> Hooks.js          forms, yup, API calls, Redux dispatch, business rules
+       -> *Apis.js          HTTP wrappers only
+       -> *Reducer.js       optional RTK slice for lists/masters
+  -> components/<domain>/<feature>/index.jsx   UI only
+
+Layer rules:
+  page.jsx
+    - Metadata + render ONE container. No business logic, no API, no Redux.
+
+  container/.../index.jsx
+    - "use client"
+    - Read cookies (orgId, token)
+    - Call hooks; load masters in useEffect
+    - Pass props into the presentational component. Keep orchestration thin.
+
+  container/.../Hooks.js
+    - Own useForm + yup schema, loading, success dialogs, submit handlers
+    - Call Apis; dispatch list data into Redux when needed
+    - Export a named hook: useFeatureName
+
+  container/.../*Apis.js
+    - Only build { url, bodyData } and call doGetApiCall / doPostApiCall
+    - URLs come from utils/endPoints.js — never hardcode full API paths
+
+  container/.../*Reducer.js
+    - RTK slice for shared dropdown/table data
+    - Register the slice in redux/configureStore.js
+
+  components/...
+    - Presentational UI only
+    - Use common/formFields (DatePickerField, DropdownField, InputField, …)
+    - Do not call APIs or define yup schemas here
+
+
+4) NEW SCREEN CHECKLIST
+-----------------------
+  1. Thin app/(dashboard)/<domain>/<feature>/page.jsx  (metadata + mount container)
+  2. container/<domain>/<feature>/{index.jsx, Hooks.js, FeatureApis.js, FeatureReducer.js?}
+  3. components/<domain>/<feature>/index.jsx  using the PAGE SHELL in section 8
+  4. Add URLs in utils/endPoints.js
+  5. Register reducer in redux/configureStore.js if needed
+  6. Reuse existing hooks/masters when the same data already exists
+  7. Same design as other pages (section 8)
+  8. Packages from section 1 only
+
+When unsure: copy the nearest existing feature in the same domain and adapt it.
+
+
+5) AUTH AND SESSION
+-------------------
+Token cookie:  prioBankClientToken
+Common cookies: orgId, userBranchId, finId, beg_date, fin_start_date, fin_end_date
+Read:  getCookieData()
+Write: secureCookieHelper (encrypted)
+Dashboard layout redirects to /login if token missing
+API 401 -> clear token and redirect to /login (utils/apiConfig.js)
+
+
+6) API CONVENTIONS
+------------------
+Base URL: process.env.NEXT_PUBLIC_BASE_API_URL
+Bearer token from prioBankClientToken.
+
+endPoints.js:
+  getSomething: (orgId) => `${createApi}Org/Module/Action?org_id=${orgId}`
+
+*Apis.js:
+  export const getSomethingAPI = async (orgId) => {
+    return doGetApiCall({ url: endPoints.getSomething(orgId) });
+  };
+
+Hooks.js:
+  const res = await getSomethingAPI(orgId);
+  if (res.message === "Data Found" || res.message === "Success") {
+    dispatch(setData(res.details));   // or res.Data  (APIs vary — check both)
+  }
+
+Do not call axios from components or pages.
+
+
+7) FORMS, DATES, REDUX
+----------------------
+Always react-hook-form + yup + yupResolver in Hooks.js (not in components).
+Shared regex: utils/validationRegex.js
+Dates: DatePickerField; store Date at LOCAL NOON (utils/dateHelpers.js) so timezone
+       never shifts the day.
+API payloads: formatDateForApi(value) from @/utils/dateHelpers
+              (or format(date, "yyyy-MM-dd") only on noon-normalized Dates)
+Display: dd-MM-yyyy via formatDateForDisplay or date-fns format
+NEVER: toISOString().slice(0, 10)  or  new Date("yyyy-MM-dd") for calendar days
+Calendar: react-day-picker@8 API (not v9)
+Required fields: mark UI with isRequired and mirror in yup
+Toasts: react-hot-toast, position top-right
+Loading: ClipLoader color="#d7e6f4" size={20}  OR shared Spinner / Skeleton
+
+Redux:
+  One slice per feature domain
+  Containers/components read with useSelector((state) => state.sliceKey…)
+  Do not store entire form drafts in Redux unless that feature already does
+
+
+8) DESIGN SYSTEM — ALL PAGES MUST LOOK THE SAME
+-----------------------------------------------
+This is the shared visual language. New screens copy this. Do not invent a new look.
+
+8.1 Tokens
+  Font:           Open Sans (300–800), next/font/google
+  Radius:         --radius: 0.5rem  (rounded-lg on panels, rounded-md on inputs)
+  Primary:        hsl(219 94% 20%)     Tailwind: bg-primary / border-primary / text-primary
+  Primary text:   white                text-primary-foreground
+  Sidebar/footer: #00264D
+  Page card bg:   #fefefe
+  Dashboard bg:   bg-gray-50  (main), outer shell bg-gray-100
+  Login loading:  #eaf4fc , accent #1B74D6
+  Destructive:    red for errors and required asterisk
+  Input height:   h-10
+  ClipLoader:     color="#d7e6f4"
+
+8.2 App chrome (layout — do not restyle)
+  Root:     html/body/main h-full overflow-hidden
+  Dashboard: flex row
+    Sidebar  w-64, bg #00264D, logo row h-[64px], ScrollArea nav
+    Right column: Navbar (fixed height) + main (flex-1 overflow-y-auto bg-gray-50
+                  custom-scrollbar p-2 sm:p-4) + Footer h-10 bg #00264D
+  Mobile: sidebar slides over; backdrop bg-black/60
+  Laptop <=1400px: existing scale(0.82) on body > main (keep as-is)
+
+8.3 PAGE SHELL (use on every form / master / report / transaction screen)
+
+  <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+    <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+      <h3 className="text-2xl font-semibold">Page Title</h3>
+
+      <ScrollArea className="w-full h-full">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="w-full h-full flex flex-col gap-5 justify-between"
+            autoComplete="off"
+          >
+            {/* SECTION BLOCKS */}
+            <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3">
+              <h3 className="w-full text-center text-xl font-semibold">Section Title</h3>
+              <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
+                {/* InputField / DropdownField / DatePickerField */}
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full sm:w-1/5 self-end" disabled={loading}>
+              {loading ? <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} /> : "Add"}
+            </Button>
+          </form>
+        </Form>
+      </ScrollArea>
+    </div>
+  </div>
+
+  After the shell: SuccessMessage dialog (common/dialog/SuccessMessage).
+
+8.4 Fields
+  Always common/formFields, wired with control={form.control}.
+  Label: text-sm font-medium. Required: red * via isRequired.
+  Wrapper: h-10 rounded-md border border-input, focus-within:ring-2 ring-ring.
+  Disabled: bg-muted/80.
+  Dropdown: optionLabelKey from API (often Option_Value, Accout_No, Bank_Name).
+  DatePicker: react-day-picker v8, display dd-MM-yyyy.
+  Number inputs: max 2 decimals; no spinner arrows (globals.css).
+  Radio groups sit in a bordered row: border border-input rounded-md px-3 py-3.
+
+8.5 Buttons
+  Default submit: Button (bg-primary text-primary-foreground), w-full sm:w-1/5 self-end
+  Icon actions (print/ledger/calc): h-10 px-4 bg-primary text-white, Tooltip around them
+  Form inner buttons: type="button" unless they submit
+  Destructive: variant="destructive"
+
+8.6 Tables
+  components/ui/table
+  Outer: className="border border-primary"
+  Header cells: h-12, text-muted-foreground
+  Rows: border-b, hover:bg-muted/50
+  Footer totals: bg-muted/50 font-medium
+  Wrap wide reports in ScrollArea + ScrollBar
+  Print/PDF: react-to-print / jspdf + html2canvas-pro
+
+8.7 Dialogs / loading / empty
+  Success: common/dialog/SuccessMessage (green check, Close)
+  Other: components/ui/dialog or alert-dialog
+  Loading fields: Skeleton className="h-4 w-28 bg-secondary"
+  Loading buttons: ClipLoader as above
+  Toasts: top-right, z-index high
+
+8.8 Responsive
+  Mobile-first Tailwind 4: grid-cols-1 sm:… lg:… xl:…
+  Full-height screens: h-full / min-h-0 + ScrollArea (page itself does not scroll)
+  Sidebar overlay below lg (1024px)
+
+8.9 Screen-type exceptions (do NOT force the 2px primary shell)
+  Login / auth: branded split or centered card. Keep existing login.
+  Dashboard home: bg-slate-50, welcome header, DashboardCard grids.
+  Approval list pages: search + table; still use primary borders and same fields.
+
+8.10 Shared pieces to reuse (do not rebuild)
+  common/formFields/*     Input, Dropdown, DatePicker, Textarea, Radio
+  common/dialog/SuccessMessage
+  common/forms/*          AccountSearchForm, MemberSearchForm, LedgerSearchForm
+  common/tables/*         CashDenomTable, search tables
+  common/ledger/*         deposit / loan / bank / investment / share ledgers
+  common/cards/*          DashboardCard
+  components/ui/*         Button, Table, Dialog, ScrollArea, Tabs, Tooltip, …
+
+
+9) THEME CSS (COPY INTO app/globals.css)
+----------------------------------------
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 210 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 10% 3.9%;
+    --primary: 219 94% 20%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 13% 95%;
+    --secondary-foreground: 210 5.9% 10%;
+    --muted: 210 4.8% 95.9%;
+    --muted-foreground: 210 3.8% 46.1%;
+    --accent: 210 40% 95.9%;
+    --accent-foreground: 210 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 5.9% 90%;
+    --input: 210 5.9% 90%;
+    --ring: 210.8 77.2% 49.8%;
+    --radius: 0.5rem;
+  }
+}
+
+Keep: html/body height 100%; body bg-background text-foreground;
+hide number spinners; visible custom scrollbars; Open Sans on <body>.
+
+
+10) QUICK “WHERE DO I EDIT?”
+----------------------------
+New route            app/(dashboard)/.../page.jsx
+Load data / submit   container/.../Hooks.js
+API URL              utils/endPoints.js + *Apis.js
+Screen layout        components/.../index.jsx   (use section 8 shell)
+Shared input         common/formFields/...
+Global store         redux/configureStore.js
+Cookies / auth       utils/getCookieData.js, secureCookieHelper.js
+Dependencies         package.json (same majors as section 1)
+
+
+11) WHAT AI MUST NOT DO
+-----------------------
+- Invent a different folder architecture (no services/, views/, features/ unless asked)
+- Put API or business logic in app/ pages or presentational components
+- Call axios from components
+- Hardcode API base URLs
+- Commit .env, secrets, or credentials
+- Drive-by refactors or unsolicited markdown docs
+- Rewrite shared DatePicker / Dropdown unless fixing a real bug
+- Install old stacks (Next 13, Tailwind 3, Formik, Zustand, MUI default)
+- Invent a new page look — every form/master/report screen uses section 8
+
+
+12) MENTAL MODEL
+----------------
+User opens /investment/investmentClose
+  -> thin page
+  -> container wires hooks + initial API loads
+  -> Hooks owns form + close logic
+  -> Apis hit endPoints
+  -> component renders the SAME shell + fields/tables
+  -> Redux supplies dropdown options if needed
+  -> SuccessMessage on save

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import {
   Table,
@@ -18,6 +19,8 @@ const TransactionRegisterPreview = ({
   fromDate,
   toDate,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -129,36 +132,16 @@ const TransactionRegisterPreview = ({
         {pageData.length > 0 && (
           <TableHeader>
             <TableRow className="h-[40px]">
-              <TableHead className="text-black p-0 border-black text-center w-[40px]">
-                SL. NO.
-              </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                MEMBER TYPE
-              </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
-                CUSTOMER NAME
-              </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
-                GUARDIAN NAME
-              </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[140px]">
-                VILLAGE
-              </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center">
-                L/F. NO.
-              </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                TRANS. MODE
-              </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                NO. OF SHARE
-              </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
-                ISSUE
-              </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
-                RELEASE
-              </TableHead>
+              <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("membership.reports.print.slNo")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.memberType")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">{t("membership.reports.print.customerName")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">{t("membership.reports.print.guardianName")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[140px]">{t("membership.reports.print.village")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center">{t("membership.reports.print.lfNo")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.transMode")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.noOfShare")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">{t("membership.reports.print.issue")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">{t("membership.reports.print.release")}</TableHead>
             </TableRow>
           </TableHeader>
         )}
@@ -223,7 +206,7 @@ const TransactionRegisterPreview = ({
                       colSpan={8}
                       className="border border-black text-right p-0 pr-5 "
                     >
-                      Sub Total
+                      {t("common.subtotal")}
                     </TableCell>
                     <TableCell className="border p-0 border-black text-right pr-[2px]">
                       {row.subTotalIssue ? row.subTotalIssue.toFixed(2) : ""}
@@ -245,7 +228,7 @@ const TransactionRegisterPreview = ({
                       colSpan={8}
                       className="font-semibold p-0 pr-5 border border-black text-right"
                     >
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell className="font-semibold p-0 border border-black text-right pr-[2px]">
                       {row?.grandTotalIssue
@@ -286,8 +269,8 @@ const TransactionRegisterPreview = ({
             <p>{address}</p>
             <p>{regNo}</p>
             <p className="text-sm">
-              Share Transaction Register From{" "}
-              {fromDate && format(fromDate, "dd-MM-yyyy")} To{" "}
+              {t("membership.reports.preview.transactionRegisterFrom")}{" "}
+              {fromDate && format(fromDate, "dd-MM-yyyy")} {t("membership.reports.preview.to")}{" "}
               {toDate && format(toDate, "dd-MM-yyyy")}
             </p>
           </div>
@@ -297,12 +280,12 @@ const TransactionRegisterPreview = ({
 
           {/* FOOTER */}
           <div className="w-full h-[40px] flex items-end justify-between text-xs relative">
-            <p>Generated By : {userName}</p>
+            <p>{t("membership.reports.preview.generatedBySpaced")} {userName}</p>
             <p className="italic text-gray-600 text-center w-full absolute  left-1/2 -translate-x-1/2">
-              This report is generated by PrioSuite.
+              {t("membership.reports.preview.footerNote")}
             </p>
             <p>
-              Generated On : {currentDate} {currentTime}
+              {t("membership.reports.preview.generatedOnSpaced")} {currentDate} {currentTime}
             </p>
           </div>
         </div>

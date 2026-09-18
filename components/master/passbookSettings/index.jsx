@@ -14,7 +14,8 @@
 // import { useSelector } from "react-redux";
 // import { ClipLoader } from "react-spinners";
 
-// const PassbookSettings = ({ loading, form, handleSubmit }) => {
+// const PassbookSettings = ({
+//   loading, form, handleSubmit }) => {
 //   const moduleData = useSelector(
 //     (state) => state?.passbookSettings?.moduleData,
 //   );
@@ -34,11 +35,11 @@
 //                 <DropdownField
 //                   control={form.control}
 //                   name="moduleId"
-//                   label="Module"
+//                   label={t("master.passbookSettings.fields.module")}
 //                   options={moduleData}
 //                   optionLabelKey="Module_Name"
-//                   placeholder="Select module"
-//                   searchPlaceholder="Search module..."
+//                   placeholder={t("master.passbookSettings.placeholders.module")}
+//                   searchPlaceholder={t("master.passbookSettings.placeholders.searchModule")}
 //                 />
 
 //                 <InputField
@@ -60,7 +61,7 @@
 //                 <InputField
 //                   control={form.control}
 //                   name="firstPageTop"
-//                   label="First Page Top"
+//                   label={t("master.passbookSettings.fields.firstPageTop")}
 //                   placeholder="Enter first page top"
 //                   type="number"
 //                 />
@@ -119,7 +120,10 @@
 // };
 // export default PassbookSettings;
 
+
 "use client";
+
+import { useTranslation } from "react-i18next";
 
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -138,6 +142,7 @@ const SectionLabel = ({ children }) => (
 const Divider = () => <hr className="border-border" />;
 
 const PassbookSettings = ({ loading, form, handleSubmit }) => {
+  const { t } = useTranslation();
   const moduleData = useSelector(
     (state) => state?.passbookSettings?.moduleData,
   );
@@ -148,10 +153,10 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
         {/* Header */}
         <div className="px-6 py-4 border-b border-border bg-background">
           <h3 className="text-lg font-semibold tracking-tight text-foreground">
-            Passbook Settings
+            {t("master.passbookSettings.title")}
           </h3>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Configure page layout and line spacing for passbook printing.
+            {t("master.passbookSettings.subtitle")}
           </p>
         </div>
 
@@ -166,15 +171,15 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
               >
                 {/* Module */}
                 <div className="md:w-1/2 w-full">
-                  <SectionLabel>Module</SectionLabel>
+                  <SectionLabel>{t("master.passbookSettings.sections.module")}</SectionLabel>
                   <DropdownField
                     control={form.control}
                     name="moduleId"
-                    label="Module"
+                    label={t("master.passbookSettings.fields.module")}
                     options={moduleData}
                     optionLabelKey="Module_Name"
-                    placeholder="Select module"
-                    searchPlaceholder="Search module..."
+                    placeholder={t("master.passbookSettings.placeholders.module")}
+                    searchPlaceholder={t("master.passbookSettings.placeholders.searchModule")}
                   />
                 </div>
 
@@ -182,20 +187,20 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
 
                 {/* Page Size */}
                 <div>
-                  <SectionLabel>Page Size</SectionLabel>
+                  <SectionLabel>{t("master.passbookSettings.sections.pageSize")}</SectionLabel>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                       control={form.control}
                       name="pageHeight"
-                      label="Page Height (cm)"
-                      placeholder="e.g. 29.7"
+                      label={t("master.passbookSettings.fields.pageHeight")}
+                      placeholder={t("master.passbookSettings.placeholders.pageHeight")}
                       type="number"
                     />
                     <InputField
                       control={form.control}
                       name="pageWidth"
-                      label="Page Width (cm)"
-                      placeholder="e.g. 21.0"
+                      label={t("master.passbookSettings.fields.pageWidth")}
+                      placeholder={t("master.passbookSettings.placeholders.pageWidth")}
                       type="number"
                     />
                   </div>
@@ -205,34 +210,34 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
 
                 {/* Line Configuration */}
                 <div>
-                  <SectionLabel>Line Configuration</SectionLabel>
+                  <SectionLabel>{t("master.passbookSettings.sections.lineConfiguration")}</SectionLabel>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                       control={form.control}
                       name="firstPageTop"
-                      label="First Page Top"
-                      placeholder="e.g. 10"
+                      label={t("master.passbookSettings.fields.firstPageTop")}
+                      placeholder={t("master.passbookSettings.placeholders.firstPageTop")}
                       type="number"
                     />
                     <InputField
                       control={form.control}
                       name="firstPageLine"
-                      label="Lines in First Page"
-                      placeholder="e.g. 24"
+                      label={t("master.passbookSettings.fields.linesFirstPage")}
+                      placeholder={t("master.passbookSettings.placeholders.linesFirstPage")}
                       type="number"
                     />
                     <InputField
                       control={form.control}
                       name="secondPageLine"
-                      label="Lines in Second Page"
-                      placeholder="e.g. 30"
+                      label={t("master.passbookSettings.fields.linesSecondPage")}
+                      placeholder={t("master.passbookSettings.placeholders.linesSecondPage")}
                       type="number"
                     />
                     <InputField
                       control={form.control}
                       name="middlePageGap"
-                      label="Gap in Middle Page"
-                      placeholder="e.g. 5"
+                      label={t("master.passbookSettings.fields.gapMiddlePage")}
+                      placeholder={t("master.passbookSettings.placeholders.gapMiddlePage")}
                       type="number"
                     />
                   </div>
@@ -242,13 +247,13 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
 
                 {/* Pagination */}
                 <div>
-                  <SectionLabel>Pagination</SectionLabel>
+                  <SectionLabel>{t("master.passbookSettings.sections.pagination")}</SectionLabel>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                       control={form.control}
                       name="nextPageGap"
-                      label="Gap of Next Page"
-                      placeholder="e.g. 8"
+                      label={t("master.passbookSettings.fields.gapNextPage")}
+                      placeholder={t("master.passbookSettings.placeholders.gapNextPage")}
                       type="number"
                     />
                   </div>
@@ -268,7 +273,7 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
                         speedMultiplier={0.7}
                       />
                     ) : (
-                      "Save Settings"
+                      t("master.passbookSettings.buttons.save")
                     )}
                   </Button>
                 </div>

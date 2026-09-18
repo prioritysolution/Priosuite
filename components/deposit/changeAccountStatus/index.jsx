@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import DropdownField from "@/common/formFields/DropdownField";
 import AccountSearchForm from "@/common/forms/AccountSearchForm";
@@ -32,10 +34,12 @@ const ChangeAccountStatus = ({
   resetTrigger,
   statusListData,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Change Account Status</h3>
+        <h3 className="text-2xl font-semibold ">{t("deposit.changeAccountStatus.title")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10">
           <div className="w-full mb-2">
@@ -56,7 +60,7 @@ const ChangeAccountStatus = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Account Details
+                    {t("deposit.sections.accountDetails")}
                   </h3>
                   {getDepositLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-5 gap-y-3 ">
@@ -75,71 +79,71 @@ const ChangeAccountStatus = ({
                       <InputField
                         control={form.control}
                         name="memberNo"
-                        label="Member No."
-                        placeholder="Enter member no."
+                        label={t("deposit.fields.memberNo")}
+                        placeholder={t("deposit.placeholders.memberNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="cifNo"
-                        label="CIF No."
-                        placeholder="Enter cif no."
+                        label={t("deposit.fields.cifNo")}
+                        placeholder={t("deposit.placeholders.cifNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="accountNo"
-                        label="Account No."
-                        placeholder="Enter account no."
+                        label={t("deposit.fields.accountNo")}
+                        placeholder={t("deposit.placeholders.accountNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="memberName"
-                        label="Member Name"
-                        placeholder="Enter member name"
+                        label={t("deposit.fields.memberName")}
+                        placeholder={t("deposit.placeholders.memberName")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="gurdianName"
-                        label="Gurdian Name"
-                        placeholder="Enter gurdian name"
+                        label={t("deposit.fields.guardianName")}
+                        placeholder={t("deposit.placeholders.guardianName")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="mobile"
-                        label="Mobile No."
-                        placeholder="Enter mobile no."
+                        label={t("deposit.fields.mobileNo")}
+                        placeholder={t("deposit.placeholders.mobileNo")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="availableBalance"
-                        label="Available Balance"
-                        placeholder="Enter available balance"
+                        label={t("deposit.fields.availableBalance")}
+                        placeholder={t("deposit.placeholders.availableBalance")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="currentStatus"
-                        label="Current Status"
-                        placeholder="Enter current status"
+                        label={t("deposit.changeAccountStatus.currentStatus")}
+                        placeholder={t("deposit.placeholders.memberNo")}
                         readOnly
                       />
 
                       <DropdownField
                         control={form.control}
                         name="newStatus"
-                        label="New Status"
+                        label={t("deposit.changeAccountStatus.newStatus")}
                         options={statusListData}
                         optionLabelKey="Option_Value"
-                        placeholder="Select new status"
-                        searchPlaceholder="Search news status..."
+                        placeholder={t("deposit.changeAccountStatus.selectNewStatus")}
+                        searchPlaceholder={t("deposit.changeAccountStatus.selectNewStatus")}
                         isRequired
                       />
                     </div>
@@ -159,7 +163,7 @@ const ChangeAccountStatus = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Save"
+                    t("common.buttons.save")
                   )}
                 </Button>
               )}

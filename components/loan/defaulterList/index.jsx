@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -45,6 +47,8 @@ const DefaulterList = ({
   productType,
   reportType,
 }) => {
+  const { t } = useTranslation();
+
   const [showReportForm, setShowReportForm] = useState(true);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
@@ -80,7 +84,7 @@ const DefaulterList = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Defaulter List</h3>
+                <h3 className="text-xl font-semibold ">{t("loan.defaulterList")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -99,7 +103,7 @@ const DefaulterList = ({
                 <DatePickerField
                   control={form.control}
                   name="asOnDate"
-                  label="As On Date"
+                  label={t("loan.asOnDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -107,49 +111,49 @@ const DefaulterList = ({
                 <DropdownField
                   control={form.control}
                   name="productType"
-                  label="Loan Product"
+                  label={t("loan.loanProduct")}
                   options={productTypeData}
                   optionLabelKey="Prod_Sh_Name"
-                  placeholder="Select loan product"
-                  searchPlaceholder="Search loan product..."
+                  placeholder={t("loan.selectLoanProduct")}
+                  searchPlaceholder={t("loan.searchLoanProduct")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="reportType"
-                  label="Report Type"
+                  label={t("loan.reportType")}
                   options={[
-                    { Id: "1", label: "Defaulters List" },
-                    { Id: "2", label: "Final Repay List" },
+                    { Id: "1", label: t("loan.defaultersList") },
+                    { Id: "2", label: t("loan.finalRepayList") },
                   ]}
                   optionLabelKey="label"
-                  placeholder="Select report type"
-                  searchPlaceholder="Search report type..."
+                  placeholder={t("loan.selectReportType")}
+                  searchPlaceholder={t("loan.searchReportType")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="branch"
-                  label="Branch"
+                  label={t("loan.branch")}
                   options={branchData}
                   optionLabelKey="Branch_Name"
-                  placeholder="Select branch"
-                  searchPlaceholder="Search branch..."
+                  placeholder={t("loan.selectBranch")}
+                  searchPlaceholder={t("loan.searchBranch")}
                 />
 
                 <InputField
                   control={form.control}
                   name="fromMonth"
-                  label="From Month"
-                  placeholder="Enter from month"
+                  label={t("loan.fromMonth")}
+                  placeholder={t("loan.enterFromMonth")}
                   type="number"
                 />
 
                 <InputField
                   control={form.control}
                   name="toMonth"
-                  label="To Month"
-                  placeholder="Enter to month"
+                  label={t("loan.toMonth")}
+                  placeholder={t("loan.enterToMonth")}
                   type="number"
                 />
 
@@ -158,12 +162,12 @@ const DefaulterList = ({
                   name="viewType"
                   render={({ field }) => (
                     <RadioField
-                      label="View Type"
+                      label={t("loan.viewType")}
                       value={field.value}
                       onChange={field.onChange}
                       options={[
-                        { value: "0", label: "Without Guarantor" },
-                        { value: "1", label: "With Guarantor" },
+                        { value: "0", label: t("loan.withoutGuarantor") },
+                        { value: "1", label: t("loan.withGuarantor") },
                       ]}
                       className="border border-input px-3 py-2 rounded-md"
                     />
@@ -208,17 +212,17 @@ const DefaulterList = ({
             <Table>
               <TableHeader className="sticky top-0 bg-background z-10">
                 <TableRow className="bg-gray-100">
-                  <TableHead className=" text-center">Sl No.</TableHead>
-                  <TableHead className="">Member No</TableHead>
-                  <TableHead className="">Account No</TableHead>
-                  <TableHead className="">Name</TableHead>
-                  <TableHead className="">Principal</TableHead>
-                  <TableHead className="">Interest</TableHead>
-                  <TableHead className="">OD Principal</TableHead>
-                  <TableHead className="">OD Interest</TableHead>
-                  <TableHead className="">Due Month</TableHead>
-                  <TableHead className="">Start Date</TableHead>
-                  <TableHead className="">Final Repay Date</TableHead>
+                  <TableHead className=" text-center">{t("loan.slNo")}</TableHead>
+                  <TableHead className="">{t("loan.memberNo")}</TableHead>
+                  <TableHead className="">{t("loan.accountNoShort")}</TableHead>
+                  <TableHead className="">{t("loan.name")}</TableHead>
+                  <TableHead className="">{t("loan.principal")}</TableHead>
+                  <TableHead className="">{t("loan.interest")}</TableHead>
+                  <TableHead className="">{t("loan.oDPrincipal")}</TableHead>
+                  <TableHead className="">{t("loan.oDInterest")}</TableHead>
+                  <TableHead className="">{t("loan.dueMonth")}</TableHead>
+                  <TableHead className="">{t("loan.startDate")}</TableHead>
+                  <TableHead className="">{t("loan.finalRepayDate")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="overflow-y-scroll">
@@ -277,9 +281,7 @@ const DefaulterList = ({
                     <TableCell
                       colSpan={4}
                       className="font-bold w-full text-right"
-                    >
-                      Total
-                    </TableCell>
+                    >{t("loan.total")}</TableCell>
                     <TableCell className="font-bold">
                       {tableData?.grandTotal?.principal?.toFixed(2) || "0.00"}
                     </TableCell>

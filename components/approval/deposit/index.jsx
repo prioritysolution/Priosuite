@@ -23,6 +23,7 @@ import {
 import Spinner from "@/common/loader/Spinner";
 import DepositActionModal from "./DepositActionModal";
 import { format, parseISO } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 const Badge = ({ children, variant = "default", className = "" }) => {
   const baseClasses =
@@ -64,6 +65,8 @@ const DepositApproval = ({
   searchTerm,
   setSearchTerm,
 }) => {
+  const { t } = useTranslation();
+
   const { currentPage, totalPages, totalItems, itemsPerPage } = pagination || {
     currentPage: 1,
     totalPages: 1,
@@ -81,9 +84,9 @@ const DepositApproval = ({
   };
 
   const getBadgeVariant = (type) => {
-    const t = type?.toLowerCase() || "";
-    if (t.includes("receipt")) return "success";
-    if (t.includes("payment")) return "destructive";
+    const typeLower = type?.toLowerCase() || "";
+    if (typeLower.includes("receipt")) return "success";
+    if (typeLower.includes("payment")) return "destructive";
     return "secondary";
   };
 
@@ -93,7 +96,7 @@ const DepositApproval = ({
         <div className="flex items-center gap-3">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-gray-800">
-              Deposit Approval
+              {t("depositApproval.depositApproval")}
             </h2>
           </div>
         </div>
@@ -107,7 +110,7 @@ const DepositApproval = ({
               handlePageChange(1);
             }}
             className="pl-10 bg-white border-gray-200 focus:border-primary focus:ring-primary h-10"
-            placeholder="Search by App/Acc No, Queue No..."
+            placeholder={t("depositApproval.searchPlaceholder")}
           />
         </div>
       </div>
@@ -118,31 +121,31 @@ const DepositApproval = ({
             <TableHeader className="bg-primary hover:bg-primary/90">
               <TableRow className="hover:bg-primary/90">
                 <TableHead className="w-[60px] text-white font-semibold h-11">
-                  Sl
+                  {t("common.sl")}
                 </TableHead>
                 <TableHead className="text-white font-semibold h-11 whitespace-nowrap">
-                  Trans Date
+                  {t("depositApproval.transDate")}
                 </TableHead>
                 <TableHead className="text-white font-semibold h-11 whitespace-nowrap">
-                  Queue No
+                  {t("depositApproval.queueNo")}
                 </TableHead>
                 <TableHead className="text-white font-semibold h-11 whitespace-nowrap">
-                  App / Acc No
+                  {t("depositApproval.appAccNo")}
                 </TableHead>
                 <TableHead className="text-white font-semibold h-11">
-                  Particulars
+                  {t("depositApproval.particulars")}
                 </TableHead>
                 <TableHead className="text-white font-semibold h-11 text-center">
-                  Type
+                  {t("depositApproval.type")}
                 </TableHead>
                 <TableHead className="text-white font-semibold h-11 whitespace-nowrap">
-                  Entered By
+                  {t("depositApproval.enteredBy")}
                 </TableHead>
                 <TableHead className="text-white font-semibold h-11 whitespace-nowrap">
-                  Entered On
+                  {t("depositApproval.enteredOn")}
                 </TableHead>
                 <TableHead className="text-center text-white font-semibold h-11">
-                  Action
+                  {t("common.action")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -178,7 +181,7 @@ const DepositApproval = ({
 
                     <TableCell>
                       <span className="font-bold text-primary text-sm bg-primary/5 px-2 py-1 rounded border border-primary/10">
-                        {item.Appl_No || item.Account_No || "N/A"}
+                        {item.Appl_No || item.Account_No || t("common.notAvailable")}
                       </span>
                     </TableCell>
 
@@ -196,7 +199,7 @@ const DepositApproval = ({
                         variant={getBadgeVariant(item.Vouch_Type)}
                         className="text-[10px] font-bold px-2 py-0.5 shadow-none"
                       >
-                        {item.Vouch_Type || "Unknown"}
+                        {item.Vouch_Type || t("depositApproval.unknown")}
                       </Badge>
                     </TableCell>
 
@@ -214,7 +217,7 @@ const DepositApproval = ({
                         className="bg-white border-gray-200 text-primary hover:bg-primary hover:text-white hover:border-primary shadow-sm h-8 px-3 transition-all rounded-lg border"
                         onClick={() => handleView(item)}
                       >
-                        <Eye className="w-3.5 h-3.5 mr-2" /> View
+                        <Eye className="w-3.5 h-3.5 mr-2" /> {t("common.view")}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -230,7 +233,7 @@ const DepositApproval = ({
                         <Search className="h-6 w-6 text-gray-400" />
                       </div>
                       <p className="text-sm font-medium">
-                        No pending approvals found.
+                        {t("depositApproval.noPendingApprovals")}
                       </p>
                     </div>
                   </TableCell>
@@ -243,18 +246,19 @@ const DepositApproval = ({
         {totalItems > 0 && (
           <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t bg-gray-50/50 gap-4">
             <div className="text-xs text-gray-500 font-medium">
-              Showing{" "}
+              {t("depositApproval.showing")}{" "}
               <span className="text-gray-900 font-bold">
                 {depositList.length > 0
                   ? (currentPage - 1) * itemsPerPage + 1
                   : 0}
               </span>{" "}
-              to{" "}
+              {t("depositApproval.to")}{" "}
               <span className="text-gray-900 font-bold">
                 {Math.min(currentPage * itemsPerPage, totalItems)}
               </span>{" "}
-              of <span className="text-gray-900 font-bold">{totalItems}</span>{" "}
-              records
+              {t("depositApproval.of")}{" "}
+              <span className="text-gray-900 font-bold">{totalItems}</span>{" "}
+              {t("depositApproval.records")}
             </div>
 
             <div className="flex items-center gap-2">

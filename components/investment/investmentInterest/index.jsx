@@ -28,6 +28,7 @@ import { IoPrint } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import getCookieData from "@/utils/getCookieData";
+import { useTranslation } from "react-i18next";
 
 const InvestmentInterest = ({
   loading,
@@ -49,6 +50,8 @@ const InvestmentInterest = ({
   fromDate,
   getLedgerLoading,
 }) => {
+  const { t } = useTranslation();
+
   const investmentAccountData = useSelector(
     (state) => state?.investmentInterest?.investmentAccountData,
   );
@@ -63,7 +66,9 @@ const InvestmentInterest = ({
 
   return (
     <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">Interest Posting</h3>
+      <h3 className="text-2xl font-semibold text-center">
+        {t("investment.interestPosting")}
+      </h3>
 
       <ScrollArea className="w-full h-full">
         <Form {...form}>
@@ -81,11 +86,11 @@ const InvestmentInterest = ({
                     <DropdownField
                       control={form.control}
                       name="accountNo"
-                      label="Account No."
+                      label={t("common.accountNo")}
                       options={investmentAccountData}
                       optionLabelKey="Accout_No"
-                      placeholder="Select account no."
-                      searchPlaceholder="Search account no...."
+                      placeholder={t("investment.selectAccountNo")}
+                      searchPlaceholder={t("investment.searchAccountNo")}
                     />
                   </div>
                   <TooltipProvider>
@@ -106,7 +111,7 @@ const InvestmentInterest = ({
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>View Ledger</p>
+                        <p>{t("common.viewLedger")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -116,7 +121,7 @@ const InvestmentInterest = ({
                 <DatePickerField
                   control={form.control}
                   name="interestDate"
-                  label="Interest Date"
+                  label={t("investment.interestDate")}
                   disabled={true}
                 />
 
@@ -124,8 +129,8 @@ const InvestmentInterest = ({
                 <InputField
                   control={form.control}
                   name="interestAmount"
-                  label="Interest Amount"
-                  placeholder="Enter interest amount"
+                  label={t("investment.interestAmount")}
+                  placeholder={t("investment.enterInterestAmount")}
                   type="number"
                 />
 
@@ -133,8 +138,8 @@ const InvestmentInterest = ({
                 <InputField
                   control={form.control}
                   name="refVouchNo"
-                  label="Ref. Vouch No."
-                  placeholder="Enter ref. vouch no."
+                  label={t("common.refVouchNo")}
+                  placeholder={t("common.enterRefVouchNo")}
                 />
 
                 {/* Transaction Mode */}
@@ -143,7 +148,9 @@ const InvestmentInterest = ({
                   name="transMode"
                   render={({ field }) => (
                     <FormItem className="flex flex-col justify-end h-full">
-                      <FormLabel className="mb-2">Transaction Mode</FormLabel>
+                      <FormLabel className="mb-2">
+                        {t("common.transactionMode")}
+                      </FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -155,7 +162,7 @@ const InvestmentInterest = ({
                               <RadioGroupItem value="bank" />
                             </FormControl>
                             <FormLabel className="font-normal cursor-pointer">
-                              Bank
+                              {t("common.bank")}
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
@@ -169,11 +176,11 @@ const InvestmentInterest = ({
                 <DropdownField
                   control={form.control}
                   name="bank"
-                  label="Bank"
+                  label={t("common.bank")}
                   options={bankAccountData}
                   optionLabelKey="Bank_Name"
-                  placeholder="Select bank"
-                  searchPlaceholder="Search bank..."
+                  placeholder={t("investment.selectBank")}
+                  searchPlaceholder={t("investment.searchBank")}
                 />
               </div>
 
@@ -191,7 +198,7 @@ const InvestmentInterest = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("common.add")
                   )}
                 </Button>
               </div>

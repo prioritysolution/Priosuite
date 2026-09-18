@@ -19,6 +19,7 @@ import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import AccountSearchForm from "@/common/forms/AccountSearchForm";
+import { useTranslation } from "react-i18next";
 
 const Deposit = ({
   loading,
@@ -34,6 +35,8 @@ const Deposit = ({
   resetTrigger,
   rectifyTypeId,
 }) => {
+  const { t } = useTranslation();
+
   const rectifyTypeData = useSelector(
     (state) => state?.rectifyDeposit?.rectifyTypeData
   );
@@ -45,7 +48,9 @@ const Deposit = ({
   return (
     <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Rectify Deposit</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("deposit.rectifyDeposit")}
+        </h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
           <Form {...form}>
@@ -61,13 +66,13 @@ const Deposit = ({
                     name="rectifyTypeId"
                     render={({ field }) => (
                       <DropdownField
-                        label="Rectify Type"
+                        label={t("deposit.rectifyType")}
                         value={field.value}
                         onChange={field.onChange}
                         options={rectifyTypeData}
                         optionLabelKey="Option_Value" // Specify the key for label
-                        placeholder="Select rectify type"
-                        searchPlaceholder="Search rectify type..."
+                        placeholder={t("deposit.selectRectifyType")}
+                        searchPlaceholder={t("deposit.searchRectifyType")}
                       />
                     )}
                   />
@@ -78,13 +83,13 @@ const Deposit = ({
                       name="depositProductId"
                       render={({ field }) => (
                         <DropdownField
-                          label="Deposit Product"
+                          label={t("deposit.depositProduct")}
                           value={field.value}
                           onChange={field.onChange}
                           options={productTypeData}
                           optionLabelKey="Prd_SH_Name" // Specify the key for label
-                          placeholder="Select deposit product"
-                          searchPlaceholder="Search deposit product..."
+                          placeholder={t("deposit.selectDepositProduct")}
+                          searchPlaceholder={t("deposit.searchDepositProduct")}
                         />
                       )}
                     />
@@ -114,7 +119,7 @@ const Deposit = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Basic Info Block
+                    {t("deposit.basicInfoBlock")}
                   </h3>
 
                   {getDepositDataLoading ? (
@@ -145,7 +150,7 @@ const Deposit = ({
                       <DatePickerField
                         control={form.control}
                         name="transDate"
-                        label="Transaction Date"
+                        label={t("common.transactionDate")}
                         disabled
                       />
 
@@ -154,10 +159,10 @@ const Deposit = ({
                         name="memberName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Member Name</FormLabel>
+                            <FormLabel>{t("deposit.memberName")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter member name"
+                                placeholder={t("deposit.enterMemberName")}
                                 {...field}
                                 readOnly
                               />
@@ -172,10 +177,10 @@ const Deposit = ({
                         name="gurdianName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Gurdian Name</FormLabel>
+                            <FormLabel>{t("deposit.gurdianName")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter gurdian name"
+                                placeholder={t("deposit.enterGurdianName")}
                                 {...field}
                                 readOnly
                               />
@@ -189,10 +194,10 @@ const Deposit = ({
                         name="accountNo"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Account No.</FormLabel>
+                            <FormLabel>{t("deposit.accountNo")}</FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="Enter account no."
+                                placeholder={t("deposit.enterAccountNo")}
                                 {...field}
                                 className="resize-none"
                                 readOnly
@@ -208,10 +213,10 @@ const Deposit = ({
                         name="amount"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Amount</FormLabel>
+                            <FormLabel>{t("common.amount")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter amount"
+                                placeholder={t("deposit.enterAmount")}
                                 readOnly
                                 {...field}
                               />
@@ -245,7 +250,7 @@ const Deposit = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Rectify"
+                    t("deposit.rectify")
                   )}
                 </Button>
               )}

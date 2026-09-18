@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import AccountSearchForm from "@/common/forms/AccountSearchForm";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +37,8 @@ const UploadSpecimen = ({
   signatureLink,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
+
   const [photoPreview, setPhotoPreview] = useState(null);
   const [signaturePreview, setSignaturePreview] = useState(null);
 
@@ -72,7 +76,7 @@ const UploadSpecimen = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Upload Specimen</h3>
+        <h3 className="text-2xl font-semibold ">{t("deposit.uploadSpecimen.title")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
           <div className="w-full mb-10">
@@ -91,7 +95,7 @@ const UploadSpecimen = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Basic Info Block
+                    {t("deposit.sections.basicInfo")}
                   </h3>
                   {getUploadSpecimenLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -110,29 +114,29 @@ const UploadSpecimen = ({
                       <InputField
                         control={form.control}
                         name="memberNo"
-                        label="Member No."
-                        placeholder="Enter member no."
+                        label={t("deposit.fields.memberNo")}
+                        placeholder={t("deposit.placeholders.memberNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="cifNo"
-                        label="CIF No."
-                        placeholder="Enter cif no."
+                        label={t("deposit.fields.cifNo")}
+                        placeholder={t("deposit.placeholders.cifNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="memberName"
-                        label="Member Name"
-                        placeholder="Enter member name"
+                        label={t("deposit.fields.memberName")}
+                        placeholder={t("deposit.placeholders.memberName")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="gurdianName"
-                        label="Gurdian Name"
-                        placeholder="Enter gurdian name"
+                        label={t("deposit.fields.guardianName")}
+                        placeholder={t("deposit.placeholders.guardianName")}
                         readOnly
                       />
                     </div>
@@ -143,11 +147,11 @@ const UploadSpecimen = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Previous Specimen
+                    {t("deposit.uploadSpecimen.previousSpecimen")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-3 items-start justify-center ">
                     <div className="flex flex-col items-center gap-2 text-center font-semibold">
-                      <h3>Photo</h3>
+                      <h3>{t("deposit.common.photo")}</h3>
 
                       <div className="w-[200px] h-[200px] border border-primary mx-auto relative flex items-center justify-center">
                         {getUploadSpecimenLoading ? (
@@ -162,7 +166,7 @@ const UploadSpecimen = ({
                       </div>
                     </div>
                     <div className="flex flex-col items-center gap-2 text-center font-semibold">
-                      <h3>Signature</h3>
+                      <h3>{t("deposit.common.signature")}</h3>
 
                       <div className="w-[200px] h-[50px] border border-primary mx-auto relative flex items-center justify-center">
                         {getUploadSpecimenLoading ? (
@@ -187,7 +191,7 @@ const UploadSpecimen = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    New Specimen
+                    {t("deposit.uploadSpecimen.newSpecimen")}
                   </h3>
                   {getUploadSpecimenLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:gap-20 gap-x-10 gap-y-3 ">
@@ -209,7 +213,7 @@ const UploadSpecimen = ({
                         name="photo"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Photo</FormLabel>
+                            <FormLabel>{t("deposit.common.photo")}</FormLabel>
                             <div className="w-[200px] h-[200px] border border-primary mx-auto relative">
                               {photoPreview && (
                                 <Image
@@ -221,7 +225,7 @@ const UploadSpecimen = ({
                             </div>
                             <FormControl>
                               <Input
-                                placeholder="Upload photo"
+                                placeholder={t("deposit.uploadSpecimen.uploadPhoto")}
                                 type="file"
                                 accept="image/*"
                                 className=""
@@ -242,7 +246,7 @@ const UploadSpecimen = ({
                         render={({ field }) => (
                           <FormItem className="h-full flex flex-col justify-between">
                             <div>
-                              <FormLabel>Signature</FormLabel>
+                              <FormLabel>{t("deposit.common.signature")}</FormLabel>
                               <div className="w-[200px] h-[50px] border border-primary mx-auto relative">
                                 {signaturePreview && (
                                   <Image
@@ -256,7 +260,7 @@ const UploadSpecimen = ({
                             </div>
                             <FormControl>
                               <Input
-                                placeholder="Upload signature"
+                                placeholder={t("deposit.uploadSpecimen.uploadSignature")}
                                 type="file"
                                 accept="image/*"
                                 className=""

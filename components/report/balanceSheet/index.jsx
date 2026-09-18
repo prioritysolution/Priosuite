@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ const BalanceSheet = ({
   ledgerLiablitiesTableData,
   asOnDate,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -59,12 +61,12 @@ const BalanceSheet = ({
     const host = printHostRef.current;
 
     if (!element) {
-      toast.error("Nothing to download. Please generate the report first.");
+      toast.error(t("common.nothingToDownload"));
       return;
     }
 
     if (!hasReportData) {
-      toast.error("No balance sheet data to download.");
+      toast.error(t("report.balanceSheet.noBalanceSheetData"));
       return;
     }
 
@@ -139,18 +141,20 @@ const BalanceSheet = ({
       }
 
       if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
+        toast.error(t("common.failedToCaptureReportForPdf"));
         return;
       }
 
       pdf.save(`BalanceSheet-${asOnDate || "report"}.pdf`);
-      toast.success("PDF downloaded");
+      toast.success(t("common.pdfDownloaded"));
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
-          ? `Failed to download PDF: ${error.message}`
-          : "Failed to download PDF",
+          ? t("common.failedToDownloadPdfWithError", {
+              error: error.message,
+            })
+          : t("common.failedToDownloadPdf"),
       );
     } finally {
       if (host) host.setAttribute("style", prevHostStyle);
@@ -178,7 +182,9 @@ const BalanceSheet = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Balance Sheet Report</h3>
+                <h3 className="text-xl font-semibold ">
+                  {t("report.balanceSheet.balanceSheetReport")}
+                </h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -198,7 +204,7 @@ const BalanceSheet = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="As On Date"
+                  label={t("common.asOnDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -208,13 +214,13 @@ const BalanceSheet = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label="Branch"
+                      label={t("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("common.selectBranch")}
+                      searchPlaceholder={t("common.searchBranch")}
                     />
                   )}
                 />
@@ -294,13 +300,13 @@ const BalanceSheet = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className="text-white text-center">
-                      Liablities
+                      {t("report.balanceSheet.liabilities")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      Break Up
+                      {t("common.breakUp")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      Amount
+                      {t("common.amount")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -347,7 +353,7 @@ const BalanceSheet = ({
                       colSpan={2}
                       className="font-semibold border border-secondary"
                     >
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell className="font-semibold border border-secondary">
                       {ledgerLiablitiesTableData &&
@@ -367,13 +373,13 @@ const BalanceSheet = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className="text-white text-center">
-                      Assets
+                      {t("report.balanceSheet.assets")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      Break Up
+                      {t("common.breakUp")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      Amount
+                      {t("common.amount")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -418,7 +424,7 @@ const BalanceSheet = ({
                       colSpan={2}
                       className="font-semibold border border-secondary"
                     >
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell className="font-semibold border border-secondary">
                       {ledgerAssetsTableData &&

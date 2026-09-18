@@ -1,6 +1,8 @@
 
 
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import MemberSearchForm from "@/common/forms/MemberSearchForm";
 import DepositLedger from "@/common/ledger/depositLedger/DepositLedger";
@@ -108,15 +110,17 @@ const MemberEnquiry = ({
   selectedRadio,
   setSelectedRadio,
 }) => {
+  const { t } = useTranslation();
+
   const memberDataByName = useSelector(
     (state) => state?.issueMembership?.memberDataByName,
   );
 
   const RadioData = [
-    { label: "Individual Customer", value: "1" },
-    { label: "Group", value: "2" },
-    { label: "Institution", value: "3" },
-    { label: "Staff", value: "4" },
+    { label: t("memberSearch.individualCustomer"), value: "1" },
+    { label: t("memberSearch.group"), value: "2" },
+    { label: t("memberSearch.institution"), value: "3" },
+    { label: t("memberSearch.staff"), value: "4" },
   ];
 
   const hasMembership = !!membershipDetails;
@@ -134,7 +138,7 @@ const MemberEnquiry = ({
     <div className="w-full h-full flex flex-col lg:flex-row justify-between p-1 bg-[#fefefe] rounded-lg gap-2">
       <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
         <h3 className="text-xl sm:text-2xl font-semibold text-center">
-          Member Enquiry
+          {t("membership.memberEnquiry.title")}
         </h3>
 
         <ScrollArea className="w-full h-full  flex flex-col">
@@ -148,13 +152,13 @@ const MemberEnquiry = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("membership.memberEnquiry.fields.fromDate")}
                 />
 
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"
+                  label={t("membership.memberEnquiry.fields.toDate")}
                   disabled
                 />
 
@@ -165,14 +169,14 @@ const MemberEnquiry = ({
                     render={({ field }) => (
                       <FormItem className="flex flex-col items-start justify-center sm:col-span-2 xl:col-span-1">
                         <div className="w-full sm:w-[200px]">
-                          <FormLabel>CIF No.</FormLabel>
+                          <FormLabel>{t("membership.memberEnquiry.fields.cifNo")}</FormLabel>
                         </div>
                         <FormControl>
                           <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-x-10 w-full">
                             <div className="w-full h-full flex items-end gap-2">
                               <div className="w-full relative">
                                 <Input
-                                  placeholder="Enter cif no."
+                                  placeholder={t("membership.memberEnquiry.placeholders.cifNo")}
                                   className="w-full"
                                   type="number"
                                   onInput={(e) => {
@@ -206,7 +210,7 @@ const MemberEnquiry = ({
                                     speedMultiplier={0.7}
                                   />
                                 ) : (
-                                  "Next"
+                                  t("memberSearch.next")
                                 )}
                               </Button>
                             </div>
@@ -220,7 +224,7 @@ const MemberEnquiry = ({
                   <DialogContent className="w-[calc(100vw-1rem)] max-w-[825px] h-[min(90dvh,640px)] sm:h-auto sm:max-h-[85vh] p-3 sm:p-6 gap-3 overflow-hidden flex flex-col rounded-lg">
                     <DialogHeader className="shrink-0 pr-8 text-left">
                       <DialogTitle className="text-base sm:text-lg">
-                        Search Members
+                        {t("memberSearch.searchMembers")}
                       </DialogTitle>
                     </DialogHeader>
                     <RadioGroup
@@ -249,8 +253,8 @@ const MemberEnquiry = ({
                         <InputField
                           control={form.control}
                           name="dialougeMemberName"
-                          label="Member Name"
-                          placeholder="Search by enter member name"
+                          label={t("membership.memberEnquiry.fields.memberName")}
+                          placeholder={t("memberSearch.searchByMemberName")}
                           autoComplete="off"
                           formItemClassName="w-full min-w-0"
                         />
@@ -258,9 +262,7 @@ const MemberEnquiry = ({
                           type="button"
                           onClick={handleSearchMember}
                           className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
-                        >
-                          Search
-                        </Button>
+                        >{t("memberSearch.search")}</Button>
                       </div>
                       <div className="w-full min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
                         <MemberSearchTable
@@ -277,10 +279,10 @@ const MemberEnquiry = ({
                 </Dialog>
               </div>
 
-              {/* Personal Details Section */}
+              {/* {t("membership.memberEnquiry.sections.personalDetails")} Section */}
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 py-3 gap-2">
                 <h3 className="w-full text-center text-lg sm:text-xl font-semibold">
-                  Personal Details
+                  {t("membership.memberEnquiry.sections.personalDetails")}
                 </h3>
                 {loading ? (
                   <div className="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 lg:gap-x-10 gap-y-3">
@@ -300,40 +302,40 @@ const MemberEnquiry = ({
                     <InputField
                       control={form.control}
                       name="memberNo"
-                      label="Member No"
-                      placeholder="Enter member no."
+                      label={t("membership.memberEnquiry.fields.memberNo")}
+                      placeholder={t("membership.memberEnquiry.placeholders.memberNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="name"
-                      label="Name"
-                      placeholder="Enter name"
+                      label={t("membership.memberEnquiry.fields.name")}
+                      placeholder={t("membership.memberEnquiry.placeholders.name")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="gurdian"
-                      label="Gurdian"
-                      placeholder="Enter gurdian"
+                      label={t("membership.memberEnquiry.fields.gurdian")}
+                      placeholder={t("membership.memberEnquiry.placeholders.gurdian")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="contact"
-                      label="Contact No."
-                      placeholder="Enter contact no."
+                      label={t("membership.memberEnquiry.fields.contactNo")}
+                      placeholder={t("membership.memberEnquiry.placeholders.contactNo")}
                       readOnly
                     />
 
                     <TextareaField
                       control={form.control}
                       name="address"
-                      label="Address"
-                      placeholder="Enter address"
+                      label={t("membership.memberEnquiry.fields.address")}
+                      placeholder={t("membership.memberEnquiry.placeholders.address")}
                       readOnly
                       className="resize-none"
                     />
@@ -351,7 +353,7 @@ const MemberEnquiry = ({
                           value="membership"
                           className="flex-1 min-w-[100px] text-xs sm:text-sm data-[state=active]:shadow-sm transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white"
                         >
-                          Membership
+                          {t("membership.memberEnquiry.tabs.membership")}
                         </TabsTrigger>
                       )}
                       {hasDeposit && (
@@ -359,7 +361,7 @@ const MemberEnquiry = ({
                           value="deposit"
                           className="flex-1 min-w-[100px] text-xs sm:text-sm data-[state=active]:shadow-sm transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white"
                         >
-                          Deposit
+                          {t("membership.memberEnquiry.tabs.deposit")}
                         </TabsTrigger>
                       )}
                       {hasLoan && (
@@ -367,7 +369,7 @@ const MemberEnquiry = ({
                           value="loan"
                           className="flex-1 min-w-[100px] text-xs sm:text-sm data-[state=active]:shadow-sm transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white"
                         >
-                          Loan
+                          {t("membership.memberEnquiry.tabs.loan")}
                         </TabsTrigger>
                       )}
                     </TabsList>
@@ -384,16 +386,16 @@ const MemberEnquiry = ({
                               <TableHeader className="bg-muted/50 sticky top-0 z-10">
                                 <TableRow>
                                   <TableHead className="whitespace-nowrap">
-                                    Serial No.
+                                    {t("membership.memberEnquiry.table.serialNo")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Status
+                                    {t("membership.memberEnquiry.table.status")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Balance
+                                    {t("membership.memberEnquiry.table.balance")}
                                   </TableHead>
                                   <TableHead className="text-right whitespace-nowrap">
-                                    Action
+                                    {t("membership.memberEnquiry.table.action")}
                                   </TableHead>
                                 </TableRow>
                               </TableHeader>
@@ -451,18 +453,18 @@ const MemberEnquiry = ({
                                 >
                                   <FormControl>
                                     <SelectTrigger className="w-[140px] sm:w-[160px]">
-                                      <SelectValue placeholder="Select type" />
+                                      <SelectValue placeholder={t("membership.memberEnquiry.placeholders.type")} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
                                     {depositActiveAccount.length > 0 && (
                                       <SelectItem value="active">
-                                        Active
+                                        {t("membership.memberEnquiry.accountStatus.active")}
                                       </SelectItem>
                                     )}
                                     {depositClosedAccount.length > 0 && (
                                       <SelectItem value="closed">
-                                        Closed
+                                        {t("membership.memberEnquiry.accountStatus.closed")}
                                       </SelectItem>
                                     )}
                                   </SelectContent>
@@ -479,25 +481,25 @@ const MemberEnquiry = ({
                               <TableHeader className="bg-muted/50 sticky top-0 z-10">
                                 <TableRow>
                                   <TableHead className="whitespace-nowrap">
-                                    Serial No.
+                                    {t("membership.memberEnquiry.table.serialNo")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Account No.
+                                    {t("membership.memberEnquiry.table.accountNo")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Status
+                                    {t("membership.memberEnquiry.table.status")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Product Name
+                                    {t("membership.memberEnquiry.table.productName")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Balance
+                                    {t("membership.memberEnquiry.table.balance")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Maturity Date
+                                    {t("membership.memberEnquiry.table.maturityDate")}
                                   </TableHead>
                                   <TableHead className="text-right whitespace-nowrap">
-                                    Action
+                                    {t("membership.memberEnquiry.table.action")}
                                   </TableHead>
                                 </TableRow>
                               </TableHeader>
@@ -576,18 +578,18 @@ const MemberEnquiry = ({
                                 >
                                   <FormControl>
                                     <SelectTrigger className="w-[140px] sm:w-[160px]">
-                                      <SelectValue placeholder="Select type" />
+                                      <SelectValue placeholder={t("membership.memberEnquiry.placeholders.type")} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
                                     {loanActiveAccount.length > 0 && (
                                       <SelectItem value="active">
-                                        Active
+                                        {t("membership.memberEnquiry.accountStatus.active")}
                                       </SelectItem>
                                     )}
                                     {loanClosedAccount.length > 0 && (
                                       <SelectItem value="closed">
-                                        Closed
+                                        {t("membership.memberEnquiry.accountStatus.closed")}
                                       </SelectItem>
                                     )}
                                   </SelectContent>
@@ -604,28 +606,28 @@ const MemberEnquiry = ({
                               <TableHeader className="bg-muted/50 sticky top-0 z-10">
                                 <TableRow>
                                   <TableHead className="whitespace-nowrap">
-                                    Serial No.
+                                    {t("membership.memberEnquiry.table.serialNo")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Account No.
+                                    {t("membership.memberEnquiry.table.accountNo")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Status
+                                    {t("membership.memberEnquiry.table.status")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Product Name
+                                    {t("membership.memberEnquiry.table.productName")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Repay Mode
+                                    {t("membership.memberEnquiry.table.repayMode")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Balance
+                                    {t("membership.memberEnquiry.table.balance")}
                                   </TableHead>
                                   <TableHead className="text-center whitespace-nowrap">
-                                    Repay Within
+                                    {t("membership.memberEnquiry.table.repayWithin")}
                                   </TableHead>
                                   <TableHead className="text-right whitespace-nowrap">
-                                    Action
+                                    {t("membership.memberEnquiry.table.action")}
                                   </TableHead>
                                 </TableRow>
                               </TableHeader>

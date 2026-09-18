@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -31,6 +33,7 @@ const MemberPassbookSearchForm = ({
   dialougeOpen,
   setDialougeOpen,
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const orgId = getCookieData("orgId");
@@ -50,7 +53,7 @@ const MemberPassbookSearchForm = ({
         currentMemberPage,
         form.getValues("dialougeMemberName"),
       );
-    else toast.error("Please enter name");
+    else toast.error(t("memberSearch.pleaseEnterName"));
   };
 
   const memberDataByName = useSelector(
@@ -71,12 +74,12 @@ const MemberPassbookSearchForm = ({
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-sm font-medium text-muted-foreground">
-              CIF/REF No.
+              {t("memberSearch.cifRefNo")}
             </FormLabel>
             <FormControl>
               <div className="relative w-full">
                 <Input
-                  placeholder="Enter member no."
+                  placeholder={t("memberSearch.memberNoPlaceholder")}
                   className="w-full pr-10 h-10 rounded-lg border-border focus-visible:ring-primary/30 transition-shadow"
                   type="number"
                   onInput={(e) => {
@@ -102,7 +105,7 @@ const MemberPassbookSearchForm = ({
       <DialogContent className="w-[calc(100vw-1rem)] max-w-[1000px] h-[min(90dvh,640px)] sm:h-auto sm:max-h-[85vh] p-3 sm:p-6 gap-3 overflow-hidden flex flex-col rounded-lg">
         <DialogHeader className="shrink-0 pr-8 text-left">
           <DialogTitle className="text-base sm:text-lg">
-            Search Members
+            {t("memberSearch.searchMembers")}
           </DialogTitle>
         </DialogHeader>
         <div className="w-full min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
@@ -112,11 +115,11 @@ const MemberPassbookSearchForm = ({
               name="dialougeMemberName"
               render={({ field }) => (
                 <FormItem className="w-full min-w-0">
-                  <FormLabel>Member Name</FormLabel>
+                  <FormLabel>{t("memberSearch.memberName")}</FormLabel>
                   <FormControl>
                     <Input
                       autoComplete="off"
-                      placeholder="Search by enter member name"
+                      placeholder={t("memberSearch.searchByMemberName")}
                       {...field}
                     />
                   </FormControl>
@@ -128,7 +131,7 @@ const MemberPassbookSearchForm = ({
               className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
               onClick={handleSearchMember}
             >
-              Search
+              {t("memberSearch.search")}
             </Button>
           </div>
           <div className="w-full min-h-0 flex-1 overflow-y-auto overflow-x-hidden">

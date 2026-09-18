@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useSelector } from "react-redux";
@@ -65,6 +67,8 @@ const LoanReport = ({
   setIsOpenCollectionReceipt,
   collectionReceiptData,
 }) => {
+  const { t } = useTranslation();
+
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -130,12 +134,12 @@ const LoanReport = ({
     const host = printHostRef.current;
 
     if (!element) {
-      toast.error("Nothing to download. Please generate the report first.");
+      toast.error(t("loan.nothingToDownload"));
       return;
     }
 
     if (!(tableData?.length > 0)) {
-      toast.error("No loan report data to download.");
+      toast.error(t("loan.noLoanReportData"));
       return;
     }
 
@@ -217,12 +221,12 @@ const LoanReport = ({
       }
 
       if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
+        toast.error(t("loan.failedToCaptureReport"));
         return;
       }
 
       pdf.save(`${docTitle}.pdf`);
-      toast.success("PDF downloaded");
+      toast.success(t("loan.pdfDownloaded"));
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
@@ -257,9 +261,7 @@ const LoanReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-lg sm:text-xl font-semibold">
-                  Loan Report
-                </h3>
+                <h3 className="text-lg sm:text-xl font-semibold">{t("loan.loanReport")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -278,7 +280,7 @@ const LoanReport = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("loan.fromDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -286,7 +288,7 @@ const LoanReport = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"
+                  label={t("loan.toDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -294,31 +296,31 @@ const LoanReport = ({
                 <DropdownField
                   control={form.control}
                   name="productType"
-                  label="Loan Product"
+                  label={t("loan.loanProduct")}
                   options={productTypeData}
                   optionLabelKey="Product_Name"
-                  placeholder="Select loan product"
-                  searchPlaceholder="Search loan product..."
+                  placeholder={t("loan.selectLoanProduct")}
+                  searchPlaceholder={t("loan.searchLoanProduct")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="reportType"
-                  label="Report Type"
+                  label={t("loan.reportType")}
                   options={reportTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select report type"
-                  searchPlaceholder="Search report type..."
+                  placeholder={t("loan.selectReportType")}
+                  searchPlaceholder={t("loan.searchReportType")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="branch"
-                  label="Branch"
+                  label={t("loan.branch")}
                   options={branchData}
                   optionLabelKey="Branch_Name"
-                  placeholder="Select branch"
-                  searchPlaceholder="Search branch..."
+                  placeholder={t("loan.selectBranch")}
+                  searchPlaceholder={t("loan.searchBranch")}
                 />
 
                 <div className="w-full flex items-center gap-5 self-end">

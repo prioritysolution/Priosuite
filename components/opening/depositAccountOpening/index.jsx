@@ -32,6 +32,7 @@ import getCookieData from "@/utils/getCookieData";
 import { getYear } from "date-fns";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff } from "lucide-react";
@@ -57,6 +58,7 @@ const DepositAccountOpening = ({
   setOpenJointDialog,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
   const [showBasicInfo, setShowBasicInfo] = useState(true);
   const {
     getMemberDataByNameApiCall,
@@ -129,7 +131,9 @@ const DepositAccountOpening = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-2  overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Open Deposit Account</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("opening.depositAccountOpening.title")}
+        </h3>
 
         <ScrollArea className="w-full h-full">
           <div className="w-full mb-5">
@@ -151,14 +155,18 @@ const DepositAccountOpening = ({
                   <div className="w-full flex justify-between items-center">
                     <div className="w-5" />
                     <h3 className="text-xl font-semibold text-center flex-grow">
-                      Basic Info Block
+                      {t("opening.depositAccountOpening.basicInfo.title")}
                     </h3>
                     <button
                       type="button"
                       onClick={() => setShowBasicInfo(!showBasicInfo)}
                       className="text-primary hover:opacity-80 transition-opacity"
                     >
-                      {showBasicInfo ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+                      {showBasicInfo ? (
+                        <Eye className="w-5 h-5" />
+                      ) : (
+                        <EyeOff className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
                   {showBasicInfo && (
@@ -166,44 +174,51 @@ const DepositAccountOpening = ({
                       <InputField
                         control={form.control}
                         name="memberNo"
-                        label="Member No."
-                        placeholder="Enter member no."
+                        label={t("opening.depositAccountOpening.basicInfo.memberNo")}
+                        placeholder={t("opening.depositAccountOpening.basicInfo.memberNoPlaceholder",
+                        )}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="cifNo"
-                        label="CIF No."
-                        placeholder="Enter cif no."
+                        label={t("opening.depositAccountOpening.basicInfo.cifNo")}
+                        placeholder={t("opening.depositAccountOpening.basicInfo.cifNoPlaceholder",
+                        )}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="memberName"
-                        label="Member Name"
-                        placeholder="Enter member name"
+                        label={t("opening.depositAccountOpening.basicInfo.memberName")}
+                        placeholder={t("opening.depositAccountOpening.basicInfo.memberNamePlaceholder",
+                        )}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="gurdianName"
-                        label="Gurdian Name"
-                        placeholder="Enter gurdian name"
+                        label={t("opening.depositAccountOpening.basicInfo.guardianName",
+                        )}
+                        placeholder={t("opening.depositAccountOpening.basicInfo.guardianNamePlaceholder",
+                        )}
                         readOnly
                       />
                       <TextareaField
                         control={form.control}
                         name="address"
-                        label="Address"
-                        placeholder="Enter address"
+                        label={t("opening.depositAccountOpening.basicInfo.address")}
+                        placeholder={t("opening.depositAccountOpening.basicInfo.addressPlaceholder",
+                        )}
                         className="resize-none"
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="mobile"
-                        label="Mobile No."
-                        placeholder="Enter mobile no."
+                        label={t("opening.depositAccountOpening.basicInfo.mobile")}
+                        placeholder={t("opening.depositAccountOpening.basicInfo.mobilePlaceholder",
+                        )}
                         readOnly
                       />
                     </div>
@@ -214,28 +229,31 @@ const DepositAccountOpening = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    KYC Details Block
+                    {t("opening.depositAccountOpening.kyc.title")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
                       name="voterId"
-                      label="Voter ID"
-                      placeholder="Enter voter id"
+                      label={t("opening.depositAccountOpening.kyc.voterId")}
+                      placeholder={t("opening.depositAccountOpening.kyc.voterIdPlaceholder",
+                      )}
                       readOnly
                     />
                     <InputField
                       control={form.control}
                       name="aadhaarNo"
-                      label="Aadhaar No."
-                      placeholder="Enter aadhaar no."
+                      label={t("opening.depositAccountOpening.kyc.aadhaarNo")}
+                      placeholder={t("opening.depositAccountOpening.kyc.aadhaarNoPlaceholder",
+                      )}
                       readOnly
                     />
                     <InputField
                       control={form.control}
                       name="panNo"
-                      label="Pan No."
-                      placeholder="Enter pan no."
+                      label={t("opening.depositAccountOpening.kyc.panNo")}
+                      placeholder={t("opening.depositAccountOpening.kyc.panNoPlaceholder",
+                      )}
                       readOnly
                     />
                   </div>
@@ -245,26 +263,30 @@ const DepositAccountOpening = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Account Info Block
+                    {t("opening.depositAccountOpening.account.title")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <DropdownField
                       control={form.control}
                       name="accountType"
-                      label="Account Type"
+                      label={t("opening.depositAccountOpening.account.accountType")}
                       options={accountTypeData}
                       optionLabelKey="Option_Value"
-                      placeholder="Select account type"
-                      searchPlaceholder="Search account type..."
+                      placeholder={t("opening.depositAccountOpening.account.accountTypePlaceholder",
+                      )}
+                      searchPlaceholder={t("opening.depositAccountOpening.account.accountTypeSearch",
+                      )}
                       isRequired
                     />
 
                     <DropdownField
                       control={form.control}
                       name="depositProduct"
-                      label="Deposit Product"
+                      label={t("opening.depositAccountOpening.account.depositProduct")}
                       options={productData}
                       optionLabelKey="Prd_SH_Name"
+                      placeholder={t("opening.depositAccountOpening.account.depositProductPlaceholder",
+                      )}
                       disabled={!form.getValues("accountType")}
                       loading={getDepositProductLoading}
                       isRequired
@@ -273,7 +295,7 @@ const DepositAccountOpening = ({
                     <DatePickerField
                       control={form.control}
                       name="openingDate"
-                      label="Opening Date"
+                      label={t("opening.depositAccountOpening.account.openingDate")}
                       endYear={getYear(new Date(startDate))}
                       disabledDateAfter={new Date(startDate).setDate(
                         new Date(startDate).getDate() - 1,
@@ -285,24 +307,28 @@ const DepositAccountOpening = ({
                     <InputField
                       control={form.control}
                       name="accountNo"
-                      label="Manual Account No."
-                      placeholder="Enter account no."
+                      label={t("opening.depositAccountOpening.account.accountNo")}
+                      placeholder={t("opening.depositAccountOpening.account.accountNoPlaceholder",
+                      )}
                       maxLength={4}
                     />
 
                     <InputField
                       control={form.control}
                       name="ledgerFolio"
-                      label="Ledger Folio"
-                      placeholder="Enter ledger folio"
+                      label={t("opening.depositAccountOpening.account.ledgerFolio")}
+                      placeholder={t("opening.depositAccountOpening.account.ledgerFolioPlaceholder",
+                      )}
                     />
 
                     <div className="w-full flex flex-col gap-1.5">
                       <InputField
                         control={form.control}
                         name="openingAmount"
-                        label="Installment / Deposit Amount"
-                        placeholder="Enter installment / deposit amount"
+                        label={t("opening.depositAccountOpening.account.openingAmount",
+                        )}
+                        placeholder={t("opening.depositAccountOpening.account.openingAmountPlaceholder",
+                        )}
                         type="number"
                         readOnly={
                           !form.getValues("accountType") ||
@@ -323,11 +349,14 @@ const DepositAccountOpening = ({
                           <DropdownField
                             control={form.control}
                             name="durationUnit"
-                            label="Duration Unit"
+                            label={t("opening.depositAccountOpening.account.durationUnit",
+                            )}
                             options={durationTypeData}
                             optionLabelKey="Option_Value"
-                            placeholder="Select duration unit"
-                            searchPlaceholder="Search duration unit..."
+                            placeholder={t("opening.depositAccountOpening.account.durationUnitPlaceholder",
+                            )}
+                            searchPlaceholder={t("opening.depositAccountOpening.account.durationUnitSearch",
+                            )}
                             disabled={checkDepositAmountDisable}
                           />
 
@@ -335,8 +364,10 @@ const DepositAccountOpening = ({
                             <InputField
                               control={form.control}
                               name="duration"
-                              label="Duration"
-                              placeholder="Enter duration"
+                              label={t("opening.depositAccountOpening.account.duration",
+                              )}
+                              placeholder={t("opening.depositAccountOpening.account.durationPlaceholder",
+                              )}
                               type="number"
                               readOnly={
                                 checkDepositAmountDisable ||
@@ -353,33 +384,41 @@ const DepositAccountOpening = ({
                           <InputField
                             control={form.control}
                             name="rateOfInterest"
-                            label="Rate Of Interest"
-                            placeholder="Enter rate of interest"
+                            label={t("opening.depositAccountOpening.account.rateOfInterest",
+                            )}
+                            placeholder={t("opening.depositAccountOpening.account.rateOfInterestPlaceholder",
+                            )}
                             readOnly
                           />
 
                           <DatePickerField
                             control={form.control}
                             name="maturityDate"
-                            label="Maturity Date"
+                            label={t("opening.depositAccountOpening.account.maturityDate",
+                            )}
                             disabled
                           />
 
                           <InputField
                             control={form.control}
                             name="maturityAmount"
-                            label="Maturity Amount"
-                            placeholder="Enter maturity amount"
+                            label={t("opening.depositAccountOpening.account.maturityAmount",
+                            )}
+                            placeholder={t("opening.depositAccountOpening.account.maturityAmountPlaceholder",
+                            )}
                             readOnly
                           />
                           <DropdownField
                             control={form.control}
                             name="maturityInstruction"
-                            label="Maturity Instruction"
+                            label={t("opening.depositAccountOpening.account.maturityInstruction",
+                            )}
                             options={maturityInstructionData}
                             optionLabelKey="Option_Value"
-                            placeholder="Select maturity instruction"
-                            searchPlaceholder="Search maturity instruction..."
+                            placeholder={t("opening.depositAccountOpening.account.maturityInstructionPlaceholder",
+                            )}
+                            searchPlaceholder={t("opening.depositAccountOpening.account.maturityInstructionSearch",
+                            )}
                             disabled={checkDepositAmountDisable}
                             isRequired={form.getValues("accountType") === "2"}
                           />
@@ -416,7 +455,8 @@ const DepositAccountOpening = ({
                                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                                     <div className="space-y-0.5">
                                       <FormLabel className="text-base">
-                                        Is Avail ECS
+                                        {t("opening.depositAccountOpening.account.isAvailEcs",
+                                        )}
                                       </FormLabel>
                                     </div>
                                     <FormControl>
@@ -432,11 +472,14 @@ const DepositAccountOpening = ({
                               <DropdownField
                                 control={form.control}
                                 name="ecsAccount"
-                                label="ECS Account"
+                                label={t("opening.depositAccountOpening.account.ecsAccount",
+                                )}
                                 options={ecsAccontData}
                                 optionLabelKey="Account_No"
-                                placeholder="Select ecs account"
-                                searchPlaceholder="Search ecs account..."
+                                placeholder={t("opening.depositAccountOpening.account.ecsAccountPlaceholder",
+                                )}
+                                searchPlaceholder={t("opening.depositAccountOpening.account.ecsAccountSearch",
+                                )}
                                 disabled={!form.getValues("isAvailEcs")}
                                 isRequired={form.getValues("isAvailEcs")}
                               />
@@ -467,7 +510,8 @@ const DepositAccountOpening = ({
                                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                                     <div className="space-y-0.5">
                                       <FormLabel className="text-base">
-                                        Is Payout Interest
+                                        {t("opening.depositAccountOpening.account.isPayoutInterest",
+                                        )}
                                       </FormLabel>
                                     </div>
                                     <FormControl>
@@ -483,7 +527,8 @@ const DepositAccountOpening = ({
                               <DropdownField
                                 control={form.control}
                                 name="payoutMode"
-                                label="Payout Mode"
+                                label={t("opening.depositAccountOpening.account.payoutMode",
+                                )}
                                 options={
                                   productData?.find(
                                     (item) =>
@@ -496,16 +541,20 @@ const DepositAccountOpening = ({
                                     : payoutModeData
                                 }
                                 optionLabelKey="Option_Value"
-                                placeholder="Select payout mode"
-                                searchPlaceholder="Search payout mode..."
+                                placeholder={t("opening.depositAccountOpening.account.payoutModePlaceholder",
+                                )}
+                                searchPlaceholder={t("opening.depositAccountOpening.account.payoutModeSearch",
+                                )}
                                 disabled={!form.getValues("isPayoutInterest")}
                                 isRequired={form.getValues("isPayoutInterest")}
                               />
                               <InputField
                                 control={form.control}
                                 name="payoutAmount"
-                                label="Payout Amount"
-                                placeholder="Enter payout amount"
+                                label={t("opening.depositAccountOpening.account.payoutAmount",
+                                )}
+                                placeholder={t("opening.depositAccountOpening.account.payoutAmountPlaceholder",
+                                )}
                                 type="number"
                                 readOnly
                                 isRequired={form.getValues("isPayoutInterest")}
@@ -520,32 +569,40 @@ const DepositAccountOpening = ({
                     <DropdownField
                       control={form.control}
                       name="agentId"
-                      label="Agent"
+                      label={t("opening.depositAccountOpening.account.agent")}
                       options={agentData}
                       optionLabelKey="Agent_Name"
-                      placeholder="Select agent"
-                      searchPlaceholder="Search agent..."
+                      placeholder={t("opening.depositAccountOpening.account.agentPlaceholder",
+                      )}
+                      searchPlaceholder={t("opening.depositAccountOpening.account.agentSearch",
+                      )}
                     />
 
                     <DropdownField
                       control={form.control}
                       name="operationMode"
-                      label="Operation Mode"
+                      label={t("opening.depositAccountOpening.account.operationMode")}
                       options={operationModeData}
                       optionLabelKey="Option_Value"
-                      placeholder="Select operation mode"
-                      searchPlaceholder="Search operation mode..."
+                      placeholder={t("opening.depositAccountOpening.account.operationModePlaceholder",
+                      )}
+                      searchPlaceholder={t("opening.depositAccountOpening.account.operationModeSearch",
+                      )}
                       isRequired
                     />
 
                     {form.getValues("jointHolderDetails").length > 0 &&
                       form.getValues("jointHolderDetails").map((item, id) => (
                         <div key={id} className="self-end">
-                          <FormLabel>Joint Member {id + 1}</FormLabel>
+                          <FormLabel>
+                            {t("opening.depositAccountOpening.account.jointMember")}{" "}
+                            {id + 1}
+                          </FormLabel>
                           <FormControl>
                             <div className="flex items-center gap-3  w-full">
                               <Input
-                                placeholder={`Enter joint member ${id + 1}`}
+                                placeholder={`${t("opening.depositAccountOpening.account.enterJointMember",
+                                )} ${id + 1}`}
                                 readOnly
                                 value={item.Full_Name}
                               />
@@ -558,7 +615,8 @@ const DepositAccountOpening = ({
                                 <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[425px]">
                                   <div className="w-full flex flex-col gap-10 p-5">
                                     <p className="text-lg text-center">
-                                      Are you sure to delete this member ?
+                                      {t("opening.depositAccountOpening.deleteJointMember.confirmation",
+                                      )}
                                     </p>
 
                                     <Button
@@ -568,7 +626,8 @@ const DepositAccountOpening = ({
                                         handleJointAccountDelete(item.Id)
                                       }
                                     >
-                                      Delete
+                                      {t("opening.depositAccountOpening.deleteJointMember.delete",
+                                      )}
                                     </Button>
                                   </div>
                                 </DialogContent>
@@ -587,7 +646,8 @@ const DepositAccountOpening = ({
                           <DialogTrigger asChild>
                             <div className="flex flex-col gap-2 w-full self-end">
                               <div className="bg-primary text-white rounded-md px-3 py-2 text-center cursor-pointer h-fit ">
-                                Add Joint Member Details
+                                {t("opening.depositAccountOpening.account.addJointMember",
+                                )}
                               </div>
                               {form.getValues("jointHolderDetails").length ===
                                 0 && (
@@ -603,22 +663,26 @@ const DepositAccountOpening = ({
 
                           <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px]">
                             <DialogHeader>
-                              <DialogTitle>Search Members</DialogTitle>
+                              <DialogTitle>
+                                {t("opening.depositAccountOpening.search.title")}
+                              </DialogTitle>
                             </DialogHeader>
                             <div className="w-full">
                               <div className="w-full flex flex-col sm:flex-row items-end gap-2 gap-x-10 ">
                                 <InputField
                                   control={form.control}
                                   name="dialougeMemberName"
-                                  label="Member Name"
-                                  placeholder="Search by enter member name"
+                                  label={t("opening.depositAccountOpening.search.memberName",
+                                  )}
+                                  placeholder={t("opening.depositAccountOpening.search.placeholder",
+                                  )}
                                 />
 
                                 <Button
                                   className="w-full sm:w-auto px-10"
                                   onClick={handleSearchMember}
                                 >
-                                  Search
+                                  {t("opening.depositAccountOpening.search.search")}
                                 </Button>
                               </div>
                               <div className="w-full ">
@@ -641,38 +705,43 @@ const DepositAccountOpening = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Nominee Block
+                    {t("opening.depositAccountOpening.nominee.title")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
                       name="nomineeName"
-                      label="Nominee Name"
-                      placeholder="Enter nominee name"
+                      label={t("opening.depositAccountOpening.nominee.name")}
+                      placeholder={t("opening.depositAccountOpening.nominee.namePlaceholder",
+                      )}
                     />
 
                     <DropdownField
                       control={form.control}
                       name="nomineeRelation"
-                      label="Nominee Relation"
+                      label={t("opening.depositAccountOpening.nominee.relation")}
                       options={relationTypeData}
                       optionLabelKey="Option_Value"
-                      placeholder="Select relation"
-                      searchPlaceholder="Search relation..."
+                      placeholder={t("opening.depositAccountOpening.nominee.relationPlaceholder",
+                      )}
+                      searchPlaceholder={t("opening.depositAccountOpening.nominee.relationSearch",
+                      )}
                     />
 
                     <InputField
                       control={form.control}
                       name="nomineeAddress"
-                      label="Nominee Address"
-                      placeholder="Enter nominee address"
+                      label={t("opening.depositAccountOpening.nominee.address")}
+                      placeholder={t("opening.depositAccountOpening.nominee.addressPlaceholder",
+                      )}
                     />
 
                     <InputField
                       control={form.control}
                       name="nomineeAge"
-                      label="Nominee Age"
-                      placeholder="Enter nominee age"
+                      label={t("opening.depositAccountOpening.nominee.age")}
+                      placeholder={t("opening.depositAccountOpening.nominee.agePlaceholder",
+                      )}
                       type="number"
                     />
                   </div>
@@ -682,22 +751,24 @@ const DepositAccountOpening = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Opening Block
+                    {t("opening.depositAccountOpening.opening.title")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
                       name="openingBalance"
-                      label="Opening Balance"
-                      placeholder="Enter opening balance"
+                      label={t("opening.depositAccountOpening.opening.balance")}
+                      placeholder={t("opening.depositAccountOpening.opening.balancePlaceholder",
+                      )}
                       isRequired
                     />
 
                     <InputField
                       control={form.control}
                       name="openingInterest"
-                      label="Opening Interest"
-                      placeholder="Enter opening interest"
+                      label={t("opening.depositAccountOpening.opening.interest")}
+                      placeholder={t("opening.depositAccountOpening.opening.interestPlaceholder",
+                      )}
                     />
                   </div>
                 </div>
@@ -716,7 +787,7 @@ const DepositAccountOpening = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("opening.depositAccountOpening.buttons.add")
                   )}
                 </Button>
               )}

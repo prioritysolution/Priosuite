@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useState } from "react";
 import {
   flexRender,
@@ -41,6 +43,8 @@ const BlockTable = ({
   setCurrentBlockPage,
   lastBlockPage,
 }) => {
+  const { t } = useTranslation();
+
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -50,7 +54,7 @@ const BlockTable = ({
     {
       accessorKey: "serialNo",
       header: () => {
-        return <div className="text-left">Serial No</div>;
+        return <div className="text-left">{t("common.serialNo")}</div>;
       },
       cell: ({ row }) => {
         return <div className="text-left">{Number(row.id) + 1}</div>;
@@ -64,7 +68,7 @@ const BlockTable = ({
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Block Name
+            {t("master.operationalArea.table.blockName")}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -77,21 +81,21 @@ const BlockTable = ({
     },
     {
       accessorKey: "Dist_Name",
-      header: () => <div className="text-left ">District Name</div>,
+      header: () => <div className="text-left ">{t("master.operationalArea.table.districtName")}</div>,
       cell: ({ row }) => {
         return <div className="text-left">{row.getValue("Dist_Name")}</div>;
       },
     },
     {
       accessorKey: "State_Name",
-      header: () => <div className="text-left ">State Name</div>,
+      header: () => <div className="text-left ">{t("master.operationalArea.table.stateName")}</div>,
       cell: ({ row }) => {
         return <div className="text-left">{row.getValue("State_Name")}</div>;
       },
     },
     {
       accessorKey: "Id",
-      header: () => <div className="text-center ">Actions</div>,
+      header: () => <div className="text-center ">{t("common.actions")}</div>,
       cell: ({ row }) => {
         return (
           <div className="w-full flex justify-center  text-center">
@@ -99,7 +103,7 @@ const BlockTable = ({
               className="flex text-center items-center justify-center gap-3"
               onClick={() => handleEditData(data[row.id])}
             >
-              Edit
+              {t("common.buttons.edit")}
               <FaRegEdit />
             </Button>
           </div>
@@ -226,7 +230,7 @@ const BlockTable = ({
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {t("common.noResults")}
                   </TableCell>
                 </TableRow>
               )}
@@ -249,7 +253,7 @@ const BlockTable = ({
                 onClick={() => setCurrentBlockPage((prev) => prev - 1)}
                 disabled={currentBlockPage === 1}
               >
-                Previous
+                {t("common.previous")}
               </Button>
             </PaginationItem>
 
@@ -272,7 +276,7 @@ const BlockTable = ({
                 onClick={() => setCurrentBlockPage((prev) => prev + 1)}
                 disabled={currentBlockPage === lastBlockPage}
               >
-                Next
+                {t("common.next")}
               </Button>
             </PaginationItem>
           </PaginationContent>

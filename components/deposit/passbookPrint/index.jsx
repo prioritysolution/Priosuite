@@ -2,6 +2,8 @@
 
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import AccountPassbookSearchForm from "@/common/forms/AccountPassbookSearchForm";
@@ -45,6 +47,8 @@ const PassbookPrint = ({
   handleUpdateTrans,
   operateProductData,
 }) => {
+  const { t } = useTranslation();
+
   const firstPageRef = useRef(null);
   const transPageRef = useRef(null);
 
@@ -114,7 +118,7 @@ const PassbookPrint = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
       <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-3 lg:p-5 w-full gap-4 overflow-hidden">
-        <h3 className="text-2xl font-semibold self-start">Passbook Print</h3>
+        <h3 className="text-2xl font-semibold self-start">{t("deposit.passbookPrint.title")}</h3>
 
         <ScrollArea className="w-full h-full">
           <Form {...form}>
@@ -130,11 +134,11 @@ const PassbookPrint = ({
                   <DropdownField
                     control={form.control}
                     name="productId"
-                    label="Product"
+                    label={t("deposit.fields.product")}
                     options={operateProductData}
                     optionLabelKey="Product_Name"
                     optionValueKey="Id"
-                    placeholder="Select Product"
+                    placeholder={t("deposit.placeholders.selectProduct")}
                   />
                 </div>
 
@@ -169,7 +173,7 @@ const PassbookPrint = ({
                                 : "bg-muted/50 text-muted-foreground border-border/60 hover:border-border hover:bg-muted/80",
                             )}
                           >
-                            Front page
+                            {t("deposit.passbookPrint.frontPage")}
                           </button>
                           <button
                             type="button"
@@ -181,7 +185,7 @@ const PassbookPrint = ({
                                 : "bg-muted/50 text-muted-foreground border-border/60 hover:border-border hover:bg-muted/80",
                             )}
                           >
-                            Transaction page
+                            {t("deposit.passbookPrint.transactionPage")}
                           </button>
                         </div>
                       </FormControl>
@@ -197,7 +201,7 @@ const PassbookPrint = ({
                       <DatePickerField
                         control={form.control}
                         name="date"
-                        label="From date"
+                        label={t("deposit.fields.fromDateLower")}
                         disabledDateAfter={new Date()}
                       />
                     </div>
@@ -206,8 +210,8 @@ const PassbookPrint = ({
                       <InputField
                         control={form.control}
                         name="line"
-                        label="Line No."
-                        placeholder="e.g. 1"
+                        label={t("deposit.fields.lineNo")}
+                        placeholder={t("deposit.placeholders.memberNo")}
                         type="number"
                       />
                     </div>

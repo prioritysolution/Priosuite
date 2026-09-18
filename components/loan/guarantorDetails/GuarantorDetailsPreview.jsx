@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -32,6 +33,8 @@ const GuarantorDetailsPreview = ({
   totalGuarantorOdBalance,
   totalGuarantorOdInterest,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -76,7 +79,7 @@ const GuarantorDetailsPreview = ({
 
     const allRows = [];
 
-    allRows.push({ type: "heading", headName: "Loan Type - Guaranter" });
+    allRows.push({ type: "heading", headName: t("loan.loanTypeGuaranter") });
 
     guarantorTableData.map((guarantor) => {
       allRows.push({ type: "loanData", data: guarantor });
@@ -93,7 +96,7 @@ const GuarantorDetailsPreview = ({
       },
     });
 
-    allRows.push({ type: "heading", headName: "Loan Type - Own" });
+    allRows.push({ type: "heading", headName: t("loan.loanTypeOwn") });
 
     ownTableData.map((own) => {
       allRows.push({ type: "loanData", data: own });
@@ -166,20 +169,20 @@ const GuarantorDetailsPreview = ({
             <div className="col-span-4 flex justify-around items-start w-full h-fit">
               <div className="w-full"></div>
               <div className="w-full flex gap-1 items-start justify-start">
-                <p className="font-semibold text-nowrap">Max Loan : </p>
+                <p className="font-semibold text-nowrap">{t("loan.maxLoanColon")}</p>
                 <p>{personalData?.Max_Loan || ""}</p>
               </div>
             </div>
             <div className="h-full grid grid-cols-2 gap-1">
-              <p className="font-semibold text-nowrap">Customer Code : </p>
+              <p className="font-semibold text-nowrap">{t("loan.customerCodeColon")}</p>
               <p>{personalData?.CIf_No || ""}</p>
-              <p className="font-semibold text-nowrap">Customer Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.customerNameColon")}</p>
               <p>{personalData?.Member_Name || ""}</p>
-              <p className="font-semibold text-nowrap">Guardian Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.guardianNameColon")}</p>
               <p>{personalData?.Gurdain_Name || ""}</p>
-              <p className="font-semibold text-nowrap">Member No : </p>
+              <p className="font-semibold text-nowrap">{t("loan.memberNoColon")}</p>
               <p>{personalData?.Member_No || ""}</p>
-              <p className="font-semibold text-nowrap">Admission Date : </p>
+              <p className="font-semibold text-nowrap">{t("loan.admissionDateColon")}</p>
               <p>
                 {personalData?.Admission_Date
                   ? format(personalData?.Admission_Date, "dd-MM-yyyy")
@@ -187,47 +190,47 @@ const GuarantorDetailsPreview = ({
               </p>
             </div>
             <div className="h-full grid grid-cols-2 gap-1">
-              <p className="font-semibold text-nowrap">Share Balance : </p>
+              <p className="font-semibold text-nowrap">{t("loan.shareBalanceColon")}</p>
               <p>{personalData?.Share_Balance || ""}</p>
-              <p className="font-semibold text-nowrap">TF Paid : </p>
+              <p className="font-semibold text-nowrap">{t("loan.tFPaidColon")}</p>
               <p>
                 {personalData?.Tf_Paid
                   ? format(personalData?.Tf_Paid, "dd-MM-yyyy")
                   : ""}
               </p>
-              <p className="font-semibold text-nowrap">GF Account No. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.gfAccountNoColon")}</p>
               <p>{personalData?.Gf_Acct_No || ""}</p>
-              <p className="font-semibold text-nowrap">GF Balance : </p>
+              <p className="font-semibold text-nowrap">{t("loan.gFBalanceColon")}</p>
               <p>{personalData?.gf_Balance || ""}</p>
               <p className="font-semibold text-nowrap">
-                Savings Account No. :{" "}
+                {t("loan.savingsAccountNoColon")}
               </p>
               <p>{personalData?.Sb_Acct_No || ""}</p>
             </div>
             <div className="h-full grid grid-cols-2 gap-1">
-              <p className="font-semibold text-nowrap">Account No. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.accountNoColon")}</p>
               <p>{maxLoanAccount?.Account_No || ""}</p>
-              <p className="font-semibold text-nowrap">Scheme Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.schemeName")}</p>
               <p>{maxLoanAccount?.Product_Name || ""}</p>
-              <p className="font-semibold text-nowrap">Issue Date : </p>
+              <p className="font-semibold text-nowrap">{t("loan.issueDateColon")}</p>
               <p>
                 {maxLoanAccount?.Issue_Date
                   ? format(maxLoanAccount?.Issue_Date, "dd-MM-yyyy")
                   : "30-03-2022"}
               </p>
-              <p className="font-semibold text-nowrap">Issue Amount : </p>
+              <p className="font-semibold text-nowrap">{t("loan.issueAmountColon")}</p>
               <p>{maxLoanAccount?.Loan_Amount || ""}</p>
-              <p className="font-semibold text-nowrap">Outs. Bal. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.outsBalColon")}</p>
               <p>{maxLoanAccount?.Outs_Bal || ""}</p>
             </div>
             <div className="h-full grid grid-cols-2 gap-1">
-              <p className="font-semibold text-nowrap">CP Bal : </p>
+              <p className="font-semibold text-nowrap">{t("loan.cPBalColon")}</p>
               <p>{maxLoanAccount?.Curr_Balance || ""}</p>
-              <p className="font-semibold text-nowrap">CI Bal : </p>
+              <p className="font-semibold text-nowrap">{t("loan.cIBalColon")}</p>
               <p>{maxLoanAccount?.Curr_Intt || ""}</p>
-              <p className="font-semibold text-nowrap">OP Bal : </p>
+              <p className="font-semibold text-nowrap">{t("loan.oPBalColon")}</p>
               <p>{maxLoanAccount?.Od_Balance || ""}</p>
-              <p className="font-semibold text-nowrap">OI Bal : </p>
+              <p className="font-semibold text-nowrap">{t("loan.oIBalColon")}</p>
               <p>{maxLoanAccount?.Od_Intt || "0"}</p>
             </div>
           </div>
@@ -238,42 +241,18 @@ const GuarantorDetailsPreview = ({
               {/* Main Header Every Page */}
               <TableHeader>
                 <TableRow className="h-[40px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[60px]">
-                    ACCOUNT NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center">
-                    SCHEME
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[150px]">
-                    NAME
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[60px]">
-                    MEMBER NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    ISSUE DATE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    ISSUE AMOUNT
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    OUTS. BAL.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    CP BAL.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    CI BAL.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    OP BAL.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    OI BAL.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[40px]">
-                    INST. DUE
-                  </TableHead>
+                  <TableHead className="text-black p-0 border-black text-center w-[60px]">{t("loan.print.accountNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center">{t("loan.print.scheme")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[150px]">{t("loan.print.name")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[60px]">{t("loan.print.memberNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("loan.print.issueDate")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.issueAmount")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("loan.print.outsBal")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("loan.print.cpBalDot")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("loan.print.ciBalDot")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("loan.print.opBalDot")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("loan.print.oiBalDot")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[40px]">{t("loan.print.instDue")}</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -352,9 +331,7 @@ const GuarantorDetailsPreview = ({
                           <TableCell
                             colSpan={5}
                             className="border border-black p-0 pr-1 text-right"
-                          >
-                            Total
-                          </TableCell>
+                          >{t("loan.total")}</TableCell>
                           <TableCell className="border p-0 pr-[2px] border-black text-right">
                             {row.data?.totalIssueAmount?.toFixed(2) || ""}
                           </TableCell>
@@ -380,9 +357,7 @@ const GuarantorDetailsPreview = ({
                           <TableCell
                             colSpan={5}
                             className="border border-black p-0 pr-1 text-right"
-                          >
-                            Total Outstanding
-                          </TableCell>
+                          >{t("loan.totalOutstanding")}</TableCell>
                           <TableCell className="border p-0 pr-[2px] border-black text-right">
                             {row.data?.grandTotalIssueAmount?.toFixed(2) || ""}
                           </TableCell>
@@ -414,12 +389,10 @@ const GuarantorDetailsPreview = ({
 
           {/* Footer */}
           <div className="w-full h-[40px] mt-2 flex items-end justify-between text-xs relative">
-            <p className="text-nowrap">Generated By: {userName}</p>
-            <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">
-              This report is generated by PrioSuite.
-            </p>
+            <p className="text-nowrap">{t("loan.generatedByColon")} {userName}</p>
+            <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">{t("loan.reportGeneratedByPrioSuite")}</p>
             <p className="text-nowrap">
-              Generated On: {currentDate} {currentTime}
+              {t("loan.generatedOnColon")} {currentDate} {currentTime}
             </p>
           </div>
         </div>

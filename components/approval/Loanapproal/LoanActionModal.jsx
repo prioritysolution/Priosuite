@@ -37,6 +37,7 @@ import getCookieData from "@/utils/getCookieData";
 import Spinner from "@/common/loader/Spinner";
 
 import DoubleCashDenomTable from "@/common/tables/DoubleCashDenomTable";
+import { useTranslation } from "react-i18next";
 import InputField from "@/common/formFields/InputField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
@@ -81,6 +82,8 @@ const LoanActionModal = ({
   setApprovedAmount,
 }) => {
   // console.log("bankAccountData=", form.getValues("savings"));
+
+  const { t } = useTranslation();
 
   const [guarantorOpen, setGuarantorOpen] = useState(false);
   const [projectOpen, setProjectOpen] = useState(false);
@@ -175,15 +178,17 @@ const LoanActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-2xl font-bold text-gray-800 tracking-tight">
-                Loan Application Details
+                {t("loanApproval.loanApplicationDetails")}
               </DialogTitle>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span className="font-medium">
-                  App No: {selectedApplication.Appl_No || "—"}
+                  {t("loanApproval.appNo")}{" "}
+                  {selectedApplication.Appl_No || "—"}
                 </span>
                 <span className="h-4 w-px bg-gray-300" />
                 <span className="font-semibold text-primary">
-                  Case No: {selectedApplication.Loan_CaseNo || "—"}
+                  {t("loanApproval.caseNoLabel")}{" "}
+                  {selectedApplication.Loan_CaseNo || "—"}
                 </span>
               </div>
             </div>
@@ -200,39 +205,39 @@ const LoanActionModal = ({
                 <Card className="p-5 border border-gray-200 bg-white shadow-sm rounded-xl space-y-4">
                   <div className="flex items-center gap-2 border-b pb-2 text-primary font-semibold">
                     <Info className="h-5 w-5" />
-                    <span>Application Info</span>
+                    <span>{t("loanApproval.applicationInfo")}</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {renderField(
-                      "Application Date",
+                      t("loanApproval.applicationDate"),
                       formatDate(selectedApplication.Appl_Date),
                     )}
-                    {renderField("Product Name", selectedApplication.Prod_Name)}
-                    {renderField("Applicant Name", selectedApplication.Full_Name)}
+                    {renderField(t("loanApproval.productName"), selectedApplication.Prod_Name)}
+                    {renderField(t("loanApproval.applicantName"), selectedApplication.Full_Name)}
                     {renderField(
-                      "Applicant Amount",
+                      t("loanApproval.applicantAmount"),
                       selectedApplication.Appl_Amount,
                     )}
-                    {renderField("ROI (%)", selectedApplication.Roi)}
+                    {renderField(t("loanApproval.roi"), selectedApplication.Roi)}
                     {renderField(
-                      "Duration",
+                      t("loanApproval.duration"),
                       `${selectedApplication.Duration || "—"} ${selectedApplication.Dur_Unit || ""}`,
                     )}
                     {renderField(
-                      "Repayment Mode",
+                      t("loanApproval.repaymentMode"),
                       selectedApplication.Repay_Mode,
                     )}
                     {renderField(
-                      "Final Repayment Date",
+                      t("loanApproval.finalRepaymentDate"),
                       formatDate(selectedApplication.Repay_Within),
                     )}
-                    {renderField("ECS Mode", selectedApplication.Ecs_Mode)}
-                    {renderField("Applied By", selectedApplication.Appl_By)}
+                    {renderField(t("loanApproval.ecsMode"), selectedApplication.Ecs_Mode)}
+                    {renderField(t("loanApproval.appliedBy"), selectedApplication.Appl_By)}
                     {renderField(
-                      "Created On",
+                      t("loanApproval.createdOn"),
                       formatDate(selectedApplication.Created_On),
                     )}
-                    {renderField("Loan Purpose", selectedApplication.Loan_Purp)}
+                    {renderField(t("loanApproval.loanPurpose"), selectedApplication.Loan_Purp)}
                   </div>
                 </Card>
 
@@ -242,15 +247,15 @@ const LoanActionModal = ({
                   <Card className="p-5 border border-gray-200 bg-white shadow-sm rounded-xl space-y-4">
                     <div className="flex items-center gap-2 border-b pb-2 text-primary font-semibold">
                       <User className="h-5 w-5" />
-                      <span>Joint Holder Details</span>
+                      <span>{t("loanApproval.jointHolderDetails")}</span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {renderField(
-                        "Joint Holder 1",
+                        t("loanApproval.jointHolder1"),
                         selectedApplication.JtHoldr_ID,
                       )}
                       {renderField(
-                        "Joint Holder 2",
+                        t("loanApproval.jointHolder2"),
                         selectedApplication.JtHoldr_ID1,
                       )}
                     </div>
@@ -261,7 +266,7 @@ const LoanActionModal = ({
                 <Card className="p-5 border border-gray-200 bg-white shadow-sm rounded-xl space-y-4">
                   <div className="flex items-center gap-2 border-b pb-2 text-primary font-semibold">
                     <Layers className="h-5 w-5" />
-                    <span>Loan Based On</span>
+                    <span>{t("loanApproval.loanBasedOn")}</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {selectedApplication.Gurantor_Details &&
@@ -273,7 +278,7 @@ const LoanActionModal = ({
                         className="w-full flex items-center justify-center gap-2 border-primary text-primary hover:bg-primary/5 h-12 text-sm font-semibold rounded-lg"
                       >
                         <Eye className="h-4 w-4" />
-                        View Guarantor Details
+                        {t("loanApproval.viewGuarantorDetails")}
                       </Button>
                     ) : (
                       <Button
@@ -282,7 +287,7 @@ const LoanActionModal = ({
                         variant="outline"
                         className="h-12 text-sm font-semibold rounded-lg"
                       >
-                        No Guarantor Details
+                        {t("loanApproval.noGuarantorDetails")}
                       </Button>
                     )}
 
@@ -295,7 +300,7 @@ const LoanActionModal = ({
                         className="w-full flex items-center justify-center gap-2 border-primary text-primary hover:bg-primary/5 h-12 text-sm font-semibold rounded-lg"
                       >
                         <Eye className="h-4 w-4" />
-                        View Project Details
+                        {t("loanApproval.viewProjectDetails")}
                       </Button>
                     ) : (
                       <Button
@@ -304,7 +309,7 @@ const LoanActionModal = ({
                         variant="outline"
                         className="h-12 text-sm font-semibold rounded-lg"
                       >
-                        No Project Details
+                        {t("loanApproval.noProjectDetails")}
                       </Button>
                     )}
 
@@ -316,7 +321,7 @@ const LoanActionModal = ({
                         className="w-full flex items-center justify-center gap-2 border-primary text-primary hover:bg-primary/5 h-12 text-sm font-semibold rounded-lg"
                       >
                         <Eye className="h-4 w-4" />
-                        View Security Details
+                        {t("loanApproval.viewSecurityDetails")}
                       </Button>
                     ) : (
                       <Button
@@ -325,7 +330,7 @@ const LoanActionModal = ({
                         variant="outline"
                         className="h-12 text-sm font-semibold rounded-lg"
                       >
-                        No Security Details
+                        {t("loanApproval.noSecurityDetails")}
                       </Button>
                     )}
                   </div>
@@ -341,7 +346,7 @@ const LoanActionModal = ({
               disabled={loading}
               className="w-full sm:w-auto"
             >
-              Close
+              {t("loanApproval.close")}
             </Button>
             <div className="flex gap-3 w-full sm:w-auto">
               <Button
@@ -350,7 +355,7 @@ const LoanActionModal = ({
                 onClick={() => setShowRejectModal(true)}
                 disabled={loading}
               >
-                <Ban className="w-4 h-4 mr-2" /> Reject
+                <Ban className="w-4 h-4 mr-2" /> {t("loanApproval.reject")}
               </Button>
               <Button
                 type="button"
@@ -358,7 +363,7 @@ const LoanActionModal = ({
                 onClick={() => setShowApproveModal(true)}
                 disabled={loading}
               >
-                <CheckCircle2 className="w-4 h-4 mr-2" /> Approve
+                <CheckCircle2 className="w-4 h-4 mr-2" /> {t("loanApproval.approve")}
               </Button>
             </div>
           </div>
@@ -374,7 +379,7 @@ const LoanActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white">
             <DialogTitle className="text-xl font-bold text-gray-800 flex items-center gap-2">
               <Shield className="h-5 w-5 text-primary" />
-              Guarantor Details
+              {t("loanApproval.guarantorDetails")}
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="flex-1 p-6 bg-gray-50/30 overflow-y-auto">
@@ -383,7 +388,7 @@ const LoanActionModal = ({
                 <TableHeader className="bg-gray-50">
                   <TableRow>
                     <TableHead className="w-[80px]">Sl</TableHead>
-                    <TableHead>Guarantor Name</TableHead>
+                    <TableHead>{t("loanApproval.guarantorName")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -404,7 +409,7 @@ const LoanActionModal = ({
               variant="outline"
               className="w-full sm:w-auto"
             >
-              Close
+              {t("loanApproval.close")}
             </Button>
           </div>
         </DialogContent>
@@ -419,7 +424,7 @@ const LoanActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white">
             <DialogTitle className="text-xl font-bold text-gray-800 flex items-center gap-2">
               <Landmark className="h-5 w-5 text-primary" />
-              Project Details
+              {t("loanApproval.projectDetails")}
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="flex-1 p-6 bg-gray-50/30 overflow-y-auto">
@@ -429,14 +434,14 @@ const LoanActionModal = ({
                   key={idx}
                   className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
                 >
-                  {renderField("Project Name", proj.Project_Name)}
-                  {renderField("Project Cost", proj.Project_Cost)}
-                  {renderField("Own Contribution", proj.Own_CB)}
-                  {renderField("Mouza", proj.proj_mouza)}
-                  {renderField("Plot No", proj.proj_plotno)}
-                  {renderField("Land Area", proj.Land_Area)}
-                  {renderField("Hypothecated Value", proj.Hypo_Value)}
-                  {renderField("Income Gen Amount", proj.Income_Gen)}
+                  {renderField(t("loanApproval.projectName"), proj.Project_Name)}
+                  {renderField(t("loanApproval.projectCost"), proj.Project_Cost)}
+                  {renderField(t("loanApproval.ownContribution"), proj.Own_CB)}
+                  {renderField(t("loanApproval.mouza"), proj.proj_mouza)}
+                  {renderField(t("loanApproval.plotNo"), proj.proj_plotno)}
+                  {renderField(t("loanApproval.landArea"), proj.Land_Area)}
+                  {renderField(t("loanApproval.hypothecatedValue"), proj.Hypo_Value)}
+                  {renderField(t("loanApproval.incomeGenAmount"), proj.Income_Gen)}
                 </div>
               ))}
             </div>
@@ -448,7 +453,7 @@ const LoanActionModal = ({
               variant="outline"
               className="w-full sm:w-auto"
             >
-              Close
+              {t("loanApproval.close")}
             </Button>
           </div>
         </DialogContent>
@@ -463,7 +468,7 @@ const LoanActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white">
             <DialogTitle className="text-xl font-bold text-gray-800 flex items-center gap-2">
               <Shield className="h-5 w-5 text-primary" />
-              Security Details
+              {t("loanApproval.securityDetails")}
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="flex-1 p-6 bg-gray-50/30 overflow-y-auto">
@@ -472,19 +477,19 @@ const LoanActionModal = ({
               {type1Sec.length > 0 && (
                 <div className="space-y-2 bg-white p-5 border border-gray-200 shadow-sm rounded-xl">
                   <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                    Deposit / Certificate Securities
+                    {t("loanApproval.depositCertificateSecurities")}
                   </h4>
                   <div className="overflow-x-auto border rounded-lg">
                     <Table>
                       <TableHeader className="bg-gray-50">
                         <TableRow>
-                          <TableHead>Cert Type</TableHead>
-                          <TableHead>Cert No</TableHead>
-                          <TableHead>Issue Date</TableHead>
-                          <TableHead>Deposit Amt</TableHead>
-                          <TableHead>ROI (%)</TableHead>
-                          <TableHead>Maturity Date</TableHead>
-                          <TableHead>Maturity Amt</TableHead>
+                          <TableHead>{t("loanApproval.certType")}</TableHead>
+                          <TableHead>{t("loanApproval.certNo")}</TableHead>
+                          <TableHead>{t("loanApproval.issueDate")}</TableHead>
+                          <TableHead>{t("loanApproval.depositAmt")}</TableHead>
+                          <TableHead>{t("loanApproval.roi")}</TableHead>
+                          <TableHead>{t("loanApproval.maturityDate")}</TableHead>
+                          <TableHead>{t("loanApproval.maturityAmt")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -509,21 +514,21 @@ const LoanActionModal = ({
               {type2Sec.length > 0 && (
                 <div className="space-y-2 bg-white p-5 border border-gray-200 shadow-sm rounded-xl">
                   <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                    Property Securities
+                    {t("loanApproval.propertySecurities")}
                   </h4>
                   <div className="overflow-x-auto border rounded-lg">
                     <Table>
                       <TableHeader className="bg-gray-50">
                         <TableRow>
-                          <TableHead>Type Name</TableHead>
-                          <TableHead>Location</TableHead>
-                          <TableHead>Area</TableHead>
-                          <TableHead>Owner</TableHead>
-                          <TableHead>Co-Owner</TableHead>
-                          <TableHead>Details</TableHead>
-                          <TableHead>Latitude</TableHead>
-                          <TableHead>Longitude</TableHead>
-                          <TableHead>Value</TableHead>
+                          <TableHead>{t("loanApproval.typeName")}</TableHead>
+                          <TableHead>{t("loanApproval.location")}</TableHead>
+                          <TableHead>{t("loanApproval.area")}</TableHead>
+                          <TableHead>{t("loanApproval.owner")}</TableHead>
+                          <TableHead>{t("loanApproval.coOwner")}</TableHead>
+                          <TableHead>{t("loanApproval.details")}</TableHead>
+                          <TableHead>{t("loanApproval.latitude")}</TableHead>
+                          <TableHead>{t("loanApproval.longitude")}</TableHead>
+                          <TableHead>{t("loanApproval.value")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -556,13 +561,13 @@ const LoanActionModal = ({
                     <Table>
                       <TableHeader className="bg-gray-50">
                         <TableRow>
-                          <TableHead>Item Name</TableHead>
-                          <TableHead>Details</TableHead>
-                          <TableHead>Brand</TableHead>
-                          <TableHead>Owner</TableHead>
-                          <TableHead>Co-Owner</TableHead>
-                          <TableHead>Cost</TableHead>
-                          <TableHead>Own Cont.</TableHead>
+                          <TableHead>{t("loanApproval.itemName")}</TableHead>
+                          <TableHead>{t("loanApproval.details")}</TableHead>
+                          <TableHead>{t("loanApproval.brand")}</TableHead>
+                          <TableHead>{t("loanApproval.owner")}</TableHead>
+                          <TableHead>{t("loanApproval.coOwner")}</TableHead>
+                          <TableHead>{t("loanApproval.cost")}</TableHead>
+                          <TableHead>{t("loanApproval.ownCont")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -593,9 +598,9 @@ const LoanActionModal = ({
                     <Table>
                       <TableHeader className="bg-gray-50">
                         <TableRow>
-                          <TableHead>Type Name</TableHead>
-                          <TableHead>Details</TableHead>
-                          <TableHead>Value</TableHead>
+                          <TableHead>{t("loanApproval.typeName")}</TableHead>
+                          <TableHead>{t("loanApproval.details")}</TableHead>
+                          <TableHead>{t("loanApproval.value")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -620,7 +625,7 @@ const LoanActionModal = ({
               variant="outline"
               className="w-full sm:w-auto"
             >
-              Close
+              {t("loanApproval.close")}
             </Button>
           </div>
         </DialogContent>
@@ -632,16 +637,17 @@ const LoanActionModal = ({
           <DialogHeader className="border-b pb-3">
             <DialogTitle className="flex items-center gap-2 text-red-600">
               <AlertTriangle className="h-5 w-5" />
-              Reject Loan Application
+              {t("loanApproval.rejectLoanApplication")}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4 space-y-2">
             <Label htmlFor="remarks" className="text-sm font-semibold">
-              Rejection Remarks <span className="text-red-500">*</span>
+              {t("loanApproval.rejectionRemarks")}{" "}
+              <span className="text-red-500">*</span>
             </Label>
             <textarea
               id="remarks"
-              placeholder="Enter reason for rejection..."
+              placeholder={t("loanApproval.enterRejectionReason")}
               value={rejectRemarks}
               onChange={(e) => setRejectRemarks(e.target.value)}
               className="w-full min-h-[100px] border border-gray-200 rounded-md p-3 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
@@ -649,13 +655,13 @@ const LoanActionModal = ({
           </div>
           <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 border-t pt-3">
             <Button variant="outline" onClick={() => setShowRejectModal(false)} className="w-full sm:w-auto">
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               className="bg-red-600 hover:bg-red-700 text-white font-bold w-full sm:w-auto"
               onClick={() => {
                 if (!rejectRemarks.trim()) {
-                  toast.error("Please enter remarks for rejection.");
+                  toast.error(t("loanApproval.pleaseEnterRejectionRemarks"));
                   return;
                 }
                 onApproveReject(2, rejectRemarks);
@@ -663,7 +669,7 @@ const LoanActionModal = ({
                 setRejectRemarks("");
               }}
             >
-              Confirm Rejection
+              {t("loanApproval.confirmRejection")}
             </Button>
           </div>
         </DialogContent>
@@ -675,7 +681,7 @@ const LoanActionModal = ({
           <DialogHeader className="border-b pb-3">
             <DialogTitle className="flex items-center gap-2 text-primary">
               <CheckCircle2 className="h-5 w-5 text-primary" />
-              Approve Loan Application
+              {t("loanApproval.approveLoanApplication")}
             </DialogTitle>
           </DialogHeader>
           <Form {...form}>
@@ -683,7 +689,7 @@ const LoanActionModal = ({
               <DatePickerField
                 control={form.control}
                 name="approveDate"
-                label="Sanction Date"
+                label={t("loanApproval.sanctionDate")}
                 isRequired
                 disabled={true}
               />
@@ -691,7 +697,7 @@ const LoanActionModal = ({
               <InputField
                 control={form.control}
                 name="appliedAmount"
-                label="Applied Amount"
+                label={t("loanApproval.appliedAmount")}
                 disabled
                 readOnly
                 displayValue={selectedApplication.Appl_Amount || "—"}
@@ -700,10 +706,10 @@ const LoanActionModal = ({
               <InputField
                 control={form.control}
                 name="approvedAmount"
-                label="Sanction Amount"
+                label={t("loanApproval.sanctionAmount")}
                 type="number"
                 isRequired
-                placeholder="Enter Sanction amount"
+                placeholder={t("loanApproval.enterSanctionAmount")}
               />
             </div>
           </Form>
@@ -713,7 +719,7 @@ const LoanActionModal = ({
               onClick={() => setShowApproveModal(false)}
               className="w-full sm:w-auto"
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               className="bg-primary hover:bg-primary/90 text-white font-bold w-full sm:w-auto"
@@ -728,17 +734,17 @@ const LoanActionModal = ({
                 if (!currentApproveDate) {
                   form.setError("approveDate", {
                     type: "manual",
-                    message: "Please select an approval date.",
+                    message: t("loanApproval.pleaseSelectApprovalDate"),
                   });
-                  toast.error("Please select an approval date.");
+                  toast.error(t("loanApproval.pleaseSelectApprovalDate"));
                   hasError = true;
                 }
                 if (!currentApprovedAmount || Number(currentApprovedAmount) <= 0) {
                   form.setError("approvedAmount", {
                     type: "manual",
-                    message: "Please enter a valid approved amount.",
+                    message: t("loanApproval.pleaseEnterValidApprovedAmount"),
                   });
-                  toast.error("Please enter a valid approved amount.");
+                  toast.error(t("loanApproval.pleaseEnterValidApprovedAmount"));
                   hasError = true;
                 }
                 if (
@@ -747,10 +753,14 @@ const LoanActionModal = ({
                 ) {
                   form.setError("approvedAmount", {
                     type: "manual",
-                    message: `Approved amount cannot be greater than applied amount (${selectedApplication.Appl_Amount}).`,
+                    message: t("loanApproval.approvedAmountExceeds", {
+                      amount: selectedApplication.Appl_Amount,
+                    }),
                   });
                   toast.error(
-                    `Approved amount cannot be greater than applied amount (${selectedApplication.Appl_Amount}).`,
+                    t("loanApproval.approvedAmountExceeds", {
+                      amount: selectedApplication.Appl_Amount,
+                    }),
                   );
                   hasError = true;
                 }
@@ -785,13 +795,15 @@ const LoanActionModal = ({
                   }
                 } catch (err) {
                   console.error(err);
-                  toast.error("Error loading deduction charges list.");
+                  toast.error(t("loanApproval.errorLoadingDeductions"));
                 } finally {
                   setDeductionsLoading(false);
                 }
               }}
             >
-              {deductionsLoading ? "Loading..." : "Submit"}
+              {deductionsLoading
+                ? t("loanApproval.loading")
+                : t("loanApproval.submit")}
             </Button>
           </div>
         </DialogContent>
@@ -806,7 +818,7 @@ const LoanActionModal = ({
           <DialogHeader className="p-3 sm:p-6 border-b bg-white">
             <DialogTitle className="text-xl font-bold text-gray-800 flex items-center gap-2">
               <Layers className="h-5 w-5 text-primary" />
-              Deduction Charges List
+              {t("loanApproval.deductionChargesList")}
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="flex-1 p-6 bg-gray-50/30 overflow-y-auto">
@@ -815,8 +827,8 @@ const LoanActionModal = ({
                 <TableHeader className="bg-gray-50">
                   <TableRow>
                     <TableHead className="w-[80px]">#</TableHead>
-                    <TableHead>Charge Name</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead>{t("loanApproval.chargeName")}</TableHead>
+                    <TableHead className="text-right">{t("common.amount")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -830,7 +842,7 @@ const LoanActionModal = ({
                     </TableRow>
                   ))}
                   <TableRow className="bg-gray-50 font-bold">
-                    <TableCell colSpan={2}>Grand Total</TableCell>
+                    <TableCell colSpan={2}>{t("common.grandTotal")}</TableCell>
                     <TableCell className="text-right tabular-nums">
                       {deductions
                         .reduce(
@@ -848,7 +860,7 @@ const LoanActionModal = ({
             {/* ── Transaction block ── */}
             <div className="w-full flex flex-col border border-primary rounded-lg p-2 sm:px-5 gap-2 my-5">
               <h3 className="w-full text-center text-xl font-semibold">
-                Transaction Block
+                {t("loanApproval.transactionBlock")}
               </h3>
               <Form {...form}>
                 <div className="w-full flex flex-col gap-2">
@@ -868,7 +880,7 @@ const LoanActionModal = ({
                                 <RadioGroupItem value="cash" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Cash
+                                {t("loanApproval.cash")}
                               </FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-3 space-y-0">
@@ -876,7 +888,7 @@ const LoanActionModal = ({
                                 <RadioGroupItem value="bank" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Bank
+                                {t("loanApproval.bank")}
                               </FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-3 space-y-0">
@@ -884,7 +896,7 @@ const LoanActionModal = ({
                                 <RadioGroupItem value="savings" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Savings
+                                {t("loanApproval.savings")}
                               </FormLabel>
                             </FormItem>
                           </RadioGroup>
@@ -896,7 +908,7 @@ const LoanActionModal = ({
                   <InputField
                     control={form.control}
                     name="refVouchNo"
-                    placeholder="Enter ref. vouch no."
+                    placeholder={t("loanApproval.enterRefVouchNo")}
                   />
                   {transMode === "cash" ? (
                     isActiveDenom ? (
@@ -920,35 +932,35 @@ const LoanActionModal = ({
                     <DropdownField
                       control={form.control}
                       name="bank"
-                      label="Bank"
+                      label={t("loanApproval.bank")}
                       options={bankAccountData}
                       optionLabelKey="Bank_Name"
-                      placeholder="Select bank"
-                      searchPlaceholder="Search bank..."
+                      placeholder={t("loanApproval.selectBank")}
+                      searchPlaceholder={t("loanApproval.searchBank")}
                     />
                   ) : (
                     <>
                       <DropdownField
                         control={form.control}
                         name="savings"
-                        label="Savings"
+                        label={t("loanApproval.savings")}
                         options={ecsAccountData}
                         optionLabelKey="Account_No"
-                        placeholder="Select savings"
-                        searchPlaceholder="Search savings..."
+                        placeholder={t("loanApproval.selectSavings")}
+                        searchPlaceholder={t("loanApproval.searchSavings")}
                       />
                       <InputField
                         control={form.control}
                         name="savingsName"
-                        label="Account Holder Name"
-                        placeholder="Enter name"
+                        label={t("loanApproval.accountHolderName")}
+                        placeholder={t("loanApproval.enterName")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="savingsBalance"
-                        label="Available Balance"
-                        placeholder="Enter balance"
+                        label={t("loanApproval.availableBalance")}
+                        placeholder={t("loanApproval.enterBalance")}
                         readOnly
                       />
                     </>
@@ -967,7 +979,7 @@ const LoanActionModal = ({
               variant="outline"
               className="w-full sm:w-auto"
             >
-              Back
+              {t("loanApproval.back")}
             </Button>
             <Button
               type="button"
@@ -999,7 +1011,7 @@ const LoanActionModal = ({
                 setShowDeductionsModal(false);
               }}
             >
-              Approve
+              {t("loanApproval.approve")}
             </Button>
           </div>
         </DialogContent>

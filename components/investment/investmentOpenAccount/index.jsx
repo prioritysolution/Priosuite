@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import { IoCalculator } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const InvestmentOpenAccount = ({
   loading,
@@ -44,6 +45,7 @@ const InvestmentOpenAccount = ({
   transMode,
   handleCalculateMatureAmount,
 }) => {
+  const { t } = useTranslation();
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -84,7 +86,7 @@ const InvestmentOpenAccount = ({
   return (
     <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
       <h3 className="text-2xl font-semibold text-center">
-        Open Investment Account
+        {t("investment.openInvestmentAccount")}
       </h3>
 
       <ScrollArea className="w-full h-full">
@@ -100,38 +102,38 @@ const InvestmentOpenAccount = ({
                 <DropdownField
                   control={form.control}
                   name="investmentType"
-                  label="Investment Type"
+                  label={t("investment.investmentType")}
                   options={investmentTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select investment type"
-                  searchPlaceholder="Search investment type..."
+                  placeholder={t("investment.selectInvestmentType")}
+                  searchPlaceholder={t("investment.searchInvestmentType")}
                   isRequired={true}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="accountType"
-                  label="Account Type"
+                  label={t("investment.accountType")}
                   options={accountTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select account type"
-                  searchPlaceholder="Search account type..."
+                  placeholder={t("investment.selectAccountType")}
+                  searchPlaceholder={t("investment.searchAccountType")}
                   isRequired={true}
                 />
 
                 <InputField
                   control={form.control}
                   name="bankName"
-                  label="Bank Name"
-                  placeholder="Enter bank name"
+                  label={t("common.bankName")}
+                  placeholder={t("investment.enterBankName")}
                   isRequired={true}
                 />
 
                 <InputField
                   control={form.control}
                   name="accountNo"
-                  label="Account No."
-                  placeholder="Enter account no."
+                  label={t("common.accountNo")}
+                  placeholder={t("investment.enterAccountNo")}
                   type="number"
                   // onInput={(e) => {
                   //   if (e.target.value.length > 12) {
@@ -144,7 +146,7 @@ const InvestmentOpenAccount = ({
                 <DatePickerField
                   control={form.control}
                   name="openingDate"
-                  label="Opening Date"
+                  label={t("investment.openingDate")}
                   // startYear={
                   //   startDate
                   //     ? getYear(new Date(startDate))
@@ -164,8 +166,8 @@ const InvestmentOpenAccount = ({
                 <InputField
                   control={form.control}
                   name="amount"
-                  label="Amount"
-                  placeholder="Enter amount"
+                  label={t("common.amount")}
+                  placeholder={t("investment.enterAmount")}
                   type="number"
                   isRequired={true}
                 />
@@ -173,8 +175,8 @@ const InvestmentOpenAccount = ({
                 <InputField
                   control={form.control}
                   name="rateOfInterest"
-                  label="Rate Of Interest"
-                  placeholder="Enter rate of interest"
+                  label={t("investment.rateOfInterest")}
+                  placeholder={t("investment.enterRateOfInterest")}
                   type="number"
                   isRequired={true}
                 />
@@ -182,19 +184,19 @@ const InvestmentOpenAccount = ({
                 <DropdownField
                   control={form.control}
                   name="interestType"
-                  label="Interest Type"
+                  label={t("investment.interestType")}
                   options={interestTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select interest type"
-                  searchPlaceholder="Search interest type..."
+                  placeholder={t("investment.selectInterestType")}
+                  searchPlaceholder={t("investment.searchInterestType")}
                   isRequired={true}
                 />
 
                 <InputField
                   control={form.control}
                   name="duration"
-                  label="Duration"
-                  placeholder="Enter duration"
+                  label={t("investment.duration")}
+                  placeholder={t("investment.enterDuration")}
                   type="number"
                   isRequired={true}
                 />
@@ -202,19 +204,19 @@ const InvestmentOpenAccount = ({
                 <DropdownField
                   control={form.control}
                   name="durtype"
-                  label="Duration Type"
+                  label={t("investment.durationType")}
                   options={durationTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select duration type"
-                  searchPlaceholder="Search duration type..."
+                  placeholder={t("investment.selectDurationType")}
+                  searchPlaceholder={t("investment.searchDurationType")}
                   isRequired={true}
                 />
 
                 <InputField
                   control={form.control}
                   name="matureDate"
-                  label="Mature Date"
-                  placeholder="Mature date"
+                  label={t("investment.matureDate")}
+                  placeholder={t("investment.matureDate")}
                   readOnly
                   displayValue={form.watch("matureDate") || ""}
                 />
@@ -224,11 +226,14 @@ const InvestmentOpenAccount = ({
                   name="matureAmount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Mature Amount <span className="text-red-500">*</span></FormLabel>
+                      <FormLabel>
+                        {t("investment.matureAmount")}{" "}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <div className="flex items-center gap-3">
                           <Input
-                            placeholder="Enter mature amount"
+                            placeholder={t("investment.enterMatureAmount")}
                             type="number"
                             {...field}
                             className="h-10"
@@ -244,7 +249,7 @@ const InvestmentOpenAccount = ({
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>Calculate Mature Amount</p>
+                                <p>{t("investment.calculateMatureAmount")}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -258,22 +263,22 @@ const InvestmentOpenAccount = ({
                 <DropdownField
                   control={form.control}
                   name="principalLedger"
-                  label="Principal Ledger"
+                  label={t("investment.principalLedger")}
                   options={principalLedgerData}
                   optionLabelKey="Ledger_Name"
-                  placeholder="Select ledger"
-                  searchPlaceholder="Search ledger..."
+                  placeholder={t("investment.selectLedger")}
+                  searchPlaceholder={t("investment.searchLedger")}
                   isRequired={true}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="interestLedger"
-                  label="Interest Ledger"
+                  label={t("investment.interestLedger")}
                   options={interestLedgerData}
                   optionLabelKey="Ledger_Name"
-                  placeholder="Select ledger"
-                  searchPlaceholder="Search ledger..."
+                  placeholder={t("investment.selectLedger")}
+                  searchPlaceholder={t("investment.searchLedger")}
                   isRequired={true}
                 />
               </div>
@@ -282,10 +287,10 @@ const InvestmentOpenAccount = ({
             <div className="w-full bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm mt-6">
               <div className="border-b border-slate-100 pb-4">
                 <h4 className="text-lg font-semibold text-slate-700">
-                  Voucher Details
+                  {t("investment.voucherDetails")}
                 </h4>
                 <p className="text-xs text-slate-500">
-                  Provide voucher and transaction mode details below
+                  {t("investment.voucherDetailsDescription")}
                 </p>
               </div>
 
@@ -293,15 +298,15 @@ const InvestmentOpenAccount = ({
                 <InputField
                   control={form.control}
                   name="particulars"
-                  label="Particulars"
-                  placeholder="Enter particulars"
+                  label={t("common.particulars")}
+                  placeholder={t("investment.enterParticulars")}
                   isRequired={true}
                 />
                 <InputField
                   control={form.control}
                   name="refVouchNo"
-                  label="Ref. Vouch No."
-                  placeholder="Enter ref. vouch no."
+                  label={t("investment.refVouchNo")}
+                  placeholder={t("investment.enterRefVouchNo")}
                 />
 
                 {/* Transaction Mode */}
@@ -310,7 +315,9 @@ const InvestmentOpenAccount = ({
                   name="transMode"
                   render={({ field }) => (
                     <FormItem className="flex flex-col justify-end h-full">
-                      <FormLabel className="mb-2">Transaction Mode</FormLabel>
+                      <FormLabel className="mb-2">
+                        {t("common.transactionMode")}
+                      </FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -322,7 +329,7 @@ const InvestmentOpenAccount = ({
                               <RadioGroupItem value="cash" />
                             </FormControl>
                             <FormLabel className="font-normal cursor-pointer">
-                              Cash
+                              {t("common.cash")}
                             </FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2 space-y-0">
@@ -330,7 +337,7 @@ const InvestmentOpenAccount = ({
                               <RadioGroupItem value="bank" />
                             </FormControl>
                             <FormLabel className="font-normal cursor-pointer">
-                              Bank
+                              {t("common.bank")}
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
@@ -346,7 +353,7 @@ const InvestmentOpenAccount = ({
                 isActiveDenom && (
                   <div className="w-full border border-slate-100 rounded-xl p-4 bg-slate-50/50 mt-2">
                     <h5 className="text-sm font-semibold text-slate-700 mb-3">
-                      Cash Denomination
+                      {t("investment.cashDenomination")}
                     </h5>
                     <CashDenomTable
                       notes={notes}
@@ -365,11 +372,11 @@ const InvestmentOpenAccount = ({
                   <DropdownField
                     control={form.control}
                     name="bank"
-                    label="Bank"
+                    label={t("common.bank")}
                     options={bankAccountData}
                     optionLabelKey="Bank_Name"
-                    placeholder="Select bank"
-                    searchPlaceholder="Search bank..."
+                    placeholder={t("investment.selectBank")}
+                    searchPlaceholder={t("investment.searchBank")}
                     isRequired={transMode === "bank"}
                   />
                 </div>
@@ -389,7 +396,7 @@ const InvestmentOpenAccount = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("common.add")
                   )}
                 </Button>
               </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -23,48 +24,30 @@ const DetailedListTable = ({
   totalOdIntt,
   handleShowLedger,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Table className="min-w-[1100px] border whitespace-nowrap">
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="border bg-gray-100">
-          <TableHead rowSpan={2} className="text-center">
-            SL
-          </TableHead>
-          <TableHead rowSpan={2} className="border">
-            Customer Name
-          </TableHead>
-          <TableHead rowSpan={2} className="border">
-            Guardian Name
-          </TableHead>
-          <TableHead rowSpan={2} className="border">
-            Account No
-          </TableHead>
-          <TableHead rowSpan={2} className="border">
-            Loan Date
-          </TableHead>
-          <TableHead rowSpan={2} className="border">
-            Opening
-          </TableHead>
-          <TableHead rowSpan={2} className="border">
-            Disburse
-          </TableHead>
-          <TableHead colSpan={2} className="border text-center">
-            Repayment
-          </TableHead>
-          <TableHead colSpan={2} className="border text-center">
-            Outstanding
-          </TableHead>
-          <TableHead colSpan={2} className="text-center">
-            Outs. Interest
-          </TableHead>
+          <TableHead rowSpan={2} className="text-center">{t("loan.slUpper")}</TableHead>
+          <TableHead rowSpan={2} className="border">{t("loan.customerName")}</TableHead>
+          <TableHead rowSpan={2} className="border">{t("loan.guardianName")}</TableHead>
+          <TableHead rowSpan={2} className="border">{t("loan.accountNoShort")}</TableHead>
+          <TableHead rowSpan={2} className="border">{t("loan.loanDate")}</TableHead>
+          <TableHead rowSpan={2} className="border">{t("loan.opening")}</TableHead>
+          <TableHead rowSpan={2} className="border">{t("loan.disburse")}</TableHead>
+          <TableHead colSpan={2} className="border text-center">{t("loan.repayment")}</TableHead>
+          <TableHead colSpan={2} className="border text-center">{t("loan.outstanding")}</TableHead>
+          <TableHead colSpan={2} className="text-center">{t("loan.outsInterest")}</TableHead>
         </TableRow>
         <TableRow className="border bg-gray-100">
-          <TableHead className="border">Principal</TableHead>
-          <TableHead className="border">Interest</TableHead>
-          <TableHead className="border">Current</TableHead>
-          <TableHead className="border">Overdue</TableHead>
-          <TableHead className="border">Current</TableHead>
-          <TableHead className="">Overdue</TableHead>
+          <TableHead className="border">{t("loan.principal")}</TableHead>
+          <TableHead className="border">{t("loan.interest")}</TableHead>
+          <TableHead className="border">{t("loan.current")}</TableHead>
+          <TableHead className="border">{t("loan.overdue")}</TableHead>
+          <TableHead className="border">{t("loan.current")}</TableHead>
+          <TableHead className="">{t("loan.overdue")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">
@@ -123,7 +106,7 @@ const DetailedListTable = ({
       </TableBody>
       <TableFooter className="sticky bottom-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableCell colSpan={5}>Total</TableCell>
+          <TableCell colSpan={5}>{t("loan.total")}</TableCell>
           <TableCell>{totalOpening?.toFixed(2)}</TableCell>
           <TableCell>{totalDisburse?.toFixed(2)}</TableCell>
           <TableCell>{totalPrn?.toFixed(2)}</TableCell>

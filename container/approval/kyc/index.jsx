@@ -18,8 +18,11 @@ import Spinner from "@/common/loader/Spinner";
 import KycActionModal from "@/components/approval/kyc/KycActionModal";
 import { Input } from "@/components/ui/input";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
+import { useTranslation } from "react-i18next";
 
 const KycApproval = () => {
+  const { t } = useTranslation();
+
   const {
     kycList,
     loading,
@@ -48,7 +51,7 @@ const KycApproval = () => {
   } = useKycApproval();
 
   const getMappedName = (id, list, labelKey) => {
-    if (!id || !list) return id || "N/A";
+    if (!id || !list) return id || t("common.notAvailable");
     const found = list.find(
       (item) =>
         String(item.Id) === String(id) || String(item.value) === String(id),
@@ -60,7 +63,7 @@ const KycApproval = () => {
     <div className="p-6 space-y-6 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5">
         <h2 className="text-2xl font-bold tracking-tight text-gray-800">
-          KYC Approval
+          {t("kycApproval.kycApproval")}
         </h2>
         <div className="relative w-full sm:w-auto flex items-center">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -71,7 +74,7 @@ const KycApproval = () => {
               paginate(1);
             }}
             className="w-full sm:w-64 pl-10 bg-white border-gray-300 focus:border-primary"
-            placeholder="Search by name, app no..."
+            placeholder={t("kycApproval.searchPlaceholder")}
           />
         </div>
       </div>
@@ -82,25 +85,31 @@ const KycApproval = () => {
             <TableHeader className="bg-background z-10">
               <TableRow className="bg-gray-100">
                 <TableHead className="w-[50px]  font-semibold">
-                  Sl
+                  {t("common.sl")}
                 </TableHead>
                 <TableHead className=" font-semibold">
-                  Application No
+                  {t("kycApproval.applicationNo")}
                 </TableHead>
                 <TableHead className=" font-semibold">
-                  Customer Type
+                  {t("kycApproval.customerType")}
                 </TableHead>
                 <TableHead className=" font-semibold">
-                  Customer Name
+                  {t("kycApproval.customerName")}
                 </TableHead>
                 <TableHead className=" font-semibold">
-                  Relation Name
+                  {t("kycApproval.relationName")}
                 </TableHead>
-                <TableHead className=" font-semibold">Mobile No</TableHead>
-                <TableHead className=" font-semibold">Entered By</TableHead>
-                <TableHead className=" font-semibold">Entered On</TableHead>
+                <TableHead className=" font-semibold">
+                  {t("kycApproval.mobileNo")}
+                </TableHead>
+                <TableHead className=" font-semibold">
+                  {t("kycApproval.enteredBy")}
+                </TableHead>
+                <TableHead className=" font-semibold">
+                  {t("kycApproval.enteredOn")}
+                </TableHead>
                 <TableHead className="text-right font-semibold">
-                  Action
+                  {t("common.action")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -123,7 +132,7 @@ const KycApproval = () => {
                       "Option_Value",
                     );
                   const custName =
-                    item.Full_Name || item.Customer_Name || "N/A";
+                    item.Full_Name || item.Customer_Name || t("common.notAvailable");
 
                   // Calculate Serial Number based on pagination
                   const serialNo =
@@ -137,9 +146,9 @@ const KycApproval = () => {
                       </TableCell>
                       <TableCell>{custTypeName}</TableCell>
                       <TableCell className="font-semibold">{custName}</TableCell>
-                      <TableCell>{item.Relation_Name || "N/A"}</TableCell>
-                      <TableCell>{item.Cust_Mob || "N/A"}</TableCell>
-                      <TableCell>{item.Entred_By || "N/A"}</TableCell>
+                      <TableCell>{item.Relation_Name || t("common.notAvailable")}</TableCell>
+                      <TableCell>{item.Cust_Mob || t("common.notAvailable")}</TableCell>
+                      <TableCell>{item.Entred_By || t("common.notAvailable")}</TableCell>
                       <TableCell>{formatDate(item.Entred_On)}</TableCell>
                       <TableCell className="text-right">
                         <Button
@@ -163,7 +172,7 @@ const KycApproval = () => {
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Search className="h-8 w-8 text-gray-300" />
                       <p>
-                        No pending approvals found matching your search.
+                        {t("kycApproval.noPendingApprovals")}
                       </p>
                     </div>
                   </TableCell>
@@ -177,12 +186,14 @@ const KycApproval = () => {
         {!loading && totalPages > 0 && (
           <div className="flex items-center justify-between px-4 py-4 border-t bg-gray-50/50">
             <div className="text-sm text-gray-500">
-              Showing{" "}
+              {t("kycApproval.showing")}{" "}
               {kycList.length > 0
                 ? (currentPage - 1) * itemsPerPage + 1
                 : 0}{" "}
-              to {Math.min(currentPage * itemsPerPage, totalItems)} of{" "}
-              {totalItems} entries
+              {t("kycApproval.to")}{" "}
+              {Math.min(currentPage * itemsPerPage, totalItems)}{" "}
+              {t("kycApproval.of")} {totalItems}{" "}
+              {t("kycApproval.entries")}
             </div>
 
             <div className="flex items-center gap-2">

@@ -1,0 +1,37 @@
+---
+alwaysApply: false
+---
+# Forms, API, Redux
+
+## Forms
+
+- `react-hook-form` + `yup` + `yupResolver` live in `container/.../Hooks.js` only
+- Fields: `InputField`, `DropdownField`, `DatePickerField`, `TextareaField`, `RadioField` from `common/formFields`
+- Shared regex: `utils/validationRegex.js`
+- Dates: store as Date at **local noon** (`utils/dateHelpers.js`). API: `formatDateForApi`. Display: `dd-MM-yyyy`
+- Never `toISOString().slice(0, 10)` or `new Date("yyyy-MM-dd")` for calendar days
+- Calendar: `react-day-picker@8` only (not v9)
+
+## API
+
+```js
+// Apis.js — URLs from endPoints.js only
+export const getFooAPI = async (orgId) =>
+  doGetApiCall({ url: endPoints.getFoo(orgId) });
+
+// Hooks.js
+if (res.message === "Data Found" || res.message === "Success") {
+  dispatch(setData(res.details ?? res.Data));
+}
+```
+
+- Base URL: `process.env.NEXT_PUBLIC_BASE_API_URL`
+- Do not call axios from components or pages
+- Token cookie: `prioBankClientToken`. Also: `orgId`, `userBranchId`, `finId`, `beg_date`, `fin_start_date`, `fin_end_date`
+
+## Redux
+
+- One slice per feature in `container/.../*Reducer.js`
+- Register in `redux/configureStore.js`
+- Read with `useSelector((state) => state.sliceKey…)`
+- Do not store full form drafts in Redux unless that feature already does

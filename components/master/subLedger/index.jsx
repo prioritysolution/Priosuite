@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
@@ -20,6 +22,8 @@ const SubLedger = ({
   setCurrentPage,
   lastPage,
 }) => {
+  const { t } = useTranslation();
+
   const subLedgerListData = useSelector(
     (state) => state?.subLedger?.subLedgerData,
   );
@@ -30,13 +34,13 @@ const SubLedger = ({
     <div className="w-full h-full flex justify-between p-5 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col lg:flex-row items-center lg:items-start justify-center border-primary rounded-lg border-[2px] p-5 w-full gap-5 xl:gap-20 overflow-hidden">
         <div className="h-full w-full text-center flex flex-col items-center gap-5 overflow-y-scroll">
-          <h2 className="text-lg sm:text-2xl font-semibold">Sub Ledger</h2>
+          <h2 className="text-lg sm:text-2xl font-semibold">{t("master.subLedger.title")}</h2>
           <div className="w-full flex items-center justify-end">
             <Button
               className="px-10 py-6 text-lg"
               onClick={() => setOpenDialouge(true)}
             >
-              Add New Sub Ledger
+              {t("master.subLedger.addNew")}
             </Button>
             <Modal
               isOpen={openDialouge}
@@ -51,8 +55,8 @@ const SubLedger = ({
             >
               <ModalContent>
                 <ModalHeader>
-                  {editData ? "Edit " : "Add "}
-                  Sub Ledger
+                  {editData ? t("common.buttons.edit") + " " : t("common.buttons.add") + " "}
+                  {t("master.subLedger.title")}
                 </ModalHeader>
                 <ModalBody>
                   <SubLedgerForm

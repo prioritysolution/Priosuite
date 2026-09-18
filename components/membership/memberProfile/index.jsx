@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 
 import { DatePickerField } from "@/common/formFields/DatePickerField";
@@ -61,6 +63,8 @@ const AddressSectionFields = ({
   getPostOfficeLoading,
   addressLabel = "Address",
 }) => {
+  const { t } = useTranslation();
+
   const stateId = form.watch(names.stateId);
   const districtId = form.watch(names.districtId);
   const blockId = form.watch(names.blockId);
@@ -70,8 +74,8 @@ const AddressSectionFields = ({
       <TextareaField
         control={form.control}
         name={names.address}
-        label={addressLabel}
-        placeholder="Enter address"
+        label={addressLabel === "Address" ? t("membership.memberProfile.fields.address") : addressLabel}
+        placeholder={t("membership.memberProfile.placeholders.address")}
         rows={3}
         isRequired
         disabled={disabled}
@@ -81,7 +85,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.stateId}
-        label="State"
+        label={t("membership.memberProfile.fields.state")}
         options={stateData}
         optionLabelKey="State_Name"
         disabled={disabled || getStateLoading}
@@ -92,7 +96,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.districtId}
-        label="District"
+        label={t("membership.memberProfile.fields.district")}
         options={districtData}
         optionLabelKey="Dist_Name"
         loading={getDistrictLoading}
@@ -109,7 +113,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.blockId}
-        label="Block/Municipality"
+        label={t("membership.memberProfile.fields.blockMunicipality")}
         options={blockData}
         optionLabelKey="Block_Name"
         loading={getBlockLoading}
@@ -126,7 +130,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.villageId}
-        label="Village"
+        label={t("membership.memberProfile.fields.village")}
         options={villageData}
         optionLabelKey="Vill_Name"
         loading={getVillageLoading}
@@ -142,7 +146,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.policeStationId}
-        label="Police Station"
+        label={t("membership.memberProfile.fields.policeStation")}
         options={policeStationData}
         optionLabelKey="STation_Name"
         loading={getPoliceStationLoading}
@@ -158,7 +162,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.postOfficeId}
-        label="Post Office"
+        label={t("membership.memberProfile.fields.postOffice")}
         options={postOfficeData}
         optionLabelKey="Post_Off_Name"
         loading={getPostOfficeLoading}
@@ -215,6 +219,8 @@ const MemberProfile = ({
   presentGetPoliceStationLoading,
   presentGetPostOfficeLoading,
 }) => {
+  const { t } = useTranslation();
+
   const relationTypeData = useSelector(
     (state) => state?.memberProfile?.relationTypeData,
   );
@@ -257,7 +263,7 @@ const MemberProfile = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
       <div className="flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Member KYC</h3>
+        <h3 className="text-2xl font-semibold ">{t("membership.memberProfile.title")}</h3>
         <ScrollArea className="w-full p-2 sm:px-10 ">
           <Form {...form}>
             <form
@@ -278,11 +284,11 @@ const MemberProfile = ({
                       options={[
                         {
                           value: "A",
-                          label: "Add New Profile",
+                          label: t("membership.memberProfile.modes.addNew"),
                         },
                         {
                           value: "U",
-                          label: "Update Existing Profile",
+                          label: t("membership.memberProfile.modes.updateExisting"),
                         },
                       ]}
                       className="border border-default-200 rounded-md px-3 h-10 flex items-center"
@@ -300,7 +306,7 @@ const MemberProfile = ({
                       handleResetForm();
                     }}
                   >
-                    Reset
+                    {t("common.buttons.reset")}
                   </div>
                 ) : (
                   <div
@@ -309,7 +315,7 @@ const MemberProfile = ({
                       handleShowForm();
                     }}
                   >
-                    Next
+                    {t("memberSearch.next")}
                   </div>
                 )}
               </div>
@@ -329,8 +335,8 @@ const MemberProfile = ({
                   <InputField
                     control={form.control}
                     name="memberNo"
-                    label="Member No."
-                    placeholder="Enter member no."
+                    label={t("membership.memberProfile.fields.memberNo")}
+                    placeholder={t("membership.memberProfile.placeholders.memberNo")}
                     onInput={(e) => {
                       if (e.target.value.length > 5) {
                         e.target.value = e.target.value.slice(0, 5);
@@ -341,7 +347,7 @@ const MemberProfile = ({
                   <DropdownField
                     control={form.control}
                     name="memberType"
-                    label="Customer Type"
+                    label={t("membership.memberProfile.fields.customerType")}
                     options={memberType}
                     optionLabelKey="Option_Value"
                     disabled={getMemberTypeLoading}
@@ -352,38 +358,38 @@ const MemberProfile = ({
                   <InputField
                     control={form.control}
                     name="firstName"
-                    label="Member First Name"
-                    placeholder="Enter first name"
+                    label={t("membership.memberProfile.fields.firstName")}
+                    placeholder={t("membership.memberProfile.placeholders.firstName")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="middleName"
-                    label="Member Middle Name"
-                    placeholder="Enter middle name"
+                    label={t("membership.memberProfile.fields.middleName")}
+                    placeholder={t("membership.memberProfile.placeholders.middleName")}
                   />
 
                   <InputField
                     control={form.control}
                     name="lastName"
-                    label="Member Last Name"
-                    placeholder="Enter last name"
+                    label={t("membership.memberProfile.fields.lastName")}
+                    placeholder={t("membership.memberProfile.placeholders.lastName")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="relationName"
-                    label="Relation Name"
-                    placeholder="Enter relation name"
+                    label={t("membership.memberProfile.fields.relationName")}
+                    placeholder={t("membership.memberProfile.placeholders.relationName")}
                     isRequired
                   />
 
                   <DropdownField
                     control={form.control}
                     name="relationType"
-                    label="Relation Type"
+                    label={t("membership.memberProfile.fields.relationType")}
                     options={relationTypeData}
                     optionLabelKey="Option_Value"
                     disabled={getRelationLoading}
@@ -394,7 +400,7 @@ const MemberProfile = ({
                   <DatePickerField
                     control={form.control}
                     name="dob"
-                    label="Date of Birth"
+                    label={t("membership.memberProfile.fields.dateOfBirth")}
                     disabledDateAfter={new Date()}
                     isRequired={true}
                   />
@@ -402,7 +408,7 @@ const MemberProfile = ({
                   <DropdownField
                     control={form.control}
                     name="gender"
-                    label="Gender"
+                    label={t("membership.memberProfile.fields.gender")}
                     options={genderData}
                     optionLabelKey="Option_Value"
                     disabled={getGenderLoading}
@@ -413,7 +419,7 @@ const MemberProfile = ({
                   <DropdownField
                     control={form.control}
                     name="caste"
-                    label="Caste"
+                    label={t("membership.memberProfile.fields.caste")}
                     options={casteData}
                     optionLabelKey="Option_Value"
                     disabled={getCasteLoading}
@@ -424,7 +430,7 @@ const MemberProfile = ({
                   <DropdownField
                     control={form.control}
                     name="religion"
-                    label="Religion"
+                    label={t("membership.memberProfile.fields.religion")}
                     options={religionData}
                     optionLabelKey="Option_Value"
                     disabled={getReligionLoading}
@@ -435,8 +441,8 @@ const MemberProfile = ({
                   <InputField
                     control={form.control}
                     name="mobile"
-                    label="Mobile No."
-                    placeholder="Enter mobile no."
+                    label={t("membership.memberProfile.fields.mobileNo")}
+                    placeholder={t("membership.memberProfile.placeholders.mobileNo")}
                     type="number"
                     onInput={(e) => {
                       if (e.target.value.length > 10) {
@@ -448,8 +454,8 @@ const MemberProfile = ({
                   <InputField
                     control={form.control}
                     name="email"
-                    label="Email"
-                    placeholder="Enter email"
+                    label={t("membership.memberProfile.fields.email")}
+                    placeholder={t("membership.memberProfile.placeholders.email")}
                     type="email"
                   />
                 </div>
@@ -458,7 +464,7 @@ const MemberProfile = ({
               {showForm && (
                 <div className="w-full border border-primary rounded-md py-3 px-5 flex flex-col gap-3">
                   <h4 className="text-base font-semibold text-slate-800">
-                    Permanent Address
+                    {t("membership.memberProfile.sections.permanentAddress")}
                   </h4>
                   <AddressSectionFields
                     form={form}
@@ -475,7 +481,7 @@ const MemberProfile = ({
                     getVillageLoading={getVillageLoading}
                     getPoliceStationLoading={getPoliceStationLoading}
                     getPostOfficeLoading={getPostOfficeLoading}
-                    addressLabel="Permanent Address"
+                    addressLabel={t("membership.memberProfile.fields.address")}
                   />
                 </div>
               )}
@@ -484,7 +490,7 @@ const MemberProfile = ({
                 <div className="w-full border border-primary rounded-md py-3 px-5 flex flex-col gap-3">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h4 className="text-base font-semibold text-slate-800">
-                      Present Address
+                      {t("membership.memberProfile.sections.presentAddress")}
                     </h4>
                     <FormField
                       control={form.control}
@@ -500,7 +506,7 @@ const MemberProfile = ({
                             />
                           </FormControl>
                           <FormLabel className="text-sm font-medium text-slate-700 cursor-pointer">
-                            Same as Permanent Address
+                            {t("membership.memberProfile.sameAsPermanent")}
                           </FormLabel>
                         </FormItem>
                       )}
@@ -546,7 +552,7 @@ const MemberProfile = ({
                         ? getPostOfficeLoading
                         : presentGetPostOfficeLoading
                     }
-                    addressLabel="Present Address"
+                    addressLabel={t("membership.memberProfile.fields.address")}
                   />
                 </div>
               )}
@@ -556,8 +562,8 @@ const MemberProfile = ({
                   <InputField
                     control={form.control}
                     name="aadhaarNo"
-                    label="Aadhaar No."
-                    placeholder="Enter aadhaar no"
+                    label={t("membership.memberProfile.fields.aadhaarNo")}
+                    placeholder={t("membership.memberProfile.placeholders.aadhaarNo")}
                     type="number"
                     onInput={(e) => {
                       if (e.target.value.length > 12) {
@@ -569,8 +575,8 @@ const MemberProfile = ({
                   <InputField
                     control={form.control}
                     name="voterId"
-                    label="Voter Id"
-                    placeholder="Enter voter id"
+                    label={t("membership.memberProfile.fields.voterId")}
+                    placeholder={t("membership.memberProfile.placeholders.voterId")}
                     onChange={(e) => {
                       form.setValue("voterId", e.target.value.toUpperCase(), {
                         shouldValidate: true,
@@ -582,8 +588,8 @@ const MemberProfile = ({
                   <InputField
                     control={form.control}
                     name="rationNo"
-                    label="Ration Card"
-                    placeholder="Enter ration no."
+                    label={t("membership.memberProfile.fields.rationCard")}
+                    placeholder={t("membership.memberProfile.placeholders.rationCard")}
                     onChange={(e) => {
                       form.setValue("rationNo", e.target.value.toUpperCase(), {
                         shouldValidate: true,
@@ -595,8 +601,8 @@ const MemberProfile = ({
                   <InputField
                     control={form.control}
                     name="panNo"
-                    label="Pan Card"
-                    placeholder="Enter pan no."
+                    label={t("membership.memberProfile.fields.panCard")}
+                    placeholder={t("membership.memberProfile.placeholders.panCard")}
                     onChange={(e) => {
                       form.setValue("panNo", e.target.value.toUpperCase(), {
                         shouldValidate: true,
@@ -620,9 +626,9 @@ const MemberProfile = ({
                       speedMultiplier={0.7}
                     />
                   ) : form.getValues("type") === "A" ? (
-                    "Add"
+                    t("common.buttons.add")
                   ) : (
-                    "Update"
+                    t("common.buttons.update")
                   )}
                 </Button>
               )}

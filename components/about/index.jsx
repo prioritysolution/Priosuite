@@ -1,7 +1,12 @@
+"use client";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 
 const About = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="w-full h-full flex justify-center items-center p-1 bg-[#fefefe] rounded-lg relative">
       {/* Background Image with Absolute Positioning */}
@@ -19,98 +24,97 @@ const About = () => {
       </div>
 
       <div className="relative h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden z-10">
-        <h3 className="text-3xl font-semibold">About Us</h3>
+        <h3 className="text-3xl font-semibold">
+          {t("about.aboutUs")}
+        </h3>
 
         <ScrollArea className="w-full h-full">
           <div className="w-full h-full px-2 lg:px-10 xl:px-20 flex flex-col gap-10">
             <div className="w-full text-center">
               <h4 className="text-xl mb-5 font-semibold text-[#a2294d] underline">
-                PrioSuite : Empowering Cooperative Banking
+                {t("about.empoweringCooperativeBanking")}
               </h4>
               <p>
-                PrioSuite is a comprehensive co-operative banking software
-                designed to streamline operations, enhance member engagement,
-                and optimize financial management. Built with a user-friendly
-                interface and advanced technology, PrioSuite offers a robust
-                suite of core banking features tailored specifically for
-                co-operative banks.
+                {t("about.description")}
               </p>
             </div>
 
             <div className="w-full text-center">
               <h4 className="text-xl mb-5 font-semibold text-[#a2294d] underline">
-                Key Features
+                {t("about.keyFeatures")}
               </h4>
+
               <div className="text-start flex flex-col gap-3">
                 <p>
                   <span className="text-lg font-semibold">
-                    Core Banking Functionality :
+                    {t("about.coreBankingFunctionalityTitle")}
                   </span>{" "}
-                  Manage accounts, loans, deposits, and transactions seamlessly
-                  with our integrated core banking system.
+                  {t("about.coreBankingFunctionality")}
                 </p>
+
                 <p>
                   <span className="text-lg font-semibold">
-                    Member Management :
+                    {t("about.memberManagementTitle")}
                   </span>{" "}
-                  Enhance member relationships with tools for tracking
-                  interactions, preferences, and financial history.
+                  {t("about.memberManagement")}
                 </p>
+
                 <p>
                   <span className="text-lg font-semibold">
-                    Real-Time Reporting :
+                    {t("about.realTimeReportingTitle")}
                   </span>{" "}
-                  Gain insights into your financial performance with real-time
-                  analytics and customizable reporting tools.
+                  {t("about.realTimeReporting")}
                 </p>
+
                 <p>
                   <span className="text-lg font-semibold">
-                    Compliance and Security :
+                    {t("about.complianceAndSecurityTitle")}
                   </span>{" "}
-                  Stay compliant with industry regulations while ensuring data
-                  security with our advanced encryption and security protocols.
+                  {t("about.complianceAndSecurity")}
                 </p>
+
                 <p>
                   <span className="text-lg font-semibold">
-                    Mobile and Online Banking :
+                    {t("about.mobileAndOnlineBankingTitle")}
                   </span>{" "}
-                  Provide members with convenient access to their accounts
-                  anytime, anywhere, through our responsive mobile and web
-                  platforms.
+                  {t("about.mobileAndOnlineBanking")}
                 </p>
               </div>
             </div>
 
             <div className="w-full text-center">
               <h4 className="text-xl mb-5 font-semibold text-[#a2294d] underline">
-                Benefits
+                {t("about.benefits")}
               </h4>
+
               <div className="text-start flex flex-col gap-3">
                 <p>
                   <span className="text-lg font-semibold">
-                    Enhanced Efficiency :
+                    {t("about.enhancedEfficiencyTitle")}
                   </span>{" "}
-                  Automate routine tasks and streamline workflows to improve
-                  operational efficiency.
+                  {t("about.enhancedEfficiency")}
                 </p>
+
                 <p>
                   <span className="text-lg font-semibold">
-                    Improved Member Experience :
+                    {t("about.improvedMemberExperienceTitle")}
                   </span>{" "}
-                  Foster stronger member relationships through personalized
-                  services and easy access to financial information.
+                  {t("about.improvedMemberExperience")}
                 </p>
+
                 <p>
-                  <span className="text-lg font-semibold">Scalability :</span>{" "}
-                  PrioSuite grows with your institution, accommodating increasing
-                  demands as your member base expands.
+                  <span className="text-lg font-semibold">
+                    {t("about.scalabilityTitle")}
+                  </span>{" "}
+                  {t("about.scalability")}
                 </p>
               </div>
             </div>
+
             <p className="">
-              Join the future of cooperative banking with{" "}
-              <span className="font-libre text-lg italic">PrioSuite</span>, where
-              innovation meets community-focused financial solutions.
+              {t("about.futureOfCooperativeBanking")}{" "}
+              <span className="font-libre text-lg italic">PrioSuite</span>,{" "}
+              {t("about.innovationMeetsCommunity")}
             </p>
           </div>
         </ScrollArea>
@@ -118,4 +122,5 @@ const About = () => {
     </div>
   );
 };
+
 export default About;

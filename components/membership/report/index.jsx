@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { useSelector } from "react-redux";
@@ -60,6 +61,8 @@ const MembershipReport = ({
   setIsOpenShareReceipt,
   shareIssueReceiptData,
 }) => {
+  const { t } = useTranslation();
+
   const [showReportForm, setShowReportForm] = useState(true);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
@@ -185,7 +188,7 @@ const MembershipReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Membership Report</h3>
+                <h3 className="text-xl font-semibold ">{t("membership.report.title")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -204,7 +207,7 @@ const MembershipReport = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("membership.report.fields.fromDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -212,7 +215,7 @@ const MembershipReport = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"
+                  label={t("membership.report.fields.toDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -220,31 +223,31 @@ const MembershipReport = ({
                 <DropdownField
                   control={form.control}
                   name="memberType"
-                  label="Member Type"
+                  label={t("membership.report.fields.memberType")}
                   options={memberTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select member type"
-                  searchPlaceholder="Search member type..."
+                  placeholder={t("membership.report.placeholders.memberType")}
+                  searchPlaceholder={t("membership.report.placeholders.searchMemberType")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="reportType"
-                  label="Report Type"
+                  label={t("membership.report.fields.reportType")}
                   options={reportTypeData}
                   optionLabelKey="Option_Value"
-                  placeholder="Select report type"
-                  searchPlaceholder="Search report type..."
+                  placeholder={t("membership.report.placeholders.reportType")}
+                  searchPlaceholder={t("membership.report.placeholders.searchReportType")}
                 />
 
                 <DropdownField
                   control={form.control}
                   name="branch"
-                  label="Branch"
+                  label={t("membership.report.fields.branch")}
                   options={branchData}
                   optionLabelKey="Branch_Name"
-                  placeholder="Select branch"
-                  searchPlaceholder="Search branch..."
+                  placeholder={t("membership.report.placeholders.branch")}
+                  searchPlaceholder={t("membership.report.placeholders.searchBranch")}
                 />
 
                 <div className="w-full flex items-center gap-5 self-end">

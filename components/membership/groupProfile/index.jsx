@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import SuccessMessage from "../../../common/dialog/SuccessMessage";
 import { DatePickerField } from "../../../common/formFields/DatePickerField";
@@ -48,6 +50,8 @@ const GroupProfile = ({
   getMemberDataLoading,
   handleMemberFormSubmit,
 }) => {
+  const { t } = useTranslation();
+
   const groupTypeData = useSelector(
     (state) => state?.groupProfile?.groupTypeData,
   );
@@ -83,7 +87,7 @@ const GroupProfile = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
       <div className="flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Group KYC</h3>
+        <h3 className="text-2xl font-semibold ">{t("membership.groupProfile.title")}</h3>
         <ScrollArea className="w-full p-2 sm:px-10 ">
           <Form {...form}>
             <form
@@ -102,11 +106,11 @@ const GroupProfile = ({
                       options={[
                         {
                           value: "A",
-                          label: "Add New Profile",
+                          label: t("membership.groupProfile.modes.addNew"),
                         },
                         {
                           value: "U",
-                          label: "Update Existing Profile",
+                          label: t("membership.groupProfile.modes.updateExisting"),
                         },
                       ]}
                       className="border border-default-200 rounded-md px-3 h-10 flex items-center"
@@ -123,7 +127,7 @@ const GroupProfile = ({
                       handleResetForm();
                     }}
                   >
-                    Reset
+                    {t("common.buttons.reset")}
                   </div>
                 ) : (
                   <div
@@ -132,7 +136,7 @@ const GroupProfile = ({
                       handleShowForm();
                     }}
                   >
-                    Next
+                    {t("common.next")}
                   </div>
                 )}
               </div>
@@ -153,8 +157,8 @@ const GroupProfile = ({
                   <InputField
                     control={form.control}
                     name="group_no"
-                    label="Group No."
-                    placeholder="Enter group no."
+                    label={t("membership.groupProfile.fields.groupNo")}
+                    placeholder={t("membership.groupProfile.placeholders.groupNo")}
                     onInput={(e) => {
                       if (e.target.value.length > 5) {
                         e.target.value = e.target.value.slice(0, 5);
@@ -165,7 +169,7 @@ const GroupProfile = ({
                   <DropdownField
                     control={form.control}
                     name="cust_type"
-                    label="Group Type"
+                    label={t("membership.groupProfile.fields.groupType")}
                     options={groupTypeData}
                     optionLabelKey="Option_Value"
                     disabled={getGroupTypeLoading}
@@ -176,15 +180,15 @@ const GroupProfile = ({
                   <InputField
                     control={form.control}
                     name="grp_name"
-                    label="Group Name"
-                    placeholder="Enter group name"
+                    label={t("membership.groupProfile.fields.groupName")}
+                    placeholder={t("membership.groupProfile.placeholders.groupName")}
                     isRequired={true}
                   />
 
                   <DatePickerField
                     control={form.control}
                     name="gerp_dob"
-                    label="Date of Formation"
+                    label={t("membership.groupProfile.fields.dateOfFormation")}
                     defaultValue={new Date(beg_date)}
                     isRequired={true}
                     disabled={true}
@@ -193,16 +197,16 @@ const GroupProfile = ({
                   <InputField
                     control={form.control}
                     name="grp_ben"
-                    label="No Of Beneficiary"
-                    placeholder="Enter no of beneficiary"
+                    label={t("membership.groupProfile.fields.noOfBeneficiary")}
+                    placeholder={t("membership.groupProfile.placeholders.noOfBeneficiary")}
                     isRequired={true}
                   />
 
                   <InputField
                     control={form.control}
                     name="grp_mob"
-                    label="Mobile No."
-                    placeholder="Enter mobile no."
+                    label={t("membership.groupProfile.fields.mobileNo")}
+                    placeholder={t("membership.groupProfile.placeholders.mobileNo")}
                     type="number"
                     onInput={(e) => {
                       if (e.target.value.length > 10) {
@@ -214,16 +218,16 @@ const GroupProfile = ({
                   {/* <InputField
                     control={form.control}
                     name="grp_add"
-                    label="Address"
-                    placeholder="Enter address"
+                    label={t("membership.groupProfile.fields.address")}
+                    placeholder={t("membership.groupProfile.placeholders.address")}
                     isRequired={true}
                    
                   /> */}
                   <TextareaField
                     control={form.control}
                     name="grp_add"
-                    label="Address"
-                    placeholder="Enter Address"
+                    label={t("membership.groupProfile.fields.address")}
+                    placeholder={t("membership.groupProfile.placeholders.address")}
                     rows={3}
                     isRequired={true}
                   />
@@ -231,7 +235,7 @@ const GroupProfile = ({
                   <DropdownField
                     control={form.control}
                     name="stateId"
-                    label="State"
+                    label={t("membership.groupProfile.fields.state")}
                     options={stateData}
                     optionLabelKey="State_Name"
                     disabled={getStateLoading}
@@ -242,7 +246,7 @@ const GroupProfile = ({
                   <DropdownField
                     control={form.control}
                     name="districtId"
-                    label="District"
+                    label={t("membership.groupProfile.fields.district")}
                     options={districtData}
                     optionLabelKey="Dist_Name"
                     loading={getDistrictLoading}
@@ -258,7 +262,7 @@ const GroupProfile = ({
                   <DropdownField
                     control={form.control}
                     name="blockId"
-                    label="Block/Municipality"
+                    label={t("membership.groupProfile.fields.blockMunicipality")}
                     options={blockData}
                     optionLabelKey="Block_Name"
                     loading={getBlockLoading}
@@ -274,7 +278,7 @@ const GroupProfile = ({
                   <DropdownField
                     control={form.control}
                     name="villageId"
-                    label="Village"
+                    label={t("membership.groupProfile.fields.village")}
                     options={villageData}
                     optionLabelKey="Vill_Name"
                     loading={getVillageLoading}
@@ -289,7 +293,7 @@ const GroupProfile = ({
                   <DropdownField
                     control={form.control}
                     name="policeStationId"
-                    label="Police Station"
+                    label={t("membership.groupProfile.fields.policeStation")}
                     options={policeStationData}
                     optionLabelKey="STation_Name"
                     loading={getPoliceStationLoading}
@@ -304,7 +308,7 @@ const GroupProfile = ({
                   <DropdownField
                     control={form.control}
                     name="postOfficeId"
-                    label="Post Office"
+                    label={t("membership.groupProfile.fields.postOffice")}
                     options={postOfficeData}
                     optionLabelKey="Post_Off_Name"
                     loading={getPostOfficeLoading}
@@ -331,9 +335,9 @@ const GroupProfile = ({
                       speedMultiplier={0.7}
                     />
                   ) : form.getValues("type") === "A" ? (
-                    "Add"
+                    t("common.buttons.add")
                   ) : (
-                    "Update"
+                    t("common.buttons.update")
                   )}
                 </Button>
               )}

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,8 @@ const SubLedgerForm = ({
   editData,
   headListData,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Form {...form}>
       <form
@@ -29,26 +32,26 @@ const SubLedgerForm = ({
         <InputField
           control={form.control}
           name="ledgerName"
-          label="Ledger Name"
-          placeholder="Enter ledger name"
+          label={t("master.subLedger.fields.ledgerName")}
+          placeholder={t("master.subLedger.placeholders.ledgerName")}
         />
 
         {/* <div onFocus={handleStopPropagation} onClick={handleStopPropagation}> */}
         <DropdownField
           control={form.control}
           name="underHead"
-          label="Under Head"
+          label={t("master.subLedger.fields.underHead")}
           options={headListData || []}
           optionLabelKey="Ledger_Name"
-          placeholder="Select under head"
-          searchPlaceholder="Search under head..."
+          placeholder={t("master.subLedger.placeholders.underHead")}
+          searchPlaceholder={t("master.subLedger.placeholders.searchUnderHead")}
         />
 
         <InputField
           control={form.control}
           name="openingBalance"
-          label="Opening Balance"
-          placeholder="Enter opening balance"
+          label={t("master.subLedger.fields.openingBalance")}
+          placeholder={t("master.subLedger.placeholders.openingBalance")}
           type="number"
         />
 
@@ -61,9 +64,9 @@ const SubLedgerForm = ({
             {postLoading || updateLoading ? (
               <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
             ) : editData && Object.keys(editData).length > 0 ? (
-              "Edit"
+              t("common.buttons.edit")
             ) : (
-              "Add"
+              t("common.buttons.add")
             )}
           </Button>
         </div>

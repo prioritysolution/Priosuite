@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useState } from "react";
 import {
   flexRender,
@@ -26,6 +28,8 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const StateTable = ({ data, handleEditData, loading }) => {
+  const { t } = useTranslation();
+
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -35,7 +39,7 @@ const StateTable = ({ data, handleEditData, loading }) => {
     {
       accessorKey: "serialNo",
       header: () => {
-        return <div className="text-left">Serial No</div>;
+        return <div className="text-left">{t("common.serialNo")}</div>;
       },
       cell: ({ row }) => {
         return <div className="text-left">{Number(row.id) + 1}</div>;
@@ -49,7 +53,7 @@ const StateTable = ({ data, handleEditData, loading }) => {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            State Name
+            {t("master.operationalArea.table.stateName")}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -62,7 +66,7 @@ const StateTable = ({ data, handleEditData, loading }) => {
     },
     {
       accessorKey: "Id",
-      header: () => <div className="text-center ">Actions</div>,
+      header: () => <div className="text-center ">{t("common.actions")}</div>,
       cell: ({ row }) => {
         return (
           <div className="w-full flex justify-center  text-center">
@@ -70,7 +74,7 @@ const StateTable = ({ data, handleEditData, loading }) => {
               className="flex text-center items-center justify-center gap-3"
               onClick={() => handleEditData(data[row.id])}
             >
-              Edit
+              {t("common.buttons.edit")}
               <FaRegEdit />
             </Button>
           </div>
@@ -195,7 +199,7 @@ const StateTable = ({ data, handleEditData, loading }) => {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {t("common.noResults")}
                   </TableCell>
                 </TableRow>
               )}

@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -63,6 +65,8 @@ const AccountStatement = ({
   handleSearchAccountListByName,
   handleSelectClick,
 }) => {
+  const { t } = useTranslation();
+
   const [showReportForm, setShowReportForm] = useState(true);
 
   const loanAccountListData = useSelector(
@@ -96,7 +100,7 @@ const AccountStatement = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Account Statement</h3>
+                <h3 className="text-xl font-semibold ">{t("loan.accountStatement")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -115,7 +119,7 @@ const AccountStatement = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("loan.fromDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -123,7 +127,7 @@ const AccountStatement = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"
+                  label={t("loan.toDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -138,13 +142,13 @@ const AccountStatement = ({
                     name="accountNo"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormLabel>Account No.</FormLabel>
+                        <FormLabel>{t("loan.accountNo")}</FormLabel>
                         <FormControl>
                           <div className="">
                             <div className="">
                               <div className="relative w-full">
                                 <Input
-                                  placeholder="Enter account no."
+                                  placeholder={t("loan.enterAccountNo")}
                                   className="w-full "
                                   type="number"
                                   {...field}
@@ -202,7 +206,7 @@ const AccountStatement = ({
                               </div>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>View Ledger</p>
+                              <p>{t("loan.viewLedger")}</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -213,7 +217,7 @@ const AccountStatement = ({
                     <DialogHeader
                       className={`w-full flex items-center justify-center`}
                     >
-                      <DialogTitle>Search Account</DialogTitle>
+                      <DialogTitle>{t("loan.searchAccount")}</DialogTitle>
                     </DialogHeader>
                     <div className="w-full">
                       <div className="w-full ">
@@ -238,16 +242,14 @@ const AccountStatement = ({
                             <InputField
                               control={form.control}
                               name="dialougeMemberNo"
-                              label="Member No."
-                              placeholder="Search by enter member no."
+                              label={t("loan.memberNo2")}
+                              placeholder={t("loan.searchByEnterMemberNo")}
                               autoComplete="off"
                             />
                             <Button
                               className="w-full sm:w-auto px-10"
                               onClick={handleSearchAccountListByMemberNo}
-                            >
-                              Search
-                            </Button>
+                            >{t("loan.search")}</Button>
                           </TabsContent>
                           <TabsContent
                             value="name"
@@ -256,16 +258,14 @@ const AccountStatement = ({
                             <InputField
                               control={form.control}
                               name="dialougeMemberName"
-                              label="Name"
-                              placeholder="Search by enter name"
+                              label={t("loan.name")}
+                              placeholder={t("loan.searchByEnterName")}
                               autoComplete="off"
                             />
                             <Button
                               className="w-full sm:w-auto px-10"
                               onClick={handleSearchAccountListByName}
-                            >
-                              Search
-                            </Button>
+                            >{t("loan.search")}</Button>
                           </TabsContent>
                         </Tabs>
                       </div>
@@ -319,31 +319,31 @@ const AccountStatement = ({
         {tableData && tableData?.basicData && (
           <div className="w-full grid grid-cols-3 gap-2 border border-primary bg-blue-100 rounded-lg px-5 py-2 text-sm">
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Member Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.memberNameColon")}</p>
               <p>{tableData?.basicData?.Full_Name || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Guardian Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.guardianNameColon")}</p>
               <p>{tableData?.basicData?.Relation_Name || ""}</p>
             </div>
             <div className="w-full flex gap-1 col-span-3">
-              <p className="font-semibold text-nowrap">Address : </p>
+              <p className="font-semibold text-nowrap">{t("loan.addressColon")}</p>
               <p>{tableData?.basicData?.Address || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Account No. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.accountNoColon")}</p>
               <p>{tableData?.basicData?.Account_No || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Ref. Ac. No. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.refAcNoColon")}</p>
               <p>{tableData?.basicData?.Ref_Ac_No || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Ledger Folio : </p>
+              <p className="font-semibold text-nowrap">{t("loan.ledgerFolioColon")}</p>
               <p>{tableData?.basicData?.Ledg_Folio || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Disb. Date : </p>
+              <p className="font-semibold text-nowrap">{t("loan.disbDateColon")}</p>
               <p>
                 {tableData?.basicData?.Disb_Date
                   ? format(tableData?.basicData?.Disb_Date, "dd-MM-yyyy")
@@ -351,15 +351,15 @@ const AccountStatement = ({
               </p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">ROI. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.roiColon")}</p>
               <p>{tableData?.basicData?.Roi || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Disb. Amount : </p>
+              <p className="font-semibold text-nowrap">{t("loan.disbAmountColon")}</p>
               <p>{tableData?.basicData?.Disb_Amt || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Repay Within : </p>
+              <p className="font-semibold text-nowrap">{t("loan.repayWithinColon")}</p>
               <p>
                 {tableData?.basicData?.Repay_Within
                   ? format(tableData?.basicData?.Repay_Within, "dd-MM-yyyy")
@@ -367,11 +367,11 @@ const AccountStatement = ({
               </p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Repay Mode : </p>
+              <p className="font-semibold text-nowrap">{t("loan.repayModeColon")}</p>
               <p>{tableData?.basicData?.Repay_Mode || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Product Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.productNameColon")}</p>
               <p>{tableData?.basicData?.Prod_Name || ""}</p>
             </div>
           </div>
@@ -382,17 +382,17 @@ const AccountStatement = ({
               <Table>
                 <TableHeader className="sticky top-0 bg-background z-10">
                   <TableRow className="bg-gray-100">
-                    <TableHead className=" text-center">Sl No.</TableHead>
-                    <TableHead className="">Trans. Date</TableHead>
-                    <TableHead className="">Particular</TableHead>
-                    <TableHead className="">Disb. Amount</TableHead>
-                    <TableHead className="">Curr. Prn. Paid</TableHead>
-                    <TableHead className="">Curr. Intt. Paid</TableHead>
-                    <TableHead className="">Od. Prn. Paid</TableHead>
-                    <TableHead className="">Od. Intt. Paid</TableHead>
-                    <TableHead className="">Curr. Outs.</TableHead>
-                    <TableHead className="">Od. Outs.</TableHead>
-                    <TableHead className="">Due Intt.</TableHead>
+                    <TableHead className=" text-center">{t("loan.slNo")}</TableHead>
+                    <TableHead className="">{t("loan.transDate")}</TableHead>
+                    <TableHead className="">{t("loan.particular")}</TableHead>
+                    <TableHead className="">{t("loan.disbAmount")}</TableHead>
+                    <TableHead className="">{t("loan.currPrnPaid")}</TableHead>
+                    <TableHead className="">{t("loan.currInttPaid")}</TableHead>
+                    <TableHead className="">{t("loan.odPrnPaid")}</TableHead>
+                    <TableHead className="">{t("loan.odInttPaid")}</TableHead>
+                    <TableHead className="">{t("loan.currOuts")}</TableHead>
+                    <TableHead className="">{t("loan.odOuts")}</TableHead>
+                    <TableHead className="">{t("loan.dueIntt")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody className="overflow-y-scroll">
@@ -433,9 +433,7 @@ const AccountStatement = ({
                       <TableCell
                         colSpan={3}
                         className="font-bold w-full text-right"
-                      >
-                        Total
-                      </TableCell>
+                      >{t("loan.total")}</TableCell>
                       <TableCell className="font-bold">
                         {tableData?.grandTotal?.disburse?.toFixed(2) || "0.00"}
                       </TableCell>

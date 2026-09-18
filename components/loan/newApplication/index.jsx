@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { useCallback, useEffect, useState } from "react";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
@@ -78,15 +80,18 @@ const ResponsiveTable = ({
   rows, // Array<Record<string, ReactNode>>
   footer, // optional ReactNode rendered below desktop table
   emptyIcon: EmptyIcon = Users,
-  emptyText = "No records found.",
+  emptyText,
 }) => {
+  const { t } = useTranslation();
+  const resolvedEmptyText = emptyText ?? t("loan.noRecordsFound");
+
   if (rows.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-10 gap-3 text-center border border-dashed border-primary/40 rounded-xl bg-muted/20">
         <div className="w-11 h-11 rounded-full bg-muted flex items-center justify-center">
           <EmptyIcon className="w-5 h-5 text-muted-foreground/50" />
         </div>
-        <p className="text-sm text-muted-foreground">{emptyText}</p>
+        <p className="text-sm text-muted-foreground">{resolvedEmptyText}</p>
       </div>
     );
   }
@@ -287,6 +292,7 @@ const NewApplication = ({
   cashInDenomArray,
   cashOutDenomArray,
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const branchId = getCookieData("userBranchId");
   const orgId = getCookieData("orgId");
@@ -437,7 +443,7 @@ const NewApplication = ({
 
   //useState
 
-  const RadioData = [{ label: "Individual Customer", value: "1" }];
+  const RadioData = [{ label: t("loan.individualCustomer"), value: "1" }];
 
   const [jointMemberDialougeOpen, setJointMemberDialougeOpen] = useState(false);
   const [selectedRadio, setSelectedRadio] = useState("1");
@@ -502,7 +508,7 @@ const NewApplication = ({
         form.getValues("dialougeMemberName"),
         selectedRadio,
       );
-    else toast.error("Please enter name");
+    else toast.error(t("loan.pleaseEnterName"));
   };
 
   const handleJointAccountAddWithCheck = (memberData) => {
@@ -516,15 +522,15 @@ const NewApplication = ({
       return;
     }
     if (memberData?.Id === Number(memberId)) {
-      toast.error("You Cannot Add Same Customer As Joint Holder!");
+      toast.error(t("loan.youCannotAddSameCustomerAsJointHolder"));
       return;
     }
     if (jointDetails.some((jh) => jh.Id === memberData.Id)) {
-      toast.error("This member is already added as a joint holder!");
+      toast.error(t("loan.thisMemberIsAlreadyAddedAsAJointHolder"));
       return;
     }
     if (jointDetails.some((jh) => jh.Cust_No === memberData.Cust_No)) {
-      toast.error("A member with this Customer Number already exists!");
+      toast.error(t("loan.aMemberWithThisCustomerNumberAlreadyExists"));
       return;
     }
     handleJointAccountAdd(memberData);
@@ -535,60 +541,60 @@ const NewApplication = ({
   /* ── Security table column definitions ── */
   const internalHeaders = [
     { key: "sl", label: "#" },
-    { key: "certType", label: "Certificate Type" },
-    { key: "certNo", label: "Certificate No." },
-    { key: "issueDate", label: "Issue Date" },
-    { key: "issueAmount", label: "Issue Amount" },
-    { key: "roi", label: "ROI" },
-    { key: "maturityDate", label: "Maturity Date" },
-    { key: "maturityAmount", label: "Maturity Amount", fullWidth: true },
-    { key: "actions", label: "Action" },
+    { key: "certType", label: t("loan.certificateType") },
+    { key: "certNo", label: t("loan.certificateNo2") },
+    { key: "issueDate", label: t("loan.issueDate") },
+    { key: "issueAmount", label: t("loan.issueAmount") },
+    { key: "roi", label: t("loan.rOI") },
+    { key: "maturityDate", label: t("loan.maturityDate") },
+    { key: "maturityAmount", label: t("loan.maturityAmount"), fullWidth: true },
+    { key: "actions", label: t("loan.action") },
   ];
 
   const extType1Headers = [
     { key: "sl", label: "#" },
-    { key: "certType", label: "Certificate Type" },
-    { key: "certNo", label: "Certificate No." },
-    { key: "issueDate", label: "Issue Date" },
-    { key: "issueAmount", label: "Issue Amount" },
-    { key: "roi", label: "ROI" },
-    { key: "maturityDate", label: "Maturity Date" },
-    { key: "maturityAmount", label: "Maturity Amount", fullWidth: true },
-    { key: "actions", label: "Action" },
+    { key: "certType", label: t("loan.certificateType") },
+    { key: "certNo", label: t("loan.certificateNo2") },
+    { key: "issueDate", label: t("loan.issueDate") },
+    { key: "issueAmount", label: t("loan.issueAmount") },
+    { key: "roi", label: t("loan.rOI") },
+    { key: "maturityDate", label: t("loan.maturityDate") },
+    { key: "maturityAmount", label: t("loan.maturityAmount"), fullWidth: true },
+    { key: "actions", label: t("loan.action") },
   ];
 
   const extType2Headers = [
     { key: "sl", label: "#" },
-    { key: "typeName", label: "Type Name" },
-    { key: "location", label: "Property Location" },
-    { key: "area", label: "Property Area" },
-    { key: "owner", label: "Owner Name" },
-    { key: "coOwner", label: "Co Owner Name" },
-    { key: "details", label: "Property Details" },
-    { key: "latitude", label: "Latitude" },
-    { key: "longitude", label: "Longitude" },
-    { key: "secValue", label: "Security Value" },
-    { key: "actions", label: "Action" },
+    { key: "typeName", label: t("loan.typeName") },
+    { key: "location", label: t("loan.propertyLocation") },
+    { key: "area", label: t("loan.propertyArea") },
+    { key: "owner", label: t("loan.ownerName") },
+    { key: "coOwner", label: t("loan.coOwnerName") },
+    { key: "details", label: t("loan.propertyDetails") },
+    { key: "latitude", label: t("loan.latitude") },
+    { key: "longitude", label: t("loan.longitude") },
+    { key: "secValue", label: t("loan.securityValue") },
+    { key: "actions", label: t("loan.action") },
   ];
 
   const extType3Headers = [
     { key: "sl", label: "#" },
-    { key: "itemName", label: "Item Name" },
-    { key: "itemDetails", label: "Item Details" },
-    { key: "brand", label: "Item Brand" },
-    { key: "owner", label: "Owner Name" },
-    { key: "coOwner", label: "Co Owner Name" },
-    { key: "cost", label: "Item Cost" },
-    { key: "ownCont", label: "Own Contribution" },
-    { key: "actions", label: "Action" },
+    { key: "itemName", label: t("loan.itemName") },
+    { key: "itemDetails", label: t("loan.itemDetails") },
+    { key: "brand", label: t("loan.itemBrand") },
+    { key: "owner", label: t("loan.ownerName") },
+    { key: "coOwner", label: t("loan.coOwnerName") },
+    { key: "cost", label: t("loan.itemCost") },
+    { key: "ownCont", label: t("loan.ownContribution") },
+    { key: "actions", label: t("loan.action") },
   ];
 
   const extType4Headers = [
     { key: "sl", label: "#" },
-    { key: "typeName", label: "Type Name" },
-    { key: "details", label: "Details" },
-    { key: "secValue", label: "Security Value" },
-    { key: "actions", label: "Action" },
+    { key: "typeName", label: t("loan.typeName") },
+    { key: "details", label: t("loan.details") },
+    { key: "secValue", label: t("loan.securityValue") },
+    { key: "actions", label: t("loan.action") },
   ];
 
   const safeFormatDate = (dateVal) => {
@@ -701,10 +707,10 @@ const NewApplication = ({
   /* ── Guarantee table column definitions ── */
   const guaranteeHeaders = [
     { key: "sl", label: "#" },
-    { key: "name", label: "Member Name" },
-    { key: "guardian", label: "Guardian Name" },
-    { key: "address", label: "Address", fullWidth: true },
-    { key: "actions", label: "Action" },
+    { key: "name", label: t("loan.memberName") },
+    { key: "guardian", label: t("loan.guardianName") },
+    { key: "address", label: t("loan.address"), fullWidth: true },
+    { key: "actions", label: t("loan.action") },
   ];
 
   const guaranteeRows = guaranteeTable.map((d, i) => ({
@@ -718,11 +724,11 @@ const NewApplication = ({
   /* ── Joint holder table column definitions ── */
   const jointHeaders = [
     { key: "sl", label: "#" },
-    { key: "custNo", label: "Cust No." },
-    { key: "cifNo", label: "CIF No." },
-    { key: "name", label: "Full Name" },
-    { key: "relation", label: "Relation" },
-    { key: "actions", label: "Action" },
+    { key: "custNo", label: t("loan.custNo") },
+    { key: "cifNo", label: t("loan.cIFNo") },
+    { key: "name", label: t("loan.fullName") },
+    { key: "relation", label: t("loan.relation") },
+    { key: "actions", label: t("loan.action") },
   ];
 
   const watchedJointHolders = form.watch("jointHolderDetails") || [];
@@ -760,8 +766,7 @@ const NewApplication = ({
               type="button"
               className="flex  gap-2 bg-destructive/10 md:px-4 md:py-2 px-2 py-1 rounded text-destructive hover:bg-destructive hover:text-white transition-all"
             >
-              <MdDeleteForever className="text-lg" /> Remove
-            </button>
+              <MdDeleteForever className="text-lg" />{t("loan.remove")}</button>
           </DialogTrigger>
           <DialogContent className="w-[calc(100vw-1rem)] max-w-sm p-4 sm:p-5 rounded-2xl">
             <div className="flex flex-col items-center gap-4 text-center">
@@ -769,9 +774,7 @@ const NewApplication = ({
                 <AlertTriangle className="w-6 h-6 sm:w-7 sm:h-7 text-destructive" />
               </div>
               <div className="min-w-0 w-full">
-                <h3 className="text-base font-semibold mb-1">
-                  Remove Joint Holder
-                </h3>
+                <h3 className="text-base font-semibold mb-1">{t("loan.removeJointHolder")}</h3>
                 <p className="text-sm text-muted-foreground break-words">
                   Are you sure you want to remove{" "}
                   <span className="font-semibold text-foreground">
@@ -785,9 +788,7 @@ const NewApplication = ({
                   variant="outline"
                   className="flex-1 w-full"
                   onClick={() => setDeleteJointMemberDialougeOpen(false)}
-                >
-                  Cancel
-                </Button>
+                >{t("loan.cancel")}</Button>
                 <Button
                   variant="destructive"
                   className="flex-1 w-full"
@@ -795,8 +796,7 @@ const NewApplication = ({
                     handleJointAccountDelete(item.Id || item.Cust_Id)
                   }
                 >
-                  <MdDeleteForever className="mr-1.5 text-base" /> Remove
-                </Button>
+                  <MdDeleteForever className="mr-1.5 text-base" />{t("loan.remove")}</Button>
               </div>
             </div>
           </DialogContent>
@@ -807,13 +807,13 @@ const NewApplication = ({
 
   const existingHeaders = [
     { key: "sl", label: "#" },
-    { key: "name", label: "Member Name" },
-    { key: "cif", label: "CIF No." },
-    { key: "designation", label: "Designation" },
-    { key: "relation", label: "Relation" },
-    { key: "joinDate", label: "Joining Date" },
-    { key: "savings", label: "Savings A/C", fullWidth: true },
-    { key: "applactioamount", label: "Application Amount" },
+    { key: "name", label: t("loan.memberName") },
+    { key: "cif", label: t("loan.cIFNo") },
+    { key: "designation", label: t("loan.designation") },
+    { key: "relation", label: t("loan.relation") },
+    { key: "joinDate", label: t("loan.joiningDate") },
+    { key: "savings", label: t("loan.savingsAC"), fullWidth: true },
+    { key: "applactioamount", label: t("loan.applicationAmount") },
   ];
 
   const existingRows = (form.getValues("member_info") || []).map((m, i) => ({
@@ -888,8 +888,8 @@ const NewApplication = ({
 
   const openHeaders = [
     { key: "sl", label: "#" },
-    { key: "DeductionName", label: "Charge Name" },
-    { key: "FinalCharge", label: "Amount" },
+    { key: "DeductionName", label: t("loan.chargeName") },
+    { key: "FinalCharge", label: t("loan.amount") },
   ];
 
   const openRows = (deductionList || []).map((item, index) => ({
@@ -1041,7 +1041,7 @@ const NewApplication = ({
   return (
     <div className="w-full h-full flex justify-between  bg-[#fefefe] rounded-lg">
       <div className="h-full flex flex-col items-center border-primary rounded-lg border-2 p-2 sm:p-3 w-full gap-3 overflow-hidden">
-        {/* <h3 className="text-lg sm:text-xl font-semibold">New Application</h3> */}
+        {/* <h3 className="text-lg sm:text-xl font-semibold">{t("loan.newApplication")}</h3> */}
 
         <ScrollArea className="w-full h-full px-1">
           {/* Member Search */}
@@ -1050,7 +1050,7 @@ const NewApplication = ({
               handleSubmit={handleMemberFormSubmit}
               showDate
               resetTrigger={resetTrigger}
-              formLabel="New Application"
+              formLabel={t("loan.newApplication")}
             />
           </div>
 
@@ -1063,7 +1063,7 @@ const NewApplication = ({
               {/* ── 1. Basic Info ── */}
               {visibleBlock && (
                 <SectionCard
-                  title="Basic Info Block"
+                  title={t("loan.basicInfoBlock")}
                   headerAction={
                     <button
                       type="button"
@@ -1082,12 +1082,12 @@ const NewApplication = ({
                   {showBasicInfo && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-3">
                       {[
-                        { name: "memberName", label: "Member Name" },
-                        { name: "gurdianName", label: "Guardian Name" },
-                        { name: "mobile", label: "Mobile No." },
-                        { name: "memberType", label: "Member Type" },
-                        { name: "CustType", label: "Customer Type" },
-                        { name: "shareBalance", label: "Share Balance" },
+                        { name: "memberName", label: t("loan.memberName") },
+                        { name: "gurdianName", label: t("loan.guardianName") },
+                        { name: "mobile", label: t("loan.mobileNo") },
+                        { name: "memberType", label: t("loan.memberType") },
+                        { name: "CustType", label: t("loan.customerType") },
+                        { name: "shareBalance", label: t("loan.shareBalance") },
                       ].map(({ name, label }) => (
                         <FormField
                           key={name}
@@ -1115,10 +1115,10 @@ const NewApplication = ({
                         name="address"
                         render={({ field }) => (
                           <FormItem className="sm:col-span-2 xl:col-span-1">
-                            <FormLabel>Address</FormLabel>
+                            <FormLabel>{t("loan.address")}</FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="Enter address"
+                                placeholder={t("loan.enterAddress")}
                                 {...field}
                                 readOnly
                                 className="resize-none"
@@ -1134,7 +1134,7 @@ const NewApplication = ({
                         name="branchName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Branch Name</FormLabel>
+                            <FormLabel>{t("loan.branchName")}</FormLabel>
                             <FormControl>
                               <Input
                                 {...field}
@@ -1157,12 +1157,12 @@ const NewApplication = ({
 
               {/* ── 2. Application Info ── */}
               {visibleBlock && (
-                <SectionCard title="Application Info Block">
+                <SectionCard title={t("loan.applicationInfoBlock")}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-3">
                     <DatePickerField
                       control={form.control}
                       name="sanctionDate"
-                      label="Application Date"
+                      label={t("loan.applicationDate")}
                       onPopover
                       isRequired
                     />
@@ -1172,11 +1172,11 @@ const NewApplication = ({
                       name="operationMode"
                       render={({ field }) => (
                         <DropdownField
-                          label="Operation Mode"
+                          label={t("loan.operationMode")}
                           options={[
-                            { label: "Self", value: "70" },
-                            { label: "Joint - Either or Survivor", value: "71" },
-                            { label: "Joint - Former or Survivor", value: "72" },
+                            { label: t("loan.self"), value: "70" },
+                            { label: t("loan.jointEitherOrSurvivor"), value: "71" },
+                            { label: t("loan.jointFormerOrSurvivor"), value: "72" },
                           ]}
                           {...field}
                         />
@@ -1194,7 +1194,7 @@ const NewApplication = ({
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter application no."
+                              placeholder={t("loan.enterApplicationNo")}
                               {...field}
                               className="h-9"
                             />
@@ -1209,13 +1209,13 @@ const NewApplication = ({
                       name="productTypeId"
                       render={({ field }) => (
                         <KYCDropdownField
-                          label="Product Type"
+                          label={t("loan.productType")}
                           value={field.value}
                           onChange={field.onChange}
                           options={prodTypeData}
                           optionValueKey="Option_Value"
-                          placeholder="Select product type"
-                          searchPlaceholder="Search..."
+                          placeholder={t("loan.selectProductType")}
+                          searchPlaceholder={t("loan.search2")}
                           isRequired
                         />
                       )}
@@ -1226,13 +1226,13 @@ const NewApplication = ({
                       name="productId"
                       render={({ field }) => (
                         <KYCDropdownField
-                          label="Product"
+                          label={t("loan.product")}
                           value={field.value}
                           onChange={field.onChange}
                           options={productData}
                           optionLabelKey="Prod_Sh_Name"
-                          placeholder="Select product"
-                          searchPlaceholder="Search..."
+                          placeholder={t("loan.selectProduct")}
+                          searchPlaceholder={t("loan.search2")}
                           isRequired
                         />
                       )}
@@ -1243,13 +1243,13 @@ const NewApplication = ({
                       render={({ field }) => {
                         return (
                           <DropdownField
-                            label="Loan Purpose"
+                            label={t("loan.loanPurpose")}
                             value={field.value}
                             onChange={field.onChange}
                             options={loanPurposeData} // Using test data for now
                             optionLabelKey="Purpose_Name"
-                            placeholder="Select loan purpose"
-                            searchPlaceholder="Search..."
+                            placeholder={t("loan.selectLoanPurpose")}
+                            searchPlaceholder={t("loan.search2")}
                             isRequired
                           />
                         );
@@ -1266,7 +1266,7 @@ const NewApplication = ({
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter amount"
+                              placeholder={t("loan.enterAmount")}
                               readOnly={!loanEligible}
                               {...field}
                               className="h-9"
@@ -1282,10 +1282,10 @@ const NewApplication = ({
                       )}
                     /> */}
                     <InputField
-                      label="Application Amount"
+                      label={t("loan.applicationAmount")}
                       name="applicationAmount"
                       control={form.control}
-                      placeholder="Enter amount"
+                      placeholder={t("loan.enterAmount")}
                       readOnly={!loanEligible}
                       isBlurUpdate
                       hint={amountErrorMessage}
@@ -1323,7 +1323,7 @@ const NewApplication = ({
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter duration"
+                              placeholder={t("loan.enterDuration")}
                               readOnly={!loanEligible}
                               {...field}
                               className="h-9"
@@ -1339,13 +1339,13 @@ const NewApplication = ({
                       name="durationUnit"
                       render={({ field }) => (
                         <DropdownField
-                          label="Duration Unit"
+                          label={t("loan.durationUnit")}
                           value={field.value}
                           onChange={field.onChange}
                           options={durationUnitData}
                           optionLabelKey="Option_Value"
-                          placeholder="Select unit"
-                          searchPlaceholder="Search..."
+                          placeholder={t("loan.selectUnit")}
+                          searchPlaceholder={t("loan.search2")}
                           disabled={
                             !form.getValues("productId") && !loanEligible
                           }
@@ -1359,13 +1359,13 @@ const NewApplication = ({
                       name="repaymentMode"
                       render={({ field }) => (
                         <DropdownField
-                          label="Repayment Mode"
+                          label={t("loan.repaymentMode")}
                           value={field.value}
                           onChange={field.onChange}
                           options={repaymentModeData}
                           optionLabelKey="Option_Value"
-                          placeholder="Select mode"
-                          searchPlaceholder="Search..."
+                          placeholder={t("loan.selectMode")}
+                          searchPlaceholder={t("loan.search2")}
                           disabled={
                             !form.getValues("productId") && !loanEligible
                           }
@@ -1377,7 +1377,7 @@ const NewApplication = ({
                     <DatePickerField
                       control={form.control}
                       name="finalRepaymentDate"
-                      label="Final Repayment Date"
+                      label={t("loan.finalRepaymentDate")}
                       disabled={true}
                     />
 
@@ -1387,7 +1387,7 @@ const NewApplication = ({
                         name="emiAmount"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>EMI Amount</FormLabel>
+                            <FormLabel>{t("loan.eMIAmount")}</FormLabel>
                             <FormControl>
                               <Input
                                 readOnly
@@ -1406,9 +1406,7 @@ const NewApplication = ({
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                           <div className="space-y-0.5">
-                            <FormLabel className="text-base">
-                              Is Avail ECS
-                            </FormLabel>
+                            <FormLabel className="text-base">{t("loan.isAvailECS")}</FormLabel>
                           </div>
                           <FormControl>
                             <Switch
@@ -1429,7 +1427,7 @@ const NewApplication = ({
                       name="ecsAccount"
                       render={({ field }) => (
                         <DropdownField
-                          label="ECS Account"
+                          label={t("loan.eCSAccount")}
                           value={field.value}
                           onChange={field.onChange}
                           options={ecsAccountData}
@@ -1461,9 +1459,7 @@ const NewApplication = ({
                 >
                   <DialogContent className="w-[calc(100vw-1rem)] max-w-4xl h-[min(90dvh,640px)] sm:h-auto sm:max-h-[85vh] p-3 sm:p-6 gap-3 overflow-hidden flex flex-col rounded-2xl">
                     <DialogHeader className="shrink-0 pr-8 text-left">
-                      <DialogTitle className="text-base sm:text-lg">
-                        Search Members
-                      </DialogTitle>
+                      <DialogTitle className="text-base sm:text-lg">{t("loan.searchMembers")}</DialogTitle>
                     </DialogHeader>
 
                     <RadioGroup
@@ -1495,11 +1491,11 @@ const NewApplication = ({
                           name="dialougeMemberName"
                           render={({ field }) => (
                             <FormItem className="flex-1 min-w-0">
-                              <FormLabel>Member Name</FormLabel>
+                              <FormLabel>{t("loan.memberName")}</FormLabel>
                               <FormControl>
                                 <Input
                                   autoComplete="off"
-                                  placeholder="Search by member name"
+                                  placeholder={t("loan.searchByMemberName")}
                                   {...field}
                                   className="h-9"
                                 />
@@ -1512,9 +1508,7 @@ const NewApplication = ({
                           type="button"
                           onClick={handleSearchMember}
                           className="h-9 w-full sm:w-auto sm:px-8 shrink-0"
-                        >
-                          Search
-                        </Button>
+                        >{t("loan.search")}</Button>
                       </div>
 
                       <div className="w-full min-h-0 flex-1 overflow-y-auto overflow-x-hidden rounded-xl border border-border">
@@ -1533,7 +1527,7 @@ const NewApplication = ({
 
               {/* ── 3. Joint Holder Details ── */}
               {visibleBlock && watchedJointHolders.length > 0 && (
-                <SectionCard title="Joint Holder's Details">
+                <SectionCard title={t("loan.jointHolderSDetails")}>
                   <ResponsiveTable
                     headers={jointHeaders}
                     rows={jointRows}
@@ -1545,7 +1539,7 @@ const NewApplication = ({
 
               {/* ── 4. Security Options ── */}
               {visibleBlock && productId && (
-                <SectionCard title="Loan Based On">
+                <SectionCard title={t("loan.loanBasedOn")}>
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex-1">
                       <FormField
@@ -1557,7 +1551,7 @@ const NewApplication = ({
                           const securityOptionsList = [
                             {
                               value: "SECURITY",
-                              label: "Security Based",
+                              label: t("loan.securityBased"),
                               show:
                                 CustomerType !== 2 &&
                                 CustomerType !== 3 &&
@@ -1565,7 +1559,7 @@ const NewApplication = ({
                             },
                             {
                               value: "GUARANTEE",
-                              label: "Guarantor Based",
+                              label: t("loan.guarantorBased"),
                               show:
                                 CustomerType !== 2 &&
                                 CustomerType !== 3 &&
@@ -1573,7 +1567,7 @@ const NewApplication = ({
                             },
                             {
                               value: "PROJECT",
-                              label: "Project Based",
+                              label: t("loan.projectBased"),
                               show:
                                 CustomerType !== 2 &&
                                 CustomerType !== 3 &&
@@ -1581,7 +1575,7 @@ const NewApplication = ({
                             },
                             {
                               value: "GROUP",
-                              label: "Group Based",
+                              label: t("loan.groupBased"),
                               show: CustomerType === 2 || CustomerType === 3,
                             },
                           ].filter((opt) => opt.show);
@@ -1607,8 +1601,7 @@ const NewApplication = ({
                           onClick={() => setSecurityDialogOpen(true)}
                           className="w-full sm:w-auto text-white bg-primary hover:bg-primary/95 transition-colors px-10"
                         >
-                          <Plus className="w-4 h-4 mr-2" /> Add
-                        </Button>
+                          <Plus className="w-4 h-4 mr-2" />{t("loan.add")}</Button>
                       </div>
                     )}
                   </div>
@@ -1627,7 +1620,7 @@ const NewApplication = ({
                       const isValid = await form.trigger();
 
                       if (!isValid) {
-                        toast.error(`Please All Field is required`);
+                        toast.error(t("loan.pleaseAllFieldIsRequired"));
                         return;
                       }
 
@@ -1661,7 +1654,7 @@ const NewApplication = ({
                         }
                       } catch (err) {
                         console.error(err);
-                        toast.error("Failed to process deductions");
+                        toast.error(t("loan.failedToProcessDeductions"));
                       } finally {
                         setLoading(false);
                       }
@@ -1674,7 +1667,7 @@ const NewApplication = ({
                         speedMultiplier={0.7}
                       />
                     ) : (
-                      "Save"
+                      t("loan.save")
                     )}
                   </Button>
                 </div>
@@ -1701,9 +1694,7 @@ const NewApplication = ({
                   deductionList && deductionList.length > 0 ? (
                     <>
                       {/* Desktop footer cells */}
-                      <TableCell colSpan={2} className="text-xs font-bold">
-                        Grand Total
-                      </TableCell>
+                      <TableCell colSpan={2} className="text-xs font-bold">{t("loan.grandTotal")}</TableCell>
                       <TableCell className="text-start text-xs font-bold tabular-nums">
                         {deductionList
                           .reduce(
@@ -1721,9 +1712,7 @@ const NewApplication = ({
               {/* ── Transaction block ── */}
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:px-5 gap-2 my-4 sm:my-5">
-                  <h3 className="w-full text-center text-lg sm:text-xl font-semibold">
-                    Transanction Block
-                  </h3>
+                  <h3 className="w-full text-center text-lg sm:text-xl font-semibold">{t("loan.transanctionBlock")}</h3>
                   {loading ? (
                     <div className="w-full flex flex-col gap-3">
                       <Skeleton className=" h-10 w-full lg:w-[400px] bg-secondary " />
@@ -1750,26 +1739,20 @@ const NewApplication = ({
                                     <FormControl>
                                       <RadioGroupItem value="cash" />
                                     </FormControl>
-                                    <FormLabel className="font-normal">
-                                      Cash
-                                    </FormLabel>
+                                    <FormLabel className="font-normal">{t("loan.cash")}</FormLabel>
                                   </FormItem>
                                   <FormItem className="flex items-center space-x-3 space-y-0">
                                     <FormControl>
                                       <RadioGroupItem value="bank" />
                                     </FormControl>
-                                    <FormLabel className="font-normal">
-                                      Bank
-                                    </FormLabel>
+                                    <FormLabel className="font-normal">{t("loan.bank")}</FormLabel>
                                   </FormItem>
                                   {/* {Number(CustomerType) !== 1 && ( */}
                                   <FormItem className="flex items-center space-x-3 space-y-0">
                                     <FormControl>
                                       <RadioGroupItem value="savings" />
                                     </FormControl>
-                                    <FormLabel className="font-normal">
-                                      Savings
-                                    </FormLabel>
+                                    <FormLabel className="font-normal">{t("loan.savings")}</FormLabel>
                                   </FormItem>
                                   {/* )} */}
                                 </RadioGroup>
@@ -1781,7 +1764,7 @@ const NewApplication = ({
                         <InputField
                           control={form.control}
                           name="refVouchNo"
-                          placeholder="Enter ref. vouch no."
+                          placeholder={t("loan.enterRefVouchNo")}
                         />
                         {transMode === "cash" ? (
                           isActiveDenom ? (
@@ -1809,35 +1792,35 @@ const NewApplication = ({
                           <DropdownField
                             control={form.control}
                             name="bank"
-                            label="Bank"
+                            label={t("loan.bank")}
                             options={bankAccountData}
                             optionLabelKey="Bank_Name"
-                            placeholder="Select bank"
-                            searchPlaceholder="Search bank..."
+                            placeholder={t("loan.selectBank")}
+                            searchPlaceholder={t("loan.searchBank")}
                           />
                         ) : (
                           <>
                             <DropdownField
                               control={form.control}
                               name="savings"
-                              label="Savings"
+                              label={t("loan.savings")}
                               options={ecsAccountData}
                               optionLabelKey="Account_No"
-                              placeholder="Select savings"
-                              searchPlaceholder="Search savings..."
+                              placeholder={t("loan.selectSavings")}
+                              searchPlaceholder={t("loan.searchSavings")}
                             />
                             <InputField
                               control={form.control}
                               name="savingsName"
-                              label="Account Holder Name"
-                              placeholder="Enter name"
+                              label={t("loan.accountHolderName")}
+                              placeholder={t("loan.enterName")}
                               readOnly
                             />
                             <InputField
                               control={form.control}
                               name="savingsBalance"
-                              label="Available Balance"
-                              placeholder="Enter balance"
+                              label={t("loan.availableBalance")}
+                              placeholder={t("loan.enterBalance")}
                               readOnly
                             />
                           </>
@@ -1856,9 +1839,7 @@ const NewApplication = ({
                     variant="outline"
                     className="w-full sm:w-auto sm:min-w-[120px]"
                     onClick={() => setOpenDialog(false)}
-                  >
-                    Cancel
-                  </Button>
+                  >{t("loan.cancel")}</Button>
                   <Button
                     type="button"
                     className="w-full sm:w-auto sm:min-w-[120px]"
@@ -1883,7 +1864,7 @@ const NewApplication = ({
                         speedMultiplier={0.7}
                       />
                     ) : (
-                      "Add"
+                      t("loan.add")
                     )}
                   </Button>
                 </div>
@@ -1922,13 +1903,13 @@ const NewApplication = ({
                       name="securityType"
                       render={({ field }) => (
                         <RadioField
-                          label="Security Type"
+                          label={t("loan.securityType")}
                           value={field.value}
                           onChange={field.onChange}
                           customStyle
                           options={[
-                            { value: "E", label: "External" },
-                            { value: "I", label: "Internal" },
+                            { value: "E", label: t("loan.external") },
+                            { value: "I", label: t("loan.internal") },
                           ]}
                           className="border border-input p-2 rounded-lg"
                           disabled={
@@ -1946,7 +1927,7 @@ const NewApplication = ({
                             name="securityAccount"
                             render={({ field }) => (
                               <DropdownField
-                                label="Security Account"
+                                label={t("loan.securityAccount")}
                                 value={field.value}
                                 onChange={field.onChange}
                                 options={securityData.filter(
@@ -1955,8 +1936,8 @@ const NewApplication = ({
                                     Number(d.Balance) > 0,
                                 )}
                                 optionLabelKey="Account_No"
-                                placeholder="Select account"
-                                searchPlaceholder="Search..."
+                                placeholder={t("loan.selectAccount")}
+                                searchPlaceholder={t("loan.search2")}
                               />
                             )}
                           />
@@ -1986,7 +1967,7 @@ const NewApplication = ({
                           name="externalSecurityType"
                           render={({ field }) => (
                             <DropdownField
-                              label="External Security Type"
+                              label={t("loan.externalSecurityType")}
                               value={field.value}
                               onChange={(val) => {
                                 field.onChange(val);
@@ -2015,8 +1996,8 @@ const NewApplication = ({
                               }}
                               options={externalSecurityTypes}
                               optionLabelKey="Option_Value"
-                              placeholder="Select security type"
-                              searchPlaceholder="Search type..."
+                              placeholder={t("loan.selectSecurityType")}
+                              searchPlaceholder={t("loan.searchType")}
                             />
                           )}
                         />
@@ -2026,21 +2007,21 @@ const NewApplication = ({
                             <InputField
                               control={form.control}
                               name="certificateType"
-                              label="Certificate Type"
-                              placeholder="Enter certificate type"
+                              label={t("loan.certificateType")}
+                              placeholder={t("loan.enterCertificateType")}
                               isRequired
                             />
                             <InputField
                               control={form.control}
                               name="certificateNumber"
-                              label="Certificate No."
-                              placeholder="Enter certificate no."
+                              label={t("loan.certificateNo2")}
+                              placeholder={t("loan.enterCertificateNo")}
                               isRequired
                             />
                             <DatePickerField
                               control={form.control}
                               name="issueDate"
-                              label="Deposit Date"
+                              label={t("loan.depositDate")}
                               disabledDateAfter={new Date()}
                               isRequired
                             />
@@ -2048,29 +2029,29 @@ const NewApplication = ({
                               type="number"
                               control={form.control}
                               name="issueAmount"
-                              label="Deposit Amount"
-                              placeholder="Enter deposit amount"
+                              label={t("loan.depositAmount")}
+                              placeholder={t("loan.enterDepositAmount")}
                               isRequired
                             />
                             <InputField
                               type="number"
                               control={form.control}
                               name="roi"
-                              label="ROI"
-                              placeholder="Enter ROI"
+                              label={t("loan.rOI")}
+                              placeholder={t("loan.enterROI")}
                             />
                             <DatePickerField
                               control={form.control}
                               name="maturityDate"
-                              label="Maturity Date"
+                              label={t("loan.maturityDate")}
                               isRequired
                             />
                             <InputField
                               type="number"
                               control={form.control}
                               name="maturityAmount"
-                              label="Maturity Amount"
-                              placeholder="Enter maturity amount"
+                              label={t("loan.maturityAmount")}
+                              placeholder={t("loan.enterMaturityAmount")}
                               isRequired
                             />
                           </>
@@ -2081,62 +2062,62 @@ const NewApplication = ({
                             <InputField
                               control={form.control}
                               name="extTypeName"
-                              label="Type Name"
-                              placeholder="Enter type name"
+                              label={t("loan.typeName")}
+                              placeholder={t("loan.enterTypeName")}
                               isRequired
                             />
                             <InputField
                               control={form.control}
                               name="extPropertyLocation"
-                              label="Property Location"
-                              placeholder="Enter property location"
+                              label={t("loan.propertyLocation")}
+                              placeholder={t("loan.enterPropertyLocation")}
                               isRequired
                             />
                             <InputField
                               control={form.control}
                               name="extPropertyArea"
-                              label="Property Area"
-                              placeholder="Enter property area"
+                              label={t("loan.propertyArea")}
+                              placeholder={t("loan.enterPropertyArea")}
                               isRequired
                             />
                             <InputField
                               control={form.control}
                               name="extOwnerName"
-                              label="Owner Name"
-                              placeholder="Enter owner name"
+                              label={t("loan.ownerName")}
+                              placeholder={t("loan.enterOwnerName")}
                               isRequired
                             />
                             <InputField
                               control={form.control}
                               name="extCoOwnerName"
-                              label="Co Owner Name (If Any)"
-                              placeholder="Enter co owner name"
+                              label={t("loan.coOwnerNameIfAny")}
+                              placeholder={t("loan.enterCoOwnerName")}
                             />
                             <InputField
                               control={form.control}
                               name="extPropertyDetails"
-                              label="Property Details"
-                              placeholder="Enter Mouza Dag & Khatian No"
+                              label={t("loan.propertyDetails")}
+                              placeholder={t("loan.enterMouzaDagKhatianNo")}
                               isRequired
                             />
                             <InputField
                               control={form.control}
                               name="extLatitude"
-                              label="Latitude"
-                              placeholder="Enter latitude"
+                              label={t("loan.latitude")}
+                              placeholder={t("loan.enterLatitude")}
                             />
                             <InputField
                               control={form.control}
                               name="extLongitude"
-                              label="Longitude"
-                              placeholder="Enter longitude"
+                              label={t("loan.longitude")}
+                              placeholder={t("loan.enterLongitude")}
                             />
                             <InputField
                               type="number"
                               control={form.control}
                               name="extSecurityValue"
-                              label="Security Value"
-                              placeholder="Enter security value"
+                              label={t("loan.securityValue")}
+                              placeholder={t("loan.enterSecurityValue")}
                               isRequired
                             />
                           </>
@@ -2147,49 +2128,49 @@ const NewApplication = ({
                             <InputField
                               control={form.control}
                               name="extItemName"
-                              label="Item Name"
-                              placeholder="Enter item name"
+                              label={t("loan.itemName")}
+                              placeholder={t("loan.enterItemName")}
                               isRequired
                             />
                             <InputField
                               control={form.control}
                               name="extItemDetails"
-                              label="Item Details"
-                              placeholder="Enter Registration Number Etc"
+                              label={t("loan.itemDetails")}
+                              placeholder={t("loan.enterRegistrationNumberEtc")}
                               isRequired
                             />
                             <InputField
                               control={form.control}
                               name="extItemBrand"
-                              label="Item Brand"
-                              placeholder="Enter item brand"
+                              label={t("loan.itemBrand")}
+                              placeholder={t("loan.enterItemBrand")}
                             />
                             <InputField
                               control={form.control}
                               name="extOwnerName"
-                              label="Owner Name"
-                              placeholder="Enter owner name"
+                              label={t("loan.ownerName")}
+                              placeholder={t("loan.enterOwnerName")}
                             />
                             <InputField
                               control={form.control}
                               name="extCoOwnerName"
-                              label="Co Owner Name"
-                              placeholder="Enter co owner name"
+                              label={t("loan.coOwnerName")}
+                              placeholder={t("loan.enterCoOwnerName")}
                             />
                             <InputField
                               type="number"
                               control={form.control}
                               name="extItemCost"
-                              label="Item Cost"
-                              placeholder="Enter item cost"
+                              label={t("loan.itemCost")}
+                              placeholder={t("loan.enterItemCost")}
                               isRequired
                             />
                             <InputField
                               type="number"
                               control={form.control}
                               name="extOwnContribution"
-                              label="Own Contribution"
-                              placeholder="Enter own contribution"
+                              label={t("loan.ownContribution")}
+                              placeholder={t("loan.enterOwnContribution")}
                               isRequired
                             />
                           </>
@@ -2200,24 +2181,24 @@ const NewApplication = ({
                             <InputField
                               control={form.control}
                               name="extTypeName"
-                              label="Type Name"
-                              placeholder="Enter type name"
+                              label={t("loan.typeName")}
+                              placeholder={t("loan.enterTypeName")}
                               isRequired
                             />
                             <InputField
                               type="number"
                               control={form.control}
                               name="extSecurityValue"
-                              label="Security Value"
-                              placeholder="Enter security value"
+                              label={t("loan.securityValue")}
+                              placeholder={t("loan.enterSecurityValue")}
                               isRequired
                             />
                             <div className="col-span-1 lg:col-span-2 xl:col-span-3">
                               <TextareaField
                                 control={form.control}
                                 name="extDetails"
-                                label="Details"
-                                placeholder="Enter details"
+                                label={t("loan.details")}
+                                placeholder={t("loan.enterDetails")}
                                 className="resize-none"
                                 rows={3}
                                 isRequired
@@ -2247,9 +2228,7 @@ const NewApplication = ({
                       {form.getValues("securityType") === "I" &&
                         internalItems.length > 0 && (
                           <div className="space-y-2">
-                            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                              Internal Deposit Security
-                            </h4>
+                            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t("loan.internalDepositSecurity")}</h4>
                             <ResponsiveTable
                               headers={internalHeaders}
                               rows={internalRows}
@@ -2262,52 +2241,44 @@ const NewApplication = ({
                         <>
                           {extType1Items.length > 0 && (
                             <div className="space-y-2">
-                              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                                Deposit/Certificate Security Details
-                              </h4>
+                              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t("loan.depositCertificateSecurityDetails")}</h4>
                               <ResponsiveTable
                                 headers={extType1Headers}
                                 rows={extType1Rows}
-                                emptyText="No records added yet."
+                                emptyText={t("loan.noRecordsAddedYet")}
                               />
                             </div>
                           )}
 
                           {extType2Items.length > 0 && (
                             <div className="space-y-2">
-                              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                                Property Security Details
-                              </h4>
+                              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t("loan.propertySecurityDetails")}</h4>
                               <ResponsiveTable
                                 headers={extType2Headers}
                                 rows={extType2Rows}
-                                emptyText="No records added yet."
+                                emptyText={t("loan.noRecordsAddedYet")}
                               />
                             </div>
                           )}
 
                           {extType3Items.length > 0 && (
                             <div className="space-y-2">
-                              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                                Hypothecation
-                              </h4>
+                              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t("loan.hypothecation")}</h4>
                               <ResponsiveTable
                                 headers={extType3Headers}
                                 rows={extType3Rows}
-                                emptyText="No records added yet."
+                                emptyText={t("loan.noRecordsAddedYet")}
                               />
                             </div>
                           )}
 
                           {extType4Items.length > 0 && (
                             <div className="space-y-2">
-                              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                                Other Security Details
-                              </h4>
+                              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t("loan.otherSecurityDetails")}</h4>
                               <ResponsiveTable
                                 headers={extType4Headers}
                                 rows={extType4Rows}
-                                emptyText="No records added yet."
+                                emptyText={t("loan.noRecordsAddedYet")}
                               />
                             </div>
                           )}
@@ -2334,9 +2305,9 @@ const NewApplication = ({
                         name="maxAllow"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Max Allow</FormLabel>
+                            <FormLabel>{t("loan.maxAllow")}</FormLabel>
                             <Input
-                              placeholder="Enter max allow"
+                              placeholder={t("loan.enterMaxAllow")}
                               {...field}
                               readOnly={disableSecurityType}
                               className="h-9"
@@ -2350,9 +2321,9 @@ const NewApplication = ({
                         name="maxLoanAmount"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Max Loan Amount</FormLabel>
+                            <FormLabel>{t("loan.maxLoanAmount")}</FormLabel>
                             <Input
-                              placeholder="Max loan amount"
+                              placeholder={t("loan.maxLoanAmount2")}
                               {...field}
                               readOnly
                               className="h-9 bg-muted/40"
@@ -2377,10 +2348,10 @@ const NewApplication = ({
                       insidePosition
                     />
                     {[
-                      { name: "guaranteeName", label: "Member Name" },
+                      { name: "guaranteeName", label: t("loan.memberName") },
                       {
                         name: "guaranteeGuardianName",
-                        label: "Guardian Name",
+                        label: t("loan.guardianName"),
                       },
                     ].map(({ name, label }) => (
                       <FormField
@@ -2409,10 +2380,10 @@ const NewApplication = ({
                       name="guaranteeAddress"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Member Address</FormLabel>
+                          <FormLabel>{t("loan.memberAddress")}</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Enter member address"
+                              placeholder={t("loan.enterMemberAddress")}
                               {...field}
                               readOnly
                               className="resize-none"
@@ -2456,10 +2427,10 @@ const NewApplication = ({
                     name="projectName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Project Name</FormLabel>
+                        <FormLabel>{t("loan.projectName")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter project name"
+                            placeholder={t("loan.enterProjectName")}
                             {...field}
                             className="h-9"
                           />
@@ -2475,11 +2446,11 @@ const NewApplication = ({
                       name="projectcost"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Project Cost</FormLabel>
+                          <FormLabel>{t("loan.projectCost")}</FormLabel>
                           <FormControl>
                             <Input
                               type={"number"}
-                              placeholder="Enter project cost"
+                              placeholder={t("loan.enterProjectCost")}
                               {...field}
                               className="h-9"
                               onChange={(e) => {
@@ -2526,11 +2497,11 @@ const NewApplication = ({
                       name="projectowncont"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Own Contribution</FormLabel>
+                          <FormLabel>{t("loan.ownContribution")}</FormLabel>
                           <FormControl>
                             <Input
                               type={"number"}
-                              placeholder="Enter project own contribution"
+                              placeholder={t("loan.enterProjectOwnContribution")}
                               {...field}
                               className="h-9"
                               onChange={(e) => {
@@ -2583,10 +2554,10 @@ const NewApplication = ({
                         name="projectmouza"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Mouza</FormLabel>
+                            <FormLabel>{t("loan.mouza")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter project mouza"
+                                placeholder={t("loan.enterProjectMouza")}
                                 {...field}
                                 className="h-9"
                               />
@@ -2601,10 +2572,10 @@ const NewApplication = ({
                         name="projectplotno"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Plot No.</FormLabel>
+                            <FormLabel>{t("loan.plotNo")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter project plot no."
+                                placeholder={t("loan.enterProjectPlotNo")}
                                 {...field}
                                 className="h-9"
                               />
@@ -2621,12 +2592,10 @@ const NewApplication = ({
                     name="projectland"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>
-                          Land Offered As Security (In Acre)
-                        </FormLabel>
+                        <FormLabel>{t("loan.landOfferedAsSecurityInAcre")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter project Land Offered As Security (In Acre)"
+                            placeholder={t("loan.enterProjectLandOfferedAsSecurityInAcre")}
                             {...field}
                             className="h-9"
                             type={"number"}
@@ -2675,11 +2644,11 @@ const NewApplication = ({
                       name="projecthypothicated"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Hypothicated Value</FormLabel>
+                          <FormLabel>{t("loan.hypothicatedValue")}</FormLabel>
                           <FormControl>
                             <Input
                               type={"number"}
-                              placeholder="Enter project Hypothicated Value"
+                              placeholder={t("loan.enterProjectHypothicatedValue")}
                               {...field}
                               className="h-9"
                               onChange={(e) => {
@@ -2726,11 +2695,11 @@ const NewApplication = ({
                       name="projectincome"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Income Generated</FormLabel>
+                          <FormLabel>{t("loan.incomeGenerated")}</FormLabel>
                           <FormControl>
                             <Input
                               type={"number"}
-                              placeholder="Enter project Income Generated"
+                              placeholder={t("loan.enterProjectIncomeGenerated")}
                               {...field}
                               className="h-9"
                               onChange={(e) => {
@@ -2786,9 +2755,7 @@ const NewApplication = ({
                     securityRows.length > 0 ? (
                       <>
                         {/* Desktop footer cells */}
-                        <TableCell colSpan={4} className="text-xs font-bold">
-                          Grand Total
-                        </TableCell>
+                        <TableCell colSpan={4} className="text-xs font-bold">{t("loan.grandTotal")}</TableCell>
                         <TableCell className="text-right text-xs font-bold tabular-nums">
                           {/* AMount Total */}
                           {securityTotal}
@@ -2806,9 +2773,7 @@ const NewApplication = ({
               type="button"
               onClick={() => setSecurityDialogOpen(false)}
               className="w-full sm:w-auto text-white bg-primary hover:bg-primary/90"
-            >
-              Done
-            </Button>
+            >{t("loan.done")}</Button>
           </div>
         </DialogContent>
       </Dialog>

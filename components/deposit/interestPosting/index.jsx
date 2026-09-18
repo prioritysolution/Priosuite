@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
@@ -18,6 +20,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useForm } from "react-hook-form";
 
 const InterestPosting = () => {
+  const { t } = useTranslation();
+
   const form = useForm();
   const visibleBlock = true;
   const successMessage = "";
@@ -28,7 +32,7 @@ const InterestPosting = () => {
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Interest Posting</h3>
+        <h3 className="text-2xl font-semibold ">{t("deposit.interestPosting.title")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
           <Form {...form}>
@@ -40,23 +44,23 @@ const InterestPosting = () => {
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Interest Info Block
+                    {t("deposit.sections.interestInfo")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <DropdownField
                       control={form.control}
                       name="productId"
-                      label="Product"
+                      label={t("deposit.fields.product")}
                       options={[]}
                       optionLabelKey="Option_Value"
-                      placeholder="Select product"
-                      searchPlaceholder="Search product..."
+                      placeholder={t("deposit.placeholders.selectProduct")}
+                      searchPlaceholder={t("deposit.placeholders.searchProduct")}
                     />
 
                     <DatePickerField
                       control={form.control}
                       name="fromDate"
-                      label="From Date"
+                      label={t("deposit.fields.fromDate")}
                       startYear={2000}
                       endYear={2050}
                     />
@@ -64,7 +68,7 @@ const InterestPosting = () => {
                     <DatePickerField
                       control={form.control}
                       name="toDate"
-                      label="To Date"
+                      label={t("deposit.fields.toDate")}
                       startYear={2000}
                       endYear={2050}
                     />
@@ -81,13 +85,13 @@ const InterestPosting = () => {
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Amount Block
+                    {t("deposit.sections.amount")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <DatePickerField
                       control={form.control}
                       name="postingDate"
-                      label="Posting Date"
+                      label={t("deposit.fields.postingDate")}
                       startYear={2000}
                       endYear={2050}
                     />
@@ -95,8 +99,8 @@ const InterestPosting = () => {
                     <InputField
                       control={form.control}
                       name="interestAmount"
-                      label="Interest Amount"
-                      placeholder="Enter interest amount"
+                      label={t("deposit.fields.interestAmount")}
+                      placeholder={t("deposit.placeholders.interestAmount")}
                     />
                   </div>
                 </div>

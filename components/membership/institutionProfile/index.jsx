@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import SuccessMessage from "../../../common/dialog/SuccessMessage";
 import { DatePickerField } from "../../../common/formFields/DatePickerField";
@@ -57,6 +59,8 @@ const AddressSectionFields = ({
   getPostOfficeLoading,
   addressLabel = "Address",
 }) => {
+  const { t } = useTranslation();
+
   const stateId = form.watch(names.stateId);
   const districtId = form.watch(names.districtId);
   const blockId = form.watch(names.blockId);
@@ -67,7 +71,7 @@ const AddressSectionFields = ({
         control={form.control}
         name={names.address}
         label={addressLabel}
-        placeholder="Enter address"
+        placeholder={t("membership.institutionProfile.placeholders.address")}
         rows={3}
         isRequired
         disabled={disabled}
@@ -77,7 +81,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.stateId}
-        label="State"
+        label={t("membership.institutionProfile.fields.state")}
         options={stateData}
         optionLabelKey="State_Name"
         disabled={disabled || getStateLoading}
@@ -88,7 +92,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.districtId}
-        label="District"
+        label={t("membership.institutionProfile.fields.district")}
         options={districtData}
         optionLabelKey="Dist_Name"
         loading={getDistrictLoading}
@@ -105,7 +109,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.blockId}
-        label="Block"
+        label={t("membership.institutionProfile.fields.block")}
         options={blockData}
         optionLabelKey="Block_Name"
         loading={getBlockLoading}
@@ -122,7 +126,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.villageId}
-        label="Village"
+        label={t("membership.institutionProfile.fields.village")}
         options={villageData}
         optionLabelKey="Vill_Name"
         loading={getVillageLoading}
@@ -138,7 +142,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.policeStationId}
-        label="Police Station"
+        label={t("membership.institutionProfile.fields.policeStation")}
         options={policeStationData}
         optionLabelKey="STation_Name"
         loading={getPoliceStationLoading}
@@ -154,7 +158,7 @@ const AddressSectionFields = ({
       <DropdownField
         control={form.control}
         name={names.postOfficeId}
-        label="Post Office"
+        label={t("membership.institutionProfile.fields.postOffice")}
         options={postOfficeData}
         optionLabelKey="Post_Off_Name"
         loading={getPostOfficeLoading}
@@ -227,7 +231,7 @@ const InstitutionProfile = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
       <div className="flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
-        <h3 className="text-2xl font-semibold "> Institution KYC</h3>
+        <h3 className="text-2xl font-semibold "> {t("membership.institutionProfile.title")}</h3>
         <ScrollArea className="w-full p-2 sm:px-10 ">
           <Form {...form}>
             <form
@@ -246,11 +250,11 @@ const InstitutionProfile = ({
                       options={[
                         {
                           value: "A",
-                          label: "Add New Profile",
+                          label: t("membership.institutionProfile.modes.addNew"),
                         },
                         {
                           value: "U",
-                          label: "Update Existing Profile",
+                          label: t("membership.institutionProfile.modes.updateExisting"),
                         },
                       ]}
                       className="border border-default-200 rounded-md px-3 h-10 flex items-center"
@@ -267,7 +271,7 @@ const InstitutionProfile = ({
                       handleResetForm();
                     }}
                   >
-                    Reset
+                    {t("common.buttons.reset")}
                   </div>
                 ) : (
                   <div
@@ -276,7 +280,7 @@ const InstitutionProfile = ({
                       handleShowForm();
                     }}
                   >
-                    Next
+                    {t("common.next")}
                   </div>
                 )}
               </div>
@@ -297,15 +301,15 @@ const InstitutionProfile = ({
                   <InputField
                     control={form.control}
                     name="inst_name"
-                    label="Institution Name"
-                    placeholder="Enter institution name"
+                    label={t("membership.institutionProfile.fields.institutionName")}
+                    placeholder={t("membership.institutionProfile.placeholders.institutionName")}
                     isRequired={true}
                   />
 
                   <DatePickerField
                     control={form.control}
                     name="inst_dob"
-                    label="Date of Formation"
+                    label={t("membership.institutionProfile.fields.dateOfFormation")}
                     disabledDateAfter={new Date()}
                     isRequired={true}
                   />
@@ -313,16 +317,16 @@ const InstitutionProfile = ({
                   <InputField
                     control={form.control}
                     name="inst_ben"
-                    label="No Of Beneficiary"
-                    placeholder="Enter no of beneficiary"
+                    label={t("membership.institutionProfile.fields.noOfBeneficiary")}
+                    placeholder={t("membership.institutionProfile.placeholders.noOfBeneficiary")}
                     isRequired={true}
                   />
 
                   <InputField
                     control={form.control}
                     name="inst_mob"
-                    label="Mobile No."
-                    placeholder="Enter mobile no."
+                    label={t("membership.institutionProfile.fields.mobileNo")}
+                    placeholder={t("membership.institutionProfile.placeholders.mobileNo")}
                     type="number"
                     onInput={(e) => {
                       if (e.target.value.length > 10) {
@@ -334,8 +338,8 @@ const InstitutionProfile = ({
                   <InputField
                     control={form.control}
                     name="int_doc"
-                    label="Reg. / Docoument No"
-                    placeholder="Enter Registration / Document No"
+                    label={t("membership.institutionProfile.fields.regDocumentNo")}
+                    placeholder={t("membership.institutionProfile.placeholders.regDocumentNo")}
                     isRequired={true}
                   />
                 </div>
@@ -344,7 +348,7 @@ const InstitutionProfile = ({
               {showForm && (
                 <div className="w-full border border-primary rounded-md py-3 px-5 flex flex-col gap-3">
                   <h4 className="text-base font-semibold text-slate-800">
-                    Register Address
+                    {t("membership.institutionProfile.sections.registerAddress")}
                   </h4>
                   <AddressSectionFields
                     form={form}
@@ -361,7 +365,7 @@ const InstitutionProfile = ({
                     getVillageLoading={getVillageLoading}
                     getPoliceStationLoading={getPoliceStationLoading}
                     getPostOfficeLoading={getPostOfficeLoading}
-                    addressLabel="Register Address"
+                    addressLabel={t("membership.institutionProfile.fields.address")}
                   />
                 </div>
               )}
@@ -370,7 +374,7 @@ const InstitutionProfile = ({
                 <div className="w-full border border-primary rounded-md py-3 px-5 flex flex-col gap-3">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h4 className="text-base font-semibold text-slate-800">
-                      Office Address
+                      {t("membership.institutionProfile.sections.officeAddress")}
                     </h4>
                     <FormField
                       control={form.control}
@@ -386,7 +390,7 @@ const InstitutionProfile = ({
                             />
                           </FormControl>
                           <FormLabel className="text-sm font-medium text-slate-700 cursor-pointer">
-                            Same as Register Address
+                            {t("membership.institutionProfile.sameAsRegister")}
                           </FormLabel>
                         </FormItem>
                       )}
@@ -436,7 +440,7 @@ const InstitutionProfile = ({
                         ? getPostOfficeLoading
                         : officeGetPostOfficeLoading
                     }
-                    addressLabel="Office Address"
+                    addressLabel={t("membership.institutionProfile.fields.address")}
                   />
                 </div>
               )}
@@ -454,9 +458,9 @@ const InstitutionProfile = ({
                       speedMultiplier={0.7}
                     />
                   ) : form.getValues("type") === "A" ? (
-                    "Add"
+                    t("common.buttons.add")
                   ) : (
-                    "Update"
+                    t("common.buttons.update")
                   )}
                 </Button>
               )}

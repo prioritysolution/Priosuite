@@ -16,6 +16,7 @@ import Spinner from "@/common/loader/Spinner";
 import InvestmentActionModal from "./InvestmentActionModal";
 import { Input } from "@/components/ui/input";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
+import { useTranslation } from "react-i18next";
 
 const InvestmentapprovalComponent = ({
   kycList,
@@ -38,11 +39,13 @@ const InvestmentapprovalComponent = ({
   orgId,
   branchId,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="p-6 space-y-6 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5">
         <h2 className="text-2xl font-bold tracking-tight text-gray-800">
-          Investment Approval
+          {t("investmentApproval.investmentApproval")}
         </h2>
         <div className="relative w-full sm:w-auto flex items-center">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -53,7 +56,7 @@ const InvestmentapprovalComponent = ({
               paginate(1);
             }}
             className="w-full sm:w-64 pl-10 bg-white border-gray-300 focus:border-primary"
-            placeholder="Search by investment type, bank, account..."
+            placeholder={t("investmentApproval.searchPlaceholder")}
           />
         </div>
       </div>
@@ -63,13 +66,27 @@ const InvestmentapprovalComponent = ({
           <Table>
             <TableHeader className="bg-background z-10">
               <TableRow className="bg-gray-100">
-                <TableHead className="w-[50px] font-semibold">Sl</TableHead>
-                <TableHead className="font-semibold">Transaction Type</TableHead>
-                <TableHead className="font-semibold">Queue No</TableHead>
-                <TableHead className="font-semibold">Invest Type</TableHead>
-                <TableHead className="font-semibold">Account No</TableHead>
-                <TableHead className="font-semibold">Amount</TableHead>
-                <TableHead className="text-right font-semibold">Action</TableHead>
+                <TableHead className="w-[50px] font-semibold">
+                  {t("common.sl")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("common.transactionType")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("common.queueNo")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("investmentApproval.investType")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("common.accountNo")}
+                </TableHead>
+                <TableHead className="font-semibold">
+                  {t("common.amount")}
+                </TableHead>
+                <TableHead className="text-right font-semibold">
+                  {t("common.action")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -114,7 +131,7 @@ const InvestmentapprovalComponent = ({
                   <TableCell colSpan={7} className="h-32 text-center text-gray-500">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Search className="h-8 w-8 text-gray-300" />
-                      <p>No pending approvals found matching your search.</p>
+                      <p>{t("investmentApproval.noPendingApprovals")}</p>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -126,9 +143,13 @@ const InvestmentapprovalComponent = ({
         {!loading && totalPages > 0 && (
           <div className="flex items-center justify-between px-4 py-4 border-t bg-gray-50/50">
             <div className="text-sm text-gray-500">
-              Showing{" "}
-              {kycList.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-              {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} entries
+              {t("common.showing")}{" "}
+              {kycList.length > 0
+                ? (currentPage - 1) * itemsPerPage + 1
+                : 0}{" "}
+              {t("common.to")}{" "}
+              {Math.min(currentPage * itemsPerPage, totalItems)}{" "}
+              {t("common.of")} {totalItems} {t("common.entries")}
             </div>
 
             <div className="flex items-center gap-2">

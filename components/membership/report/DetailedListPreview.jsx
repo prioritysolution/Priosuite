@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -51,6 +52,8 @@ const DetailedListPreview = ({
   fromDate,
   toDate,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -104,8 +107,8 @@ const DetailedListPreview = ({
             <p>{address}</p>
             <p>{regNo}</p>
             <p className="text-sm">
-              Share Detailed List From{" "}
-              {fromDate && format(fromDate, "dd-MM-yyyy")} To{" "}
+              {t("membership.reports.preview.detailedListFrom")}{" "}
+              {fromDate && format(fromDate, "dd-MM-yyyy")} {t("membership.reports.preview.to")}{" "}
               {toDate && format(toDate, "dd-MM-yyyy")}
             </p>
           </div>
@@ -116,42 +119,18 @@ const DetailedListPreview = ({
               {/* Main Header Every Page */}
               <TableHeader>
                 <TableRow className="h-[40px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[40px]">
-                    SL. NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    DATE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[60px]">
-                    MEMBER TYPE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[130px]">
-                    CUSTOMER NAME
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[130px]">
-                    GUARDIAN NAME
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
-                    VILLAGE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center ">
-                    L/F. NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    OPENING
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    ISSUE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    RELEASE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    CLOSING
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    DIV. BAL.
-                  </TableHead>
+                  <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("membership.reports.print.slNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("membership.reports.print.date")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[60px]">{t("membership.reports.print.memberType")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[130px]">{t("membership.reports.print.customerName")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[130px]">{t("membership.reports.print.guardianName")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">{t("membership.reports.print.village")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center ">{t("membership.reports.print.lfNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.opening")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.issue")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.release")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.closing")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.divBal")}</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -205,9 +184,7 @@ const DetailedListPreview = ({
                     <TableCell
                       colSpan={7}
                       className="border border-black p-0 text-center"
-                    >
-                      Total
-                    </TableCell>
+                    >{t("common.total")}</TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
                       {totalOpening?.toFixed(2)}
                     </TableCell>
@@ -231,12 +208,12 @@ const DetailedListPreview = ({
 
           {/* Footer */}
           <div className="w-full h-[40px] mt-2 flex items-end justify-between text-xs relative">
-            <p className="text-nowrap">Generated By: {userName}</p>
+            <p className="text-nowrap">{t("membership.reports.preview.generatedBy")} {userName}</p>
             <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">
-              This report is generated by PrioSuite.
+              {t("membership.reports.preview.footerNote")}
             </p>
             <p className="text-nowrap">
-              Generated On: {currentDate} {currentTime}
+              {t("membership.reports.preview.generatedOn")} {currentDate} {currentTime}
             </p>
           </div>
         </div>

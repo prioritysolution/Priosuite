@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ const TrailBalance = ({
   fromDate,
   toDate,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -61,12 +63,12 @@ const TrailBalance = ({
     const host = printHostRef.current;
 
     if (!element) {
-      toast.error("Nothing to download. Please generate the report first.");
+      toast.error(t("report.trialBalance.nothingToDownload"));
       return;
     }
 
     if (!hasReportData) {
-      toast.error("No trial balance data to download.");
+      toast.error(t("report.trialBalance.noTrialBalanceData"));
       return;
     }
 
@@ -134,18 +136,20 @@ const TrailBalance = ({
       }
 
       if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
+        toast.error(t("report.trialBalance.failedToCapturePdf"));
         return;
       }
 
       pdf.save(`TrailBalance-${toDate || "report"}.pdf`);
-      toast.success("PDF downloaded");
+      toast.success(t("report.trialBalance.pdfDownloaded"));
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
-          ? `Failed to download PDF: ${error.message}`
-          : "Failed to download PDF",
+          ? t("report.trialBalance.failedToDownloadPdfWithError", {
+              error: error.message,
+            })
+          : t("report.trialBalance.failedToDownloadPdf"),
       );
     } finally {
       if (host) host.setAttribute("style", prevHostStyle);
@@ -173,7 +177,7 @@ const TrailBalance = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Trial Balance Report</h3>
+                <h3 className="text-xl font-semibold ">{t("report.trialBalance.trialBalanceReport")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -193,7 +197,7 @@ const TrailBalance = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"                 
+                  label={t("common.fromDate")}                 
                   disabled
                   allowClear={false}
                 />
@@ -201,7 +205,7 @@ const TrailBalance = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"                  
+                  label={t("common.toDate")}                  
                   disabled
                   allowClear={false}
                 />
@@ -213,13 +217,13 @@ const TrailBalance = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label="Branch"
+                      label={t("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("common.selectBranch")}
+                      searchPlaceholder={t("common.searchBranch")}
                     />
                   )}
                 />
@@ -298,44 +302,44 @@ const TrailBalance = ({
               <TableHeader>
                 <TableRow className="bg-primary text-white hover:bg-primary">
                   <TableHead colSpan={6} className=" text-white text-center">
-                    LIABLITIES & INCOME
+                    {t("report.trialBalance.liabilitiesAndIncome")}
                   </TableHead>
                 </TableRow>
                 <TableRow className="bg-primary text-white hover:bg-primary">
                   <TableHead rowSpan={2} className="text-white text-center">
-                    Head Of Account
+                    {t("common.headOfAccount")}
                   </TableHead>
                   <TableHead
                     rowSpan={2}
                     className="text-white border-l border-white text-center"
                   >
-                    Opening Balance
+                    {t("common.openingBalance")}
                   </TableHead>
                   <TableHead
                     rowSpan={2}
                     className="text-white border-l border-white text-center"
                   >
-                    Total Debit
+                    {t("common.totalDebit")}
                   </TableHead>
                   <TableHead
                     rowSpan={2}
                     className="text-white border-l border-white text-center"
                   >
-                    Total Credit
+                    {t("common.totalCredit")}
                   </TableHead>
                   <TableHead
                     colSpan={2}
                     className="text-white border-l border-white text-center"
                   >
-                    Closing
+                    {t("common.closing")}
                   </TableHead>
                 </TableRow>
                 <TableRow className="bg-primary text-white hover:bg-primary">
                   <TableHead className="text-white border-l border-white text-center">
-                    Break Up
+                    {t("common.breakUp")}
                   </TableHead>
                   <TableHead className="text-white border-l border-white text-center">
-                    Balance
+                    {t("common.balance")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -413,7 +417,7 @@ const TrailBalance = ({
                 {!loading && (
                   <TableRow className="border-t-2 border-black">
                     <TableCell className="font-semibold border border-secondary">
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell className="font-semibold border border-secondary">
                       {ledgerLiablitiesTableData &&
@@ -455,49 +459,49 @@ const TrailBalance = ({
                 )}
               </TableBody>
             </Table>
-            <p>ASSETS & EXPENDITURE</p>
+            <p>{t("report.trialBalance.assetsAndExpenditure")}</p>
             <Table className="border border-primary">
               <TableHeader>
                 <TableRow className="bg-primary text-white hover:bg-primary">
                   <TableHead colSpan={6} className=" text-white text-center">
-                    ASSETS & EXPENDITURE
+                    {t("report.trialBalance.assetsAndExpenditure")}
                   </TableHead>
                 </TableRow>
                 <TableRow className="bg-primary text-white hover:bg-primary">
                   <TableHead rowSpan={2} className="text-white text-center">
-                    Head Of Account
+                    {t("common.headOfAccount")}
                   </TableHead>
                   <TableHead
                     rowSpan={2}
                     className="text-white border-l border-white text-center"
                   >
-                    Opening Balance
+                    {t("common.openingBalance")}
                   </TableHead>
                   <TableHead
                     rowSpan={2}
                     className="text-white border-l border-white text-center"
                   >
-                    Total Debit
+                    {t("common.totalDebit")}
                   </TableHead>
                   <TableHead
                     rowSpan={2}
                     className="text-white border-l border-white text-center"
                   >
-                    Total Credit
+                    {t("common.totalCredit")}
                   </TableHead>
                   <TableHead
                     colSpan={2}
                     className="text-white border-l border-white text-center"
                   >
-                    Closing
+                    {t("common.closing")}
                   </TableHead>
                 </TableRow>
                 <TableRow className="bg-primary text-white hover:bg-primary">
                   <TableHead className="text-white border-l border-white text-center">
-                    Break Up
+                    {t("common.breakUp")}
                   </TableHead>
                   <TableHead className="text-white border-l border-white text-center">
-                    Balance
+                    {t("common.balance")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -576,7 +580,7 @@ const TrailBalance = ({
                 {!loading && (
                   <TableRow className="border-t-2 border-black">
                     <TableCell className="font-semibold border border-secondary">
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell className="font-semibold border border-secondary">
                       {ledgerAssetsTableData &&

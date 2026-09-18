@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import MemberSearchForm from "@/common/forms/MemberSearchForm";
 import CashDenomTable from "@/common/tables/CashDenomTable";
 import { Button } from "@/components/ui/button";
@@ -70,6 +72,8 @@ const ShareIssue = ({
   shareIssueReceiptData,
   handleGenerateShareIssueReceipt,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -123,9 +127,9 @@ const ShareIssue = ({
             handleSubmit={handleMemberFormSubmit}
             loading={getMemberDataLoading}
             showDate
-            label="Transaction Date"
+            label={t("membership.shareIssue.fields.transactionDate")}
             resetTrigger={resetTrigger}
-            formLabel="Share Issue"
+            formLabel={t("membership.shareIssue.title")}
             showLedger={showLedger}
             handleShowLedger={handleShowLedger}
             showDateFix={true}
@@ -142,7 +146,7 @@ const ShareIssue = ({
                 <>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
                     <h2 className="text-lg text-center font-semibold">
-                      Account Details
+                      {t("membership.shareIssue.sections.accountDetails")}
                     </h2>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
@@ -178,36 +182,36 @@ const ShareIssue = ({
                             <InputField
                               control={form.control}
                               name="memberNo"
-                              label="Member No."
-                              placeholder="Enter member no."
+                              label={t("membership.shareIssue.fields.memberNo")}
+                              placeholder={t("membership.shareIssue.placeholders.memberNo")}
                               readOnly
                             />
                             <InputField
                               control={form.control}
                               name="cifNo"
-                              label="CIF No."
-                              placeholder="Enter cif no."
+                              label={t("membership.shareIssue.fields.cifNo")}
+                              placeholder={t("membership.shareIssue.placeholders.cifNo")}
                               readOnly
                             />
                             <InputField
                               control={form.control}
                               name="memberName"
-                              label="Member Name"
-                              placeholder="Enter member name"
+                              label={t("membership.shareIssue.fields.memberName")}
+                              placeholder={t("membership.shareIssue.placeholders.memberName")}
                               readOnly
                             />
                             <InputField
                               control={form.control}
                               name="gurdianName"
-                              label="Gurdian Name"
-                              placeholder="Enter gurdian name"
+                              label={t("membership.shareIssue.fields.gurdianName")}
+                              placeholder={t("membership.shareIssue.placeholders.gurdianName")}
                               readOnly
                             />
                             <TextareaField
                               control={form.control}
                               name="address"
-                              label="Address"
-                              placeholder="Enter address"
+                              label={t("membership.shareIssue.fields.address")}
+                              placeholder={t("membership.shareIssue.placeholders.address")}
                               className="resize-none"
                               readOnly
                             />
@@ -215,15 +219,15 @@ const ShareIssue = ({
                             <InputField
                               control={form.control}
                               name="mobile"
-                              label="Mobile No."
-                              placeholder="Enter mobile no."
+                              label={t("membership.shareIssue.fields.mobileNo")}
+                              placeholder={t("membership.shareIssue.placeholders.mobileNo")}
                               readOnly
                             />
                             <InputField
                               control={form.control}
                               name="branchName"
-                              label="Branch Name"
-                              placeholder="Enter branch name"
+                              label={t("membership.shareIssue.fields.branchName")}
+                              placeholder={t("membership.shareIssue.placeholders.branchName")}
                               readOnly
                               className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
                             />
@@ -231,16 +235,16 @@ const ShareIssue = ({
                             <InputField
                               control={form.control}
                               name="ledgerFolio"
-                              label="Ledger Folio"
-                              placeholder="Enter ledger folio"
+                              label={t("membership.shareIssue.fields.ledgerFolio")}
+                              placeholder={t("membership.shareIssue.placeholders.ledgerFolio")}
                               readOnly
                             />
 
                             <InputField
                               control={form.control}
                               name="availableBal"
-                              label="Available Balance"
-                              placeholder="Enter available balance"
+                              label={t("membership.shareIssue.fields.availableBalance")}
+                              placeholder={t("membership.shareIssue.placeholders.availableBalance")}
                               readOnly
                             />
                           </div>
@@ -250,7 +254,7 @@ const ShareIssue = ({
                   </div>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
                     <h2 className="text-lg text-center font-semibold">
-                      Transaction Details
+                      {t("membership.shareIssue.sections.transactionDetails")}
                     </h2>
                     <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
                       <div className=" w-full flex flex-col gap-2">
@@ -272,8 +276,8 @@ const ShareIssue = ({
                               <InputField
                                 control={form.control}
                                 name="noOfShare"
-                                label="No. of Share"
-                                placeholder="Enter number of share"
+                                label={t("membership.shareIssue.fields.noOfShare")}
+                                placeholder={t("membership.shareIssue.placeholders.noOfShare")}
                                 type="number"
                                 autoFocus
                                 formItemClassName="grid grid-cols-[3fr_7fr] items-center gap-2"
@@ -283,8 +287,8 @@ const ShareIssue = ({
                               <InputField
                                 control={form.control}
                                 name="ratePerShare"
-                                label="Rate of Share"
-                                placeholder="Enter rate per share"
+                                label={t("membership.shareIssue.fields.rateOfShare")}
+                                placeholder={t("membership.shareIssue.placeholders.rateOfShare")}
                                 type="number"
                                 readOnly
                                 formItemClassName="grid grid-cols-[3fr_7fr] items-center gap-2"
@@ -294,8 +298,8 @@ const ShareIssue = ({
                               <InputField
                                 control={form.control}
                                 name="totalAmt"
-                                label="Total"
-                                placeholder="Enter total amount"
+                                label={t("membership.shareIssue.fields.total")}
+                                placeholder={t("membership.shareIssue.placeholders.total")}
                                 type="number"
                                 readOnly
                                 formItemClassName="grid grid-cols-[3fr_7fr] items-center gap-2"
@@ -305,7 +309,7 @@ const ShareIssue = ({
                               <TextareaField
                                 control={form.control}
                                 name="totalAmtInWords"
-                                placeholder="Total amount in words"
+                                placeholder={t("membership.shareIssue.placeholders.totalAmountInWords")}
                                 className="text-red-500 text-base resize-none"
                                 readOnly
                               />
@@ -327,7 +331,7 @@ const ShareIssue = ({
                                             <RadioGroupItem value="cash" />
                                           </FormControl>
                                           <FormLabel className="font-normal">
-                                            Cash
+                                            {t("membership.shareIssue.fields.cash")}
                                           </FormLabel>
                                         </FormItem>
                                         <FormItem className="flex items-center space-x-3 space-y-0">
@@ -335,7 +339,7 @@ const ShareIssue = ({
                                             <RadioGroupItem value="bank" />
                                           </FormControl>
                                           <FormLabel className="font-normal">
-                                            Bank
+                                            {t("membership.shareIssue.fields.bank")}
                                           </FormLabel>
                                         </FormItem>
                                         <FormItem className="flex items-center space-x-3 space-y-0">
@@ -343,7 +347,7 @@ const ShareIssue = ({
                                             <RadioGroupItem value="savings" />
                                           </FormControl>
                                           <FormLabel className="font-normal">
-                                            Savings
+                                            {t("membership.shareIssue.fields.savings")}
                                           </FormLabel>
                                         </FormItem>
                                       </RadioGroup>
@@ -355,7 +359,7 @@ const ShareIssue = ({
                               <InputField
                                 control={form.control}
                                 name="refVouchNo"
-                                placeholder="Enter ref. vouch no."
+                                placeholder={t("membership.shareIssue.placeholders.refVouchNo")}
                               />
                               {voucherMode === "cash" ? (
                                 isActiveDenom ? (
@@ -383,35 +387,35 @@ const ShareIssue = ({
                                 <DropdownField
                                   control={form.control}
                                   name="bank"
-                                  label="Bank"
+                                  label={t("membership.shareIssue.fields.bank")}
                                   options={bankAccountData}
                                   optionLabelKey="Bank_Name"
-                                  placeholder="Select bank"
-                                  searchPlaceholder="Search bank..."
+                                  placeholder={t("membership.shareIssue.placeholders.bank")}
+                                  searchPlaceholder={t("membership.shareIssue.placeholders.searchBank")}
                                 />
                               ) : (
                                 <>
                                   <DropdownField
                                     control={form.control}
                                     name="savings"
-                                    label="Savings"
+                                    label={t("membership.shareIssue.fields.savings")}
                                     options={savingsAccountData}
                                     optionLabelKey="Account_No"
-                                    placeholder="Select savings"
-                                    searchPlaceholder="Search savings..."
+                                    placeholder={t("membership.shareIssue.placeholders.savings")}
+                                    searchPlaceholder={t("membership.shareIssue.placeholders.searchSavings")}
                                   />
                                   <InputField
                                     control={form.control}
                                     name="savingsName"
-                                    label="Account Holder Name"
-                                    placeholder="Enter name"
+                                    label={t("membership.shareIssue.fields.accountHolderName")}
+                                    placeholder={t("membership.shareIssue.placeholders.accountHolderName")}
                                     readOnly
                                   />
                                   <InputField
                                     control={form.control}
                                     name="savingsBalance"
-                                    label="Available Balance"
-                                    placeholder="Enter balance"
+                                    label={t("membership.shareIssue.fields.availableBalance")}
+                                    placeholder={t("membership.shareIssue.placeholders.balance")}
                                     readOnly
                                   />
                                 </>
@@ -442,7 +446,7 @@ const ShareIssue = ({
                                   speedMultiplier={0.7}
                                 />
                               ) : (
-                                "Save"
+                                t("common.buttons.save")
                               )}
                             </Button>
                           </>
@@ -462,7 +466,7 @@ const ShareIssue = ({
         handleCloseSuccessMessage={handleCloseSuccessMessage}
         showNextButton={true}
         handleNextButton={handleGenerateShareIssueReceipt}
-        nextLabel="Print Receipt"
+        nextLabel={t("membership.shareIssue.printReceipt")}
       />
 
       <ShareLedger

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import AccountSearchForm from "@/common/forms/AccountSearchForm";
 import CashDenomTable from "@/common/tables/CashDenomTable";
 import { Button } from "@/components/ui/button";
@@ -74,6 +76,8 @@ const Withdrawn = ({
   resetTrigger,
   getLedgerLoading,
 }) => {
+  const { t } = useTranslation();
+
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [activeImage, setActiveImage] = useState("");
   const [activeImageURL, setActiveImageURL] = useState("");
@@ -124,7 +128,7 @@ const Withdrawn = ({
             fromDate={fromDate}
             toDate={form.getValues("withdrawnDate")}
             resetTrigger={resetTrigger}
-            formLabel="Withdrawn"
+            formLabel={t("deposit.withdrawn.title")}
             showDateFix={true}
             operateProductData={operateProductData}
             showProduct={true}
@@ -142,7 +146,7 @@ const Withdrawn = ({
                 <>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
                     <h2 className="text-lg text-center font-semibold">
-                      Account Details
+                      {t("deposit.sections.accountDetails")}
                     </h2>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
@@ -164,114 +168,114 @@ const Withdrawn = ({
                               <InputField
                                 control={form.control}
                                 name="memberNo"
-                                label="Member No."
-                                placeholder="Enter member no."
+                                label={t("deposit.fields.memberNo")}
+                                placeholder={t("deposit.placeholders.memberNo")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="accountNo"
-                                label="Account No."
-                                placeholder="Enter account no."
+                                label={t("deposit.fields.accountNo")}
+                                placeholder={t("deposit.placeholders.accountNo")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="refAcNo"
-                                label="Manual / REF. Account No."
-                                placeholder="Enter manual / ref. account no."
+                                label={t("deposit.fields.manualRefAccountNo")}
+                                placeholder={t("deposit.placeholders.manualRefAccountNo")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="cifNo"
-                                label="CIF No."
-                                placeholder="Enter cif no."
+                                label={t("deposit.fields.cifNo")}
+                                placeholder={t("deposit.placeholders.cifNo")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="memberName"
-                                label="Member Name"
-                                placeholder="Enter member name"
+                                label={t("deposit.fields.memberName")}
+                                placeholder={t("deposit.placeholders.memberName")}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="gurdianName"
-                                label="Gurdian Name"
-                                placeholder="Enter gurdian name"
+                                label={t("deposit.fields.guardianName")}
+                                placeholder={t("deposit.placeholders.guardianName")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="mobile"
-                                label="Mobile No."
-                                placeholder="Enter mobile no."
+                                label={t("deposit.fields.mobileNo")}
+                                placeholder={t("deposit.placeholders.mobileNo")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="panNo"
-                                label="Pan No."
-                                placeholder="Enter pan no."
+                                label={t("deposit.fields.panNo")}
+                                placeholder={t("deposit.placeholders.panNo")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="operationMode"
-                                label="Operation Mode"
-                                placeholder="Enter operation mode"
+                                label={t("deposit.fields.operationMode")}
+                                placeholder={t("deposit.placeholders.operationMode")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="chequeFacility"
-                                label="Cheque Facility"
-                                placeholder="Enter cheque facility"
+                                label={t("deposit.fields.chequeFacility")}
+                                placeholder={t("deposit.placeholders.chequeFacility")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="lastWithdrawnDate"
-                                label="Last Withdrawn date"
-                                placeholder="Enter last withdrawn date"
+                                label={t("deposit.fields.lastWithdrawnDate")}
+                                placeholder={t("deposit.placeholders.lastWithdrawnDate")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="lastWithdrawnAmount"
-                                label="Last Withdrawn Amount"
-                                placeholder="Enter last withdrawn amount"
+                                label={t("deposit.fields.lastWithdrawnAmount")}
+                                placeholder={t("deposit.placeholders.lastWithdrawnAmount")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="availableBalance"
-                                label="Available Balance"
-                                placeholder="Enter available balance"
+                                label={t("deposit.fields.availableBalance")}
+                                placeholder={t("deposit.placeholders.availableBalance")}
                                 readOnly
                               />
 
                               <InputField
                                 control={form.control}
                                 name="branchName"
-                                label="Branch Name"
-                                placeholder="Enter branch name"
+                                label={t("deposit.fields.branchName")}
+                                placeholder={t("deposit.placeholders.branchName")}
                                 readOnly
                                 className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
                               />
                             </div>
                             <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                               <div className="flex flex-col h-full items-center gap-2 text-center font-semibold">
-                                <h2 className=" font-semibold">Profile</h2>
+                                <h2 className=" font-semibold">{t("deposit.withdrawn.profile")}</h2>
                                 <div
                                   onClick={() =>
                                     handleOpenImageDialog("photo", photoLink)
@@ -294,7 +298,7 @@ const Withdrawn = ({
                                 </div>
                               </div>
                               <div className="flex flex-col h-full items-center gap-2 text-center font-semibold">
-                                <h2 className=" font-semibold">Signature</h2>
+                                <h2 className=" font-semibold">{t("deposit.common.signature")}</h2>
                                 <div
                                   onClick={() =>
                                     handleOpenImageDialog(
@@ -325,8 +329,8 @@ const Withdrawn = ({
                                 <InputField
                                   control={form.control}
                                   name="joint1"
-                                  label="Joint 1"
-                                  placeholder="Enter joint 1"
+                                  label={t("deposit.fields.joint1")}
+                                  placeholder={t("deposit.placeholders.joint1")}
                                   readOnly
                                 />
                               )}
@@ -334,8 +338,8 @@ const Withdrawn = ({
                                 <InputField
                                   control={form.control}
                                   name="joint2"
-                                  label="Joint 2"
-                                  placeholder="Enter joint 2"
+                                  label={t("deposit.fields.joint2")}
+                                  placeholder={t("deposit.placeholders.joint2")}
                                   readOnly
                                 />
                               )}
@@ -347,7 +351,7 @@ const Withdrawn = ({
                   </div>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
                     <h2 className="text-lg text-center font-semibold">
-                      Withdrawn Details
+                      {t("deposit.withdrawn.withdrawnDetails")}
                     </h2>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
@@ -369,8 +373,8 @@ const Withdrawn = ({
                               <InputField
                                 control={form.control}
                                 name="withdrawnAmount"
-                                label="Amount"
-                                placeholder="Enter withdrawn amount"
+                                label={t("deposit.fields.amount")}
+                                placeholder={t("deposit.placeholders.amount")}
                                 type="number"
                                 autoFocus
                                 containerClassName="grid grid-cols-[3fr_7fr] items-center gap-2"
@@ -380,8 +384,8 @@ const Withdrawn = ({
                                 <InputField
                                   control={form.control}
                                   name="instrumentNo"
-                                  label="Instrument No."
-                                  placeholder="Enter instrument no."
+                                  label={t("deposit.fields.instrumentNo")}
+                                  placeholder={t("deposit.placeholders.instrumentNo")}
                                   type="number"
                                   containerClassName="grid grid-cols-[3fr_7fr] items-center gap-2"
                                 />
@@ -390,7 +394,7 @@ const Withdrawn = ({
                               <TextareaField
                                 control={form.control}
                                 name="totalWithdrawnInWords"
-                                placeholder="Total amount in words"
+                                placeholder={t("deposit.placeholders.totalAmount")}
                                 className="text-red-500 text-base resize-none"
                                 readOnly
                               />
@@ -432,7 +436,7 @@ const Withdrawn = ({
                               <InputField
                                 control={form.control}
                                 name="refVouchNo"
-                                placeholder="Enter ref. vouch no."
+                                placeholder={t("deposit.placeholders.refVoucherNo")}
                               />
                               {transMode === "cash" ? (
                                 isActiveDenom ? (
@@ -460,11 +464,11 @@ const Withdrawn = ({
                                 <DropdownField
                                   control={form.control}
                                   name="bank"
-                                  label="Bank"
+                                  label={t("deposit.fields.bank")}
                                   options={bankAccountData}
                                   optionLabelKey="Bank_Name"
-                                  placeholder="Select bank"
-                                  searchPlaceholder="Search bank..."
+                                  placeholder={t("deposit.placeholders.selectBank")}
+                                  searchPlaceholder={t("deposit.placeholders.searchBank")}
                                 />
                               )}
                             </div>
@@ -494,7 +498,7 @@ const Withdrawn = ({
                                   speedMultiplier={0.7}
                                 />
                               ) : (
-                                "Save"
+                                t("common.buttons.save")
                               )}
                             </Button>
                           </>

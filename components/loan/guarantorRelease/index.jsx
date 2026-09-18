@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import LoanAccountSearchForm from "@/common/forms/LoanAccountSearchForm";
 import LoanLedger from "@/common/ledger/loanLedger/LoanLedger";
@@ -47,10 +49,12 @@ const GuarantorRelease = ({
   showDeleteDialog,
   setShowDeleteDialog,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Guarantor Release</h3>
+        <h3 className="text-2xl font-semibold ">{t("loan.guarantorRelease")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10">
           <div className="w-full mb-2">
@@ -63,39 +67,37 @@ const GuarantorRelease = ({
             >
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    Account Details
-                  </h3>
+                  <h3 className="w-full text-center text-xl font-semibold">{t("loan.accountDetails")}</h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
                       name="accountNo"
-                      label="Account No."
-                      placeholder="Enter account no."
+                      label={t("loan.accountNo")}
+                      placeholder={t("loan.enterAccountNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="memberName"
-                      label="Member Name"
-                      placeholder="Enter member name"
+                      label={t("loan.memberName")}
+                      placeholder={t("loan.enterMemberName")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="gurdianName"
-                      label="Gurdian Name"
-                      placeholder="Enter gurdian name"
+                      label={t("loan.gurdianName")}
+                      placeholder={t("loan.enterGurdianName")}
                       readOnly
                     />
 
                     <TextareaField
                       control={form.control}
                       name="address"
-                      label="Address"
-                      placeholder="Enter address"
+                      label={t("loan.address")}
+                      placeholder={t("loan.enterAddress")}
                       className="resize-none"
                       readOnly
                     />
@@ -103,8 +105,8 @@ const GuarantorRelease = ({
                     <InputField
                       control={form.control}
                       name="mobile"
-                      label="Mobile No."
-                      placeholder="Enter mobile no."
+                      label={t("loan.mobileNo")}
+                      placeholder={t("loan.enterMobileNo")}
                       readOnly
                     />
                   </div>
@@ -114,32 +116,18 @@ const GuarantorRelease = ({
           </Form>
           {visibleBlock && (
             <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2 mt-2">
-              <h3 className="w-full text-center text-xl font-semibold">
-                Guarantor Details
-              </h3>
+              <h3 className="w-full text-center text-xl font-semibold">{t("loan.guarantorDetails")}</h3>
               <div className="w-full">
                 {guarantorDetails?.length > 0 ? (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead align="center" className="text-center">
-                          Sl. No.
-                        </TableHead>
-                        <TableHead align="center" className="text-center">
-                          Guarantor Name
-                        </TableHead>
-                        <TableHead align="center" className="text-center">
-                          Guardian Name
-                        </TableHead>
-                        <TableHead align="center" className="text-center">
-                          Member No.
-                        </TableHead>
-                        <TableHead align="center" className="text-center">
-                          CIF. No.
-                        </TableHead>
-                        <TableHead align="center" className="text-center">
-                          Action
-                        </TableHead>
+                        <TableHead align="center" className="text-center">{t("loan.slNoDot")}</TableHead>
+                        <TableHead align="center" className="text-center">{t("loan.guarantorName")}</TableHead>
+                        <TableHead align="center" className="text-center">{t("loan.guardianName")}</TableHead>
+                        <TableHead align="center" className="text-center">{t("loan.memberNo2")}</TableHead>
+                        <TableHead align="center" className="text-center">{t("loan.cIFNo2")}</TableHead>
+                        <TableHead align="center" className="text-center">{t("loan.action")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -181,20 +169,14 @@ const GuarantorRelease = ({
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[425px]">
           <DialogHeader className={`w-full flex items-center justify-center`}>
-            <DialogTitle className="text-center text-xl font-semibold">
-              Are you sure you want to release the guarantor?
-            </DialogTitle>
+            <DialogTitle className="text-center text-xl font-semibold">{t("loan.areYouSureYouWantToReleaseTheGuarantor")}</DialogTitle>
           </DialogHeader>
           <div className="w-full flex flex-col-reverse sm:flex-row gap-5">
             <Button
               onClick={handleCancelDelete}
               className=" w-full bg-gray-500"
-            >
-              Cancel
-            </Button>
-            <Button onClick={handleConfirmDelete} className=" w-full">
-              Confirm
-            </Button>
+            >{t("loan.cancel")}</Button>
+            <Button onClick={handleConfirmDelete} className=" w-full">{t("loan.confirm")}</Button>
           </div>
         </DialogContent>
       </Dialog>

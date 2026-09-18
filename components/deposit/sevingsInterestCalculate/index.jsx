@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { Form } from "@/components/ui/form";
 import DropdownField from "@/common/formFields/DropdownField";
@@ -21,6 +22,8 @@ const SevingsInterestCalculateComponents = ({
   progress,
   handlePostInterest,
 }) => {
+  const { t } = useTranslation();
+
   console.log("productList==", productList);
 
   const fromDateValue = form.watch("fromDate");
@@ -76,8 +79,7 @@ const SevingsInterestCalculateComponents = ({
         interestDetails,
       });
     } else if (postPayload) {
-      console.log(
-        "Post Interest values:",
+      console.log(t("deposit.buttons.postInterest") + " values:",
         postPayload,
         "with details:",
         interestDetails,
@@ -134,7 +136,7 @@ const SevingsInterestCalculateComponents = ({
         <ScrollArea className="w-full h-full pr-3">
           <div className="flex flex-col justify-start items-center w-full gap-1">
             <h3 className="text-2xl font-semibold text-center w-full">
-              Generate Savings Interest
+              {t("deposit.savingsInterest.title")}
             </h3>
 
             <Form {...form}>
@@ -152,16 +154,16 @@ const SevingsInterestCalculateComponents = ({
                       options={productList}
                       optionLabelKey="Product_Name"
                       optionValueKey="Id"
-                      placeholder="Select Product Type"
-                      label="Product Type"
+                      placeholder={t("deposit.placeholders.selectProductType")}
+                      label={t("deposit.fields.productType")}
                       isRequired={true}
                     />
                     <DatePickerField
                       form={form}
                       name="fromDate"
                       control={form.control}
-                      placeholder="Select From Date"
-                      label="From Date"
+                      placeholder={t("deposit.placeholders.selectFromDate")}
+                      label={t("deposit.fields.fromDate")}
                       disabled={isFromDateDisabled}
                       isRequired={true}
                     />
@@ -169,8 +171,8 @@ const SevingsInterestCalculateComponents = ({
                       form={form}
                       name="toDate"
                       control={form.control}
-                      placeholder="Select To Date"
-                      label="To Date"
+                      placeholder={t("deposit.placeholders.selectToDate")}
+                      label={t("deposit.fields.toDate")}
                       disabledDateBefore={disabledDateBefore}
                       disabledDateAfter={new Date()}
                       isRequired={true}
@@ -179,8 +181,8 @@ const SevingsInterestCalculateComponents = ({
                       form={form}
                       name="roi"
                       control={form.control}
-                      placeholder="Enter ROI"
-                      label="ROI"
+                      placeholder={t("deposit.placeholders.roi")}
+                      label={t("deposit.fields.roi")}
                     />
                   </div>
                   <div className="flex justify-end mt-4">
@@ -216,8 +218,8 @@ const SevingsInterestCalculateComponents = ({
                     form={postForm}
                     name="voucherDate"
                     control={postForm.control}
-                    placeholder="Select Date"
-                    label="Voucher Date"
+                    placeholder={t("deposit.placeholders.selectDate")}
+                    label={t("deposit.fields.voucherDate")}
                     disabled={true}
                     isRequired={true}
                   />
@@ -227,8 +229,8 @@ const SevingsInterestCalculateComponents = ({
                     form={postForm}
                     name="referenceVoucherNo"
                     control={postForm.control}
-                    placeholder="Enter Ref Voucher No"
-                    label="Reference Voucher No"
+                    placeholder={t("deposit.placeholders.refVoucherNo")}
+                    label={t("deposit.fields.referenceVoucherNo")}
                     isRequired={true}
                   />
 
@@ -254,7 +256,7 @@ const SevingsInterestCalculateComponents = ({
                       className="w-full h-10 bg-primary text-white hover:bg-primary/90 font-semibold shadow-md flex items-center justify-center gap-2"
                     >
                       <Send className="w-4 h-4" />
-                      Post Interest
+                      {t("deposit.buttons.postInterest")}
                     </Button>
                   </div>
                 </div>

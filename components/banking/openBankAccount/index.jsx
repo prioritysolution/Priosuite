@@ -9,8 +9,10 @@ import { getYear } from "date-fns";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import getCookieData from "@/utils/getCookieData";
+import { useTranslation } from "react-i18next";
 
 const OpenBankAccount = ({ loading, form, handleSubmit }) => {
+  const { t } = useTranslation();
   const accountTypeData = useSelector(
     (state) => state?.openBankAccount?.bankAccountTypeData,
   );
@@ -22,7 +24,7 @@ const OpenBankAccount = ({ loading, form, handleSubmit }) => {
 
   return (
     <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">Open Bank Account</h3>
+      <h3 className="text-2xl font-semibold text-center">{t("bank.openBankAccount")}</h3>
 
       <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
         <Form {...form}>
@@ -35,7 +37,7 @@ const OpenBankAccount = ({ loading, form, handleSubmit }) => {
               <DatePickerField
                 control={form.control}
                 name="openingDate"
-                label="Opening Date"
+                label={t("bank.openingDate")}
                 defaultValue={new Date(beg_date)}
                 disabled={true}
                 isRequired
@@ -44,24 +46,24 @@ const OpenBankAccount = ({ loading, form, handleSubmit }) => {
               <InputField
                 control={form.control}
                 name="bankName"
-                label="Bank Name"
-                placeholder="Enter bank name"
+                label={t("bank.bankName")}
+                placeholder={t("bank.enterBankName")}
                 isRequired
               />
 
               <InputField
                 control={form.control}
                 name="bankBranch"
-                label="Bank Branch"
-                placeholder="Enter bank branch"
+                label={t("bank.bankBranch")}
+                placeholder={t("bank.enterBankBranch")}
                 isRequired
               />
 
               <InputField
                 control={form.control}
                 name="ifscCode"
-                label="IFSC Code"
-                placeholder="Enter ifsc code"
+                label={t("bank.ifscCode")}
+                placeholder={t("bank.enterIfscCode")}
                 maxLength={11}
                 isUpper={true}
                 isRequired
@@ -70,8 +72,8 @@ const OpenBankAccount = ({ loading, form, handleSubmit }) => {
               <InputField
                 control={form.control}
                 name="accountNo"
-                label="Account No."
-                placeholder="Enter account no."
+                label={t("bank.accountNo")}
+                placeholder={t("bank.enterAccountNo")}
                 type="number"
                 maxLength={15}
                 isRequired
@@ -82,13 +84,13 @@ const OpenBankAccount = ({ loading, form, handleSubmit }) => {
                 name="accountType"
                 render={({ field }) => (
                   <DropdownField
-                    label="Account Type"
+                    label={t("bank.accountType")}
                     value={field.value}
                     onChange={field.onChange}
                     options={accountTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder="Select account type"
-                    searchPlaceholder="Search account type..."
+                    placeholder={t("bank.selectAccountType")}
+                    searchPlaceholder={t("bank.searchAccountType")}
                     isRequired
                   />
                 )}
@@ -99,14 +101,14 @@ const OpenBankAccount = ({ loading, form, handleSubmit }) => {
                 name="bankGl"
                 render={({ field }) => (
                   <DropdownField
-                    label="Bank GL"
+                    label={t("bank.bankGl")}
                     value={field.value}
                     onChange={field.onChange}
                     options={bankGlData}
                     optionLabelKey="Ledger_Name"
                     optionValueKey="Id"
-                    placeholder="Select bank gl"
-                    searchPlaceholder="Search bank gl..."
+                    placeholder={t("bank.selectBankGl")}
+                    searchPlaceholder={t("bank.searchBankGl")}
                     isRequired
                   />
                 )}
@@ -122,7 +124,7 @@ const OpenBankAccount = ({ loading, form, handleSubmit }) => {
                 {loading ? (
                   <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
-                  "Add"
+                  t("common.add")
                 )}
               </Button>
             </div>

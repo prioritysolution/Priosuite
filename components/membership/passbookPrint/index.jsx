@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import RadioField from "@/common/formFields/RadioField";
 import MemberPassbookSearchForm from "@/common/forms/MemberPassbookSearchForm";
@@ -35,6 +37,8 @@ const PassbookPrint = ({
   showLine,
   handleUpdateTrans,
 }) => {
+  const { t } = useTranslation();
+
   const firstPageRef = useRef(null);
   const transPageRef = useRef(null);
 
@@ -42,12 +46,12 @@ const PassbookPrint = ({
 
   const generateFirstPagePDF = useReactToPrint({
     contentRef: firstPageRef,
-    documentTitle: "Front Page",
+    documentTitle: t("membership.passbookPrint.documentTitleFront"),
   });
 
   const generateTransPagePDF = useReactToPrint({
     contentRef: transPageRef,
-    documentTitle: "Tansaction Page",
+    documentTitle: t("membership.passbookPrint.documentTitleTransaction"),
     onAfterPrint: () => setShowPrintSuccess(true),
   });
 
@@ -85,7 +89,7 @@ const PassbookPrint = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Passbook Print</h3>
+        <h3 className="text-2xl font-semibold ">{t("membership.passbookPrint.title")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
           <Form {...form}>
@@ -115,11 +119,11 @@ const PassbookPrint = ({
                         options={[
                           {
                             value: "1",
-                            label: "Front Page",
+                            label: t("membership.passbookPrint.frontPage"),
                           },
                           {
                             value: "2",
-                            label: "Transaction Page",
+                            label: t("membership.passbookPrint.transactionPage"),
                           },
                         ]}
                         className="border border-default-200 rounded-md px-3 h-10 flex items-center"
@@ -134,7 +138,7 @@ const PassbookPrint = ({
                       <DatePickerField
                         control={form.control}
                         name="date"
-                        label="Date"
+                        label={t("membership.passbookPrint.fields.date")}
                       />
                     </div>
 
@@ -142,8 +146,8 @@ const PassbookPrint = ({
                       <InputField
                         control={form.control}
                         name="line"
-                        label="Line"
-                        placeholder="Enter line"
+                        label={t("membership.passbookPrint.fields.line")}
+                        placeholder={t("membership.passbookPrint.placeholders.line")}
                         type="number"
                       />
                     </div>
@@ -159,7 +163,7 @@ const PassbookPrint = ({
                         speedMultiplier={0.7}
                       />
                     ) : (
-                      "Next"
+                      t("common.next")
                     )}
                   </Button>
                   <div
@@ -182,7 +186,7 @@ const PassbookPrint = ({
                       }
                     }}
                   >
-                    Print
+                    {t("common.buttons.print")}
                   </div>
                 </div>
               </div>
@@ -246,7 +250,7 @@ const PassbookPrint = ({
                     ))}
                     <div className="w-full h-[32px]" />
                     <div className="w-[200px] h-[30px] self-end border-t-2 border-black text-center flex items-center justify-center font-semibold">
-                      <span>MANAGER</span>
+                      <span>{t("membership.passbookPrint.manager")}</span>
                     </div>
                   </div>
                 </div>
@@ -280,19 +284,19 @@ const PassbookPrint = ({
                           )}
                         >
                           <p className="border-x-2 border-black font-medium text-center">
-                            Sl.
+                            {t("membership.passbookPrint.table.sl")}
                           </p>
                           <p className="border-r-2 border-black font-medium text-center">
-                            Date
+                            {t("membership.passbookPrint.fields.date")}
                           </p>
                           <p className="border-r-2 border-black font-medium text-center">
-                            Issue
+                            {t("membership.passbookPrint.table.issue")}
                           </p>
                           <p className="border-r-2 border-black font-medium text-center">
-                            Release
+                            {t("membership.passbookPrint.table.release")}
                           </p>
                           <p className="border-r-2 border-black font-medium text-center">
-                            Balance
+                            {t("membership.passbookPrint.table.balance")}
                           </p>
                         </div>
                         {printData.map((data, i) => (
@@ -352,14 +356,14 @@ const PassbookPrint = ({
       <Dialog open={showPrintSuccess} onOpenChange={setShowPrintSuccess}>
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[425px]">
           <div className="text-center text-2xl font-medium">
-            <p>Did you print successfully ?</p>
+            <p>{t("membership.passbookPrint.printConfirmation")}</p>
           </div>
           <DialogFooter>
             <Button
               onClick={() => setShowPrintSuccess(false)}
               className="bg-secondary text-black w-full sm:w-32"
             >
-              No
+              {t("common.no")}
             </Button>
             <Button
               onClick={() => {
@@ -370,7 +374,7 @@ const PassbookPrint = ({
               }}
               className="w-full sm:w-32"
             >
-              Yes
+              {t("common.yes")}
             </Button>
           </DialogFooter>
         </DialogContent>

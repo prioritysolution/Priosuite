@@ -10,21 +10,24 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { Fragment } from "react";
+import { useTranslation } from "react-i18next";
 
 const DetailedListTable = ({ tableData, handleShowLedger, loading }) => {
+  const { t } = useTranslation();
+
   return (
     <Table>
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className="text-center">Sl No.</TableHead>
-          <TableHead className="">Opening Date</TableHead>
-          <TableHead className="">Bank Name</TableHead>
-          <TableHead className="">Account No.</TableHead>
-          <TableHead className="">Account Type</TableHead>
-          <TableHead className="">Invest</TableHead>
-          <TableHead className="">ROI</TableHead>
-          <TableHead className="">Mature Date</TableHead>
-          <TableHead className="">Prov. Intt.</TableHead>
+          <TableHead className="text-center">{t("investment.slNo")}</TableHead>
+          <TableHead className="">{t("investment.openingDate")}</TableHead>
+          <TableHead className="">{t("common.bankName")}</TableHead>
+          <TableHead className="">{t("common.accountNo")}</TableHead>
+          <TableHead className="">{t("common.accountType")}</TableHead>
+          <TableHead className="">{t("investment.invest")}</TableHead>
+          <TableHead className="">{t("investment.roi")}</TableHead>
+          <TableHead className="">{t("investment.matureDate")}</TableHead>
+          <TableHead className="">{t("investment.provIntt")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">
@@ -68,7 +71,7 @@ const DetailedListTable = ({ tableData, handleShowLedger, loading }) => {
                 {/* Subheader for Group */}
                 <TableRow className="bg-gray-50">
                   <TableCell colSpan={9} className="font-medium text-center">
-                    GL - {group.transactions[0].Ledger_Name}
+                    {t("common.gl")} - {group.transactions[0].Ledger_Name}
                   </TableCell>
                 </TableRow>
                 {/* Rows for Transactions */}
@@ -102,7 +105,7 @@ const DetailedListTable = ({ tableData, handleShowLedger, loading }) => {
                 {/* Subtotal Row */}
                 <TableRow className="bg-gray-50 font-medium">
                   <TableCell colSpan={5} className="text-right">
-                    Subtotal
+                    {t("common.subtotal")}
                   </TableCell>
                   <TableCell>{group.subtotalInvest.toFixed(2)}</TableCell>
                   <TableCell></TableCell>
@@ -133,7 +136,7 @@ const DetailedListTable = ({ tableData, handleShowLedger, loading }) => {
           tableData.some((group) => group.isGrandTotal) && (
             <TableRow className="bg-gray-100">
               <TableCell colSpan={5} className="font-medium text-right">
-                Grand Total
+                {t("common.grandTotal")}
               </TableCell>
               <TableCell className="font-medium">
                 {tableData

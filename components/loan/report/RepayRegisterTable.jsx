@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -19,20 +20,22 @@ const RepayRegisterTable = ({
   handleShowLedger,
   handleGenerateCollectionReceipt,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Table className="min-w-[1000px] whitespace-nowrap">
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className="text-center">Sl No.</TableHead>
-          <TableHead className="">Customer Name</TableHead>
-          <TableHead className="">Gurdian Name</TableHead>
-          <TableHead className="">Account No.</TableHead>
-          <TableHead className="">Ref. Ac. No.</TableHead>
-          <TableHead className="">Trans. Mode</TableHead>
-          <TableHead className="">Principal</TableHead>
-          <TableHead className="">Interest</TableHead>
-          <TableHead className="">Amount</TableHead>
-          <TableHead className="">Action</TableHead>
+          <TableHead className="text-center">{t("loan.slNo")}</TableHead>
+          <TableHead className="">{t("loan.customerName")}</TableHead>
+          <TableHead className="">{t("loan.gurdianName")}</TableHead>
+          <TableHead className="">{t("loan.accountNo")}</TableHead>
+          <TableHead className="">{t("loan.refAcNo")}</TableHead>
+          <TableHead className="">{t("loan.transMode")}</TableHead>
+          <TableHead className="">{t("loan.principal")}</TableHead>
+          <TableHead className="">{t("loan.interest")}</TableHead>
+          <TableHead className="">{t("loan.amount")}</TableHead>
+          <TableHead className="">{t("loan.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">
@@ -96,9 +99,7 @@ const RepayRegisterTable = ({
                     ))}
                   {/* Subtotal Row */}
                   <TableRow className="bg-gray-50 font-medium">
-                    <TableCell colSpan={6} className="text-right">
-                      Subtotal
-                    </TableCell>
+                    <TableCell colSpan={6} className="text-right">{t("loan.subtotal")}</TableCell>
                     <TableCell>
                       {group.subtotalPrincipal &&
                         group.subtotalPrincipal.toFixed(2)}
@@ -119,9 +120,7 @@ const RepayRegisterTable = ({
       <TableFooter className="sticky bottom-0 bg-background z-10">
         {tableData.some((group) => group.isGrandTotal) && (
           <TableRow className="bg-gray-100">
-            <TableCell colSpan={6} className="font-medium text-right">
-              Grand Total
-            </TableCell>
+            <TableCell colSpan={6} className="font-medium text-right">{t("loan.grandTotal")}</TableCell>
             <TableCell className="font-medium">
               {tableData
                 .find((group) => group.isGrandTotal)

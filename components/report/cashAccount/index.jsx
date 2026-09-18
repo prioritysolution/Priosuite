@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,7 @@ const CashAccount = ({
   totalCrAmount,
   denomData,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -92,7 +94,7 @@ const CashAccount = ({
     const host = printHostRef.current;
 
     if (!element) {
-      toast.error("Nothing to download. Please generate the report first.");
+      toast.error(t("report.cashAccount.nothingToDownload"));
       return;
     }
 
@@ -102,7 +104,7 @@ const CashAccount = ({
       !!cashBalanceData;
 
     if (!hasData) {
-      toast.error("No cash account data to download.");
+      toast.error(t("report.cashAccount.noDataToDownload"));
       return;
     }
 
@@ -167,20 +169,20 @@ const CashAccount = ({
       }
 
       if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
+        toast.error(t("report.cashAccount.failedToCapturePdf"));
         return;
       }
 
       pdf.save(
         `CashAccount-${fromDate || "from"}-${toDate || "to"}.pdf`,
       );
-      toast.success("PDF downloaded");
+      toast.success(t("report.cashAccount.pdfDownloaded"));
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
-          ? `Failed to download PDF: ${error.message}`
-          : "Failed to download PDF",
+          ? `${t("report.cashAccount.failedToDownloadPdf")}: ${error.message}`
+          : t("report.cashAccount.failedToDownloadPdf"),
       );
     } finally {
       if (host) host.setAttribute("style", prevHostStyle);
@@ -208,7 +210,7 @@ const CashAccount = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">Cash Account Report</h3>
+                <h3 className="text-xl font-semibold ">{t("report.cashAccount.cashAccountReport")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -228,7 +230,7 @@ const CashAccount = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label="From Date"
+                  label={t("common.fromDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -236,7 +238,7 @@ const CashAccount = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label="To Date"
+                  label={t("common.toDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -249,10 +251,10 @@ const CashAccount = ({
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
-                      label="Branch"
+                      label={t("common.branch")}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder="Select branch"
-                      searchPlaceholder="Search branch..."
+                      placeholder={t("common.selectBranch")}
+                      searchPlaceholder={t("common.searchBranch")}
                     />
                   )}
                 />
@@ -345,24 +347,24 @@ const CashAccount = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead colSpan={5} className=" text-white text-center">
-                      RECEIPT
+                      {t("report.cashAccount.print.receipt")}
                     </TableHead>
                   </TableRow>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className=" text-white text-center w-16">
-                      V. No.
+                      {t("report.cashAccount.vNo")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center w-[250px]">
-                      NAME OF LEDGER
+                      {t("report.cashAccount.nameOfLedger")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      CASH
+                      {t("report.cashAccount.print.cash")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      TRANSFER
+                      {t("report.cashAccount.print.transfer")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      TOTAL
+                      {t("report.cashAccount.print.total")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -419,7 +421,7 @@ const CashAccount = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Total
+                      {t("common.total")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {totalCashReceived}
@@ -436,7 +438,7 @@ const CashAccount = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Opening Balance
+                      {t("common.openingBalance")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {cashBalanceData && cashBalanceData?.Opening}
@@ -449,7 +451,7 @@ const CashAccount = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {parseFloat(totalCashReceived) +
@@ -473,24 +475,24 @@ const CashAccount = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead colSpan={5} className=" text-white text-center">
-                      PAYMENT
+                      {t("report.cashAccount.print.payment")}
                     </TableHead>
                   </TableRow>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className=" text-white text-center w-16">
-                      V. No.
+                      {t("report.cashAccount.vNo")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center w-[250px]">
-                      NAME OF LEDGER
+                      {t("report.cashAccount.nameOfLedger")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      CASH
+                      {t("report.cashAccount.print.cash")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      TRANSFER
+                      {t("report.cashAccount.print.transfer")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      TOTAL
+                      {t("report.cashAccount.print.total")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -547,7 +549,7 @@ const CashAccount = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Total
+                      {t("common.total")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {totalCashPayment}
@@ -564,7 +566,7 @@ const CashAccount = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Closing Balance
+                      {t("common.closingBalance")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {cashBalanceData && cashBalanceData?.Closing}
@@ -577,7 +579,7 @@ const CashAccount = ({
                       colSpan={2}
                       className="font-medium border border-secondary"
                     >
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell className="font-medium border border-secondary">
                       {parseFloat(totalCashPayment) +
@@ -600,19 +602,19 @@ const CashAccount = ({
             </div>
             <p className="self-end pr-5">
               <span className="font-semibold">
-                Closing Cash Balance in Word :{" "}
+                {t("report.cashAccount.closingCashBalanceInWord")} :{" "}
               </span>
               {cashBalanceData &&
               cashBalanceData.Closing &&
               parseFloat(cashBalanceData.Closing) > 0
-                ? `Rupees ${convertToWords(
+                ? `${t("common.rupees")} ${convertToWords(
                     Number(cashBalanceData.Closing),
-                  )} Only`
+                  )} ${t("common.only")}`
                 : ""}
             </p>
             {denomData?.length > 0 ? (
               <div className="w-[300px] ml-20 text-center">
-                <p>Denomination table</p>
+                <p>{t("report.cashAccount.denominationTable")}</p>
                 <Table className="border border-collapse mt-2">
                   <TableBody>
                     {denomData?.map((data) => (
@@ -636,7 +638,7 @@ const CashAccount = ({
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px]">
           <DialogHeader>
             <DialogTitle className="w-full text-center">
-              List Of Vouchers For The Day On {toDate}
+              {t("report.cashAccount.listOfVouchersForTheDayOn")} {toDate}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
@@ -644,11 +646,15 @@ const CashAccount = ({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[100px]">Sl.</TableHead>
-                    <TableHead>Voucher No.</TableHead>
-                    <TableHead>Transanction Type</TableHead>
-                    <TableHead>Receipts</TableHead>
-                    <TableHead>Narration</TableHead>
+                    <TableHead className="w-[100px]">
+                      {t("common.sl")}
+                    </TableHead>
+                    <TableHead>{t("voucher.voucherNo")}</TableHead>
+                    <TableHead>
+                      {t("report.cashAccount.transactionType")}
+                    </TableHead>
+                    <TableHead>{t("common.receipts")}</TableHead>
+                    <TableHead>{t("common.narration")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -681,25 +687,33 @@ const CashAccount = ({
           <div className="py-4">
             <div className="w-full grid grid-cols-3 gap-2 pb-5 text-sm">
               <p>
-                <span className="font-semibold">Voucher Type :</span>{" "}
+                <span className="font-semibold">
+                  {t("voucher.voucherType")} :
+                </span>{" "}
                 {voucherDetailsData &&
                   voucherDetailsData.length > 0 &&
                   voucherDetailsData[0]?.Vouch_type}
               </p>
               <p>
-                <span className="font-semibold">Voucher No. :</span>{" "}
+                <span className="font-semibold">
+                  {t("voucher.voucherNo")} :
+                </span>{" "}
                 {voucherDetailsData &&
                   voucherDetailsData.length > 0 &&
                   voucherDetailsData[0]?.Vouch_No}
               </p>
               <p>
-                <span className="font-semibold">Ref. Vc. No :</span>{" "}
+                <span className="font-semibold">
+                  {t("voucher.refVcNo")} :
+                </span>{" "}
                 {voucherDetailsData &&
                   voucherDetailsData.length > 0 &&
                   voucherDetailsData[0]?.Ref_Vouch_No}
               </p>
               <p>
-                <span className="font-semibold">Voucher Date :</span>{" "}
+                <span className="font-semibold">
+                  {t("common.voucherDate")} :
+                </span>{" "}
                 {voucherDetailsData &&
                   voucherDetailsData.length > 0 &&
                   voucherDetailsData[0].Trans_Date &&
@@ -710,10 +724,12 @@ const CashAccount = ({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[100px]">Sl.</TableHead>
-                    <TableHead>Head Of Account</TableHead>
-                    <TableHead>Dr. Amount</TableHead>
-                    <TableHead>Cr. Amount</TableHead>
+                    <TableHead className="w-[100px]">
+                      {t("common.sl")}
+                    </TableHead>
+                    <TableHead>{t("common.headOfAccount")}</TableHead>
+                    <TableHead>{t("common.drAmount")}</TableHead>
+                    <TableHead>{t("common.crAmount")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -736,7 +752,7 @@ const CashAccount = ({
                 </TableBody>
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={2}>Total</TableCell>
+                    <TableCell colSpan={2}>{t("common.total")}</TableCell>
                     <TableCell>{totalDrAmount}</TableCell>
                     <TableCell>{totalCrAmount}</TableCell>
                   </TableRow>
@@ -744,7 +760,9 @@ const CashAccount = ({
               </Table>
             </ScrollArea>
             <p>
-              <span className="font-semibold">Narration : </span>
+              <span className="font-semibold">
+                {t("common.narration")} :{" "}
+              </span>
               {voucherDetailsData &&
                 voucherDetailsData.length > 0 &&
                 voucherDetailsData[0]?.Particular}

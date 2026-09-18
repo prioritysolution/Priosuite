@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -19,21 +20,23 @@ const TransactionRegisterTable = ({
   loading,
   handleGenerateShareReceipt,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Table>
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className="text-center">Sl No.</TableHead>
-          <TableHead className="">Member Type</TableHead>
-          <TableHead className="">Customer Name</TableHead>
-          <TableHead className="">Gurdian Name</TableHead>
-          <TableHead className="">Village</TableHead>
-          <TableHead className="">L/F No.</TableHead>
-          <TableHead className="">Trans. Mode</TableHead>
-          <TableHead className="">No. of Share</TableHead>
-          <TableHead className="">Issue</TableHead>
-          <TableHead className="">Release</TableHead>
-          <TableHead className="">Action</TableHead>
+          <TableHead className="text-center">{t("membership.reports.slNo")}</TableHead>
+          <TableHead className="">{t("membership.reports.memberType")}</TableHead>
+          <TableHead className="">{t("membership.reports.customerName")}</TableHead>
+          <TableHead className="">{t("membership.reports.guardianName")}</TableHead>
+          <TableHead className="">{t("membership.reports.village")}</TableHead>
+          <TableHead className="">{t("membership.reports.lfNo")}</TableHead>
+          <TableHead className="">{t("membership.reports.transactionMode")}</TableHead>
+          <TableHead className="">{t("membership.reports.numberOfShares")}</TableHead>
+          <TableHead className="">{t("membership.reports.issue")}</TableHead>
+          <TableHead className="">{t("membership.reports.release")}</TableHead>
+          <TableHead className="">{t("membership.reports.action")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-scroll">
@@ -145,7 +148,7 @@ const TransactionRegisterTable = ({
           tableData.some((group) => group.isGrandTotal) && (
             <TableRow className="bg-gray-100">
               <TableCell colSpan={8} className="font-medium text-right">
-                Grand Total
+                {t("common.grandTotal")}
               </TableCell>
               <TableCell className="font-mediam">
                 {tableData

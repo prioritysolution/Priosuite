@@ -7,6 +7,7 @@ import CashDenomTable from "@/common/tables/CashDenomTable";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 
@@ -14,8 +15,6 @@ const Denomination = ({
   loading,
   notes,
   denominators,
-  //   cashTransactionTotal,
-  //   cashTransactionGrandTotal,
   handleDenominatorChange,
   form,
   handleSubmit,
@@ -23,12 +22,15 @@ const Denomination = ({
   showSuccessMessage,
   handleCloseSuccessMessage,
 }) => {
+  const { t } = useTranslation();
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Denomination</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("opening.denomination.title")}
+        </h3>
 
         <ScrollArea className="w-full h-full">
           <Form {...form}>
@@ -42,8 +44,7 @@ const Denomination = ({
                   <DatePickerField
                     control={form.control}
                     name="date"
-                    label="Date"
-                    
+                    label={t("opening.denomination.fields.date")}
                     disabled
                   />
 
@@ -52,13 +53,14 @@ const Denomination = ({
                     name="branchId"
                     render={({ field }) => (
                       <DropdownField
-                        label="Branch"
+                        label={t("opening.denomination.fields.branch")}
                         value={field.value}
                         onChange={field.onChange}
                         options={branchData}
-                        optionLabelKey="Branch_Name" // Specify the key for label
-                        placeholder="Select branch"
-                        searchPlaceholder="Search branch..."
+                        optionLabelKey="Branch_Name"
+                        placeholder={t("opening.denomination.placeholders.branch")}
+                        searchPlaceholder={t("opening.denomination.placeholders.searchBranch"
+                        )}
                         isRequired
                       />
                     )}
@@ -67,7 +69,7 @@ const Denomination = ({
 
                 <div className="w-full p-3 border border-input rounded-md">
                   <h3 className="text-center font-semibold text-xl mb-5">
-                    Denomination Table
+                    {t("opening.denomination.table.title")}
                   </h3>
                   <CashDenomTable
                     notes={notes}
@@ -94,7 +96,7 @@ const Denomination = ({
                     speedMultiplier={0.7}
                   />
                 ) : (
-                  "Add"
+                  t("opening.denomination.buttons.add")
                 )}
               </Button>
             </form>

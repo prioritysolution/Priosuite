@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useState } from "react";
 import {
   flexRender,
@@ -40,6 +42,8 @@ const SubLedgerTable = ({
   setCurrentPage,
   lastPage,
 }) => {
+  const { t } = useTranslation();
+
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -49,7 +53,7 @@ const SubLedgerTable = ({
     {
       accessorKey: "serialNo",
       header: () => {
-        return <div className="text-left">Serial No</div>;
+        return <div className="text-left">{t("common.serialNo")}</div>;
       },
       cell: ({ row }) => {
         return <div className="text-left">{Number(row.id) + 1}</div>;
@@ -63,7 +67,7 @@ const SubLedgerTable = ({
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Sub Ledger Name
+            {t("master.subLedger.table.subLedgerName")}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -76,21 +80,21 @@ const SubLedgerTable = ({
     },
     {
       accessorKey: "Head_Name",
-      header: () => <div className="text-left ">Head Name</div>,
+      header: () => <div className="text-left ">{t("master.subLedger.table.headName")}</div>,
       cell: ({ row }) => {
         return <div className="text-left">{row.getValue("Head_Name")}</div>;
       },
     },
     {
       accessorKey: "Open_Balance",
-      header: () => <div className="text-left ">Opening Balance</div>,
+      header: () => <div className="text-left ">{t("master.subLedger.table.openingBalance")}</div>,
       cell: ({ row }) => {
         return <div className="text-left">{row.getValue("Open_Balance")}</div>;
       },
     },
     {
       accessorKey: "Id",
-      header: () => <div className="text-center ">Actions</div>,
+      header: () => <div className="text-center ">{t("common.actions")}</div>,
       cell: ({ row }) => {
         return (
           <div className="w-full flex justify-center  text-center">
@@ -98,7 +102,7 @@ const SubLedgerTable = ({
               className="flex text-center items-center justify-center gap-3"
               onClick={() => handleEditData(data[row.id])}
             >
-              Edit
+              {t("common.buttons.edit")}
               <FaRegEdit />
             </Button>
           </div>
@@ -223,7 +227,7 @@ const SubLedgerTable = ({
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {t("common.noResults")}
                   </TableCell>
                 </TableRow>
               )}
@@ -246,7 +250,7 @@ const SubLedgerTable = ({
                 onClick={() => setCurrentPage((prev) => prev - 1)}
                 disabled={currentPage === 1}
               >
-                Previous
+                {t("common.previous")}
               </Button>
             </PaginationItem>
 
@@ -266,7 +270,7 @@ const SubLedgerTable = ({
                 onClick={() => setCurrentPage((prev) => prev + 1)}
                 disabled={currentPage === lastPage}
               >
-                Next
+                {t("common.next")}
               </Button>
             </PaginationItem>
           </PaginationContent>

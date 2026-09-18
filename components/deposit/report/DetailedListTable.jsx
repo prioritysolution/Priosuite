@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -21,25 +22,27 @@ const DetailedListTable = ({
   totalDueIntt,
   handleShowLedger,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Table>
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
-          <TableHead className=" text-center">Sl No.</TableHead>
-          <TableHead className="">Customer Name</TableHead>
-          <TableHead className="">Gurdian Name</TableHead>
-          <TableHead className="">Account No.</TableHead>
-          <TableHead className="">Ref. Ac. No.</TableHead>
-          <TableHead className="">L/F No.</TableHead>
-          <TableHead className="">Opening Date</TableHead>
-          <TableHead className="">ROI</TableHead>
-          <TableHead className="">Maturity Date</TableHead>
-          <TableHead className="">Opening</TableHead>
-          <TableHead className="">Deposit</TableHead>
-          <TableHead className="">Withdrawn</TableHead>
-          <TableHead className="">Closing</TableHead>
-          <TableHead className="">Paid Intt.</TableHead>
-          <TableHead className="">Due Intt.</TableHead>
+          <TableHead className=" text-center">{t("deposit.reports.slNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.customerName")}</TableHead>
+          <TableHead className="">{t("deposit.reports.guardianName")}</TableHead>
+          <TableHead className="">{t("deposit.reports.accountNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.refAcNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.lfNo")}</TableHead>
+          <TableHead className="">{t("deposit.reports.openingDate")}</TableHead>
+          <TableHead className="">{t("deposit.reports.roi")}</TableHead>
+          <TableHead className="">{t("deposit.reports.maturityDate")}</TableHead>
+          <TableHead className="">{t("deposit.reports.opening")}</TableHead>
+          <TableHead className="">{t("deposit.reports.deposit")}</TableHead>
+          <TableHead className="">{t("deposit.reports.withdrawn")}</TableHead>
+          <TableHead className="">{t("deposit.reports.closing")}</TableHead>
+          <TableHead className="">{t("deposit.reports.paidIntt")}</TableHead>
+          <TableHead className="">{t("deposit.reports.dueIntt")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="overflow-y-hidden">

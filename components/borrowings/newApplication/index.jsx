@@ -18,6 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { getYear } from "date-fns";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const NewApplication = ({
   loading,
@@ -27,6 +28,8 @@ const NewApplication = ({
   showSuccessMessage,
   handleCloseSuccessMessage,
 }) => {
+  const { t } = useTranslation();
+
   const productTypeData = useSelector(
     (state) => state.borrowingsNewApplication.productTypeData,
   );
@@ -54,7 +57,7 @@ const NewApplication = ({
   return (
     <div className="w-full h-full flex flex-col  bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
       <h3 className="text-2xl font-bold tracking-tight text-gray-800 text-center">
-        Borrowings New Application
+        {t("borrowings.borrowingsNewApplication")}
       </h3>
 
       <ScrollArea className="w-full h-full px-2">
@@ -68,14 +71,14 @@ const NewApplication = ({
               {/* Basic Details Section */}
               <div className="flex flex-col gap-4">
                 <h4 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                  Basic Details
+                  {t("borrowings.basicDetails")}
                 </h4>
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   <InputField
                     control={form.control}
                     name="productName"
-                    label="Product Name"
-                    placeholder="Enter product name"
+                    label={t("borrowings.productName")}
+                    placeholder={t("borrowings.enterProductName")}
                     isRequired
                   />
 
@@ -84,13 +87,13 @@ const NewApplication = ({
                     name="productType"
                     render={({ field }) => (
                       <DropdownField
-                        label="Product Type"
+                        label={t("borrowings.productType")}
                         value={field.value}
                         onChange={field.onChange}
                         options={productTypeData}
                         optionLabelKey="Option_Value"
-                        placeholder="Select product type"
-                        searchPlaceholder="Search product type..."
+                        placeholder={t("borrowings.selectProductType")}
+                        searchPlaceholder={t("borrowings.searchProductType")}
                         isRequired
                       />
                     )}
@@ -101,13 +104,13 @@ const NewApplication = ({
                     name="repaymentMode"
                     render={({ field }) => (
                       <DropdownField
-                        label="Repayment Mode"
+                        label={t("borrowings.repaymentMode")}
                         value={field.value}
                         onChange={field.onChange}
                         options={repayModeData}
                         optionLabelKey="Option_Value"
-                        placeholder="Select repayment mode"
-                        searchPlaceholder="Search repayment mode..."
+                        placeholder={t("borrowings.selectRepaymentMode")}
+                        searchPlaceholder={t("borrowings.searchRepaymentMode")}
                         isRequired
                       />
                     )}
@@ -116,23 +119,23 @@ const NewApplication = ({
                   <InputField
                     control={form.control}
                     name="bankName"
-                    label="Bank Name"
-                    placeholder="Enter bank name"
+                    label={t("common.bankName")}
+                    placeholder={t("borrowings.enterBankName")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="accountNo"
-                    label="Account No."
-                    placeholder="Enter account no."
+                    label={t("common.accountNo")}
+                    placeholder={t("borrowings.enterAccountNo")}
                     type="number"
                     isRequired
                   />
                   <DatePickerField
                     control={form.control}
                     name="issueDate"
-                    label="Disb Date"
+                    label={t("borrowings.disbDate")}
                     startYear={
                       startDate
                         ? getYear(new Date(startDate))
@@ -155,8 +158,8 @@ const NewApplication = ({
                   <InputField
                     control={form.control}
                     name="amount"
-                    label="Amount"
-                    placeholder="Enter amount"
+                    label={t("common.amount")}
+                    placeholder={t("borrowings.enterAmount")}
                     type="number"
                     isRequired
                   />
@@ -164,8 +167,8 @@ const NewApplication = ({
                   <InputField
                     control={form.control}
                     name="rateOfInterest"
-                    label="Rate Of Interest"
-                    placeholder="Enter rate of interest"
+                    label={t("borrowings.rateOfInterest")}
+                    placeholder={t("borrowings.enterRateOfInterest")}
                     type="number"
                     isRequired
                   />
@@ -173,8 +176,8 @@ const NewApplication = ({
                   <InputField
                     control={form.control}
                     name="overdueRate"
-                    label="Overdue Rate"
-                    placeholder="Enter overdue rate"
+                    label={t("borrowings.overdueRate")}
+                    placeholder={t("borrowings.enterOverdueRate")}
                     type="number"
                     isRequired
                   />
@@ -182,8 +185,8 @@ const NewApplication = ({
                   <InputField
                     control={form.control}
                     name="duration"
-                    label="Duration (In Month)"
-                    placeholder="Enter duration"
+                    label={t("borrowings.durationInMonth")}
+                    placeholder={t("borrowings.enterDuration")}
                     type="number"
                     isRequired
                   />
@@ -191,8 +194,8 @@ const NewApplication = ({
                   <InputField
                     control={form.control}
                     name="dueDate"
-                    label="Due Date"
-                    placeholder="Enter due date"
+                    label={t("borrowings.dueDate")}
+                    placeholder={t("borrowings.enterDueDate")}
                     readOnly
                   />
                   <FormField
@@ -200,13 +203,13 @@ const NewApplication = ({
                     name="principalLedger"
                     render={({ field }) => (
                       <DropdownField
-                        label="Principal Ledger"
+                        label={t("borrowings.principalLedger")}
                         value={field.value}
                         onChange={field.onChange}
                         options={principalLedgerData}
                         optionLabelKey="Ledger_Name"
-                        placeholder="Select ledger"
-                        searchPlaceholder="Search ledger..."
+                        placeholder={t("borrowings.selectLedger")}
+                        searchPlaceholder={t("borrowings.searchLedger")}
                         isRequired
                       />
                     )}
@@ -217,13 +220,13 @@ const NewApplication = ({
                     name="interestLedger"
                     render={({ field }) => (
                       <DropdownField
-                        label="Interest Ledger"
+                        label={t("borrowings.interestLedger")}
                         value={field.value}
                         onChange={field.onChange}
                         options={interestLedgerData}
                         optionLabelKey="Ledger_Name"
-                        placeholder="Select ledger"
-                        searchPlaceholder="Search ledger..."
+                        placeholder={t("borrowings.selectLedger")}
+                        searchPlaceholder={t("borrowings.searchLedger")}
                         isRequired
                       />
                     )}
@@ -234,7 +237,7 @@ const NewApplication = ({
                     name="transMode"
                     render={({ field }) => (
                       <FormItem className="flex flex-col md:flex-row md:col-span-2 items-center space-y-0 gap-x-10 gap-y-5 border border-input rounded-md px-3 pr-10 py-3 w-full md:w-fit">
-                        <FormLabel>Select transanction mode</FormLabel>
+                        <FormLabel>{t("common.selectTransactionMode")}</FormLabel>
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
@@ -246,7 +249,7 @@ const NewApplication = ({
                                 <RadioGroupItem value="bank" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Bank
+                                {t("common.bank")}
                               </FormLabel>
                             </FormItem>
                           </RadioGroup>
@@ -261,29 +264,29 @@ const NewApplication = ({
               {/* Voucher Details Section */}
               <div className="flex flex-col gap-4 mt-2">
                 <h4 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                  Voucher Details
+                  {t("common.voucherDetails")}
                 </h4>
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   <DatePickerField
                     control={form.control}
                     name="voucherDate"
-                    label="Voucher Date"
+                    label={t("common.voucherDate")}
                     disabled={true}
                     isRequired
                   />
                   <InputField
                     control={form.control}
                     name="particulars"
-                    label="Particulars"
-                    placeholder="Enter particulars"
+                    label={t("common.particulars")}
+                    placeholder={t("common.enterParticulars")}
                     isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="refVouchNo"
-                    label="Ref. Vouch No."
-                    placeholder="Enter ref. vouch no."
+                    label={t("common.refVouchNo")}
+                    placeholder={t("common.enterRefVouchNo")}
                   />
                 </div>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 mt-2">
@@ -292,13 +295,13 @@ const NewApplication = ({
                     name="bank"
                     render={({ field }) => (
                       <DropdownField
-                        label="Bank"
+                        label={t("common.bank")}
                         value={field.value}
                         onChange={field.onChange}
                         options={bankAccountData}
                         optionLabelKey="Bank_Name"
-                        placeholder="Select bank"
-                        searchPlaceholder="Search bank..."
+                        placeholder={t("borrowings.selectBank")}
+                        searchPlaceholder={t("borrowings.searchBank")}
                         isRequired
                       />
                     )}
@@ -314,7 +317,7 @@ const NewApplication = ({
                 {loading ? (
                   <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
-                  "Add"
+                  t("common.add")
                 )}
               </Button>
             </div>

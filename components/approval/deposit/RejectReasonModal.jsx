@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import TextareaField from "@/common/formFields/TextareaField";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const RejectReasonModal = ({
   isOpen,
@@ -17,11 +18,15 @@ const RejectReasonModal = ({
   onSubmit,
   actionLoading,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle className="text-red-600">Reject Application</DialogTitle>
+          <DialogTitle className="text-red-600">
+            {t("rejectReasonModal.rejectApplication")}
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -32,10 +37,12 @@ const RejectReasonModal = ({
             <TextareaField
               control={form.control}
               name="remarks"
-              label="Reason for Rejection"
-              placeholder="Please enter the reason..."
+              label={t("rejectReasonModal.reasonForRejection")}
+              placeholder={t("rejectReasonModal.pleaseEnterReason")}
               className="resize-none h-24"
-              rules={{ required: "Remarks is required for rejection" }}
+              rules={{
+                required: t("rejectReasonModal.remarksRequired"),
+              }}
               isRequired={true}
             />
 
@@ -46,7 +53,7 @@ const RejectReasonModal = ({
                 onClick={onClose}
                 disabled={actionLoading}
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
@@ -56,7 +63,7 @@ const RejectReasonModal = ({
                 {actionLoading ? (
                   <ClipLoader size={20} color="#ffffff" />
                 ) : (
-                  "Confirm Reject"
+                  t("rejectReasonModal.confirmReject")
                 )}
               </Button>
             </DialogFooter>

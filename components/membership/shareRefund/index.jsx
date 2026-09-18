@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslation } from "react-i18next";
 import MemberSearchForm from "@/common/forms/MemberSearchForm";
 import CashDenomTable from "@/common/tables/CashDenomTable";
 import { Button } from "@/components/ui/button";
@@ -74,6 +76,8 @@ const ShareRefund = ({
   getLedgerLoading,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -104,11 +108,11 @@ const ShareRefund = ({
             handleSubmit={handleMemberFormSubmit}
             loading={getMemberDataLoading}
             showDate
-            label="Transaction Date"
+            label={t("membership.shareRefund.fields.transactionDate")}
             resetTrigger={resetTrigger}
             showLedger={showLedger}
             handleShowLedger={handleShowLedger}
-            formLabel="Share Refund"
+            formLabel={t("membership.shareRefund.title")}
             showDateFix={true}
           />
         </div>
@@ -125,7 +129,7 @@ const ShareRefund = ({
                 <>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
                     <h2 className="text-lg text-center font-semibold">
-                      Account Details
+                      {t("membership.shareRefund.sections.accountDetails")}
                     </h2>
                     <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
                       <div className=" w-full flex flex-col gap-2">
@@ -161,36 +165,36 @@ const ShareRefund = ({
                             <InputField
                               control={form.control}
                               name="memberNo"
-                              label="Member No."
-                              placeholder="Enter member no."
+                              label={t("membership.shareRefund.fields.memberNo")}
+                              placeholder={t("membership.shareRefund.placeholders.memberNo")}
                               readOnly
                             />
                             <InputField
                               control={form.control}
                               name="cifNo"
-                              label="CIF No."
-                              placeholder="Enter cif no."
+                              label={t("membership.shareRefund.fields.cifNo")}
+                              placeholder={t("membership.shareRefund.placeholders.cifNo")}
                               readOnly
                             />
                             <InputField
                               control={form.control}
                               name="memberName"
-                              label="Member Name"
-                              placeholder="Enter member name"
+                              label={t("membership.shareRefund.fields.memberName")}
+                              placeholder={t("membership.shareRefund.placeholders.memberName")}
                               readOnly
                             />
                             <InputField
                               control={form.control}
                               name="gurdianName"
-                              label="Gurdian Name"
-                              placeholder="Enter gurdian name"
+                              label={t("membership.shareRefund.fields.gurdianName")}
+                              placeholder={t("membership.shareRefund.placeholders.gurdianName")}
                               readOnly
                             />
                             <TextareaField
                               control={form.control}
                               name="address"
-                              label="Address"
-                              placeholder="Enter address"
+                              label={t("membership.shareRefund.fields.address")}
+                              placeholder={t("membership.shareRefund.placeholders.address")}
                               className="resize-none"
                               readOnly
                             />
@@ -198,16 +202,16 @@ const ShareRefund = ({
                             <InputField
                               control={form.control}
                               name="mobile"
-                              label="Mobile No."
-                              placeholder="Enter mobile no."
+                              label={t("membership.shareRefund.fields.mobileNo")}
+                              placeholder={t("membership.shareRefund.placeholders.mobileNo")}
                               readOnly
                             />
 
                             <InputField
                               control={form.control}
                               name="branchName"
-                              label="Branch Name"
-                              placeholder="Enter branch name"
+                              label={t("membership.shareRefund.fields.branchName")}
+                              placeholder={t("membership.shareRefund.placeholders.branchName")}
                               readOnly
                               className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
                             />
@@ -218,7 +222,7 @@ const ShareRefund = ({
                   </div>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
                     <h2 className="text-lg text-center font-semibold">
-                      Transaction Details
+                      {t("membership.shareRefund.sections.transactionDetails")}
                     </h2>
                     <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
                       <div className=" w-full flex flex-col gap-2">
@@ -254,8 +258,8 @@ const ShareRefund = ({
                             <InputField
                               control={form.control}
                               name="ledgerFolio"
-                              label="Ledger Folio"
-                              placeholder="Enter ledger folio"
+                              label={t("membership.shareRefund.fields.ledgerFolio")}
+                              placeholder={t("membership.shareRefund.placeholders.ledgerFolio")}
                               readOnly
                               formItemClassName="grid grid-cols-[3fr_7fr] items-center gap-2"
                               formMessageClassName="col-span-2"
@@ -264,8 +268,8 @@ const ShareRefund = ({
                             <InputField
                               control={form.control}
                               name="shareBalance"
-                              label="Share Balance"
-                              placeholder="Enter share balance"
+                              label={t("membership.shareRefund.fields.shareBalance")}
+                              placeholder={t("membership.shareRefund.placeholders.shareBalance")}
                               type="number"
                               readOnly
                               formItemClassName="grid grid-cols-[3fr_7fr] items-center gap-2"
@@ -275,8 +279,8 @@ const ShareRefund = ({
                             <InputField
                               control={form.control}
                               name="refundAmt"
-                              label="Refund"
-                              placeholder="Enter refund amount"
+                              label={t("membership.shareRefund.fields.refund")}
+                              placeholder={t("membership.shareRefund.placeholders.refund")}
                               type="number"
                               autoFocus
                               formItemClassName="grid grid-cols-[3fr_7fr] items-center gap-2"
@@ -286,7 +290,7 @@ const ShareRefund = ({
                             <TextareaField
                               control={form.control}
                               name="totalRefundInWords"
-                              placeholder="Total amount in words"
+                              placeholder={t("membership.shareRefund.placeholders.totalAmountInWords")}
                               className="text-red-500 text-base resize-none"
                               readOnly
                             />
@@ -307,7 +311,7 @@ const ShareRefund = ({
                                             <RadioGroupItem value="cash" />
                                           </FormControl>
                                           <FormLabel className="font-normal">
-                                            Cash
+                                            {t("membership.shareRefund.fields.cash")}
                                           </FormLabel>
                                         </FormItem>
                                         <FormItem className="flex items-center space-x-3 space-y-0">
@@ -315,7 +319,7 @@ const ShareRefund = ({
                                             <RadioGroupItem value="bank" />
                                           </FormControl>
                                           <FormLabel className="font-normal">
-                                            Bank
+                                            {t("membership.shareRefund.fields.bank")}
                                           </FormLabel>
                                         </FormItem>
                                         <FormItem className="flex items-center space-x-3 space-y-0">
@@ -323,7 +327,7 @@ const ShareRefund = ({
                                             <RadioGroupItem value="savings" />
                                           </FormControl>
                                           <FormLabel className="font-normal">
-                                            Savings
+                                            {t("membership.shareRefund.fields.savings")}
                                           </FormLabel>
                                         </FormItem>
                                       </RadioGroup>
@@ -335,7 +339,7 @@ const ShareRefund = ({
                               <InputField
                                 control={form.control}
                                 name="refVouchNo"
-                                placeholder="Enter ref. vouch no."
+                                placeholder={t("membership.shareRefund.placeholders.refVouchNo")}
                               />
                               {transMode === "cash" ? (
                                 isActiveDenom ? (
@@ -363,28 +367,28 @@ const ShareRefund = ({
                                 <DropdownField
                                   control={form.control}
                                   name="bank"
-                                  label="Bank"
+                                  label={t("membership.shareRefund.fields.bank")}
                                   options={bankAccountData}
                                   optionLabelKey="Bank_Name"
-                                  placeholder="Select bank"
-                                  searchPlaceholder="Search bank..."
+                                  placeholder={t("membership.shareRefund.placeholders.bank")}
+                                  searchPlaceholder={t("membership.shareRefund.placeholders.searchBank")}
                                 />
                               ) : (
                                 <>
                                   <DropdownField
                                     control={form.control}
                                     name="savings"
-                                    label="Savings"
+                                    label={t("membership.shareRefund.fields.savings")}
                                     options={savingsAccountData}
                                     optionLabelKey="Account_No"
-                                    placeholder="Select savings"
-                                    searchPlaceholder="Search savings..."
+                                    placeholder={t("membership.shareRefund.placeholders.savings")}
+                                    searchPlaceholder={t("membership.shareRefund.placeholders.searchSavings")}
                                   />
                                   <InputField
                                     control={form.control}
                                     name="savingsName"
-                                    label="Account Holder Name"
-                                    placeholder="Enter name"
+                                    label={t("membership.shareRefund.fields.accountHolderName")}
+                                    placeholder={t("membership.shareRefund.placeholders.accountHolderName")}
                                     readOnly
                                   />
                                 </>
@@ -412,7 +416,7 @@ const ShareRefund = ({
                                   speedMultiplier={0.7}
                                 />
                               ) : (
-                                "Save"
+                                t("common.buttons.save")
                               )}
                             </Button>
                           </div>

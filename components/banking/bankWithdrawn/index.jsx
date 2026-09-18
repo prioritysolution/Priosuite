@@ -39,6 +39,7 @@ import { IoPrint } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 const BankWithdrawn = ({
   loading,
@@ -72,7 +73,10 @@ const BankWithdrawn = ({
   transferTableData,
   handleDeleteTransferTable,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
+
   useEffect(() => {
     // Initialize form values or perform any setup needed
     if (window !== "undefined") {
@@ -98,7 +102,9 @@ const BankWithdrawn = ({
 
   return (
     <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">Bank Withdrawn</h3>
+      <h3 className="text-2xl font-semibold text-center">
+        {t("bank.bankWithdrawn")}
+      </h3>
 
       <ScrollArea className="w-full h-full">
         <Form {...form}>
@@ -107,7 +113,7 @@ const BankWithdrawn = ({
             className="w-full flex flex-col items-center pb-6"
             autoComplete="off"
           >
-            <div className="w-full  bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
+            <div className="w-full bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
               {/* Main Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Bank Account */}
@@ -118,15 +124,17 @@ const BankWithdrawn = ({
                     <div className="flex gap-3 items-end w-full">
                       <div className="flex-1">
                         <DropdownField
-                          label="Bank Account"
+                          label={t("bank.bankAccount")}
                           value={field.value}
                           onChange={field.onChange}
                           options={bankAccountData}
                           optionLabelKey="Bank_Name"
-                          placeholder="Select bank account"
-                          searchPlaceholder="Search bank account..."
+                          placeholder={t("bank.selectBankAccount")}
+                          searchPlaceholder={t("bank.searchBankAccount")}
+                          isRequired
                         />
                       </div>
+
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -138,14 +146,15 @@ const BankWithdrawn = ({
                                   "bg-gray-400 cursor-not-allowed hover:brightness-100":
                                     !form.getValues("bankAccount") ||
                                     !form.getValues("withdrawnDate"),
-                                }
+                                },
                               )}
                             >
                               <IoPrint />
                             </div>
                           </TooltipTrigger>
+
                           <TooltipContent>
-                            <p>View Ledger</p>
+                            <p>{t("bank.viewLedger")}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -157,8 +166,7 @@ const BankWithdrawn = ({
                 <DatePickerField
                   control={form.control}
                   name="withdrawnDate"
-                  label="Withdrawn Date"
-                 
+                  label={t("bank.withdrawnDate")}
                   isRequired
                   disabled
                 />
@@ -167,8 +175,8 @@ const BankWithdrawn = ({
                 <InputField
                   control={form.control}
                   name="availableBalance"
-                  label="Available Balance"
-                  placeholder="Enter available balance"
+                  label={t("bank.availableBalance")}
+                  placeholder={t("bank.enterAvailableBalance")}
                   readOnly
                 />
 
@@ -176,8 +184,8 @@ const BankWithdrawn = ({
                 <InputField
                   control={form.control}
                   name="withdrawnAmount"
-                  label="Withdrawn Amount"
-                  placeholder="Enter withdrawn amount"
+                  label={t("bank.withdrawnAmount")}
+                  placeholder={t("bank.enterWithdrawnAmount")}
                   type="number"
                   readOnly={subLedgerListData.length > 0}
                   isRequired
@@ -187,8 +195,8 @@ const BankWithdrawn = ({
                 <InputField
                   control={form.control}
                   name="refVouchNo"
-                  label="Ref. Vouch No."
-                  placeholder="Enter ref. vouch no."
+                  label={t("bank.refVouchNo")}
+                  placeholder={t("bank.enterRefVouchNo")}
                 />
 
                 {/* Transaction Mode */}
@@ -197,7 +205,10 @@ const BankWithdrawn = ({
                   name="transMode"
                   render={({ field }) => (
                     <FormItem className="flex flex-col justify-end h-full">
-                      <FormLabel className="mb-2">Transaction Mode</FormLabel>
+                      <FormLabel className="mb-2">
+                        {t("bank.transactionMode")}
+                      </FormLabel>
+
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -208,16 +219,24 @@ const BankWithdrawn = ({
                             <FormControl>
                               <RadioGroupItem value="cash" />
                             </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">Cash</FormLabel>
+
+                            <FormLabel className="font-normal cursor-pointer">
+                              {t("common.cash")}
+                            </FormLabel>
                           </FormItem>
+
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="transfer" />
                             </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">Transfer</FormLabel>
+
+                            <FormLabel className="font-normal cursor-pointer">
+                              {t("common.transfer")}
+                            </FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -229,8 +248,8 @@ const BankWithdrawn = ({
                 <InputField
                   control={form.control}
                   name="totalWithdrawnInWords"
-                  label="Total Amount In Words"
-                  placeholder="Total amount in words"
+                  label={t("bank.totalAmountInWords")}
+                  placeholder={t("bank.totalAmountInWordsPlaceholder")}
                   className="text-red-500 font-medium text-sm"
                   readOnly
                 />
@@ -239,7 +258,10 @@ const BankWithdrawn = ({
               {/* Cash Denominations Table */}
               {form.getValues("transMode") === "cash" && isActiveDenom && (
                 <div className="w-full border border-slate-100 rounded-xl p-4 bg-slate-50/50 mt-2">
-                  <h5 className="text-sm font-semibold text-slate-700 mb-3">Cash Denomination</h5>
+                  <h5 className="text-sm font-semibold text-slate-700 mb-3">
+                    {t("bank.cashDenomination")}
+                  </h5>
+
                   <CashDenomTable
                     notes={notes}
                     denominators={denominators}
@@ -257,15 +279,17 @@ const BankWithdrawn = ({
               {form.getValues("transMode") === "transfer" && (
                 <div className="w-full border border-slate-200 rounded-xl p-5 bg-slate-50/30 flex flex-col gap-5 mt-2">
                   <div className="border-b border-slate-100 pb-2">
-                    <h5 className="text-sm font-semibold text-slate-700">Transfer Details</h5>
+                    <h5 className="text-sm font-semibold text-slate-700">
+                      {t("bank.transferDetails")}
+                    </h5>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <InputField
                       control={form.control}
                       name="narration"
-                      label="Narration"
-                      placeholder="Enter narration"
+                      label={t("bank.narration")}
+                      placeholder={t("bank.enterNarration")}
                       isRequired={form.getValues("transMode") === "transfer"}
                     />
 
@@ -274,15 +298,17 @@ const BankWithdrawn = ({
                       name="gl"
                       render={({ field }) => (
                         <DropdownField
-                          label="GL"
+                          label={t("common.gl")}
                           value={field.value}
                           onChange={field.onChange}
                           options={ledgerListData}
                           optionLabelKey="Ledger_Name"
-                          placeholder="Select gl"
-                          searchPlaceholder="Search gl..."
+                          placeholder={t("bank.selectGl")}
+                          searchPlaceholder={t("bank.searchGl")}
                           disabled={transferTableData.length > 0}
-                          isRequired={form.getValues("transMode") === "transfer"}
+                          isRequired={
+                            form.getValues("transMode") === "transfer"
+                          }
                         />
                       )}
                     />
@@ -292,15 +318,18 @@ const BankWithdrawn = ({
                       name="subGl"
                       render={({ field }) => (
                         <SearchDropdownField
-                          label="Sub Ledger"
+                          label={t("bank.subLedger")}
                           value={field.value}
                           onChange={field.onChange}
                           options={subLedgerListData}
-                          placeholder="Select sub ledger"
+                          placeholder={t("bank.selectSubLedger")}
                           optionLabelKey="Ledger_Name"
                           disabled={
                             !form.getValues("gl") ||
-                            !(subLedgerListData && subLedgerListData.length > 0)
+                            !(
+                              subLedgerListData &&
+                              subLedgerListData.length > 0
+                            )
                           }
                           input={subLedgerInput}
                           setInput={setSubLedgerInput}
@@ -314,8 +343,8 @@ const BankWithdrawn = ({
                       <InputField
                         control={form.control}
                         name="subGlBalance"
-                        label="Available Balance"
-                        placeholder="Enter balance"
+                        label={t("bank.availableBalance")}
+                        placeholder={t("bank.enterBalance")}
                         readOnly
                       />
                     )}
@@ -324,8 +353,8 @@ const BankWithdrawn = ({
                       <InputField
                         control={form.control}
                         name="subLedgerNarration"
-                        label="Subledger Narration"
-                        placeholder="Enter narration"
+                        label={t("bank.subledgerNarration")}
+                        placeholder={t("bank.enterNarration")}
                       />
                     )}
 
@@ -333,8 +362,8 @@ const BankWithdrawn = ({
                       <InputField
                         control={form.control}
                         name="ledgerAmount"
-                        label="Amount"
-                        placeholder="Enter amount"
+                        label={t("common.amount")}
+                        placeholder={t("bank.enterAmount")}
                         type="number"
                       />
                     )}
@@ -346,46 +375,70 @@ const BankWithdrawn = ({
                           onClick={handleAddTransferTable}
                           className="w-full flex items-center justify-center text-white bg-primary rounded-lg h-10 font-medium transition-colors hover:brightness-95 text-sm cursor-pointer"
                         >
-                          Add To Table
+                          {t("bank.addToTable")}
                         </button>
                       </div>
                     )}
                   </div>
 
-                  {subLedgerListData.length > 0 && transferTableData.length > 0 && (
-                    <div className="border border-slate-100 rounded-lg overflow-hidden mt-2 bg-white">
-                      <Table>
-                        <TableHeader className="bg-slate-50">
-                          <TableRow>
-                            <TableHead className="w-[80px]">Sl. No.</TableHead>
-                            <TableHead>Sub Ledger</TableHead>
-                            <TableHead>Narration</TableHead>
-                            <TableHead>Amount</TableHead>
-                            <TableHead className="text-right">Action</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {transferTableData.map((data, i) => (
-                            <TableRow key={i}>
-                              <TableCell className="font-medium">{i + 1}</TableCell>
-                              <TableCell>{data?.subGlName}</TableCell>
-                              <TableCell>{data?.narration}</TableCell>
-                              <TableCell>{data?.amount}</TableCell>
-                              <TableCell className="text-right">
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeleteTransferTable(data.subGlId)}
-                                  className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors inline-flex items-center cursor-pointer"
-                                >
-                                  <MdDeleteForever className="text-xl" />
-                                </button>
-                              </TableCell>
+                  {subLedgerListData.length > 0 &&
+                    transferTableData.length > 0 && (
+                      <div className="border border-slate-100 rounded-lg overflow-hidden mt-2 bg-white">
+                        <Table>
+                          <TableHeader className="bg-slate-50">
+                            <TableRow>
+                              <TableHead className="w-[80px]">
+                                {t("common.slNo")}
+                              </TableHead>
+
+                              <TableHead>
+                                {t("bank.subLedger")}
+                              </TableHead>
+
+                              <TableHead>
+                                {t("bank.narration")}
+                              </TableHead>
+
+                              <TableHead>
+                                {t("common.amount")}
+                              </TableHead>
+
+                              <TableHead className="text-right">
+                                {t("common.action")}
+                              </TableHead>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  )}
+                          </TableHeader>
+
+                          <TableBody>
+                            {transferTableData.map((data, i) => (
+                              <TableRow key={i}>
+                                <TableCell className="font-medium">
+                                  {i + 1}
+                                </TableCell>
+
+                                <TableCell>{data?.subGlName}</TableCell>
+
+                                <TableCell>{data?.narration}</TableCell>
+
+                                <TableCell>{data?.amount}</TableCell>
+
+                                <TableCell className="text-right">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleDeleteTransferTable(data.subGlId)
+                                    }
+                                    className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors inline-flex items-center cursor-pointer"
+                                  >
+                                    <MdDeleteForever className="text-xl" />
+                                  </button>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
                 </div>
               )}
 
@@ -406,9 +459,13 @@ const BankWithdrawn = ({
                   }
                 >
                   {loading ? (
-                    <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
+                    <ClipLoader
+                      color="#d7e6f4"
+                      size={20}
+                      speedMultiplier={0.7}
+                    />
                   ) : (
-                    "Add"
+                    t("common.add")
                   )}
                 </Button>
               </div>

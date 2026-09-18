@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
@@ -57,6 +59,8 @@ const IssueMembership = ({
   shareIssueReceiptData,
   handleGenerateShareIssueReceipt,
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -104,7 +108,7 @@ const IssueMembership = ({
             handleSubmit={handleMemberFormSubmit}
             loading={getMemberDataLoading}
             resetTrigger={resetTrigger}
-            formLabel="Issue Membership"
+            formLabel={t("membership.issueMembership.title")}
             showDateFix={true}
           />
         </div>
@@ -118,7 +122,7 @@ const IssueMembership = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 gap-2">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Basic Info Block
+                    {t("membership.issueMembership.sections.basicInfoBlock")}
                   </h3>
                   {getMemberDataLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -152,29 +156,29 @@ const IssueMembership = ({
                       <InputField
                         control={form.control}
                         name="memberNo"
-                        label="Member No."
-                        placeholder="Enter member no."
+                        label={t("membership.issueMembership.fields.memberNo")}
+                        placeholder={t("membership.issueMembership.placeholders.memberNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="cifNo"
-                        label="CIF No."
-                        placeholder="Enter cif no."
+                        label={t("membership.issueMembership.fields.cifNo")}
+                        placeholder={t("membership.issueMembership.placeholders.cifNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="memberName"
-                        label="Member Name"
-                        placeholder="Enter member name"
+                        label={t("membership.issueMembership.fields.memberName")}
+                        placeholder={t("membership.issueMembership.placeholders.memberName")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="gurdianName"
-                        label="Gurdian Name"
-                        placeholder="Enter gurdian name"
+                        label={t("membership.issueMembership.fields.gurdianName")}
+                        placeholder={t("membership.issueMembership.placeholders.gurdianName")}
                         readOnly
                       />
                       <FormField
@@ -182,10 +186,10 @@ const IssueMembership = ({
                         name="address"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Address</FormLabel>
+                            <FormLabel>{t("membership.issueMembership.fields.address")}</FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="Enter address"
+                                placeholder={t("membership.issueMembership.placeholders.address")}
                                 {...field}
                                 className="resize-none"
                                 readOnly
@@ -199,15 +203,15 @@ const IssueMembership = ({
                       <InputField
                         control={form.control}
                         name="mobile"
-                        label="Mobile No."
-                        placeholder="Enter mobile no."
+                        label={t("membership.issueMembership.fields.mobileNo")}
+                        placeholder={t("membership.issueMembership.placeholders.mobileNo")}
                         readOnly
                       />
                       <InputField
                         control={form.control}
                         name="branchName"
-                        label="Branch Name"
-                        placeholder="Enter branch name"
+                        label={t("membership.issueMembership.fields.branchName")}
+                        placeholder={t("membership.issueMembership.placeholders.branchName")}
                         readOnly
                         className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
                       />
@@ -219,7 +223,7 @@ const IssueMembership = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 gap-2">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Admission Block
+                    {t("membership.issueMembership.sections.admissionBlock")}
                   </h3>
                   {getMemberDataLoading ? (
                     <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-3 ">
@@ -238,11 +242,11 @@ const IssueMembership = ({
                       <DropdownField
                         control={form.control}
                         name="memberType"
-                        label="Member Type"
+                        label={t("membership.issueMembership.fields.memberType")}
                         options={memberTypeData}
                         optionLabelKey="Option_Value"
-                        placeholder="Select member type"
-                        searchPlaceholder="Search member type..."
+                        placeholder={t("membership.issueMembership.placeholders.memberType")}
+                        searchPlaceholder={t("membership.issueMembership.placeholders.searchMemberType")}
                         isRequired={true}
                       />
 
@@ -250,7 +254,7 @@ const IssueMembership = ({
                       <DatePickerField
                         control={form.control}
                         name="date"
-                        label="Admission Date"
+                        label={t("membership.issueMembership.fields.admissionDate")}
                         startYear={getYear(new Date(startDate))}
                         disabledDateAfter={
                           new Date(endDate) > new Date()
@@ -266,8 +270,8 @@ const IssueMembership = ({
                       <InputField
                         control={form.control}
                         name="admissionNo"
-                        label="Admission No."
-                        placeholder="Enter admission no."
+                        label={t("membership.issueMembership.fields.admissionNo")}
+                        placeholder={t("membership.issueMembership.placeholders.admissionNo")}
                         type="number"
                         onInput={(e) => {
                           if (e.target.value.length > 5) {
@@ -280,24 +284,24 @@ const IssueMembership = ({
                       <InputField
                         control={form.control}
                         name="ledgerFolio"
-                        label="Ledger Folio"
-                        placeholder="Enter ledger folio"
+                        label={t("membership.issueMembership.fields.ledgerFolio")}
+                        placeholder={t("membership.issueMembership.placeholders.ledgerFolio")}
                         readOnly={admissionDisable}
                       />
 
                       <InputField
                         control={form.control}
                         name="admissionFees"
-                        label="Admission Fees"
-                        placeholder="Enter admission no."
+                        label={t("membership.issueMembership.fields.admissionFees")}
+                        placeholder={t("membership.issueMembership.placeholders.admissionNo")}
                         readOnly
                       />
 
                       <InputField
                         control={form.control}
                         name="noOfShare"
-                        label="Number of Share"
-                        placeholder="Enter number of share"
+                        label={t("membership.issueMembership.fields.numberOfShare")}
+                        placeholder={t("membership.issueMembership.placeholders.numberOfShare")}
                         type="number"
                         readOnly={admissionDisable}
                         isRequired={true}
@@ -306,8 +310,8 @@ const IssueMembership = ({
                       <InputField
                         control={form.control}
                         name="ratePerShare"
-                        label="Rate Per Share"
-                        placeholder="Enter rate per share"
+                        label={t("membership.issueMembership.fields.ratePerShare")}
+                        placeholder={t("membership.issueMembership.placeholders.ratePerShare")}
                         type="number"
                         readOnly
                       />
@@ -315,8 +319,8 @@ const IssueMembership = ({
                       <InputField
                         control={form.control}
                         name="totalAmt"
-                        label="Total Amount"
-                        placeholder="Enter total amount"
+                        label={t("membership.issueMembership.fields.totalAmount")}
+                        placeholder={t("membership.issueMembership.placeholders.totalAmount")}
                         type="number"
                         readOnly
                       />
@@ -324,8 +328,8 @@ const IssueMembership = ({
                       <InputField
                         control={form.control}
                         name="totalAmtInWords"
-                        label="Total Amount In Words"
-                        placeholder="Total amount in words"
+                        label={t("membership.issueMembership.fields.totalAmountInWords")}
+                        placeholder={t("membership.issueMembership.placeholders.totalAmountInWords")}
                         className="text-red-500 text-base"
                         readOnly
                         formItemClassName="lg:col-span-2 xl:col-span-2"
@@ -338,7 +342,7 @@ const IssueMembership = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 gap-2">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Nominee Block
+                    {t("membership.issueMembership.sections.nomineeBlock")}
                   </h3>
                   {getMemberDataLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
@@ -357,32 +361,32 @@ const IssueMembership = ({
                       <InputField
                         control={form.control}
                         name="nomineeName"
-                        label="Nominee Name"
-                        placeholder="Enter nominee name"
+                        label={t("membership.issueMembership.fields.nomineeName")}
+                        placeholder={t("membership.issueMembership.placeholders.nomineeName")}
                       />
 
                       <DropdownField
                         control={form.control}
                         name="nomineeRelation"
-                        label="Nominee Relation"
+                        label={t("membership.issueMembership.fields.nomineeRelation")}
                         options={relationTypeData}
                         optionLabelKey="Option_Value"
-                        placeholder="Select nominee relation"
-                        searchPlaceholder="Search nominee relation..."
+                        placeholder={t("membership.issueMembership.placeholders.nomineeRelation")}
+                        searchPlaceholder={t("membership.issueMembership.placeholders.searchNomineeRelation")}
                       />
 
                       <InputField
                         control={form.control}
                         name="nomineeAddress"
-                        label="Nominee Address"
-                        placeholder="Enter nominee address"
+                        label={t("membership.issueMembership.fields.nomineeAddress")}
+                        placeholder={t("membership.issueMembership.placeholders.nomineeAddress")}
                       />
 
                       <InputField
                         control={form.control}
                         name="nomineeAge"
-                        label="Nominee Age"
-                        placeholder="Enter nominee age"
+                        label={t("membership.issueMembership.fields.nomineeAge")}
+                        placeholder={t("membership.issueMembership.placeholders.nomineeAge")}
                         type="number"
                       />
                     </div>
@@ -393,7 +397,7 @@ const IssueMembership = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 gap-2">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Transanction Block
+                    {t("membership.issueMembership.sections.transanctionBlock")}
                   </h3>
                   {getMemberDataLoading ? (
                     <div className="w-full border border-primary rounded-md p-2 sm:p-5 mb-5 flex flex-col gap-3">
@@ -412,7 +416,7 @@ const IssueMembership = ({
                         render={({ field }) => (
                           <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full lg:w-fit">
                             <FormLabel>
-                              Select transanction mode
+                              {t("membership.issueMembership.fields.selectTransanctionMode")}
                               <span className="text-red-500 ml-1">*</span>
                             </FormLabel>
                             <FormControl>
@@ -455,8 +459,8 @@ const IssueMembership = ({
                         <InputField
                           control={form.control}
                           name="refVouchNo"
-                          label="Ref. Vouch No."
-                          placeholder="Enter ref. vouch no."
+                          label={t("membership.issueMembership.fields.refVouchNo")}
+                          placeholder={t("membership.issueMembership.placeholders.refVouchNo")}
                           formItemClassName="col-span-1"
                         />
                         {transMode === "cash" ? (
@@ -487,35 +491,35 @@ const IssueMembership = ({
                           <DropdownField
                             control={form.control}
                             name="bank"
-                            label="Bank"
+                            label={t("membership.issueMembership.fields.bank")}
                             options={bankAccountData}
                             optionLabelKey="Bank_Name"
-                            placeholder="Select bank"
-                            searchPlaceholder="Search bank..."
+                            placeholder={t("membership.issueMembership.placeholders.bank")}
+                            searchPlaceholder={t("membership.issueMembership.placeholders.searchBank")}
                           />
                         ) : (
                           <>
                             <DropdownField
                               control={form.control}
                               name="savings"
-                              label="Savings"
+                              label={t("membership.issueMembership.fields.savings")}
                               options={savingsAccountData}
                               optionLabelKey="Account_No"
-                              placeholder="Select savings"
-                              searchPlaceholder="Search savings..."
+                              placeholder={t("membership.issueMembership.placeholders.savings")}
+                              searchPlaceholder={t("membership.issueMembership.placeholders.searchSavings")}
                             />
                             <InputField
                               control={form.control}
                               name="savingsName"
-                              label="Account Holder Name"
-                              placeholder="Enter name"
+                              label={t("membership.issueMembership.fields.accountHolderName")}
+                              placeholder={t("membership.issueMembership.placeholders.accountHolderName")}
                               readOnly
                             />
                             <InputField
                               control={form.control}
                               name="savingsBalance"
-                              label="Available Balance"
-                              placeholder="Enter balance"
+                              label={t("membership.issueMembership.fields.availableBalance")}
+                              placeholder={t("membership.issueMembership.placeholders.availableBalance")}
                               readOnly
                             />
                           </>
@@ -551,7 +555,7 @@ const IssueMembership = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("common.buttons.add")
                   )}
                 </Button>
               )}
@@ -565,7 +569,7 @@ const IssueMembership = ({
         handleCloseSuccessMessage={handleCloseSuccessMessage}
         showNextButton={true}
         handleNextButton={handleGenerateShareIssueReceipt}
-        nextLabel="Print Receipt"
+        nextLabel={t("membership.issueMembership.printReceipt")}
       />
 
       {!showSuccessMessage && (

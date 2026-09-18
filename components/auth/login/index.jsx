@@ -29,13 +29,8 @@ import Image from "next/image";
 import DropdownFieldNew from "@/common/formFields/DropdownFieldNew";
 import InputField from "@/common/formFields/InputField";
 import BrandMark from "@/common/BrandMark";
-
-const languageOptions = [
-  { Id: "en", Option_Value: "English" },
-  { Id: "bn", Option_Value: "Bangla" },
-  { Id: "hi", Option_Value: "Hindi" },
-  { Id: "ur", Option_Value: "Urdu" },
-];
+import { setAppLanguage } from "@/i18n";
+import { useTranslation } from "react-i18next";
 
 const FeatureStripItem = ({ icon: Icon, label ,className}) => (
   <div className={`flex flex-1 flex-col items-center gap-1.5 text-center ${className}`}>
@@ -67,7 +62,22 @@ const Login = ({
   showResendOtp,
   handleResendOtp,
 }) => {
+  const { t, i18n } = useTranslation();
   const [showLoginLoading, setShowLoginLoading] = useState(false);
+
+  const languageOptions = [
+    { Id: "en", Option_Value: t("auth.langEnglish") },
+    { Id: "bn", Option_Value: t("auth.langBangla") },
+    { Id: "hi", Option_Value: t("auth.langHindi") },
+    { Id: "or", Option_Value: t("auth.langOdia") },
+  ];
+
+  useEffect(() => {
+    const current = i18n.language?.split("-")[0] || "en";
+    if (form?.getValues?.("language") !== current) {
+      form?.setValue?.("language", current, { shouldDirty: false });
+    }
+  }, [i18n.language, form]);
 
   useEffect(() => {
     if (afterLoginLoading && !showLoginLoading) {
@@ -85,7 +95,7 @@ const Login = ({
         <BrandMark />
         <div className="flex items-center gap-3 sm:gap-4">
           <p className="text-base font-medium tracking-wide text-gray-700 sm:text-lg">
-            Loading
+            {t("auth.loading")}
           </p>
           <div className="flex items-center gap-2 sm:gap-2.5">
             {[0, 1, 2, 3].map((i) => (
@@ -133,20 +143,19 @@ const Login = ({
           <div className="relative z-20 shrink-0 px-10 pt-8 xl:px-14 xl:pt-10 2xl:px-16">
             <BrandMark />
             <h1 className="mt-7 whitespace-nowrap text-[22px] font-extrabold tracking-tight text-[#163A5F] xl:mt-8 xl:text-[26px] 2xl:text-[28px]">
-              Smarter Banking
+              {t("auth.smarterBanking")}
               <span className="mx-2.5 font-medium text-[#1B74D6]">|</span>
-              Stronger Communities
+              {t("auth.strongerCommunities")}
             </h1>
             <p className="mt-3 max-w-[460px] text-[13px] leading-[1.55] text-[#6B849E] xl:text-[14px]">
-              A complete, secure and scalable Core Banking Solution
-              designed to simplify modern financial operations.
+              {t("auth.subtitle")}
             </p>
           </div>
 
           <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-0 py-2">
             <Image
               src="/floginpageimg.png"
-              alt="PrioSuite banking illustration"
+              alt={t("auth.illustrationAlt")}
               width={1536}
               height={1024}
               priority
@@ -158,10 +167,10 @@ const Login = ({
           {/* Bottom feature strip — solid gradient bar, full width, pinned to bottom */}
           <div className="relative z-20 mt-auto w-full shrink-0  px-10 py-5 xl:px-14 xl:py-6 2xl:px-16">
             <div className="mx-auto flex w-full max-w-[720px] items-start justify-between gap-4">
-              <FeatureStripItem icon={ShieldCheck} label="Secure & Reliable"  className="border-r-2 border-r-[#1B74D6]" />
-              <FeatureStripItem icon={IoIosCloudOutline} label="Scalable Architecture"  className="border-r-2 border-r-[#1B74D6]" />
-              <FeatureStripItem icon={Zap} label="Faster Operations"  className="border-r-2 border-r-[#1B74D6]" />
-              <FeatureStripItem icon={Users} label="Better Member Service"  />
+              <FeatureStripItem icon={ShieldCheck} label={t("auth.secureReliable")}  className="border-r-2 border-r-[#1B74D6]" />
+              <FeatureStripItem icon={IoIosCloudOutline} label={t("auth.scalableArchitecture")}  className="border-r-2 border-r-[#1B74D6]" />
+              <FeatureStripItem icon={Zap} label={t("auth.fasterOperations")}  className="border-r-2 border-r-[#1B74D6]" />
+              <FeatureStripItem icon={Users} label={t("auth.betterMemberService")}  />
             </div>
           </div>
         </section>
@@ -175,7 +184,7 @@ const Login = ({
             <div className="mb-2 flex items-center justify-end">
               <span className="inline-flex items-center gap-1 rounded-full bg-[#F3F8FD] px-2 py-0.5 text-[10px] font-medium text-[#6F87A3] sm:text-[11px]">
                 <Lock className="h-3 w-3" />
-                Secure Login
+                {t("auth.secureLogin")}
               </span>
             </div>
 
@@ -185,10 +194,10 @@ const Login = ({
 
             <div className="mb-5 text-center">
               <h2 className="text-[22px] font-extrabold leading-tight text-[#163A5F] sm:text-[24px]">
-                Welcome Back
+                {t("auth.welcomeBack")}
               </h2>
               <p className="mt-1 text-[12px] text-[#7A93B0] sm:text-[13px]">
-                Sign in to continue to your institution
+                {t("auth.signInSubtitle")}
               </p>
             </div>
 
@@ -201,17 +210,22 @@ const Login = ({
                 <DropdownFieldNew
                   control={form.control}
                   name="language"
-                  label="Language"
+                  label={t("auth.language")}
                   options={languageOptions}
                   optionValueKey="Id"
                   optionLabelKey="Option_Value"
+                  disableSorting
                   startContent={<Globe className="h-4 w-4" />}
+                  onChange={(value) => {
+                    setAppLanguage(value || "en");
+                  }}
                 />
 
                 <DropdownFieldNew
                   control={form.control}
                   name="year_id"
-                  label="Financial Year"
+                  label={t("auth.financialYear")}
+                  placeholder={t("auth.selectFinancialYearPlaceholder")}
                   options={financialYear || []}
                   optionValueKey="Id"
                   optionLabelKey="Yr"
@@ -222,8 +236,8 @@ const Login = ({
                 <InputField
                   control={form.control}
                   name="email"
-                  label="Email / Username"
-                  placeholder="Enter your email or username"
+                  label={t("auth.emailUsername")}
+                  placeholder={t("auth.enterEmailUsername")}
                   autoComplete="username"
                   autoFocus
                   startContent={<Mail className="h-4 w-4" />}
@@ -232,9 +246,9 @@ const Login = ({
                 <InputField
                   control={form.control}
                   name="password"
-                  label="Password"
+                  label={t("auth.password")}
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder={t("auth.enterPassword")}
                   autoComplete="current-password"
                   startContent={<Lock className="h-4 w-4" />}
                 />
@@ -248,7 +262,7 @@ const Login = ({
                     <ClipLoader color="#fff" size={22} speedMultiplier={0.7} />
                   ) : (
                     <span className="inline-flex items-center gap-2">
-                      Sign In
+                      {t("auth.signIn")}
                       <ArrowRight className="h-4 w-4" />
                     </span>
                   )}
@@ -259,7 +273,7 @@ const Login = ({
                     href="/forgotPassword"
                     className="text-[12px] font-medium text-[#1B74D6] transition-colors hover:text-[#0D5FBF] hover:underline sm:text-[13px]"
                   >
-                    Forgot Password?
+                    {t("auth.forgotPasswordLink")}
                   </Link>
                 </div>
               </form>
@@ -278,7 +292,7 @@ const Login = ({
                 target="_blank"
                 className="text-[#9AADC2] hover:text-[#1B74D6]"
               >
-                Powered by Priority Solutions
+                {t("auth.poweredBy")}
               </Link>
             </div>
           </div>
@@ -294,7 +308,7 @@ const Login = ({
             {!showOtpForm ? (
               <>
                 <p className="text-center text-base font-semibold text-[#1a2e44] sm:text-lg">
-                  Want to terminate your session?
+                  {t("auth.terminateSession")}
                 </p>
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:gap-4">
                   <Button
@@ -302,14 +316,14 @@ const Login = ({
                     className="h-11 flex-1 rounded-xl bg-linear-to-r from-red-500 to-red-600 font-semibold text-white shadow-md transition-all duration-200 hover:from-red-600 hover:to-red-700 hover:shadow-lg"
                     onClick={() => setShowActiveSessionDialog(false)}
                   >
-                    Cancel
+                    {t("auth.cancel")}
                   </Button>
                   <Button
                     type="button"
                     className="h-11 flex-1 rounded-xl bg-linear-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-md transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
                     onClick={handleShowOtpForm}
                   >
-                    Continue
+                    {t("auth.continue")}
                   </Button>
                 </div>
               </>
@@ -323,8 +337,8 @@ const Login = ({
                   <InputField
                     control={otpForm.control}
                     name="otp"
-                    label="OTP"
-                    placeholder="Enter your OTP"
+                    label={t("auth.otp")}
+                    placeholder={t("auth.enterOtp")}
                     type="number"
                     maxLength={6}
                     startContent={
@@ -338,7 +352,7 @@ const Login = ({
                       onClick={handleResendOtp}
                       className="text-[13px] font-medium text-[#1B74D6] hover:underline focus:outline-none"
                     >
-                      Resend OTP
+                      {t("auth.resendOtp")}
                     </button>
                   )}
 
@@ -354,7 +368,7 @@ const Login = ({
                         speedMultiplier={0.7}
                       />
                     ) : (
-                      "Submit"
+                      t("auth.submit")
                     )}
                   </Button>
                 </form>

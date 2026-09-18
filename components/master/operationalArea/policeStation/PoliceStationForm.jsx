@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -14,6 +15,8 @@ const PoliceStationForm = ({
   districtData,
   onCancel,
 }) => {
+  const { t } = useTranslation();
+
   const isEdit = editData && Object.keys(editData).length > 0;
 
   return (
@@ -26,27 +29,27 @@ const PoliceStationForm = ({
         <InputField
           control={form.control}
           name="name"
-          label="Police Station Name"
-          placeholder="Enter police station name"
+          label={t("master.operationalArea.fields.policeStationName")}
+          placeholder={t("master.operationalArea.placeholders.policeStationName")}
           isRequired
         />
         <DropdownField
           control={form.control}
           name="stateId"
-          label="State"
+          label={t("master.operationalArea.fields.state")}
           options={stateData}
           optionLabelKey="State_Name"
-          placeholder="Select state"
-          searchPlaceholder="Search state..."
+          placeholder={t("master.operationalArea.placeholders.state")}
+          searchPlaceholder={t("master.operationalArea.placeholders.searchState")}
         />
         <DropdownField
           control={form.control}
           name="districtId"
-          label="District"
+          label={t("master.operationalArea.fields.district")}
           options={districtData}
           optionLabelKey="Dist_Name"
-          placeholder="Select district"
-          searchPlaceholder="Search district..."
+          placeholder={t("master.operationalArea.placeholders.district")}
+          searchPlaceholder={t("master.operationalArea.placeholders.searchDistrict")}
           disabled={
             !districtData ||
             !(districtData.length > 0) ||
@@ -61,7 +64,7 @@ const PoliceStationForm = ({
             onClick={onCancel}
             disabled={postLoading || updateLoading}
           >
-            Cancel
+            {t("common.buttons.cancel")}
           </Button>
           <Button
             type="submit"
@@ -71,9 +74,9 @@ const PoliceStationForm = ({
             {postLoading || updateLoading ? (
               <ClipLoader color="#fff" size={18} speedMultiplier={0.7} />
             ) : isEdit ? (
-              "Update"
+              t("common.buttons.update")
             ) : (
-              "Add"
+              t("common.buttons.add")
             )}
           </Button>
         </div>

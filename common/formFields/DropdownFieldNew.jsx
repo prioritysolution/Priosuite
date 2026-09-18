@@ -38,6 +38,7 @@ const DropdownFieldNew = ({
   sortValue,
   isRequired = false,
   startContent,
+  placeholder,
 }) => {
   const [search, setSearch] = useState("");
   const searchRef = useRef(null);
@@ -227,7 +228,9 @@ const DropdownFieldNew = ({
                   >
                     <SelectValue
                       placeholder={
-                        loading ? "Loading..." : `Select ${label.toLowerCase()}`
+                        loading
+                          ? "Loading..."
+                          : placeholder || `Select ${label.toLowerCase()}`
                       }
                     />
                   </SelectTrigger>

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import RadioField from "@/common/formFields/RadioField";
 import LoanAccountPassbookSearchForm from "@/common/forms/LoanAccountPassbookSearchForm";
@@ -34,6 +36,8 @@ const PassbookPrint = ({
   showLine,
   handleUpdateTrans,
 }) => {
+  const { t } = useTranslation();
+
   const firstPageRef = useRef(null);
   const transPageRef = useRef(null);
 
@@ -85,7 +89,7 @@ const PassbookPrint = ({
   return (
     <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Passbook Print</h3>
+        <h3 className="text-2xl font-semibold ">{t("loan.passbookPrint")}</h3>
 
         <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20 ">
           <div className="w-full mb-10">
@@ -113,11 +117,11 @@ const PassbookPrint = ({
                       options={[
                         {
                           value: "1",
-                          label: "Front Page",
+                          label: t("loan.frontPage"),
                         },
                         {
                           value: "2",
-                          label: "Transaction Page",
+                          label: t("loan.transactionPage"),
                         },
                       ]}
                       className="border border-default-200 rounded-md px-3 h-10 flex items-center self-end"
@@ -130,14 +134,14 @@ const PassbookPrint = ({
                     <DatePickerField
                       control={form.control}
                       name="date"
-                      label="Date"
+                      label={t("loan.date")}
                     />
 
                     <InputField
                       control={form.control}
                       name="line"
-                      label="Line"
-                      placeholder="Enter line"
+                      label={t("loan.line")}
+                      placeholder={t("loan.enterLine")}
                       type="number"
                     />
                   </>
@@ -145,9 +149,7 @@ const PassbookPrint = ({
                   <></>
                 )}
                 <div className="flex gap-5">
-                  <Button type="submit" className="w-32 self-end">
-                    Next
-                  </Button>
+                  <Button type="submit" className="w-32 self-end">{t("loan.next")}</Button>
                   <div
                     className={cn(
                       "w-32 h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 self-end cursor-pointer",
@@ -220,7 +222,7 @@ const PassbookPrint = ({
                     ))}
                     <div className="w-full h-[32px]" />
                     <div className="w-[200px] h-[30px] self-end border-t-2 border-black text-center flex items-center justify-center font-semibold">
-                      <span>MANAGER</span>
+                      <span>{t("loan.print.manager")}</span>
                     </div>
                   </div>
                 </div>
@@ -256,24 +258,12 @@ const PassbookPrint = ({
                           <p className="border-x-2 border-black font-medium text-center">
                             Sl.
                           </p>
-                          <p className="border-r-2 border-black font-medium text-center">
-                            Date
-                          </p>
-                          <p className="border-r-2 border-black font-medium text-center">
-                            Particulars
-                          </p>
-                          <p className="border-r-2 border-black font-medium text-center">
-                            Principal
-                          </p>
-                          <p className="border-r-2 border-black font-medium text-center">
-                            Interest
-                          </p>
-                          <p className="border-r-2 border-black font-medium text-center">
-                            Balance
-                          </p>
-                          <p className="border-r-2 border-black font-medium text-center">
-                            Due Intt.
-                          </p>
+                          <p className="border-r-2 border-black font-medium text-center">{t("loan.date")}</p>
+                          <p className="border-r-2 border-black font-medium text-center">{t("loan.particulars")}</p>
+                          <p className="border-r-2 border-black font-medium text-center">{t("loan.principal")}</p>
+                          <p className="border-r-2 border-black font-medium text-center">{t("loan.interest")}</p>
+                          <p className="border-r-2 border-black font-medium text-center">{t("loan.balance")}</p>
+                          <p className="border-r-2 border-black font-medium text-center">{t("loan.dueIntt")}</p>
                         </div>
                         {printData.map((data, i) => (
                           <div key={`table-${i}`} className="flex flex-col">
@@ -354,7 +344,7 @@ const PassbookPrint = ({
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
           <div className="text-center text-2xl font-medium">
-            <p>Did you print successfully ?</p>
+            <p>{t("loan.didYouPrintSuccessfully")}</p>
           </div>
           <DialogFooter>
             <Button

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getYear } from "date-fns";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 
@@ -25,6 +26,8 @@ const MembershipOpening = ({
   handleCloseSuccessMessage,
   resetTrigger,
 }) => {
+  const { t } = useTranslation();
+
   const memberTypeData = useSelector(
     (state) => state?.shareProduct?.memberTypeData,
   );
@@ -38,7 +41,9 @@ const MembershipOpening = ({
   return (
     <div className="w-full h-full flex justify-between  bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Membership Opening</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("opening.membershipOpening.title")}
+        </h3>
 
         <ScrollArea className="w-full h-full   ">
           <div className="w-full mb-10">
@@ -57,35 +62,39 @@ const MembershipOpening = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Basic Info Block
+                    {t("opening.membershipOpening.basicInfo.title")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
                       name="memberName"
-                      label="Member Name"
-                      placeholder="Enter member name"
+                      label={t("opening.membershipOpening.basicInfo.memberName")}
+                      placeholder={t("opening.membershipOpening.basicInfo.memberNamePlaceholder",
+                      )}
                       readOnly
                     />
                     <InputField
                       control={form.control}
                       name="gurdianName"
-                      label="Gurdian Name"
-                      placeholder="Enter gurdian name"
+                      label={t("opening.membershipOpening.basicInfo.guardianName")}
+                      placeholder={t("opening.membershipOpening.basicInfo.guardianNamePlaceholder",
+                      )}
                       readOnly
                     />
                     <TextareaField
                       control={form.control}
                       name="address"
-                      label="Address"
-                      placeholder="Enter address"
+                      label={t("opening.membershipOpening.basicInfo.address")}
+                      placeholder={t("opening.membershipOpening.basicInfo.addressPlaceholder",
+                      )}
                       readOnly
                     />
                     <InputField
                       control={form.control}
                       name="mobile"
-                      label="Mobile No."
-                      placeholder="Enter mobile no."
+                      label={t("opening.membershipOpening.basicInfo.mobile")}
+                      placeholder={t("opening.membershipOpening.basicInfo.mobilePlaceholder",
+                      )}
                       readOnly
                     />
                   </div>
@@ -95,14 +104,13 @@ const MembershipOpening = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Admission Block
+                    {t("opening.membershipOpening.admission.title")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <DatePickerField
                       control={form.control}
                       name="date"
-                      label="Admission Date"
-                      // startYear={2000}
+                      label={t("opening.membershipOpening.admission.admissionDate")}
                       endYear={getYear(new Date(startDate))}
                       disabledDateAfter={new Date(startDate).setDate(
                         new Date(startDate).getDate() - 1,
@@ -114,15 +122,17 @@ const MembershipOpening = ({
                     <InputField
                       control={form.control}
                       name="admissionNo"
-                      label="Admission No."
-                      placeholder="Enter admission no."
+                      label={t("opening.membershipOpening.admission.admissionNo")}
+                      placeholder={t("opening.membershipOpening.admission.admissionNoPlaceholder",
+                      )}
                     />
 
                     <InputField
                       control={form.control}
                       name="ledgerFolio"
-                      label="Ledger Folio"
-                      placeholder="Enter ledger folio"
+                      label={t("opening.membershipOpening.admission.ledgerFolio")}
+                      placeholder={t("opening.membershipOpening.admission.ledgerFolioPlaceholder",
+                      )}
                     />
 
                     <FormField
@@ -130,13 +140,15 @@ const MembershipOpening = ({
                       name="memberType"
                       render={({ field }) => (
                         <DropdownField
-                          label="Member Type"
+                          label={t("opening.membershipOpening.admission.memberType")}
                           value={field.value}
                           onChange={field.onChange}
                           options={memberTypeData}
-                          optionLabelKey="Option_Value" // Specify the key for label
-                          placeholder="Select member type"
-                          searchPlaceholder="Search member type..."
+                          optionLabelKey="Option_Value"
+                          placeholder={t("opening.membershipOpening.admission.memberTypePlaceholder",
+                          )}
+                          searchPlaceholder={t("opening.membershipOpening.admission.searchMemberType",
+                          )}
                           isRequired
                         />
                       )}
@@ -145,8 +157,9 @@ const MembershipOpening = ({
                     <InputField
                       control={form.control}
                       name="nomineeName"
-                      label="Nominee Name"
-                      placeholder="Enter nominee name"
+                      label={t("opening.membershipOpening.admission.nomineeName")}
+                      placeholder={t("opening.membershipOpening.admission.nomineeNamePlaceholder",
+                      )}
                     />
 
                     <FormField
@@ -154,13 +167,16 @@ const MembershipOpening = ({
                       name="nomineeRelation"
                       render={({ field }) => (
                         <DropdownField
-                          label="Nominee Relation"
+                          label={t("opening.membershipOpening.admission.nomineeRelation",
+                          )}
                           value={field.value}
                           onChange={field.onChange}
                           options={relationTypeData}
-                          optionLabelKey="Option_Value" // Specify the key for label
-                          placeholder="Select relation"
-                          searchPlaceholder="Search relation..."
+                          optionLabelKey="Option_Value"
+                          placeholder={t("opening.membershipOpening.admission.nomineeRelationPlaceholder",
+                          )}
+                          searchPlaceholder={t("opening.membershipOpening.admission.searchRelation",
+                          )}
                         />
                       )}
                     />
@@ -168,16 +184,18 @@ const MembershipOpening = ({
                     <InputField
                       control={form.control}
                       name="nomineeAge"
-                      label="Nominee Age"
-                      placeholder="Enter nominee age"
+                      label={t("opening.membershipOpening.admission.nomineeAge")}
+                      placeholder={t("opening.membershipOpening.admission.nomineeAgePlaceholder",
+                      )}
                       type="number"
                     />
 
                     <InputField
                       control={form.control}
                       name="nomineeAddress"
-                      label="Nominee Address"
-                      placeholder="Enter nominee address"
+                      label={t("opening.membershipOpening.admission.nomineeAddress")}
+                      placeholder={t("opening.membershipOpening.admission.nomineeAddressPlaceholder",
+                      )}
                     />
                   </div>
                 </div>
@@ -186,14 +204,15 @@ const MembershipOpening = ({
               {visibleBlock && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Share Block
+                    {t("opening.membershipOpening.share.title")}
                   </h3>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
                       name="openingShare"
-                      label="Opening Share Value"
-                      placeholder="Enter opening share value"
+                      label={t("opening.membershipOpening.share.openingShare")}
+                      placeholder={t("opening.membershipOpening.share.openingSharePlaceholder",
+                      )}
                       type="number"
                       isRequired
                     />
@@ -201,8 +220,9 @@ const MembershipOpening = ({
                     <InputField
                       control={form.control}
                       name="openingDividend"
-                      label="Opening Dividend Value"
-                      placeholder="Enter opening dividend value"
+                      label={t("opening.membershipOpening.share.openingDividend")}
+                      placeholder={t("opening.membershipOpening.share.openingDividendPlaceholder",
+                      )}
                       type="number"
                       isRequired
                     />
@@ -223,7 +243,7 @@ const MembershipOpening = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Add"
+                    t("opening.membershipOpening.buttons.add")
                   )}
                 </Button>
               )}

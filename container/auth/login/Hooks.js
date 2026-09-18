@@ -17,6 +17,10 @@ import { getForgotPasswordOtpAPI } from "../forgotPassword/ForgotPasswordApis";
 import Cookies from "@/utils/secureCookieHelper";
 import { token, beg_date } from "./LoginReducer";
 import { formatDateForApi } from "@/utils/dateHelpers";
+import { clearStoredUserDashboard } from "@/utils/userDashboardStorage";
+import { getStoredLanguage, setAppLanguage } from "@/i18n";
+
+const SUPPORTED_LANGS = ["en", "bn", "hi", "or"];
 
 const FIN_COOKIE_OPTIONS = {
   expires: 7,
@@ -119,6 +123,32 @@ export const useLogin = () => {
     },
   });
 
+  const selectedLanguage = loginForm.watch("language");
+
+  useEffect(() => {
+    const initial = getStoredLanguage();
+    if (initial && initial !== loginForm.getValues("language")) {
+      loginForm.setValue("language", initial, { shouldDirty: false });
+    }
+    setAppLanguage(initial);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount
+  }, []);
+
+  useEffect(() => {
+    if (!selectedLanguage) return;
+    const next =
+      selectedLanguage === "ur"
+        ? "or"
+        : SUPPORTED_LANGS.includes(selectedLanguage)
+          ? selectedLanguage
+          : "en";
+    if (next !== selectedLanguage) {
+      loginForm.setValue("language", next, { shouldDirty: false });
+      return;
+    }
+    setAppLanguage(next);
+  }, [selectedLanguage, loginForm]);
+
   const otpForm = useForm({
     resolver: yupResolver(otpFormSchema),
     defaultValues: {
@@ -146,6 +176,10 @@ export const useLogin = () => {
     };
 
     console.log("handel val=", values);
+
+    if (language) {
+      setAppLanguage(language === "ur" ? "or" : language);
+    }
 
     userLoginApiCall(data);
     setMail(values.email);
@@ -177,10 +211,18 @@ export const useLogin = () => {
       const res = await userLoginAPI(item);
       console.log("res in login api call=", res);
       if (res.message === "Login Successful") {
-        // Reset form and navigate on success
-        loginForm.reset();
+        // Keep selected language — reset() would otherwise force "en" via watch
+        const selectedLang = loginForm.getValues("language") || "en";
+        loginForm.reset({
+          language: selectedLang,
+          email: "",
+          password: "",
+          year_id: "",
+        });
+        setAppLanguage(selectedLang === "ur" ? "or" : selectedLang);
         setAfterLoaginLoading(true);
         toast.success("Logged In Successfully");
+        clearStoredUserDashboard();
 
         // Todo : set cookies
         Cookies.set("prioBankClientToken", res.token, {

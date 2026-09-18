@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -51,6 +52,8 @@ const DisburseRegisterPreview = ({
   fromDate,
   toDate,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -105,7 +108,7 @@ const DisburseRegisterPreview = ({
             <p>{address}</p>
             <p>{regNo}</p>
             <p className="text-sm">
-              Loan Disburse Register From{" "}
+              {t("loan.loanDisburseRegisterFrom")}{" "}
               {fromDate && format(fromDate, "dd-MM-yyyy")} To{" "}
               {toDate && format(toDate, "dd-MM-yyyy")}
             </p>
@@ -117,39 +120,17 @@ const DisburseRegisterPreview = ({
               {/* Main Header Every Page */}
               <TableHeader>
                 <TableRow className="h-[50px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[40px]">
-                    SL. NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    DATE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
-                    CUSTOMER NAME
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
-                    GUARDIAN NAME
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    ACCOUNT NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center">
-                    REF. AC. NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    DISBURSE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    SHARE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    INS. AMT.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    MIS. AMT.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    NET DISBURSE
-                  </TableHead>
+                  <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("loan.print.slNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("loan.print.date")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">{t("loan.print.customerName")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">{t("loan.print.guardianName")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.accountNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center">{t("loan.print.refAcNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.disburse")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.share")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.insAmt")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.misAmt")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.netDisburse")}</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -200,9 +181,7 @@ const DisburseRegisterPreview = ({
                     <TableCell
                       colSpan={6}
                       className="border border-black p-0 text-center"
-                    >
-                      Total
-                    </TableCell>
+                    >{t("loan.total")}</TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
                       {totalDisburseAmount?.toFixed(2)}
                     </TableCell>
@@ -226,12 +205,10 @@ const DisburseRegisterPreview = ({
 
           {/* Footer */}
           <div className="w-full mt-2 grid grid-cols-3 items-end gap-2 text-[10px]">
-            <p className="text-left truncate">Generated By: {userName}</p>
-            <p className="text-center italic text-gray-600">
-              This report is generated by PrioSuite.
-            </p>
+            <p className="text-left truncate">{t("loan.generatedByColon")} {userName}</p>
+            <p className="text-center italic text-gray-600">{t("loan.reportGeneratedByPrioSuite")}</p>
             <p className="text-right whitespace-nowrap">
-              Generated On: {currentDate} {currentTime}
+              {t("loan.generatedOnColon")} {currentDate} {currentTime}
             </p>
           </div>
         </div>

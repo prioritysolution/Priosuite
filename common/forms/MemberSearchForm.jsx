@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -82,11 +83,13 @@ const MemberSearchForm = ({
   disableNextButton = false,
   anableRadio = "",
 }) => {
+  const { t } = useTranslation();
+
   const RadioData = [
-    { label: "Individual Customer", value: "1" },
-    { label: "Group", value: "2" },
-    { label: "Institution", value: "3" },
-    { label: "Staff", value: "4" },
+    { label: t("memberSearch.individualCustomer"), value: "1" },
+    { label: t("memberSearch.group"), value: "2" },
+    { label: t("memberSearch.institution"), value: "3" },
+    { label: t("memberSearch.staff"), value: "4" },
   ];
 
   const startDate = getCookieData("fin_start_date");
@@ -195,7 +198,7 @@ const MemberSearchForm = ({
     if (!orgId) return;
     const name = form.getValues("dialougeMemberName");
     if (!name) {
-      toast.error("Please enter name");
+      toast.error(t("memberSearch.pleaseEnterName"));
       return;
     }
     // Search always starts from page 1
@@ -272,7 +275,7 @@ const MemberSearchForm = ({
                   <DatePickerField
                     control={form.control}
                     name="date"
-                    label={label}
+                    label={label === "Date" ? t("common.date") : label}
                     // startYear={
                     //   isLoan
                     //     ? getYear(new Date(startDate))
@@ -312,13 +315,13 @@ const MemberSearchForm = ({
                 name="memberNo"
                 render={({ field }) => (
                   <FormItem className={cn("w-full", { "": !showDate })}>
-                    <FormLabel>CIF/REF No.</FormLabel>
+                    <FormLabel>{t("memberSearch.cifRefNo")}</FormLabel>
                     <FormControl>
                       <div className="flex flex-col lg:flex-row items-center gap-x-10 gap-2 w-full">
                         <div className=" w-full h-full">
                           <div className=" w-full relative ">
                             <Input
-                              placeholder="Enter member no."
+                              placeholder={t("memberSearch.memberNoPlaceholder")}
                               className="w-full"
                               type="number"
                               onInput={(e) => {
@@ -367,7 +370,7 @@ const MemberSearchForm = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Next"
+                    t("memberSearch.next")
                   )}
                 </Button>
 
@@ -383,7 +386,7 @@ const MemberSearchForm = ({
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>View Ledger</p>
+                        <p>{t("memberSearch.viewLedger")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -393,7 +396,7 @@ const MemberSearchForm = ({
             <DialogContent className="w-[calc(100vw-1rem)] max-w-[1000px] h-[min(90dvh,640px)] sm:h-auto sm:max-h-[85vh] p-3 sm:p-6 gap-3 overflow-hidden flex flex-col rounded-lg">
               <DialogHeader className="shrink-0 pr-8 text-left">
                 <DialogTitle className="text-base sm:text-lg">
-                  Search Members
+                  {t("memberSearch.searchMembers")}
                 </DialogTitle>
               </DialogHeader>
 
@@ -432,12 +435,12 @@ const MemberSearchForm = ({
                         <FormLabel>
                           {RadioData.find(
                             (item) => item.value === selectedRadio,
-                          )?.label || "Member Name"}
+                          )?.label || t("memberSearch.memberName")}
                         </FormLabel>
                         <FormControl>
                           <Input
                             autoComplete="off"
-                            placeholder="Search by enter member name"
+                            placeholder={t("memberSearch.searchByMemberName")}
                             {...field}
                           />
                         </FormControl>
@@ -450,7 +453,7 @@ const MemberSearchForm = ({
                     className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                     onClick={handleSearchMember}
                   >
-                    Search
+                    {t("memberSearch.search")}
                   </Button>
                 </div>
                 <div className="w-full min-h-0 flex-1 overflow-y-auto overflow-x-hidden">

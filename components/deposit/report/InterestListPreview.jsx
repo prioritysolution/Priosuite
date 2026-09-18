@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -47,6 +48,8 @@ const InterestListPreview = ({
   fromDate,
   toDate,
 }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -120,28 +123,28 @@ const InterestListPreview = ({
                 <TableHeader>
                   <TableRow className="h-[60px] border-black">
                     <TableHead className="text-black p-0 border-black text-center w-[40px]">
-                      SL. NO.
+                      {t("deposit.reports.print.slNo")}
                     </TableHead>
                     <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                      DATE
+                      {t("deposit.reports.print.date")}
                     </TableHead>
                     <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
-                      CUSTOMER NAME
+                      {t("deposit.reports.print.customerName")}
                     </TableHead>
                     <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                      ACCOUNT NO.
+                      {t("deposit.reports.print.accountNo")}
                     </TableHead>
                     <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                      REF. AC. NO.
+                      {t("deposit.reports.print.refAcNo")}
                     </TableHead>
                     <TableHead className="text-black p-0 border-black border-l text-center">
-                      L/F. NO.
+                      {t("deposit.reports.print.lfNo")}
                     </TableHead>
                     <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                      AMOUNT
+                      {t("deposit.reports.print.amount")}
                     </TableHead>
                     <TableHead className="text-black p-0 border-black border-l text-center w-[180px]">
-                      NARRATION
+                      {t("deposit.reports.print.narration")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>

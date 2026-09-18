@@ -5,7 +5,7 @@ alwaysApply: true
 
 # PrioSuite / prio_bank — Architecture Rules
 
-Read `AGENTS.md` at the repo root for the full guide (includes full package version table). Follow these rules on every task.
+Read `AGENTS.md` for the full guide. For other projects, copy `PRIOSUITE_STARTER.txt`. Match page look via `ui-design-system` rule.
 
 ## Feature flow (required)
 
@@ -46,6 +46,7 @@ When scaffolding a **new project**, generate `package.json` from `AGENTS.md` pac
 5. Register reducer in `redux/configureStore.js` if needed
 6. Reuse existing hooks/masters when possible
 7. Use packages from the list above only
+8. Same page shell/style as existing screens (see ui-design-system rule)
 
 ## Do not
 

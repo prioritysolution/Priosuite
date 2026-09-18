@@ -42,6 +42,7 @@ import VoucherReceipt from "./VoucherReceipt";
 import { Checkbox } from "@/components/ui/checkbox";
 import LedgerSearchForm from "@/common/forms/LedgerSearchForm";
 import InputField from "@/common/formFields/InputField";
+import { useTranslation } from "react-i18next";
 
 const VoucherEntry = ({
   loading,
@@ -79,6 +80,7 @@ const VoucherEntry = ({
   setIsDateChecked,
   glData,
 }) => {
+  const { t } = useTranslation();
   const [isActiveDenom, setIsActiveDenom] = useState(false);
 
   const [isOpeningActive, setIsOpeningActive] = useState(false);
@@ -125,7 +127,7 @@ const VoucherEntry = ({
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" flex flex-col border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
         <h3 className="w-full text-center text-xl font-semibold">
-          Voucher Entry
+          {t("voucher.voucherEntry")}
         </h3>
         <ScrollArea className="w-full h-full">
           <Form {...form}>
@@ -140,7 +142,7 @@ const VoucherEntry = ({
                     <DatePickerField
                       control={form.control}
                       name="date"
-                      label="Voucher Date"
+                      label={t("voucher.voucherDate")}
                       disabled={true}
                       defaultValue={new Date(beg_date)}
                       isRequired={true}
@@ -160,7 +162,7 @@ const VoucherEntry = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Voucher Type{" "}
+                          {t("voucher.voucherType")}{" "}
                           <span className="text-red-500 ml-1">*</span>
                         </FormLabel>
                         <Select
@@ -170,13 +172,21 @@ const VoucherEntry = ({
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select voucher type" />
+                              <SelectValue
+                                placeholder={t("voucher.selectVoucherType")}
+                              />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value={`R`}>Receipt</SelectItem>
-                            <SelectItem value={`P`}>Payment</SelectItem>
-                            <SelectItem value={`J`}>Journal</SelectItem>
+                            <SelectItem value={`R`}>
+                              {t("voucher.receipt")}
+                            </SelectItem>
+                            <SelectItem value={`P`}>
+                              {t("voucher.payment")}
+                            </SelectItem>
+                            <SelectItem value={`J`}>
+                              {t("voucher.journal")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -189,10 +199,10 @@ const VoucherEntry = ({
                     name="manVoucherNo"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Manual Voucher No.</FormLabel>
+                        <FormLabel>{t("voucher.manualVoucherNo")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter manual voucher no."
+                            placeholder={t("voucher.enterManualVoucherNo")}
                             readOnly={tableData && tableData.length > 0}
                             {...field}
                           />
@@ -208,11 +218,12 @@ const VoucherEntry = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Narration <span className="text-red-500 ml-1">*</span>
+                          {t("voucher.narration")}{" "}
+                          <span className="text-red-500 ml-1">*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter narration"
+                            placeholder={t("voucher.enterNarration")}
                             readOnly={tableData && tableData.length > 0}
                             {...field}
                           />
@@ -225,24 +236,21 @@ const VoucherEntry = ({
                   <InputField
                     control={form.control}
                     name="ledgerCode"
-                    label="Ledger Code"
-                    placeholder="Enter ledger code"
+                    label={t("voucher.ledgerCode")}
+                    placeholder={t("voucher.enterLedgerCode")}
                     type="number"
                     isBlurUpdate
                     isRequired={true}
                     endContent={
-                      <LedgerSearchForm
-                        form={form}
-                        fieldName="ledgerCode"
-                      />
+                      <LedgerSearchForm form={form} fieldName="ledgerCode" />
                     }
                   />
 
                   <InputField
-                    label="GL."
+                    label={t("common.gl")}
                     name="gl"
                     control={form.control}
-                    placeholder="Enter GL."
+                    placeholder={t("voucher.enterGl")}
                     disabled={true}
                     readOnly={true}
                     displayValue={glData?.Ledger_Name || ""}
@@ -253,14 +261,14 @@ const VoucherEntry = ({
                     name="subHead"
                     render={({ field }) => (
                       <DropdownField
-                        label="Sub Head"
+                        label={t("voucher.subHead")}
                         value={field.value}
                         onChange={field.onChange}
                         options={subHeadData}
                         optionLabelKey="Head_Name"
                         optionValueKey="Id"
-                        placeholder="Select sub head"
-                        searchPlaceholder="Search sub head..."
+                        placeholder={t("voucher.selectSubHead")}
+                        searchPlaceholder={t("voucher.searchSubHead")}
                         fixedDropdownWidth
                         isRequired={true}
                       />
@@ -272,13 +280,13 @@ const VoucherEntry = ({
                     name="gl"
                     render={({ field }) => (
                       <DropdownField
-                        label="GL."
+                        label={t("common.gl")}
                         value={field.value}
                         onChange={field.onChange}
                         options={ledgerListData}
                         optionLabelKey="Ledger_Name" // Specify the key for label
-                        placeholder="Select gl"
-                        searchPlaceholder="Search gl..."
+                        placeholder={t("voucher.selectGl")}
+                        searchPlaceholder={t("voucher.searchGl")}
                         fixedDropdownWidth
                         isRequired={true}
                       />
@@ -290,7 +298,7 @@ const VoucherEntry = ({
                     name="subLedger"
                     render={({ field }) => (
                       <SearchDropdownField
-                        label="Sub Ledger"
+                        label={t("voucher.subLedger")}
                         value={field.value}
                         onChange={field.onChange}
                         options={subLedgerListData}
@@ -315,11 +323,12 @@ const VoucherEntry = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Amount <span className="text-red-500 ml-1">*</span>
+                          {t("common.amount")}{" "}
+                          <span className="text-red-500 ml-1">*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter amount"
+                            placeholder={t("common.enterAmount")}
                             type="number"
                             {...field}
                           />
@@ -334,10 +343,12 @@ const VoucherEntry = ({
                     name="ledgerNarration"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Sub Ledger Narration</FormLabel>
+                        <FormLabel>
+                          {t("voucher.subLedgerNarration")}
+                        </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter ledger narration"
+                            placeholder={t("voucher.enterLedgerNarration")}
                             readOnly={
                               !form.getValues("gl") ||
                               !(subLedgerListData?.length > 0)
@@ -356,7 +367,8 @@ const VoucherEntry = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          DR/CR <span className="text-red-500 ml-1">*</span>
+                          {t("voucher.drCr")}{" "}
+                          <span className="text-red-500 ml-1">*</span>
                         </FormLabel>
                         <Select
                           onValueChange={field.onChange}
@@ -365,12 +377,18 @@ const VoucherEntry = ({
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select dr/cr" />
+                              <SelectValue
+                                placeholder={t("voucher.selectDrCr")}
+                              />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value={`D`}>Debit</SelectItem>
-                            <SelectItem value={`C`}>Credit</SelectItem>
+                            <SelectItem value={`D`}>
+                              {t("voucher.debit")}
+                            </SelectItem>
+                            <SelectItem value={`C`}>
+                              {t("voucher.credit")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -386,10 +404,12 @@ const VoucherEntry = ({
                         <FormItem
                           className={`${subLedgerBalance <= 0 && "hidden"}`}
                         >
-                          <FormLabel>Sub Ledger Balance</FormLabel>
+                          <FormLabel>
+                            {t("voucher.subLedgerBalance")}
+                          </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter sub ledger balance"
+                              placeholder={t("voucher.enterSubLedgerBalance")}
                               type="number"
                               readOnly
                               {...field}
@@ -419,7 +439,7 @@ const VoucherEntry = ({
                   }
                 >
                   {voucherType === "J" ? (
-                    "Add To Table"
+                    t("common.addToTable")
                   ) : postVoucherLoading ? (
                     <ClipLoader
                       color="#d7e6f4"
@@ -427,7 +447,7 @@ const VoucherEntry = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Post"
+                    t("common.post")
                   )}
                 </Button>
               </div>
@@ -437,13 +457,15 @@ const VoucherEntry = ({
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[100px]">SL.</TableHead>
-                        <TableHead>Gl. Name</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead>DR/CR</TableHead>
-                        <TableHead>Sub Ledger Name</TableHead>
-                        <TableHead>Sub Ledger Narration</TableHead>
-                        <TableHead>Action</TableHead>
+                        <TableHead className="w-[100px]">
+                          {t("common.sl")}
+                        </TableHead>
+                        <TableHead>{t("common.glName")}</TableHead>
+                        <TableHead>{t("common.amount")}</TableHead>
+                        <TableHead>{t("voucher.drCr")}</TableHead>
+                        <TableHead>{t("common.subLedgerName")}</TableHead>
+                        <TableHead>{t("common.subLedgerNarration")}</TableHead>
+                        <TableHead>{t("common.action")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -464,7 +486,9 @@ const VoucherEntry = ({
                             <TableCell>{data?.amount}</TableCell>
                             <TableCell>
                               {data.drCr &&
-                                (data.drCr === "C" ? "Credit" : "Debit")}
+                                (data.drCr === "C"
+                                  ? t("voucher.credit")
+                                  : t("voucher.debit"))}
                             </TableCell>
                             <TableCell>{data?.subLedgerName || ""}</TableCell>
                             <TableCell>{data?.ledgerNarration}</TableCell>
@@ -479,9 +503,13 @@ const VoucherEntry = ({
                     </TableBody>
                     <TableFooter>
                       <TableRow>
-                        <TableCell colSpan={2}>Total Credit</TableCell>
+                        <TableCell colSpan={2}>
+                          {t("voucher.totalCredit")}
+                        </TableCell>
                         <TableCell>{totalCredit}</TableCell>
-                        <TableCell colSpan={2}>Total Debit</TableCell>
+                        <TableCell colSpan={2}>
+                          {t("voucher.totalDebit")}
+                        </TableCell>
                         <TableCell>{totalDebit}</TableCell>
                         <TableCell></TableCell>
                       </TableRow>
@@ -493,7 +521,7 @@ const VoucherEntry = ({
               {!(!voucherType || voucherType === "J") && isActiveDenom && (
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:p-5 gap-5">
                   <h3 className="w-full text-center text-xl font-semibold">
-                    Denomination Block
+                    {t("voucher.denominationBlock")}
                   </h3>
                   <div className="w-full lg:w-1/2 flex flex-col lg:flex-row gap-10">
                     <DoubleCashDenomTable
@@ -533,7 +561,7 @@ const VoucherEntry = ({
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Post"
+                    t("common.post")
                   )}
                 </div>
               )}
@@ -548,7 +576,7 @@ const VoucherEntry = ({
         handleCloseSuccessMessage={handleCloseSuccessMessage}
         showNextButton={!!receiptData}
         handleNextButton={handleGenerateReceipt}
-        nextLabel="Print Receipt"
+        nextLabel={t("voucher.printReceipt")}
       />
 
       {!showSuccessMessage && (

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import React from "react";
 import DropdownField from "@/common/formFields/DropdownField";
 import InputField from "@/common/formFields/InputField";
@@ -40,6 +42,8 @@ const ChargeDeduction = ({
   getDepositLedgerHeaderApiCall,
   ledgerFromDate,
 }) => {
+  const { t } = useTranslation();
+
   const chargeType = form.watch("chargeType");
   const productType = form.watch("productType");
   const selectedProduct = chargeTypeList?.find(
@@ -93,8 +97,7 @@ const ChargeDeduction = ({
         chargeList,
       });
     } else if (postPayload) {
-      console.log(
-        "Post Charges values:",
+      console.log(t("deposit.buttons.postCharges") + " values:",
         postPayload,
         "with details:",
         chargeList,
@@ -171,7 +174,7 @@ const ChargeDeduction = ({
         <ScrollArea className="w-full h-full pr-3">
           <div className="flex flex-col justify-start items-center w-full gap-1">
             <h3 className="text-2xl font-semibold text-center w-full">
-              Charge Deduction
+              {t("deposit.chargeDeduction.title")}
             </h3>
 
             <Form {...form}>
@@ -190,8 +193,8 @@ const ChargeDeduction = ({
                       options={productList}
                       optionLabelKey="Product_Name"
                       optionValueKey="Id"
-                      placeholder="Select Product Type"
-                      label="Select Product Type"
+                      placeholder={t("deposit.placeholders.selectProductType")}
+                      label={t("deposit.placeholders.selectProductType")}
                       isRequired={true}
                     />
 
@@ -203,8 +206,8 @@ const ChargeDeduction = ({
                       options={chargeTypeList}
                       optionLabelKey="Option_Value"
                       optionValueKey="Id"
-                      placeholder="Select Charge Type"
-                      label="Charge Type"
+                      placeholder={t("deposit.fields.chargeType")}
+                      label={t("deposit.fields.chargeType")}
                       isRequired={true}
                       disabled={!productType}
                     />
@@ -275,8 +278,8 @@ const ChargeDeduction = ({
                       form={form}
                       name="date"
                       control={form.control}
-                      placeholder="As on"
-                      label="As On"
+                      placeholder={t("deposit.placeholders.asOn")}
+                      label={t("deposit.fields.asOn")}
                       isRequired={true}
                       disabled={true}
                     />
@@ -322,8 +325,8 @@ const ChargeDeduction = ({
                     form={postForm}
                     name="voucherDate"
                     control={postForm.control}
-                    placeholder="Select Date"
-                    label="Voucher Date"
+                    placeholder={t("deposit.placeholders.selectDate")}
+                    label={t("deposit.fields.voucherDate")}
                     disabled={true}
                     isRequired={true}
                   />
@@ -333,8 +336,8 @@ const ChargeDeduction = ({
                     form={postForm}
                     name="referenceVoucherNo"
                     control={postForm.control}
-                    placeholder="Enter Ref Voucher No"
-                    label="Reference Voucher No"
+                    placeholder={t("deposit.placeholders.refVoucherNo")}
+                    label={t("deposit.fields.referenceVoucherNo")}
                     isRequired={true}
                   />
 
@@ -360,7 +363,7 @@ const ChargeDeduction = ({
                       className="w-full h-10 bg-primary text-white hover:bg-primary/90 font-semibold shadow-md flex items-center justify-center gap-2"
                     >
                       <Send className="w-4 h-4" />
-                      Post Charges
+                      {t("deposit.buttons.postCharges")}
                     </Button>
                   </div>
                 </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 
 const AVATAR_COLORS = [
@@ -29,6 +30,8 @@ const formatCurrency = (value) =>
 
 // ── Sort Icon ─────────────────────────────────────────────────────────────────
 const SortIcon = ({ active, dir }) => {
+  const { t } = useTranslation();
+
   if (!active) return <span className="ml-1 text-[10px] opacity-30">↕</span>;
   return (
     <span className="ml-1 text-[10px] text-blue-500">
@@ -84,7 +87,7 @@ const Avatar = ({ name, size = 32 }) => {
 };
 
 // ── Main Component ────────────────────────────────────────────────────────────
-const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
+const ChargeDeductionTable = ({ chargeList = [], on{t("deposit.buttons.print")} }) => {
   const [search, setSearch] = React.useState("");
   const [sortKey, setSortKey] = React.useState("");
   const [sortDir, setSortDir] = React.useState("asc");
@@ -98,9 +101,9 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
     }
   };
 
-  const handlePrint = (row) => {
-    console.log("Printing record:", row);
-    if (onPrint) onPrint(row);
+  const handle{t("deposit.buttons.print")} = (row) => {
+    console.log(t("deposit.buttons.print") + "ing record:", row);
+    if (on{t("deposit.buttons.print")}) on{t("deposit.buttons.print")}(row);
   };
 
   const filteredRows = React.useMemo(() => {
@@ -146,11 +149,11 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
 
   const COLS = [
     { label: "#", key: null },
-    { label: "Account No.", key: "Account_No" },
-    { label: "Member Name", key: "Full_Name" },
-    { label: "Balance", key: "balance" },
-    { label: "Charge Amount", key: "Charge_Amt", right: true },
-    { label: "Action", key: null },
+    { label: t("deposit.fields.accountNo"), key: "Account_No" },
+    { label: t("deposit.fields.memberName"), key: "Full_Name" },
+    { label: t("deposit.common.balance"), key: "balance" },
+    { label: t("deposit.fields.chargeAmount"), key: "Charge_Amt", right: true },
+    { label: t("deposit.common.action"), key: null },
   ];
 
   // ── Desktop Table ─────────────────────────────────────────────────────────
@@ -219,9 +222,9 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
                   </td>
                   <td className="py-3.5 px-4 text-center">
                     <button
-                      onClick={() => handlePrint(row)}
+                      onClick={() => handle{t("deposit.buttons.print")}(row)}
                       className="text-slate-400 hover:text-blue-600 transition-colors p-1.5 rounded-lg hover:bg-slate-100 inline-flex items-center justify-center"
-                      title="Print"
+                      title={t("deposit.buttons.print")}
                     >
                       <svg
                         className="w-4 h-4"
@@ -297,9 +300,9 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
                       #{String(i + 1).padStart(3, "0")}
                     </span>
                     <button
-                      onClick={() => handlePrint(row)}
+                      onClick={() => handle{t("deposit.buttons.print")}(row)}
                       className="text-slate-400 hover:text-blue-600 transition-colors p-1.5 rounded-lg hover:bg-slate-100 inline-flex items-center justify-center"
-                      title="Print"
+                      title={t("deposit.buttons.print")}
                     >
                       <svg
                         className="w-4 h-4"
@@ -321,7 +324,7 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
                 {/* Total banner */}
                 <div className="bg-rose-50 px-4 py-2.5 flex items-center justify-between">
                   <span className="text-[11px] text-rose-500 font-medium uppercase tracking-wide">
-                    Charge Amount
+                    {t("deposit.fields.chargeAmount")}
                   </span>
                   <span className="font-mono text-[15px] font-medium text-rose-700">
                     {formatCurrency(charge)}
@@ -340,7 +343,7 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
                   </div>
                   <div className="px-4 py-3">
                     <p className="text-[10px] text-slate-400 uppercase tracking-widest font-medium mb-1">
-                      Balance
+                      {t("deposit.common.balance")}
                     </p>
                     <p className="text-[12px] font-medium text-slate-700 font-mono">
                       {row.Balance || "—"}
@@ -358,7 +361,7 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
               {filteredRows.length !== 1 ? "s" : ""}
             </p>
             <div>
-              <p className="text-[10px] text-slate-400 mb-1">Total Charges</p>
+              <p className="text-[10px] text-slate-400 mb-1">{t("deposit.common.totalCharges")}</p>
               <p className="text-[14px] font-bold font-mono text-rose-700">
                 {formatCurrency(grandCharge)}
               </p>
@@ -376,7 +379,7 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
           <h4 className="text-lg font-semibold text-slate-800">
-            Calculated Charge Records
+            {t("deposit.common.calculatedChargeRecords")}
           </h4>
           <p className="text-xs text-slate-400 mt-0.5">
             {filteredRows.length === chargeList.length
@@ -404,7 +407,7 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
           </span>
           <input
             type="text"
-            placeholder="Search name or account…"
+            placeholder={t("deposit.placeholders.searchNameOrAccount") + "…"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-8 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition-all"
@@ -413,7 +416,7 @@ const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
             <button
               onClick={() => setSearch("")}
               className="absolute inset-y-0 right-3 flex items-center text-slate-300 hover:text-slate-500 text-lg leading-none"
-              aria-label="Clear"
+              aria-label={t("deposit.buttons.clear")}
             >
               ×
             </button>

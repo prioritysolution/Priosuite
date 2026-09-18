@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ const UserScroll = ({
   asOnDate,
   user,
 }) => {
+  const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -60,12 +62,12 @@ const UserScroll = ({
     const host = printHostRef.current;
 
     if (!element) {
-      toast.error("Nothing to download. Please generate the report first.");
+      toast.error(t("report.userScroll.nothingToDownload"));
       return;
     }
 
     if (!(reportData && reportData.length > 0)) {
-      toast.error("No user scroll data to download.");
+      toast.error(t("report.userScroll.noDataToDownload"));
       return;
     }
 
@@ -133,18 +135,20 @@ const UserScroll = ({
       }
 
       if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
+        toast.error(t("report.userScroll.failedToCapturePdf"));
         return;
       }
 
       pdf.save(`UserScroll-${asOnDate || "report"}.pdf`);
-      toast.success("PDF downloaded");
+      toast.success(t("report.userScroll.pdfDownloaded"));
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
-          ? `Failed to download PDF: ${error.message}`
-          : "Failed to download PDF",
+          ? t("report.userScroll.failedToDownloadPdfWithError", {
+              error: error.message,
+            })
+          : t("report.userScroll.failedToDownloadPdf"),
       );
     } finally {
       if (host) host.setAttribute("style", prevHostStyle);
@@ -172,7 +176,7 @@ const UserScroll = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">User Scroll Report</h3>
+                <h3 className="text-xl font-semibold ">{t("report.userScroll.userScrollReport")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -192,7 +196,7 @@ const UserScroll = ({
                 <DatePickerField
                   control={form.control}
                   name="date"
-                  label="Date"
+                  label={t("common.date")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -200,20 +204,20 @@ const UserScroll = ({
                 <DropdownField
                   control={form.control}
                   name="branch"
-                  label="Branch"
+                  label={t("common.branch")}
                   options={branchData}
                   optionLabelKey="Branch_Name"
-                  placeholder="Select branch"
-                  searchPlaceholder="Search branch..."
+                  placeholder={t("common.selectBranch")}
+                  searchPlaceholder={t("common.searchBranch")}
                 />
                 <DropdownField
                   control={form.control}
                   name="user"
-                  label="User"
+                  label={t("common.user")}
                   options={userList}
                   optionLabelKey="User_Name"
-                  placeholder="Select user"
-                  searchPlaceholder="Search user..."
+                  placeholder={t("common.selectUser")}
+                  searchPlaceholder={t("common.searchUser")}
                 />
 
                 <div className="w-full flex items-center gap-5 self-end">
@@ -293,22 +297,22 @@ const UserScroll = ({
                 <TableHeader>
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead className=" text-white text-center w-16">
-                      SL. NO.
+                      {t("report.userScroll.print.slNo")}
                     </TableHead>
                     <TableHead className=" text-white  border-l border-white text-center">
-                      REF. VOUCH.
+                      {t("report.userScroll.print.refVoucher")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      VOUCH. NO.
+                      {t("report.userScroll.print.voucherNo")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center w-[380px]">
-                      PARTICULARS
+                      {t("report.userScroll.print.particulars")}
                     </TableHead>
                     <TableHead className=" text-white border-l border-white text-center">
-                      RECEIPT
+                      {t("report.userScroll.print.receipt")}
                     </TableHead>
                     <TableHead className="text-white border-l border-white text-center">
-                      PAYMENT
+                      {t("report.userScroll.print.payment")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -373,7 +377,7 @@ const UserScroll = ({
                             </TableRow>
                           ))}
                           <TableRow>
-                            <TableCell colSpan={4}>Total</TableCell>
+                            <TableCell colSpan={4}>{t("common.total")}</TableCell>
                             <TableCell>
                               {data?.entries
                                 ?.reduce(
@@ -399,7 +403,7 @@ const UserScroll = ({
                 <TableFooter>
                   <TableRow className="">
                     <TableCell colSpan={4} className="text-right">
-                      Grand Total
+                      {t("common.grandTotal")}
                     </TableCell>
                     <TableCell>
                       {reportData

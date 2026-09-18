@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { getMemberSummaryCards } from "./memberDashboardData";
 
 const SummaryCard = ({ card }) => {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(true);
   const Icon = card.icon;
 
@@ -21,7 +24,15 @@ const SummaryCard = ({ card }) => {
               card.labelColor || "text-slate-500",
             )}
           >
-            {card.label}
+            {card.id === "total-balance"
+              ? t("dashboard.totalBalance")
+              : card.id === "savings"
+                ? t("dashboard.savingsAccount")
+                : card.id === "fixed-deposits"
+                  ? t("dashboard.fixedDeposits")
+                  : card.id === "active-loans"
+                    ? t("dashboard.activeLoans")
+                    : card.label}
           </p>
 
           <div className="mt-2 flex items-center gap-2">
@@ -38,7 +49,7 @@ const SummaryCard = ({ card }) => {
                 type="button"
                 onClick={() => setVisible((v) => !v)}
                 className="shrink-0 text-slate-400 hover:text-slate-700"
-                aria-label={visible ? "Hide balance" : "Show balance"}
+                aria-label={visible ? t("dashboard.hideBalance") : t("dashboard.showBalance")}
               >
                 {visible ? (
                   <Eye className="h-4 w-4" />
@@ -49,7 +60,15 @@ const SummaryCard = ({ card }) => {
             )}
           </div>
 
-          <p className="mt-1 truncate text-xs text-slate-500">{card.subtext}</p>
+          <p className="mt-1 truncate text-xs text-slate-500">
+            {card.id === "total-balance"
+              ? t("dashboard.availableBalance")
+              : card.id === "fixed-deposits"
+                ? t("dashboard.totalInFdAccounts")
+                : card.id === "active-loans"
+                  ? t("dashboard.totalOutstanding")
+                  : card.subtext}
+          </p>
         </div>
 
         <div

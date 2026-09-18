@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
@@ -11,6 +12,8 @@ const StateForm = ({
   editData,
   onCancel,
 }) => {
+  const { t } = useTranslation();
+
   const isEdit = editData && Object.keys(editData).length > 0;
 
   return (
@@ -23,8 +26,8 @@ const StateForm = ({
         <InputField
           control={form.control}
           name="name"
-          label="State Name"
-          placeholder="Enter state name"
+          label={t("master.operationalArea.fields.stateName")}
+          placeholder={t("master.operationalArea.placeholders.stateName")}
           isRequired
         />
         <div className="flex items-center justify-end gap-3 pt-1">
@@ -35,7 +38,7 @@ const StateForm = ({
             onClick={onCancel}
             disabled={postLoading || updateLoading}
           >
-            Cancel
+            {t("common.buttons.cancel")}
           </Button>
           <Button
             type="submit"
@@ -45,9 +48,9 @@ const StateForm = ({
             {postLoading || updateLoading ? (
               <ClipLoader color="#fff" size={18} speedMultiplier={0.7} />
             ) : isEdit ? (
-              "Update"
+              t("common.buttons.update")
             ) : (
-              "Add"
+              t("common.buttons.add")
             )}
           </Button>
         </div>

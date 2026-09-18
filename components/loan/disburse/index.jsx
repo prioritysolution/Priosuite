@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
@@ -61,6 +63,8 @@ const Disburse = ({
   handleCloseSuccessMessage,
   deductions = [],
 }) => {
+  const { t } = useTranslation();
+
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -86,21 +90,21 @@ const Disburse = ({
   return (
     <div className="w-full h-full flex justify-between  bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2  w-full gap-2 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">Loan Disburse</h3>
+        <h3 className="text-2xl font-semibold ">{t("loan.loanDisburse")}</h3>
 
         {!showForm ? (
           <div className="w-full border border-primary rounded-lg ">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px] text-center">Sl</TableHead>
-                  <TableHead className="text-center">Application No</TableHead>
-                  <TableHead className="text-center">Product Name</TableHead>
-                  <TableHead className="text-center">Sanction Date</TableHead>
-                  <TableHead className="text-center">Applicant Name</TableHead>
-                  <TableHead className="text-center">Account No</TableHead>
-                  <TableHead className="text-center">Sanction Amount</TableHead>
-                  <TableHead className="text-center">Action</TableHead>
+                  <TableHead className="w-[100px] text-center">{t("loan.sl")}</TableHead>
+                  <TableHead className="text-center">{t("loan.applicationNo")}</TableHead>
+                  <TableHead className="text-center">{t("loan.productName")}</TableHead>
+                  <TableHead className="text-center">{t("loan.sanctionDate")}</TableHead>
+                  <TableHead className="text-center">{t("loan.applicantName")}</TableHead>
+                  <TableHead className="text-center">{t("loan.accountNoShort")}</TableHead>
+                  <TableHead className="text-center">{t("loan.sanctionAmount")}</TableHead>
+                  <TableHead className="text-center">{t("loan.action")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -178,62 +182,60 @@ const Disburse = ({
                 </div>
 
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    Application Block
-                  </h3>
+                  <h3 className="w-full text-center text-xl font-semibold">{t("loan.applicationBlock")}</h3>
                   <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 xl:gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
                       name="applicationNo"
-                      label="Application No."
-                      placeholder="Enter application no."
+                      label={t("loan.applicationNo2")}
+                      placeholder={t("loan.enterApplicationNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="applicationDate"
-                      label="Application Date"
-                      placeholder="Enter application date"
+                      label={t("loan.applicationDate")}
+                      placeholder={t("loan.enterApplicationDate")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="sanctionDate"
-                      label="Sanction Date"
-                      placeholder="Enter sanction date"
+                      label={t("loan.sanctionDate")}
+                      placeholder={t("loan.enterSanctionDate")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="accountNo"
-                      label="Account No."
-                      placeholder="Enter account no."
+                      label={t("loan.accountNo")}
+                      placeholder={t("loan.enterAccountNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="memberName"
-                      label="Member Name"
-                      placeholder="Enter member name"
+                      label={t("loan.memberName")}
+                      placeholder={t("loan.enterMemberName")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="gurdianName"
-                      label="Gurdian Name"
-                      placeholder="Enter gurdian name"
+                      label={t("loan.gurdianName")}
+                      placeholder={t("loan.enterGurdianName")}
                       readOnly
                     />
                     <TextareaField
                       control={form.control}
                       name="address"
-                      label="Address"
-                      placeholder="Enter address"
+                      label={t("loan.address")}
+                      placeholder={t("loan.enterAddress")}
                       className="resize-none"
                       readOnly
                     />
@@ -241,65 +243,55 @@ const Disburse = ({
                     <InputField
                       control={form.control}
                       name="mobile"
-                      label="Mobile No."
-                      placeholder="Enter mobile no."
+                      label={t("loan.mobileNo")}
+                      placeholder={t("loan.enterMobileNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="panNo"
-                      label="Pan No."
-                      placeholder="Enter pan no."
+                      label={t("loan.panNo")}
+                      placeholder={t("loan.enterPanNo")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="applicationAmount"
-                      label="Sanction Amount"
-                      placeholder="Enter sanction amount"
+                      label={t("loan.sanctionAmount")}
+                      placeholder={t("loan.enterSanctionAmount")}
                       readOnly
                     />
 
                     <InputField
                       control={form.control}
                       name="shareBalance"
-                      label="Share Balance"
-                      placeholder="Enter share balance"
+                      label={t("loan.shareBalance")}
+                      placeholder={t("loan.enterShareBalance")}
                       readOnly
                     />
 
                     {/* <InputField
                       control={form.control}
                       name="depositBalance"
-                      label="Deposit Balance"
-                      placeholder="Enter deposit balance"
+                      label={t("loan.depositBalance")}
+                      placeholder={t("loan.enterDepositBalance")}
                       readOnly
                     /> */}
                   </div>
                 </div>
 
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-3 gap-3">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    Disburse Block
-                  </h3>
+                  <h3 className="w-full text-center text-xl font-semibold">{t("loan.disburseBlock")}</h3>
                   <div className="w-full overflow-x-auto rounded-lg border border-gray-300 bg-white">
                     <Table className="min-w-[600px] w-full text-sm border-collapse">
                       <TableHeader className="bg-gray-50">
                         <TableRow className="border-b border-gray-300">
-                          <TableHead className="w-[60px] font-bold text-center border-r border-gray-300 text-gray-700">
-                            Sl
-                          </TableHead>
-                          <TableHead className="font-bold border-r border-gray-300 text-gray-700">
-                            Particulars
-                          </TableHead>
-                          <TableHead className="font-bold text-right border-r border-gray-300 text-gray-700 w-[200px] pr-4">
-                            Disburse
-                          </TableHead>
-                          <TableHead className="font-bold text-right text-gray-700 w-[200px] pr-4">
-                            Deductions
-                          </TableHead>
+                          <TableHead className="w-[60px] font-bold text-center border-r border-gray-300 text-gray-700">{t("loan.sl")}</TableHead>
+                          <TableHead className="font-bold border-r border-gray-300 text-gray-700">{t("loan.particulars")}</TableHead>
+                          <TableHead className="font-bold text-right border-r border-gray-300 text-gray-700 w-[200px] pr-4">{t("loan.disburse")}</TableHead>
+                          <TableHead className="font-bold text-right text-gray-700 w-[200px] pr-4">{t("loan.deductions")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -329,9 +321,7 @@ const Disburse = ({
                               <TableCell className="text-center border-r border-gray-300 py-1">
                                 1
                               </TableCell>
-                              <TableCell className="font-medium border-r border-gray-300 py-1">
-                                Loan Disburse
-                              </TableCell>
+                              <TableCell className="font-medium border-r border-gray-300 py-1">{t("loan.loanDisburse")}</TableCell>
                               <TableCell className="p-0 border-r border-gray-300 py-1">
                                 <InputField
                                   control={form.control}
@@ -376,9 +366,7 @@ const Disburse = ({
                                   <TableCell className="text-center border-r border-gray-300 py-1">
                                     {deductions.length + 2}
                                   </TableCell>
-                                  <TableCell className="font-bold text-primary border-r border-gray-300 py-1">
-                                    Net Disburse
-                                  </TableCell>
+                                  <TableCell className="font-bold text-primary border-r border-gray-300 py-1">{t("loan.netDisburse")}</TableCell>
                                   <TableCell className="bg-gray-50/50 border-r border-gray-300 text-center text-gray-400 py-1">
                                     —
                                   </TableCell>
@@ -393,9 +381,7 @@ const Disburse = ({
                                 </TableRow>
                                 <TableRow className="bg-gray-100/70 font-bold hover:bg-gray-100">
                                   <TableCell className="text-center border-r border-gray-300 py-2"></TableCell>
-                                  <TableCell className="border-r border-gray-300 py-2 text-gray-800">
-                                    Total
-                                  </TableCell>
+                                  <TableCell className="border-r border-gray-300 py-2 text-gray-800">{t("loan.total")}</TableCell>
                                   <TableCell className="text-right border-r border-gray-300 pr-4 tabular-nums py-2 text-gray-800 font-bold">
                                     {Number(
                                       form.watch("disburseAmount") || 0,
@@ -430,16 +416,14 @@ const Disburse = ({
                 </div>
 
                 <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 py-2 sm:px-5 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    Transanction Block
-                  </h3>
+                  <h3 className="w-full text-center text-xl font-semibold">{t("loan.transanctionBlock")}</h3>
                   <div className="w-full flex flex-col gap-2">
                     <FormField
                       control={form.control}
                       name="transMode"
                       render={({ field }) => (
                         <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full lg:w-fit">
-                          <FormLabel>Select transanction mode</FormLabel>
+                          <FormLabel>{t("loan.selectTransanctionMode")}</FormLabel>
                           <FormControl>
                             <RadioGroup
                               onValueChange={field.onChange}
@@ -450,25 +434,19 @@ const Disburse = ({
                                 <FormControl>
                                   <RadioGroupItem value="cash" />
                                 </FormControl>
-                                <FormLabel className="font-normal">
-                                  Cash
-                                </FormLabel>
+                                <FormLabel className="font-normal">{t("loan.cash")}</FormLabel>
                               </FormItem>
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
                                   <RadioGroupItem value="bank" />
                                 </FormControl>
-                                <FormLabel className="font-normal">
-                                  Bank
-                                </FormLabel>
+                                <FormLabel className="font-normal">{t("loan.bank")}</FormLabel>
                               </FormItem>
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
                                   <RadioGroupItem value="savings" />
                                 </FormControl>
-                                <FormLabel className="font-normal">
-                                  Savings
-                                </FormLabel>
+                                <FormLabel className="font-normal">{t("loan.savings")}</FormLabel>
                               </FormItem>
                             </RadioGroup>
                           </FormControl>
@@ -480,7 +458,7 @@ const Disburse = ({
                       <DatePickerField
                         control={form.control}
                         name="disburseDate"
-                        label="Disburse Date"
+                        label={t("loan.disburseDate")}
                         defaultValue={new Date(beg_date)}
                         disabled={true}
                       />
@@ -488,15 +466,15 @@ const Disburse = ({
                       <InputField
                         control={form.control}
                         name="refVouchNo"
-                        label="Ref. Vouch No."
-                        placeholder="Enter ref. vouch no."
+                        label={t("loan.refVouchNo")}
+                        placeholder={t("loan.enterRefVouchNo")}
                       />
 
                       <InputField
                         control={form.control}
                         name="bondNo"
-                        label="Bond No."
-                        placeholder="Enter bond no."
+                        label={t("loan.bondNo")}
+                        placeholder={t("loan.enterBondNo")}
                       />
                       {transMode === "cash" ? (
                         isActiveDenom ? (
@@ -527,21 +505,21 @@ const Disburse = ({
                         <DropdownField
                           control={form.control}
                           name="bank"
-                          label="Bank"
+                          label={t("loan.bank")}
                           options={bankAccountData}
                           optionLabelKey="Bank_Name"
-                          placeholder="Select bank"
-                          searchPlaceholder="Search bank..."
+                          placeholder={t("loan.selectBank")}
+                          searchPlaceholder={t("loan.searchBank")}
                         />
                       ) : (
                         <DropdownField
                           control={form.control}
                           name="savings"
-                          label="Savings"
+                          label={t("loan.savings")}
                           options={savingsAccountData}
                           optionLabelKey="Account_No"
-                          placeholder="Select savings"
-                          searchPlaceholder="Search savings..."
+                          placeholder={t("loan.selectSavings")}
+                          searchPlaceholder={t("loan.searchSavings")}
                         />
                       )}
                     </div>
@@ -570,7 +548,7 @@ const Disburse = ({
                         speedMultiplier={0.7}
                       />
                     ) : (
-                      "Add"
+                      t("loan.add")
                     )}
                   </Button>
                 </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -41,6 +42,8 @@ const chunkPagesWithFooterLogic = (rows) => {
 };
 
 const PreviewModal = ({ printRef, tableData, fromDate, toDate }) => {
+  const { t } = useTranslation();
+
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");
   const [branchName, setBranchName] = useState("");
@@ -94,7 +97,7 @@ const PreviewModal = ({ printRef, tableData, fromDate, toDate }) => {
             <p>{address}</p>
             <p>{regNo}</p>
             <p className="text-sm">
-              Account Statement From{" "}
+              {t("loan.accountStatementFrom")}{" "}
               {fromDate && format(fromDate, "dd-MM-yyyy")} To{" "}
               {toDate && format(toDate, "dd-MM-yyyy")}
             </p>
@@ -102,31 +105,31 @@ const PreviewModal = ({ printRef, tableData, fromDate, toDate }) => {
 
           <div className="h-[120px] w-full border border-black my-1 px-2 py-1 grid grid-cols-3 gap-1 text-xs text-start">
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Member Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.memberNameColon")}</p>
               <p>{tableData?.basicData?.Full_Name || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Guardian Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.guardianNameColon")}</p>
               <p>{tableData?.basicData?.Relation_Name || ""}</p>
             </div>
             <div className="w-full flex gap-1 col-span-3">
-              <p className="font-semibold text-nowrap">Address : </p>
+              <p className="font-semibold text-nowrap">{t("loan.address")}</p>
               <p>{tableData?.basicData?.Address || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Account No. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.accountNoColon")}</p>
               <p>{tableData?.basicData?.Account_No || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Ref. Ac. No. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.refAcNoColon")}</p>
               <p>{tableData?.basicData?.Ref_Ac_No || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Ledger Folio : </p>
+              <p className="font-semibold text-nowrap">{t("loan.ledgerFolioColon")}</p>
               <p>{tableData?.basicData?.Ledg_Folio || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Disb. Date : </p>
+              <p className="font-semibold text-nowrap">{t("loan.disbDateColon")}</p>
               <p>
                 {tableData?.basicData?.Disb_Date
                   ? format(tableData?.basicData?.Disb_Date, "dd-MM-yyyy")
@@ -134,15 +137,15 @@ const PreviewModal = ({ printRef, tableData, fromDate, toDate }) => {
               </p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">ROI. : </p>
+              <p className="font-semibold text-nowrap">{t("loan.print.roi")}</p>
               <p>{tableData?.basicData?.Roi || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Disb. Amount : </p>
+              <p className="font-semibold text-nowrap">{t("loan.disbAmountColon")}</p>
               <p>{tableData?.basicData?.Disb_Amt || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Repay Within : </p>
+              <p className="font-semibold text-nowrap">{t("loan.repayWithinColon")}</p>
               <p>
                 {tableData?.basicData?.Repay_Within
                   ? format(tableData?.basicData?.Repay_Within, "dd-MM-yyyy")
@@ -150,11 +153,11 @@ const PreviewModal = ({ printRef, tableData, fromDate, toDate }) => {
               </p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Repay Mode : </p>
+              <p className="font-semibold text-nowrap">{t("loan.repayModeColon")}</p>
               <p>{tableData?.basicData?.Repay_Mode || ""}</p>
             </div>
             <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Product Name : </p>
+              <p className="font-semibold text-nowrap">{t("loan.productNameColon")}</p>
               <p>{tableData?.basicData?.Prod_Name || ""}</p>
             </div>
           </div>
@@ -165,39 +168,17 @@ const PreviewModal = ({ printRef, tableData, fromDate, toDate }) => {
               {/* Main Header Every Page */}
               <TableHeader>
                 <TableRow className="h-[50px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[40px]">
-                    SL. NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    TRANS. DATE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center">
-                    PARTICULAR
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    DISB. AMOUNT
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    CURR. PRN. PAID
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    CURR. INTT. PAID
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    OD. PRN. PAID
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    OD. INTT. PAID
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    CURR. OUTS.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    OD. OUTS.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    DUE INTT.
-                  </TableHead>
+                  <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("loan.print.slNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("loan.print.transDate")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center">{t("loan.print.particular")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.disbAmount")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.currPrnPaid")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.currInttPaid")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.odPrnPaid")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.odInttPaid")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.currOuts")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.odOuts")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.dueIntt")}</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -248,9 +229,7 @@ const PreviewModal = ({ printRef, tableData, fromDate, toDate }) => {
                     <TableCell
                       colSpan={3}
                       className="border border-black p-0 text-center"
-                    >
-                      Total
-                    </TableCell>
+                    >{t("loan.total")}</TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
                       {tableData?.grandTotal?.disburse?.toFixed(2) || "0.00"}
                     </TableCell>
@@ -283,12 +262,10 @@ const PreviewModal = ({ printRef, tableData, fromDate, toDate }) => {
 
           {/* Footer */}
           <div className="w-full h-[40px] mt-2 flex items-end justify-between text-xs relative">
-            <p className="text-nowrap">Generated By: {userName}</p>
-            <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">
-              This report is generated by PrioSuite.
-            </p>
+            <p className="text-nowrap">{t("loan.generatedByColon")} {userName}</p>
+            <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">{t("loan.reportGeneratedByPrioSuite")}</p>
             <p className="text-nowrap">
-              Generated On: {currentDate} {currentTime}
+              {t("loan.generatedOnColon")} {currentDate} {currentTime}
             </p>
           </div>
         </div>
