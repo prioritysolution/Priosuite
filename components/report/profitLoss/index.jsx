@@ -314,11 +314,11 @@ const ProfitLoss = ({
                           <TableRow>
                             <TableCell
                               colSpan={2}
-                              className="font-semibold border border-secondary bg-gray-50"
+                              className="font-semibold border border-secondary bg-gray-50 text-left"
                             >
                               {group.headName}
                             </TableCell>
-                            <TableCell className="font-semibold border border-secondary bg-gray-50">
+                            <TableCell className="font-semibold border border-secondary bg-gray-50 text-right">
                               {group.subtotalAmount &&
                                 group.subtotalAmount.toFixed(2)}
                             </TableCell>
@@ -326,13 +326,13 @@ const ProfitLoss = ({
                           {/* Rows for each group */}
                           {group.transactions.map((data, idx) => (
                             <TableRow key={idx}>
-                              <TableCell className="border border-secondary">
+                              <TableCell className="border border-secondary text-left">
                                 {data.Ledger_Name}
                               </TableCell>
-                              <TableCell className="border border-secondary">
+                              <TableCell className="border border-secondary text-right">
                                 {data.Amount}
                               </TableCell>
-                              <TableCell className="border border-secondary">
+                              <TableCell className="border border-secondary text-right">
                                 {data.Debit}
                               </TableCell>
                             </TableRow>
@@ -347,11 +347,11 @@ const ProfitLoss = ({
                   <TableRow className="border-t-2 border-black">
                     <TableCell
                       colSpan={2}
-                      className="font-semibold border border-secondary"
+                      className="font-semibold border border-secondary text-left"
                     >
                       {t("common.subTotal")}
                     </TableCell>
-                    <TableCell className="font-semibold border border-secondary">
+                    <TableCell className="font-semibold border border-secondary text-right">
                       {ledgerExpenditureTableData &&
                         ledgerExpenditureTableData?.grandTotals &&
                         ledgerExpenditureTableData?.grandTotals
@@ -367,13 +367,13 @@ const ProfitLoss = ({
                       <TableRow className="">
                         <TableCell
                           colSpan={2}
-                          className="font-semibold border border-secondary"
+                          className="font-semibold border border-secondary text-left"
                         >
                           {netData &&
                             netData.length > 0 &&
                             netData[0].Head_Name}
                         </TableCell>
-                        <TableCell className="font-semibold border border-secondary">
+                        <TableCell className="font-semibold border border-secondary text-right">
                           {netData &&
                             netData.length > 0 &&
                             netData[0].Amount &&
@@ -384,11 +384,11 @@ const ProfitLoss = ({
                   <TableRow className="">
                     <TableCell
                       colSpan={2}
-                      className="font-semibold border border-secondary"
+                      className="font-semibold border border-secondary text-left"
                     >
                       {t("common.grandTotal")}
                     </TableCell>
-                    <TableCell className="font-semibold border border-secondary">
+                    <TableCell className="font-semibold border border-secondary text-right">
                       {(
                         (ledgerExpenditureTableData &&
                         ledgerExpenditureTableData.grandTotals &&
@@ -433,11 +433,11 @@ const ProfitLoss = ({
                         <TableRow>
                           <TableCell
                             colSpan={2}
-                            className="font-semibold border border-secondary bg-gray-50"
+                            className="font-semibold border border-secondary bg-gray-50 text-left"
                           >
                             {group.headName}
                           </TableCell>
-                          <TableCell className="font-semibold border border-secondary bg-gray-50">
+                          <TableCell className="font-semibold border border-secondary bg-gray-50 text-right">
                             {group.subtotalAmount &&
                               group.subtotalAmount.toFixed(2)}
                           </TableCell>
@@ -445,13 +445,13 @@ const ProfitLoss = ({
                         {/* Rows for each group */}
                         {group.transactions.map((data, idx) => (
                           <TableRow key={idx}>
-                            <TableCell className="border border-secondary">
+                            <TableCell className="border border-secondary text-left">
                               {data.Ledger_Name}
                             </TableCell>
-                            <TableCell className="border border-secondary">
+                            <TableCell className="border border-secondary text-right">
                               {data.Amount}
                             </TableCell>
-                            <TableCell className="border border-secondary">
+                            <TableCell className="border border-secondary text-right">
                               {data.Debit}
                             </TableCell>
                           </TableRow>
@@ -465,11 +465,11 @@ const ProfitLoss = ({
                   <TableRow className="border-t-2 border-black">
                     <TableCell
                       colSpan={2}
-                      className="font-semibold border border-secondary"
+                      className="font-semibold border border-secondary text-left"
                     >
                       {t("common.subTotal")}
                     </TableCell>
-                    <TableCell className="font-semibold border border-secondary">
+                    <TableCell className="font-semibold border border-secondary text-right">
                       {ledgerIncomeTableData &&
                         ledgerIncomeTableData?.grandTotals &&
                         ledgerIncomeTableData?.grandTotals.grandTotalAmount &&
@@ -484,13 +484,13 @@ const ProfitLoss = ({
                       <TableRow className="">
                         <TableCell
                           colSpan={2}
-                          className="font-semibold border border-secondary"
+                          className="font-semibold border border-secondary text-left"
                         >
                           {netData &&
                             netData.length > 0 &&
                             netData[0].Head_Name}
                         </TableCell>
-                        <TableCell className="font-semibold border border-secondary">
+                        <TableCell className="font-semibold border border-secondary text-right">
                           {netData &&
                             netData.length > 0 &&
                             parseFloat(netData[0].Amount).toFixed(2)}
@@ -500,11 +500,11 @@ const ProfitLoss = ({
                   <TableRow className="">
                     <TableCell
                       colSpan={2}
-                      className="font-semibold border border-secondary"
+                      className="font-semibold border border-secondary text-left"
                     >
                       {t("common.grandTotal")}
                     </TableCell>
-                    <TableCell className="font-semibold border border-secondary">
+                    <TableCell className="font-semibold border border-secondary text-right">
                       {(
                         (ledgerIncomeTableData &&
                         ledgerIncomeTableData.grandTotals &&

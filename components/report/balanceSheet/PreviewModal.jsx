@@ -229,8 +229,8 @@ const PreviewModal = ({
                       </h2>
                       <p>
                         I report that I have audited the above balance Sheet as
-                        on 31-March-2023 and the annexed Profit and Loss Account
-                        for the year ended 31-March-2023 and have obtained all
+                        on {asOnDate} and the annexed Profit and Loss Account
+                        for the year ended {asOnDate} and have obtained all
                         the information and explanation I have required. In my
                         opinion the Balance Sheet and the Profit and Loss
                         Account have been drawn up inconformity with the law and
@@ -251,9 +251,9 @@ const PreviewModal = ({
                     {t("report.balanceSheet.auditorsCertificate")}
                   </h2>
                   <p>
-                    I report that I have audited the above balance Sheet as on
-                    31-March-2023 and the annexed Profit and Loss Account for
-                    the year ended 31-March-2023 and have obtained all the
+                    I report that I have audited the above balance Sheet as on{" "}
+                    {asOnDate} and the annexed Profit and Loss Account for
+                    the year ended {asOnDate} and have obtained all the
                     information and explanation I have required. In my opinion
                     the Balance Sheet and the Profit and Loss Account have been
                     drawn up inconformity with the law and subject to my

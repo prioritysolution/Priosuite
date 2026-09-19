@@ -509,7 +509,8 @@ export const endPoints = {
   getVoucherSubLedgerBalance: (orgId, subGlId, type, date) =>
     `${createApi}Org/ProcessVoucherEntry/GetSubLedgerBalance?org_id=${orgId}&subgl_id=${subGlId}&type=${type}&date=${date}`,
   addVoucherEntry: `${createApi}Org/ProcessVoucherEntry/PostVoucher`,
-  getAdjustmentVoucherLedgerList: `${createApi}Org/ProcessVoucherEntry/GetAdjLedgerList`,
+  getAdjustmentVoucherLedgerList: (orgId) =>
+    `${createApi}Org/ProcessVoucherEntry/GetAdjLedgerList?org_id=${orgId}`,
   addAdjustmentVoucher: `${createApi}Org/ProcessVoucherEntry/PostAdjVoucher`,
   addProvision: `${createApi}Org/ProcessVoucherEntry/PostProvision`,
   getDaybookReport: (orgId, branchId, date) =>

@@ -4,7 +4,7 @@ import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "@/utils/secureCookieHelper";
 import getCookieData from "@/utils/getCookieData";
-import BrandMark from "@/common/BrandMark";
+import CentralLoader from "@/common/loader/CentralLoader";
 
 const COOKIE_OPTIONS = {
   expires: 7,
@@ -19,37 +19,6 @@ function applyAuthCookiesFromSearchParams(searchParams) {
     const cookieKey = key.replace(/^priosuite_[^_]+_/i, "");
     Cookies.set(cookieKey, value, COOKIE_OPTIONS);
   });
-}
-
-function LoadingScreen() {
-  return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-6 bg-[#eaf4fc]">
-      <BrandMark />
-      <div className="flex items-center gap-4">
-        <p className="text-lg font-medium tracking-wide text-gray-700">
-          Loading
-        </p>
-        <div className="flex items-center gap-2.5">
-          {[0, 1, 2, 3].map((i) => (
-            <span
-              key={i}
-              className="inline-block h-2.5 w-2.5 rounded-full bg-[#1B74D6]"
-              style={{
-                animation: "bounce-dot 1.2s ease-in-out infinite",
-                animationDelay: `${i * 0.2}s`,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-      <style>{`
-        @keyframes bounce-dot {
-          0%, 80%, 100% { opacity: 0.2; transform: scale(0.75); }
-          40% { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
-    </div>
-  );
 }
 
 function HomeInner() {
@@ -75,12 +44,12 @@ function HomeInner() {
     router.replace("/dashboard");
   }, [router, searchParams]);
 
-  return <LoadingScreen />;
+  return <CentralLoader fullScreen />;
 }
 
 export default function Home() {
   return (
-    <Suspense fallback={<LoadingScreen />}>
+    <Suspense fallback={<CentralLoader fullScreen />}>
       <HomeInner />
     </Suspense>
   );

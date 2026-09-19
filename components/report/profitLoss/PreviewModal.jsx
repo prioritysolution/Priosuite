@@ -181,11 +181,11 @@ const PreviewModal = ({
                                 >
                                   <TableCell
                                     colSpan={2}
-                                    className="font-semibold border p-0 text-start pl-3 text-xs border-black"
+                                    className="font-semibold border p-0 text-left pl-3 text-xs border-black"
                                   >
                                     {row.data.headName}
                                   </TableCell>
-                                  <TableCell className="font-semibold border p-0 text-right border-black pr-[2px]">
+                                  <TableCell className="font-semibold border p-0 text-right border-black pr-1">
                                     {row.data.subtotalAmount?.toFixed(2)}
                                   </TableCell>
                                 </TableRow>
@@ -196,13 +196,13 @@ const PreviewModal = ({
                                   key={`txn-${index}`}
                                   className="h-[40px]"
                                 >
-                                  <TableCell className="border border-black p-0 text-right pr-[2px]">
+                                  <TableCell className="border border-black p-0 text-left pl-3 pr-1">
                                     {row.data.Ledger_Name}
                                   </TableCell>
-                                  <TableCell className="border border-black p-0 text-right pr-[2px]">
+                                  <TableCell className="border border-black p-0 text-right pr-1">
                                     {parseFloat(row.data.Amount).toFixed(2)}
                                   </TableCell>
-                                  <TableCell className="border border-black p-0 text-right pr-[2px]">
+                                  <TableCell className="border border-black p-0 text-right pr-1">
                                     {row.data.Debit
                                       ? parseFloat(row.data.Debit)?.toFixed(2)
                                       : ""}
@@ -217,11 +217,11 @@ const PreviewModal = ({
                                 >
                                   <TableCell
                                     colSpan={2}
-                                    className="font-semibold border border-black p-0 text-center"
+                                    className="font-semibold border border-black p-0 text-left pl-3"
                                   >
                                     {t("common.subTotal")}
                                   </TableCell>
-                                  <TableCell className="font-semibold border border-black p-0 text-center">
+                                  <TableCell className="font-semibold border border-black p-0 text-right pr-1">
                                     {parseFloat(row.amount).toFixed(2)}
                                   </TableCell>
                                 </TableRow>
@@ -234,11 +234,11 @@ const PreviewModal = ({
                                 >
                                   <TableCell
                                     colSpan={2}
-                                    className="font-semibold border border-black p-0 text-center"
+                                    className="font-semibold border border-black p-0 text-left pl-3"
                                   >
                                     {row.data.Head_Name}
                                   </TableCell>
-                                  <TableCell className="font-semibold border border-black p-0 text-center">
+                                  <TableCell className="font-semibold border border-black p-0 text-right pr-1">
                                     {parseFloat(row.data.Amount).toFixed(2)}
                                   </TableCell>
                                 </TableRow>
@@ -251,11 +251,11 @@ const PreviewModal = ({
                                 >
                                   <TableCell
                                     colSpan={2}
-                                    className="font-semibold bg-white border border-black p-0 text-center"
+                                    className="font-semibold bg-white border border-black p-0 text-left pl-3"
                                   >
                                     {t("common.grandTotal")}
                                   </TableCell>
-                                  <TableCell className="font-semibold border border-black p-0 text-center">
+                                  <TableCell className="font-semibold border border-black p-0 text-right pr-1">
                                     {parseFloat(row.amount).toFixed(2)}
                                   </TableCell>
                                 </TableRow>

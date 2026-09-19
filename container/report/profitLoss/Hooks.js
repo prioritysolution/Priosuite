@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import getCookieData from "@/utils/getCookieData";
@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { getProfitLossReportAPI } from "./ProfitLossApis";
+import { parseLocalDate } from "@/utils/dateHelpers";
 
 export const useProfitLoss = () => {
   const branchId = getCookieData("userBranchId");
@@ -25,6 +26,8 @@ export const useProfitLoss = () => {
 
   const [netData, setNetData] = useState([]);
 
+  const defaultToDate = parseLocalDate(getCookieData("fin_end_date"));
+
   const formSchema = yup.object({
     toDate: yup.date().required("To date is required"),
     branch: yup.string().required("Branch is required"),
@@ -33,10 +36,17 @@ export const useProfitLoss = () => {
   const form = useForm({
     resolver: yupResolver(formSchema),
     defaultValues: {
-      toDate: null,
+      toDate: defaultToDate,
       branch: branchId,
     },
   });
+
+  useEffect(() => {
+    const finEndDate = parseLocalDate(getCookieData("fin_end_date"));
+    if (finEndDate) {
+      form.setValue("toDate", finEndDate, { shouldValidate: false });
+    }
+  }, [form]);
 
   const handleSubmit = (values) => {
     getProfitLossReportApiCall(values);

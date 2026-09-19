@@ -152,7 +152,7 @@ export const useAdjustmentVoucher = () => {
     setLoading(true);
 
     try {
-      const res = await getAdjustmentVoucherLedgerListAPI();
+      const res = await getAdjustmentVoucherLedgerListAPI(orgId);
       if (res.message === "Data Found") {
         dispatch(getLedgerListData(res.details));
       } else {

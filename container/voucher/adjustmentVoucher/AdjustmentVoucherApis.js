@@ -11,9 +11,9 @@ export const postAdjustmentVoucherAPI = async (bodyData) => {
   return res;
 };
 
-export const getAdjustmentVoucherLedgerListAPI = async () => {
+export const getAdjustmentVoucherLedgerListAPI = async (orgId) => {
   let data = {
-    url: endPoints.getAdjustmentVoucherLedgerList,
+    url: endPoints.getAdjustmentVoucherLedgerList(orgId),
   };
 
   let res = await doGetApiCall(data);

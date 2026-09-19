@@ -138,7 +138,11 @@ const Withdrawn = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="w-full flex-1 min-h-0 overflow-y-scroll"
+            className={
+              visibleBlock
+                ? "w-full flex-1 min-h-0 overflow-y-auto"
+                : "w-full overflow-hidden"
+            }
             autoComplete="off"
           >
             <div className="grid lg:grid-cols-[7fr_3fr] gap-2 lg:h-full lg:min-h-0">

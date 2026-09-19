@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { getPlAppropiationReportAPI } from "./PlAppropiationApis";
+import { parseLocalDate } from "@/utils/dateHelpers";
 
 export const usePlAppropiation = () => {
   const branchId = getCookieData("userBranchId");
@@ -21,6 +22,8 @@ export const usePlAppropiation = () => {
   );
   const [ledgerIncomeTableData, setLedgerIncomeTableData] = useState([]);
 
+  const defaultToDate = parseLocalDate(getCookieData("fin_end_date"));
+
   const formSchema = yup.object({
     toDate: yup.date().required("To date is required"),
     branch: yup.string().required("Branch is required"),
@@ -29,10 +32,17 @@ export const usePlAppropiation = () => {
   const form = useForm({
     resolver: yupResolver(formSchema),
     defaultValues: {
-      toDate: null,
+      toDate: defaultToDate,
       branch: branchId,
     },
   });
+
+  useEffect(() => {
+    const finEndDate = parseLocalDate(getCookieData("fin_end_date"));
+    if (finEndDate) {
+      form.setValue("toDate", finEndDate, { shouldValidate: false });
+    }
+  }, [form]);
 
   const handleSubmit = (values) => {
     getPlAppropiationReportApiCall(values);
