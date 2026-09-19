@@ -305,16 +305,18 @@ const DepositReport = ({
                   control={form.control}
                   name="fromDate"
                   label={t("deposit.fields.fromDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  // startYear={2000}
+                  // endYear={2050}
+                  isManualInput={true}
                 />
 
                 <DatePickerField
                   control={form.control}
                   name="toDate"
                   label={t("deposit.fields.toDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  // startYear={2000}
+                  // endYear={2050}
+                  isManualInput={true}
                 />
 
                 <DropdownField

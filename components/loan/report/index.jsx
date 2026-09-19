@@ -151,7 +151,7 @@ const LoanReport = ({
       if (host) {
         host.setAttribute(
           "style",
-          "position:fixed;left:0;top:0;width:297mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
+          "position:fixed;left:-10000px;top:0;width:297mm;background:#ffffff;pointer-events:none;z-index:-1;opacity:1;",
         );
       }
       await waitNextFrame();
@@ -169,19 +169,24 @@ const LoanReport = ({
       });
       const pageWidth = 297;
       const pageHeight = 210;
+      const captureScale = Math.max(2.5, window.devicePixelRatio || 1);
       let pagesAdded = 0;
 
       for (let i = 0; i < pagesToCapture.length; i += 1) {
         const pageEl = pagesToCapture[i];
 
         const canvas = await html2canvas(pageEl, {
-          scale: 1.25,
+          scale: captureScale,
           useCORS: true,
           allowTaint: true,
           logging: false,
           backgroundColor: "#ffffff",
           scrollX: 0,
           scrollY: 0,
+          width: pageEl.scrollWidth,
+          height: pageEl.scrollHeight,
+          windowWidth: pageEl.scrollWidth,
+          windowHeight: pageEl.scrollHeight,
           onclone: (clonedDoc) => {
             clonedDoc.querySelectorAll("*").forEach((node) => {
               if (!(node instanceof HTMLElement)) return;
@@ -210,13 +215,13 @@ const LoanReport = ({
 
         if (!canvas?.width || !canvas?.height) continue;
 
-        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+        const imgData = canvas.toDataURL("image/png");
         const imgWidth = pageWidth;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         const renderHeight = Math.min(imgHeight, pageHeight);
 
         if (pagesAdded > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, renderHeight);
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, renderHeight);
         pagesAdded += 1;
       }
 
@@ -281,16 +286,19 @@ const LoanReport = ({
                   control={form.control}
                   name="fromDate"
                   label={t("loan.fromDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  // startYear={2000}
+                  // endYear={2050}
+                  isManualInput={true}
+
                 />
 
                 <DatePickerField
                   control={form.control}
                   name="toDate"
                   label={t("loan.toDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  // startYear={2000}
+                  // endYear={2050}
+                  isManualInput={true}
                 />
 
                 <DropdownField
