@@ -56,9 +56,9 @@ const AdjustmentVoucher = ({
   );
 
   return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
+    <div className="w-full h-full flex justify-between  bg-[#fefefe] rounded-lg ">
       <div className=" flex border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
+        <ScrollArea className="w-full h-full">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}

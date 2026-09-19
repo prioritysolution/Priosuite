@@ -20,10 +20,14 @@ export const useTrailBalance = () => {
 
   const [loading, setLoading] = useState("");
 
-  const [ledgerLiablitiesTableData, setLedgerLiablitiesTableData] = useState(
-    []
-  );
-  const [ledgerAssetsTableData, setLedgerAssetsTableData] = useState([]);
+  const [ledgerLiablitiesTableData, setLedgerLiablitiesTableData] = useState({
+    groupedData: [],
+    grandTotals: null,
+  });
+  const [ledgerAssetsTableData, setLedgerAssetsTableData] = useState({
+    groupedData: [],
+    grandTotals: null,
+  });
 
   const formSchema = yup.object({
     fromDate: yup.date().required("From date is required"),
@@ -63,7 +67,7 @@ export const useTrailBalance = () => {
     setToDate(format(values.toDate, "dd-MM-yyyy"));
   };
 
-  const groupDataByHeadId = (details) => {
+  const groupDataByMainAndHead = (details) => {
     const grandTotals = {
       grandTotalOpening: 0,
       grandTotalDebit: 0,
@@ -72,39 +76,54 @@ export const useTrailBalance = () => {
     };
 
     const groupedData = details.reduce((acc, current) => {
-      // Parse numeric values for computation
       const opening = parseFloat(current.Opening) || 0;
       const debit = parseFloat(current.Debit) || 0;
       const credit = parseFloat(current.Credit) || 0;
       const closing = parseFloat(current.Closing) || 0;
 
-      // Find if the Head_Id group already exists
-      const groupIndex = acc.findIndex(
-        (group) => group.headId === current.Head_Id
-      );
+      let mainGroup = acc.find((group) => group.mainHead === current.Main_Head);
 
-      if (groupIndex !== -1) {
-        // Update the existing group
-        const group = acc[groupIndex];
-        group.transactions.push(current);
-        group.subtotalOpening += opening;
-        group.subtotalDebit += debit;
-        group.subtotalCredit += credit;
-        group.subtotalClosing += closing;
-      } else {
-        // Create a new group
-        acc.push({
-          headId: current.Head_Id,
-          headName: current.Head_Name,
-          transactions: [current],
-          subtotalOpening: opening,
-          subtotalDebit: debit,
-          subtotalCredit: credit,
-          subtotalClosing: closing,
-        });
+      if (!mainGroup) {
+        mainGroup = {
+          mainHead: current.Main_Head,
+          mainName: current.Main_Name,
+          heads: [],
+          subtotalOpening: 0,
+          subtotalDebit: 0,
+          subtotalCredit: 0,
+          subtotalClosing: 0,
+        };
+        acc.push(mainGroup);
       }
 
-      // Update grand totals directly
+      let headGroup = mainGroup.heads.find(
+        (group) => group.headId === current.Head_Id,
+      );
+
+      if (!headGroup) {
+        headGroup = {
+          headId: current.Head_Id,
+          headName: current.Head_Name,
+          transactions: [],
+          subtotalOpening: 0,
+          subtotalDebit: 0,
+          subtotalCredit: 0,
+          subtotalClosing: 0,
+        };
+        mainGroup.heads.push(headGroup);
+      }
+
+      headGroup.transactions.push(current);
+      headGroup.subtotalOpening += opening;
+      headGroup.subtotalDebit += debit;
+      headGroup.subtotalCredit += credit;
+      headGroup.subtotalClosing += closing;
+
+      mainGroup.subtotalOpening += opening;
+      mainGroup.subtotalDebit += debit;
+      mainGroup.subtotalCredit += credit;
+      mainGroup.subtotalClosing += closing;
+
       grandTotals.grandTotalOpening += opening;
       grandTotals.grandTotalDebit += debit;
       grandTotals.grandTotalCredit += credit;
@@ -138,20 +157,17 @@ export const useTrailBalance = () => {
           (item) => item.Position === "L"
         );
 
-        console.log(groupDataByHeadId(newAssetData));
-        console.log(groupDataByHeadId(newLiablitiesData));
-
-        setLedgerAssetsTableData(groupDataByHeadId(newAssetData));
-        setLedgerLiablitiesTableData(groupDataByHeadId(newLiablitiesData));
+        setLedgerAssetsTableData(groupDataByMainAndHead(newAssetData));
+        setLedgerLiablitiesTableData(groupDataByMainAndHead(newLiablitiesData));
       } else {
-        setLedgerAssetsTableData([]);
-        setLedgerLiablitiesTableData([]);
+        setLedgerAssetsTableData({ groupedData: [], grandTotals: null });
+        setLedgerLiablitiesTableData({ groupedData: [], grandTotals: null });
       }
     } catch (error) {
       toast.error("Something went wrong");
       console.error(error);
-      setLedgerAssetsTableData([]);
-      setLedgerLiablitiesTableData([]);
+      setLedgerAssetsTableData({ groupedData: [], grandTotals: null });
+      setLedgerLiablitiesTableData({ groupedData: [], grandTotals: null });
     } finally {
       setLoading(false);
     }

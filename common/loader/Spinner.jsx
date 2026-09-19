@@ -1,8 +1,14 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 
-const Spinner = () => {
+const Spinner = ({ className }) => {
   return (
-    <div className="w-12 h-12 border-4 border-primary border-b-transparent rounded-full animate-spin"></div>
+    <div
+      className={cn(
+        "w-12 h-12 border-4 border-primary border-b-transparent rounded-full animate-spin",
+        className,
+      )}
+    />
   );
 };
 

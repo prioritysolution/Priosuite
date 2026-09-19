@@ -38,6 +38,7 @@ import { ModalProvider } from "../utils/ContextProvider";
 import { ReduxProvider } from "../redux/ReduxProvider";
 import ToasterProvider from "../common/ToasterProvider";
 import I18nProvider from "../common/I18nProvider";
+import PageLoadProvider from "../common/loader/PageLoadProvider";
 import DevToolsProtection from "./DevToolsProtection";
 
 const style = Open_Sans({
@@ -62,7 +63,9 @@ export default function RootLayout({ children }) {
             {/* <DevToolsProtection /> */}
             <I18nProvider>
               <ReduxProvider>
-                <ModalProvider>{children}</ModalProvider>
+                <PageLoadProvider>
+                  <ModalProvider>{children}</ModalProvider>
+                </PageLoadProvider>
               </ReduxProvider>
             </I18nProvider>
           </main>

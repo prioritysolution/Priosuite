@@ -56,7 +56,9 @@ const TrailBalance = ({
     ledgerLiablitiesTableData?.groupedData?.length > 0;
 
   const waitNextFrame = () =>
-    new Promise((resolve) => requestAnimationFrame(resolve));
+    new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    );
 
   const handleDownloadPDF = async () => {
     const element = printRef.current;
@@ -77,6 +79,7 @@ const TrailBalance = ({
     try {
       setPdfLoading(true);
 
+      // Same PreviewModal used for print — bring on-screen for accurate capture
       if (host) {
         host.setAttribute(
           "style",
@@ -90,32 +93,6 @@ const TrailBalance = ({
       );
       const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
 
-      const captureOptions = {
-        scale: 1,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        imageTimeout: 0,
-        removeContainer: true,
-        foreignObjectRendering: false,
-      };
-
-      const BATCH_SIZE = 3;
-      const pageImages = [];
-
-      for (let i = 0; i < pagesToCapture.length; i += BATCH_SIZE) {
-        const batch = pagesToCapture.slice(i, i + BATCH_SIZE);
-        const batchResults = await Promise.all(
-          batch.map(async (pageEl) => {
-            const canvas = await html2canvas(pageEl, captureOptions);
-            if (!canvas?.width || !canvas?.height) return null;
-            return canvas.toDataURL("image/jpeg", 0.75);
-          }),
-        );
-        pageImages.push(...batchResults);
-      }
-
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -126,12 +103,39 @@ const TrailBalance = ({
       const pageHeight = 297;
       let pagesAdded = 0;
 
-      for (let i = 0; i < pageImages.length; i += 1) {
-        const imgData = pageImages[i];
-        if (!imgData) continue;
+      for (let i = 0; i < pagesToCapture.length; i += 1) {
+        const pageEl = pagesToCapture[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: 1.5,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+          scrollX: 0,
+          scrollY: 0,
+          width: pageEl.scrollWidth,
+          height: pageEl.scrollHeight,
+          windowWidth: pageEl.scrollWidth,
+          windowHeight: pageEl.scrollHeight,
+          onclone: (clonedDoc) => {
+            clonedDoc.querySelectorAll("*").forEach((node) => {
+              if (!(node instanceof HTMLElement)) return;
+              node.style.overflow = "visible";
+              node.style.boxShadow = "none";
+            });
+          },
+        });
+
+        if (!canvas?.width || !canvas?.height) continue;
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const renderHeight = Math.min(imgHeight, pageHeight);
 
         if (pagesAdded > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, pageHeight);
+        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, renderHeight);
         pagesAdded += 1;
       }
 
@@ -367,46 +371,64 @@ const TrailBalance = ({
                   : ledgerLiablitiesTableData &&
                     ledgerLiablitiesTableData.groupedData &&
                     ledgerLiablitiesTableData.groupedData.map(
-                      (group, index) => (
-                        <Fragment key={index}>
+                      (mainGroup, mainIndex) => (
+                        <Fragment key={`liab-main-${mainGroup.mainHead ?? mainIndex}`}>
                           <TableRow>
                             <TableCell
                               colSpan={6}
-                              className="font-semibold border border-secondary bg-gray-50"
+                              className="font-bold border border-secondary bg-primary/10"
                             >
-                              {group.headName}
+                              {mainGroup.mainName}
                             </TableCell>
                           </TableRow>
-                          {/* Rows for each group */}
-                          {group.transactions.map((data, idx) => (
-                            <TableRow key={idx}>
-                              <TableCell className="border border-secondary">
-                                {data.Ledgare_Name}
-                              </TableCell>
-                              <TableCell className="border border-secondary">
-                                {data.Opening} {data.Opening_Type}
-                              </TableCell>
-                              <TableCell className="border border-secondary">
-                                {data.Debit}
-                              </TableCell>
-                              <TableCell className="border border-secondary">
-                                {data.Credit}
-                              </TableCell>
-                              <TableCell className="border border-secondary">
-                                {data.Closing} {data.Closing_Type}
-                              </TableCell>
-                              <TableCell className="border border-secondary"></TableCell>
-                            </TableRow>
+                          {mainGroup.heads?.map((group, index) => (
+                            <Fragment key={`liab-head-${group.headId ?? index}`}>
+                              <TableRow>
+                                <TableCell
+                                  colSpan={6}
+                                  className="font-semibold border border-secondary bg-gray-50 pl-6"
+                                >
+                                  {group.headName}
+                                </TableCell>
+                              </TableRow>
+                              {group.transactions.map((data, idx) => (
+                                <TableRow key={`liab-txn-${data.Ledger_Id ?? idx}`}>
+                                  <TableCell className="border border-secondary pl-8">
+                                    {data.Ledgare_Name}
+                                  </TableCell>
+                                  <TableCell className="border border-secondary">
+                                    {data.Opening} {data.Opening_Type}
+                                  </TableCell>
+                                  <TableCell className="border border-secondary">
+                                    {data.Debit}
+                                  </TableCell>
+                                  <TableCell className="border border-secondary">
+                                    {data.Credit}
+                                  </TableCell>
+                                  <TableCell className="border border-secondary">
+                                    {data.Closing} {data.Closing_Type}
+                                  </TableCell>
+                                  <TableCell className="border border-secondary"></TableCell>
+                                </TableRow>
+                              ))}
+                              <TableRow className="border-t-2 border-t-black border-dashed">
+                                <TableCell
+                                  colSpan={5}
+                                  className=" border-l border-secondary"
+                                ></TableCell>
+                                <TableCell className="font-medium border-r border-secondary">
+                                  {(group.subtotalClosing ?? 0).toFixed(2)}
+                                </TableCell>
+                              </TableRow>
+                            </Fragment>
                           ))}
-
-                          {/* Subtotal row for each group */}
-                          <TableRow className="border-t-2 border-t-black border-dashed">
+                          <TableRow className="border-t-2 border-black bg-primary/5">
                             <TableCell
                               colSpan={5}
-                              className=" border-l border-secondary"
+                              className="border-l border-secondary"
                             ></TableCell>
-                            <TableCell className="font-medium border-r border-secondary">
-                              {group.subtotalClosing.toFixed(2)}
+                            <TableCell className="font-semibold border-r border-secondary">
+                              {(mainGroup.subtotalClosing ?? 0).toFixed(2)}
                             </TableCell>
                           </TableRow>
                         </Fragment>
@@ -531,46 +553,64 @@ const TrailBalance = ({
                     ))
                   : ledgerAssetsTableData &&
                     ledgerAssetsTableData.groupedData &&
-                    ledgerAssetsTableData.groupedData.map((group, index) => (
-                      <Fragment key={index}>
+                    ledgerAssetsTableData.groupedData.map((mainGroup, mainIndex) => (
+                      <Fragment key={`asset-main-${mainGroup.mainHead ?? mainIndex}`}>
                         <TableRow>
                           <TableCell
                             colSpan={6}
-                            className="font-semibold border border-secondary bg-gray-50"
+                            className="font-bold border border-secondary bg-primary/10"
                           >
-                            {group.headName}
+                            {mainGroup.mainName}
                           </TableCell>
                         </TableRow>
-                        {/* Rows for each group */}
-                        {group.transactions.map((data, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell className="border border-secondary">
-                              {data.Ledgare_Name}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data.Opening} {data.Opening_Type}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data.Debit}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data.Credit}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data.Closing} {data.Closing_Type}
-                            </TableCell>
-                            <TableCell className="border border-secondary"></TableCell>
-                          </TableRow>
+                        {mainGroup.heads?.map((group, index) => (
+                          <Fragment key={`asset-head-${group.headId ?? index}`}>
+                            <TableRow>
+                              <TableCell
+                                colSpan={6}
+                                className="font-semibold border border-secondary bg-gray-50 pl-6"
+                              >
+                                {group.headName}
+                              </TableCell>
+                            </TableRow>
+                            {group.transactions.map((data, idx) => (
+                              <TableRow key={`asset-txn-${data.Ledger_Id ?? idx}`}>
+                                <TableCell className="border border-secondary pl-8">
+                                  {data.Ledgare_Name}
+                                </TableCell>
+                                <TableCell className="border border-secondary">
+                                  {data.Opening} {data.Opening_Type}
+                                </TableCell>
+                                <TableCell className="border border-secondary">
+                                  {data.Debit}
+                                </TableCell>
+                                <TableCell className="border border-secondary">
+                                  {data.Credit}
+                                </TableCell>
+                                <TableCell className="border border-secondary">
+                                  {data.Closing} {data.Closing_Type}
+                                </TableCell>
+                                <TableCell className="border border-secondary"></TableCell>
+                              </TableRow>
+                            ))}
+                            <TableRow className="border-t-2 border-t-black border-dashed">
+                              <TableCell
+                                colSpan={5}
+                                className=" border-l border-secondary"
+                              ></TableCell>
+                              <TableCell className="font-medium border-r border-secondary">
+                                {(group.subtotalClosing ?? 0).toFixed(2)}
+                              </TableCell>
+                            </TableRow>
+                          </Fragment>
                         ))}
-
-                        {/* Subtotal row for each group */}
-                        <TableRow className="border-t-2 border-t-black border-dashed">
+                        <TableRow className="border-t-2 border-black bg-primary/5">
                           <TableCell
                             colSpan={5}
-                            className=" border-l border-secondary"
+                            className="border-l border-secondary"
                           ></TableCell>
-                          <TableCell className="font-medium border-r border-secondary">
-                            {group.subtotalClosing.toFixed(2)}
+                          <TableCell className="font-semibold border-r border-secondary">
+                            {(mainGroup.subtotalClosing ?? 0).toFixed(2)}
                           </TableCell>
                         </TableRow>
                       </Fragment>

@@ -65,25 +65,48 @@ const PreviewModal = ({
 
     const allRows = [];
 
-    // Aggregate data into allRows
-    groupedData.forEach((group) => {
-      const validTxns = group.transactions.filter(
-        (txn) => txn?.Ledger_Id !== null,
-      );
+    // Aggregate data into allRows (supports Main_Head → Head_Id nesting)
+    (Array.isArray(groupedData) ? groupedData : []).forEach((mainGroup) => {
+      if (!mainGroup) return;
 
-      allRows.push({ type: "group", data: group });
+      if (mainGroup.mainName != null || Array.isArray(mainGroup.heads)) {
+        allRows.push({ type: "mainGroup", data: mainGroup });
+      }
 
-      validTxns.forEach((txn) => {
-        allRows.push({
-          type: "txn",
-          data: txn,
+      const headGroups = Array.isArray(mainGroup.heads)
+        ? mainGroup.heads
+        : mainGroup.transactions
+          ? [mainGroup]
+          : [];
+
+      headGroups.forEach((group) => {
+        if (!group) return;
+
+        const validTxns = (group.transactions || []).filter(
+          (txn) => txn?.Ledger_Id !== null && txn?.Ledger_Id !== undefined,
+        );
+
+        allRows.push({ type: "group", data: group });
+
+        validTxns.forEach((txn) => {
+          allRows.push({
+            type: "txn",
+            data: txn,
+          });
         });
+
+        if (validTxns.length > 0) {
+          allRows.push({
+            type: "subTotal",
+            subTotalClosing: group.subtotalClosing,
+          });
+        }
       });
 
-      if (validTxns.length > 0) {
+      if (Array.isArray(mainGroup.heads) && mainGroup.heads.length > 0) {
         allRows.push({
-          type: "subTotal",
-          subTotalClosing: group.subtotalClosing,
+          type: "mainTotal",
+          subTotalClosing: mainGroup.subtotalClosing,
         });
       }
     });
@@ -188,6 +211,20 @@ const PreviewModal = ({
       <TableBody>
         {pageData.map((row, index) => {
           switch (row.type) {
+            case "mainGroup":
+              return (
+                <TableRow
+                  key={`main-group-${index}`}
+                  className="h-[40px] w-full border border-black"
+                >
+                  <TableCell
+                    colSpan={6}
+                    className="font-bold text-sm border p-0 border-black w-full pl-3 text-start"
+                  >
+                    {row.data.mainName}
+                  </TableCell>
+                </TableRow>
+              );
             case "group":
               return (
                 <TableRow
@@ -244,6 +281,21 @@ const PreviewModal = ({
                   ></TableCell>
                   <TableCell className="border p-0 border-black text-center">
                     {row.subTotalClosing ? row.subTotalClosing.toFixed(2) : ""}
+                  </TableCell>
+                </TableRow>
+              );
+            case "mainTotal":
+              return (
+                <TableRow
+                  key={`mainTotal-${index}`}
+                  className="h-[40px] border-t-2 border-black"
+                >
+                  <TableCell
+                    colSpan={5}
+                    className="border border-black"
+                  ></TableCell>
+                  <TableCell className="font-semibold border p-0 border-black text-center">
+                    {(row.subTotalClosing ?? 0).toFixed(2)}
                   </TableCell>
                 </TableRow>
               );
