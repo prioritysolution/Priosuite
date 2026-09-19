@@ -77,14 +77,6 @@ export const useBorrowingsNewApplication = () => {
         if (!value) return false; // If the value is empty, it's invalid
         return positiveIntegerRegex.test(value); // Validate using regex (not starting with 0, and integer up to 12 digits)
       }),
-      // .test(
-      //   "is-within-length",
-      //   "Account no. must be up to 12 digits",
-      //   (value) => {
-      //     if (!value) return false; // If the value is empty, it's invalid
-      //     return value.length <= 12; // Validate that the length is less than or equal to 12
-      //   },
-      // ),
     issueDate: yup
       .date()
       .transform((value, originalValue) =>

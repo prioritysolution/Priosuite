@@ -3635,8 +3635,8 @@ const or = {
     },
     footer: {
       branch: "ଶାଖା",
-      open: "ଖୋଲିବା ତାରିଖ",
-      openDate: "ଖୋଲିବା ତାରିଖ",
+      open: "କାର୍ଯ୍ୟ ତାରିଖ",
+      openDate: "କାର୍ଯ୍ୟ ତାରିଖ",
       fy: "ଆର୍ଥିକ ବର୍ଷ",
       currentDateTime: "ବର୍ତ୍ତମାନ ତାରିଖ ଏବଂ ସମୟ"
     },

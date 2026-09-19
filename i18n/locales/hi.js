@@ -3634,8 +3634,8 @@ const hi = {
     },
     footer: {
       branch: "शाखा",
-      open: "खुलने की तिथि",
-      openDate: "खुलने की तिथि",
+      open: "कार्य तिथि",
+      openDate: "कार्य तिथि",
       fy: "वित्तीय वर्ष",
       currentDateTime: "वर्तमान दिनांक और समय"
     },

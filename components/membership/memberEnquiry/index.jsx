@@ -516,7 +516,7 @@ const MemberEnquiry = ({
                                       {index + 1}
                                     </TableCell>
                                     <TableCell className="text-center">
-                                      {data.Member_No}
+                                      {data.Cust_No}
                                     </TableCell>
                                     <TableCell className="text-center">
                                       {data.Status}
@@ -644,7 +644,7 @@ const MemberEnquiry = ({
                                       {index + 1}
                                     </TableCell>
                                     <TableCell className="text-center">
-                                      {data.Member_No}
+                                      {data.Cust_No}
                                     </TableCell>
                                     <TableCell className="text-center">
                                       {data.Status}

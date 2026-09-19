@@ -135,11 +135,6 @@ const InvestmentOpenAccount = ({
                   label={t("common.accountNo")}
                   placeholder={t("investment.enterAccountNo")}
                   type="number"
-                  // onInput={(e) => {
-                  //   if (e.target.value.length > 12) {
-                  //     e.target.value = e.target.value.slice(0, 12);
-                  //   }
-                  // }}
                   isRequired={true}
                 />
 

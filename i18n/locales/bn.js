@@ -3633,8 +3633,8 @@ const bn = {
     },
     footer: {
       branch: "শাখা",
-      open: "খোলার তারিখ",
-      openDate: "খোলার তারিখ",
+      open: "কর্ম তারিখ",
+      openDate: "কর্ম তারিখ",
       fy: "আর্থিক বছর",
       currentDateTime: "বর্তমান তারিখ ও সময়"
     },

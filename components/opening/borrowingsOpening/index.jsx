@@ -115,7 +115,7 @@ const BorrowingsOpening = ({
                     label={t("opening.borrowingsOpening.fields.accountNo")}
                     placeholder={t("opening.borrowingsOpening.placeholders.accountNo")}
                     type="number"
-                    maxLength={15}
+                    // maxLength={15}
                     isRequired
                   />
 

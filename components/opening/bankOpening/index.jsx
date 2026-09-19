@@ -79,7 +79,7 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                     label={t("opening.bankOpening.fields.accountNo")}
                     placeholder={t("opening.bankOpening.placeholders.accountNo")}
                     type="number"
-                    maxLength={15}
+                    // maxLength={15}
                     isRequired
                   />
 

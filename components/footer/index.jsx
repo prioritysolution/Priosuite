@@ -60,7 +60,7 @@ const Footer = ({ finYearCookieVersion = 0 }) => {
           </span>
         </div>
 
-        {/* Open Date */}
+        {/* Working Date */}
         <div className="min-w-0 flex items-center gap-1.5 justify-end lg:justify-center overflow-hidden">
           <span className="whitespace-nowrap flex-shrink-0">
             <span className="sm:hidden">{t("footer.open")}:</span>

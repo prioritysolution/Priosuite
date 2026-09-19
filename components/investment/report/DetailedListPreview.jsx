@@ -280,7 +280,8 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
       {pages.map((page, pageIndex) => (
         <div
           key={`page-${pageIndex}`}
-          className="w-full h-[297mm] flex flex-col text-center py-2 px-1 print:break-after-page scale-[.97]"
+          data-print-page="true"
+          className="box-border w-full h-[297mm] flex flex-col text-center py-2 px-1 print:break-after-page bg-white"
         >
           {/* HEADER - SHOW ON EVERY PAGE */}
           <div className=" text-xs flex flex-col gap-1 uppercase mb-1">

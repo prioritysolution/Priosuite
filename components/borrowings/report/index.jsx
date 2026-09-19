@@ -2,24 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useSelector } from "react-redux";
 import DetailedListTable from "./DetailedListTable";
 import BorrowingLedger from "@/common/ledger/borrowingsLedger/BorrowingLedger";
 import { ClipLoader } from "react-spinners";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { cn } from "@/lib/utils";
 import DetailedListPreview from "./DetailedListPreview";
 import { format } from "date-fns";
-import { useState } from "react";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
+import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 
 const BorrowingsReport = ({
@@ -45,6 +45,7 @@ const BorrowingsReport = ({
 }) => {
   const { t } = useTranslation();
   const [showReportForm, setShowReportForm] = useState(true);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
@@ -53,51 +54,143 @@ const BorrowingsReport = ({
   );
 
   const printDetailedListRef = useRef(null);
+  const printHostRef = useRef(null);
 
   const generateDetailedListPrint = useReactToPrint({
     contentRef: printDetailedListRef,
-    documentTitle: `InvestmentDetailedList-${
+    documentTitle: `BorrowingsDetailedList-${
       fromDate && format(fromDate, "dd-MM-yyyy")
     }-${toDate && format(toDate, "dd-MM-yyyy")}`,
   });
 
+  const formatReportDate = (value) =>
+    value ? format(value, "dd-MM-yyyy") : "";
+
+  const waitNextFrame = () =>
+    new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    );
+
   const handleDownloadPDF = async () => {
     let element = null;
-    let docTitle = "document";
-    if (showData === "113" || showData === "115") {
+    let docTitle = "BorrowingsReport";
+
+    if (showData === "113") {
       element = printDetailedListRef.current;
-      docTitle = `BorrowingsDetailedList-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
+      docTitle = `BorrowingsDetailedList-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
     }
 
-    if (!element) return;
+    const host = printHostRef.current;
+
+    if (!element) {
+      toast.error("Nothing to download. Please generate the report first.");
+      return;
+    }
+
+    if (!(tableData?.length > 0)) {
+      toast.error("No borrowings report data to download.");
+      return;
+    }
+
+    const pageWidth = 297;
+    const pageHeight = 210;
+    const prevHostStyle = host?.getAttribute("style") || "";
 
     try {
-      const isLandscape = true;
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF(isLandscape ? "l" : "p", "mm", "a4");
-      const imgWidth = isLandscape ? 297 : 210;
-      const pageHeight = isLandscape ? 210 : 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
+      setPdfLoading(true);
 
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 15) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+      if (host) {
+        host.setAttribute(
+          "style",
+          "position:fixed;left:-10000px;top:0;width:297mm;background:#ffffff;pointer-events:none;z-index:-1;opacity:1;",
+        );
       }
+      await waitNextFrame();
+
+      const pageNodes = Array.from(
+        element.querySelectorAll("[data-print-page='true']"),
+      );
+      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
+
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+      const captureScale = Math.max(2, window.devicePixelRatio || 1);
+      let pagesAdded = 0;
+
+      for (let i = 0; i < pagesToCapture.length; i += 1) {
+        const pageEl = pagesToCapture[i];
+
+        const canvas = await html2canvas(pageEl, {
+          scale: captureScale,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+          scrollX: 0,
+          scrollY: 0,
+          width: pageEl.scrollWidth,
+          height: pageEl.scrollHeight,
+          windowWidth: pageEl.scrollWidth,
+          windowHeight: pageEl.scrollHeight,
+          onclone: (clonedDoc) => {
+            clonedDoc.querySelectorAll("*").forEach((node) => {
+              if (!(node instanceof HTMLElement)) return;
+              const tag = node.tagName;
+              if (
+                [
+                  "TABLE",
+                  "THEAD",
+                  "TBODY",
+                  "TFOOT",
+                  "TR",
+                  "TH",
+                  "TD",
+                  "COL",
+                  "COLGROUP",
+                ].includes(tag)
+              ) {
+                return;
+              }
+              node.style.overflow = "visible";
+              node.style.boxShadow = "none";
+              node.style.transform = "none";
+            });
+          },
+        });
+
+        if (!canvas?.width || !canvas?.height) continue;
+
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const renderHeight = Math.min(imgHeight, pageHeight);
+
+        if (pagesAdded > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, renderHeight);
+        pagesAdded += 1;
+      }
+
+      if (pagesAdded < 1) {
+        toast.error("Failed to capture report for PDF.");
+        return;
+      }
+
       pdf.save(`${docTitle}.pdf`);
+      toast.success("PDF downloaded");
     } catch (error) {
       console.error("Error downloading PDF:", error);
+      toast.error(
+        error?.message
+          ? `Failed to download PDF: ${error.message}`
+          : "Failed to download PDF",
+      );
+    } finally {
+      if (host) host.setAttribute("style", prevHostStyle);
+      setPdfLoading(false);
     }
   };
 
@@ -205,8 +298,8 @@ const BorrowingsReport = ({
                   </Button>
                   <div
                     onClick={() => {
-                      if (tableData?.length > 0)
-                        showData === "115" ? generateDetailedListPrint() : null;
+                      if (tableData?.length > 0 && showData === "113")
+                        generateDetailedListPrint();
                     }}
                     className={cn(
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
@@ -221,18 +314,26 @@ const BorrowingsReport = ({
                   </div>
                   <div
                     onClick={() => {
-                      if (tableData?.length > 0) handleDownloadPDF();
+                      if (tableData?.length > 0 && !pdfLoading)
+                        handleDownloadPDF();
                     }}
                     className={cn(
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
-                        "cursor-not-allowed bg-gray-400 ": !(
-                          tableData?.length > 0
-                        ),
+                        "cursor-not-allowed bg-gray-400 ":
+                          !(tableData?.length > 0) || pdfLoading,
                       },
                     )}
                   >
-                    <FiDownload />
+                    {pdfLoading ? (
+                      <ClipLoader
+                        color="#d7e6f4"
+                        size={20}
+                        speedMultiplier={0.7}
+                      />
+                    ) : (
+                      <FiDownload />
+                    )}
                   </div>
                 </div>
               </div>
@@ -272,18 +373,34 @@ const BorrowingsReport = ({
         ledgerTableData={ledgerTableData}
       />
 
-      <div style={{ position: "absolute", top: "-10000px", left: "-10000px" }}>
-        {showData === "113" ? (
-          <DetailedListPreview
-            printRef={printDetailedListRef}
-            tableData={tableData}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : (
-          <></>
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={printHostRef}
+            aria-hidden
+            style={{
+              position: "fixed",
+              left: "-10000px",
+              top: 0,
+              width: "297mm",
+              background: "#ffffff",
+              pointerEvents: "none",
+              zIndex: -1,
+            }}
+          >
+            {showData === "113" ? (
+              <DetailedListPreview
+                printRef={printDetailedListRef}
+                tableData={tableData}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : (
+              <></>
+            )}
+          </div>,
+          document.body,
         )}
-      </div>
     </div>
   );
 };

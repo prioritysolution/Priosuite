@@ -3634,8 +3634,8 @@ const en = {
     },
     footer: {
       branch: "Branch",
-      open: "Open",
-      openDate: "Open Date",
+      open: "Working",
+      openDate: "Working Date",
       fy: "FY",
       currentDateTime: "Current Date & Time"
     },
