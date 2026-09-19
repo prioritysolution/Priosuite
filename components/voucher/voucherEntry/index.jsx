@@ -297,7 +297,7 @@ const VoucherEntry = ({
                     control={form.control}
                     name="subLedger"
                     render={({ field }) => (
-                      <SearchDropdownField
+                      <DropdownField
                         label={t("voucher.subLedger")}
                         value={field.value}
                         onChange={field.onChange}
