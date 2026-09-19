@@ -243,6 +243,7 @@ const MapInstituteMember = ({
   setSelectedOption,
   handelDeleteMember,
 }) => {
+  const { t } = useTranslation();
   const branchId = getCookieData("userBranchId");
   const beg_date = getCookieData("beg_date");
   const [radioLocked, setRadioLocked] = useState(false);

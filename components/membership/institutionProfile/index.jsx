@@ -204,6 +204,7 @@ const InstitutionProfile = ({
   officeGetPoliceStationLoading,
   officeGetPostOfficeLoading,
 }) => {
+  const { t } = useTranslation();
   const stateData = useSelector((state) => state?.operationalArea?.stateData);
 
   const districtData = useSelector(

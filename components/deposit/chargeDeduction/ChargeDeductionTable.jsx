@@ -87,7 +87,8 @@ const Avatar = ({ name, size = 32 }) => {
 };
 
 // ── Main Component ────────────────────────────────────────────────────────────
-const ChargeDeductionTable = ({ chargeList = [], on{t("deposit.buttons.print")} }) => {
+const ChargeDeductionTable = ({ chargeList = [], onPrint }) => {
+  const { t } = useTranslation();
   const [search, setSearch] = React.useState("");
   const [sortKey, setSortKey] = React.useState("");
   const [sortDir, setSortDir] = React.useState("asc");
@@ -101,9 +102,8 @@ const ChargeDeductionTable = ({ chargeList = [], on{t("deposit.buttons.print")} 
     }
   };
 
-  const handle{t("deposit.buttons.print")} = (row) => {
-    console.log(t("deposit.buttons.print") + "ing record:", row);
-    if (on{t("deposit.buttons.print")}) on{t("deposit.buttons.print")}(row);
+  const handlePrint = (row) => {
+    if (onPrint) onPrint(row);
   };
 
   const filteredRows = React.useMemo(() => {
@@ -222,7 +222,7 @@ const ChargeDeductionTable = ({ chargeList = [], on{t("deposit.buttons.print")} 
                   </td>
                   <td className="py-3.5 px-4 text-center">
                     <button
-                      onClick={() => handle{t("deposit.buttons.print")}(row)}
+                      onClick={() => handlePrint(row)}
                       className="text-slate-400 hover:text-blue-600 transition-colors p-1.5 rounded-lg hover:bg-slate-100 inline-flex items-center justify-center"
                       title={t("deposit.buttons.print")}
                     >
@@ -300,7 +300,7 @@ const ChargeDeductionTable = ({ chargeList = [], on{t("deposit.buttons.print")} 
                       #{String(i + 1).padStart(3, "0")}
                     </span>
                     <button
-                      onClick={() => handle{t("deposit.buttons.print")}(row)}
+                      onClick={() => handlePrint(row)}
                       className="text-slate-400 hover:text-blue-600 transition-colors p-1.5 rounded-lg hover:bg-slate-100 inline-flex items-center justify-center"
                       title={t("deposit.buttons.print")}
                     >
