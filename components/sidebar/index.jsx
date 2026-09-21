@@ -12,6 +12,21 @@ import IconDisplay from "@/common/IconDisplay";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
 import getCookieData from "@/utils/getCookieData";
+import { getMenuLabelParts } from "@/utils/menuLabel";
+
+const MenuLabelStack = ({ name, nameLang, primaryClassName, secondaryClassName }) => {
+  const { primary, secondary } = getMenuLabelParts(name, nameLang);
+  if (!primary) return null;
+
+  return (
+    <span className="min-w-0 flex-1 flex flex-col items-start gap-0.5 text-left">
+      <span className={primaryClassName}>{primary}</span>
+      {secondary ? (
+        <span className={secondaryClassName}>{secondary}</span>
+      ) : null}
+    </span>
+  );
+};
 
 const Sidebar = ({ loading, onClose }) => {
   const [expandedLink, setExpandedLink] = useState("");
@@ -25,52 +40,24 @@ const Sidebar = ({ loading, onClose }) => {
     setExpandedLink((prev) => (prev !== title ? title : ""));
   };
 
-  const handlePriosuiteV2Click = () => {
-    const cookies = document.cookie;
-    const cookieArray = cookies.split("; ");
-    const params = new URLSearchParams();
-
-    cookieArray.forEach((cookie) => {
-      const [key, ...rest] = cookie.split("=");
-      if (key) {
-        const trimmedKey = key.trim();
-        params.append(`priosuite_Ims_${trimmedKey}`, rest.join("=") || "");
-      }
-    });
-
-    const baseUrl = process.env.NEXT_PUBLIC_IMS_URL || "http://localhost:3000";
-    const url = `${baseUrl}?${params.toString()}`;
-    window.open(
-      url,
-      "_blank",
-      "width=1200,height=800,left=100,top=100,resizable=yes,scrollbars=yes",
-    );
-  };
-
   return (
-    <div className="w-64 h-full flex flex-col bg-[#00264D]">
+    <div className="w-full h-full max-w-full flex flex-col bg-[#00264D]">
       {/* ── Logo header ── */}
-      <div className="h-[64px] min-h-[64px] max-h-[64px] flex items-center flex-shrink-0 border-b border-white/10 overflow-hidden relative px-3">
-        <div className="relative w-full h-full flex justify-left">
+      <div className="h-[64px] min-h-[64px] max-h-[64px] flex items-center flex-shrink-0 border-b border-white/10 overflow-hidden relative px-2 sm:px-3">
+        <div className="relative w-full h-full flex justify-left min-w-0">
           <Image
             src="/logobg.png"
             alt="Logo"
             fill
-            className="object-cover object-left px-2 py-1"
+            className="object-cover object-left px-1 sm:px-2 py-1"
             priority
           />
         </div>
-        <span className="hidden  absolute right-1 top-12 text-white/30 text-xs">
-          v1.0.1
-        </span>
-        <span className="lg:hidden absolute right-8 top-12 text-white/30 text-xs">
-          v1.0.1
-        </span>
 
         {/* Close button — mobile only */}
         <button
           onClick={onClose}
-          className="lg:hidden flex-shrink-0 ml-2 p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors z-10 cursor-pointer"
+          className="lg:hidden flex-shrink-0 ml-1 p-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/10 transition-colors z-10 cursor-pointer"
           aria-label="Close sidebar"
         >
           <MdOutlineClose className="text-xl" />
@@ -78,11 +65,10 @@ const Sidebar = ({ loading, onClose }) => {
       </div>
 
       {/* ── Scrollable nav list ── */}
-      <ScrollArea className="flex-1 [&>[data-orientation=vertical]]:w-2.5 [&>[data-orientation=vertical]]:bg-white/10 [&>[data-orientation=vertical]_.relative]:bg-white/45 [&>[data-orientation=vertical]_.relative]:hover:bg-white/70">
-        <nav className="py-3 px-2 space-y-1">
+      <ScrollArea className="flex-1 min-h-0 [&>[data-orientation=vertical]]:w-2.5 [&>[data-orientation=vertical]]:bg-white/10 [&>[data-orientation=vertical]_.relative]:bg-white/45 [&>[data-orientation=vertical]_.relative]:hover:bg-white/70">
+        <nav className="py-2 sm:py-3 px-1.5 sm:px-2 space-y-1">
           {loading || !sidebarData || !sidebarData.length
-            ? /* Loading skeletons */
-              Array.from({ length: 12 }).map((_, i) => (
+            ? Array.from({ length: 12 }).map((_, i) => (
                 <Skeleton
                   key={i}
                   className="w-full h-10 rounded-lg bg-white/10"
@@ -96,9 +82,9 @@ const Sidebar = ({ loading, onClose }) => {
                 const hasChildren = link.childLinks?.length > 0;
 
                 return (
-                  <div key={id}>
-                    {/* ── Parent nav item ── */}
+                  <div key={id} className="min-w-0">
                     <button
+                      type="button"
                       onClick={() => {
                         if (hasChildren) {
                           handleExpandedLink(link.title);
@@ -111,16 +97,16 @@ const Sidebar = ({ loading, onClose }) => {
                         }
                       }}
                       className={cn(
-                        "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group cursor-pointer",
+                        "w-full flex items-start justify-between gap-2 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group cursor-pointer min-w-0",
                         isActive
                           ? "bg-[#14B8A6] text-white shadow-sm"
                           : "text-white/85 hover:bg-white/10 hover:text-white border border-white/20",
                       )}
                     >
-                      <span className="flex items-center gap-3 min-w-0">
+                      <span className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
                         <span
                           className={cn(
-                            "text-[20px] flex-shrink-0 transition-colors",
+                            "text-[18px] sm:text-[20px] flex-shrink-0 mt-0.5 transition-colors",
                             isActive
                               ? "text-white"
                               : "text-white group-hover:text-white",
@@ -131,13 +117,16 @@ const Sidebar = ({ loading, onClose }) => {
                             iconSet={link.Icon?.slice(0, 2).toLowerCase()}
                           />
                         </span>
-                        <span className="truncate text-[15px]">
-                          {link.title}
-                        </span>
+                        <MenuLabelStack
+                          name={link.title}
+                          nameLang={link.title_lang}
+                          primaryClassName="text-[13px] sm:text-[14px] lg:text-[15px] leading-snug whitespace-normal break-words font-medium"
+                          secondaryClassName="text-[11px] sm:text-[12px] leading-snug whitespace-normal break-words text-white/65 font-normal"
+                        />
                       </span>
 
                       {hasChildren && (
-                        <span className="flex-shrink-0 text-white/60">
+                        <span className="flex-shrink-0 text-white/60 mt-0.5">
                           {isExpanded ? (
                             <FiChevronUp className="text-base" />
                           ) : (
@@ -147,13 +136,11 @@ const Sidebar = ({ loading, onClose }) => {
                       )}
                     </button>
 
-                    {/* ── Child nav items ── */}
                     {hasChildren && isExpanded && (
                       <div
                         className={cn(
-                          "relative mb-1.5",
-                          // vertical connector bar
-                          "before:absolute before:left-[18px] before:top-0 before:h-full before:w-[1.5px] before:rounded-sm before:bg-white/20",
+                          "relative mb-1.5 min-w-0",
+                          "before:absolute before:left-3 sm:before:left-[18px] before:top-0 before:h-full before:w-[1.5px] before:rounded-sm before:bg-white/20",
                         )}
                       >
                         {link.childLinks.map((item, idx) => {
@@ -166,6 +153,7 @@ const Sidebar = ({ loading, onClose }) => {
 
                           return (
                             <button
+                              type="button"
                               key={idx}
                               onClick={() => {
                                 if (item.Page_Allies) {
@@ -174,28 +162,32 @@ const Sidebar = ({ loading, onClose }) => {
                                 }
                               }}
                               className={cn(
-                                "w-full text-left pl-9 pr-8 py-[9px] rounded-md transition-all duration-150 relative cursor-pointer",
-                                // horizontal tick from vertical bar
-                                "before:absolute before:left-[18px] before:top-1/2 before:-translate-y-1/2 before:w-2.5 before:h-[1.5px] before:bg-white/20",
+                                "w-full text-left pl-7 sm:pl-9 pr-6 sm:pr-8 py-2 rounded-md transition-all duration-150 relative cursor-pointer min-w-0",
+                                "before:absolute before:left-3 sm:before:left-[18px] before:top-1/2 before:-translate-y-1/2 before:w-2.5 before:h-[1.5px] before:bg-white/20",
                                 isChildActive
                                   ? [
                                       "text-white",
-                                      // ◄ triangle marker on the right
-                                      "after:absolute after:right-2.5 after:top-1/2 after:-translate-y-1/2 after:content-['◄'] after:text-[10px] after:text-white/70",
+                                      "after:absolute after:right-1.5 sm:after:right-2.5 after:top-1/2 after:-translate-y-1/2 after:content-['◄'] after:text-[10px] after:text-white/70",
                                     ]
                                   : "text-white/70 hover:bg-white/6 hover:text-white",
                               )}
                             >
-                              <span
-                                className={cn(
-                                  "text-[13.5px] tracking-wide",
+                              <MenuLabelStack
+                                name={item.Menue_Name}
+                                nameLang={item.Menue_Name_Lang}
+                                primaryClassName={cn(
+                                  "text-[12px] sm:text-[13px] lg:text-[13.5px] tracking-wide leading-snug whitespace-normal break-words",
                                   isChildActive
-                                    ? "font-semibold"
+                                    ? "font-semibold text-white"
                                     : "font-medium",
                                 )}
-                              >
-                                {item.Menue_Name}
-                              </span>
+                                secondaryClassName={cn(
+                                  "text-[10px] sm:text-[11px] leading-snug whitespace-normal break-words",
+                                  isChildActive
+                                    ? "text-white/75"
+                                    : "text-white/50",
+                                )}
+                              />
                             </button>
                           );
                         })}
@@ -207,25 +199,14 @@ const Sidebar = ({ loading, onClose }) => {
         </nav>
       </ScrollArea>
 
-      {/* <div className="px-3 py-2 border-t border-white/10">
-        <button
-          onClick={handlePriosuiteV2Click}
-          className="w-full bg-[#14B8A6] text-white py-2 rounded-lg font-medium hover:bg-teal-600 transition-colors"
-        >
-          priosuite V2
-        </button>
-      </div> */}
-
-      {/* ── Bottom brand bar ── */}
-      <div className="flex-shrink-0 border-t border-white/10 px-4 h-10 flex items-center  ">
+      <div className="flex-shrink-0 border-t border-white/10 px-3 sm:px-4 h-10 flex items-center min-w-0">
         <Link
           href="https://prioritysolutions.in/"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white/50 text-[11px] font-medium tracking-widest uppercase cursor-pointer hover:text-white/80"
+          className="text-white/50 text-[10px] sm:text-[11px] font-medium tracking-widest uppercase cursor-pointer hover:text-white/80 truncate"
         >
-          
-         Powered By Priority Solutions
+          Powered By Priority Solutions
         </Link>
       </div>
     </div>

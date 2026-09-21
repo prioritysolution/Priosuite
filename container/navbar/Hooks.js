@@ -9,6 +9,7 @@ import Cookies from "@/utils/secureCookieHelper";
 import getCookieData from "@/utils/getCookieData";
 import { getSidebarData } from "@/container/sidebar/SidebarReducer";
 import { clearStoredUserDashboard } from "@/utils/userDashboardStorage";
+import { formatMenuLabel } from "@/utils/menuLabel";
 
 const COOKIE_OPTIONS = {
   expires: 7,
@@ -143,11 +144,11 @@ const flattenDashboardMenus = (data = []) => {
   const items = [];
 
   data.forEach((section) => {
-    const group = section?.title || "";
+    const group = formatMenuLabel(section?.title, section?.title_lang);
 
     if (section?.path) {
       items.push({
-        label: section.title,
+        label: group,
         group,
         href: section.path,
       });
@@ -157,7 +158,7 @@ const flattenDashboardMenus = (data = []) => {
       const href = child?.Page_Allies;
       if (!href) return;
       items.push({
-        label: child.Menue_Name,
+        label: formatMenuLabel(child.Menue_Name, child.Menue_Name_Lang),
         group,
         href,
       });

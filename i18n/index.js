@@ -62,4 +62,12 @@ export const setAppLanguage = (language) => {
   return i18n.changeLanguage(next);
 };
 
+/** API lang codes for GetUserDashboard (EN | BN | HI | OR) */
+export const getDashboardApiLang = (language) => {
+  const raw = (language || getStoredLanguage() || "en").split("-")[0].toLowerCase();
+  const code = raw === "ur" ? "or" : raw;
+  const map = { en: "EN", bn: "BN", hi: "HI", or: "OR" };
+  return map[code] || "EN";
+};
+
 export default i18n;

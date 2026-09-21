@@ -20,7 +20,8 @@ export const endPoints = {
   updateUserProfileDetails: `${createApi}Org/UpdateUserProfile`,
   getFinancialYear: (orgId) =>
     `${createApi}Org/GetFinancialYear?org_id=${orgId}`,
-  getSidebarData: (orgId) => `${createApi}Org/GetUserDashboard?org_id=${orgId}`,
+  getSidebarData: (orgId, lang = "EN") =>
+    `${createApi}Org/GetUserDashboard?org_id=${orgId}&lang=${lang}`,
   getDashboardItem: `${createApi}Org/GetDashboardItem`,
   getOpeningMemberDataById: (orgId, memberNo) =>
     `${createApi}Org/MemberShip/GetMembershipData?org_id=${orgId}&mem_no=${memberNo}`,

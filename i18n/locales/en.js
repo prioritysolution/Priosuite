@@ -3782,7 +3782,7 @@ const en = {
       resendOtp: "Resend OTP",
       submit: "Submit",
       langEnglish: "English",
-      langBangla: "Bangla",
+      langBangla: "Bengali",
       langHindi: "Hindi",
       langOdia: "Odia",
       secureReset: "Secure Reset",
