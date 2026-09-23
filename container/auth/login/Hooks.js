@@ -19,6 +19,7 @@ import { token, beg_date } from "./LoginReducer";
 import { formatDateForApi } from "@/utils/dateHelpers";
 import { clearStoredUserDashboard } from "@/utils/userDashboardStorage";
 import { getStoredLanguage, setAppLanguage } from "@/i18n";
+import { getDeviceId } from "@/utils/deviceId";
 
 const SUPPORTED_LANGS = ["en", "bn", "hi", "or"];
 
@@ -61,6 +62,7 @@ export const syncFinYearCookiesIfMismatch = (finYear) => {
 export const useLogin = () => {
   const [os, setOS] = useState("Unknown");
   const [IP, setIP] = useState("");
+  const [deviceId, setDeviceId] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -169,10 +171,12 @@ export const useLogin = () => {
   // Handle form submission
   const handleLoginSubmit = (values) => {
     const { language, ...rest } = values;
+    const resolvedDeviceId = deviceId || getDeviceId();
     let data = {
       ...rest,
       user_device: os,
       user_ip: IP,
+      user_device_id: resolvedDeviceId,
     };
 
     console.log("handel val=", values);
@@ -465,11 +469,16 @@ export const useLogin = () => {
 
   useEffect(() => {
     setOS(getOS());
+    setDeviceId(getDeviceId());
     fetch("https://api-bdc.net/data/client-ip")
       .then((response) => response.json())
       .then((data) => setIP(data.ipString))
       .catch((error) => console.error("Error fetching IP address:", error));
   }, []);
+
+  useEffect(() => {
+    console.log("deviceId=", deviceId);
+  }, [deviceId]);
 
   useEffect(() => {
     const fetchFinancialYear = async () => {

@@ -168,6 +168,15 @@ input[type="number"]:focus::after {
     transform-origin: top left;
   }
 }
+
+/* Fullscreen loader lives on <body> — never inherit main scale */
+body > [data-central-loader="fullscreen"] {
+  transform: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100dvh !important;
+  z-index: 99999 !important;
+}
 /* ── Visible, always-present scrollbars ── */
 :root {
   --scrollbar-size: 12px;
