@@ -1,5 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -22,9 +23,8 @@ import { cn } from "@/lib/utils";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas-pro";
 import toast from "react-hot-toast";
+import { downloadBalanceSheetPdf } from "../buildReportPdfs";
 import { createPortal } from "react-dom";
 
 const BalanceSheet = ({
@@ -35,7 +35,8 @@ const BalanceSheet = ({
   ledgerLiablitiesTableData,
   asOnDate,
 }) => {
-  const { t } = useTranslation();
+  const { t: tForm } = useTranslation();
+  const { t } = useEnglishOnly();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -53,111 +54,35 @@ const BalanceSheet = ({
     ledgerLiablitiesTableData?.groupedData?.length > 0 ||
     ledgerAssetsTableData?.groupedData?.length > 0;
 
-  const waitNextFrame = () =>
-    new Promise((resolve) => requestAnimationFrame(resolve));
-
-  const handleDownloadPDF = async () => {
-    const element = printRef.current;
-    const host = printHostRef.current;
-
-    if (!element) {
-      toast.error(t("common.nothingToDownload"));
-      return;
-    }
-
+    const handleDownloadPDF = async () => {
     if (!hasReportData) {
       toast.error(t("report.balanceSheet.noBalanceSheetData"));
       return;
     }
 
-    const prevHostStyle = host?.getAttribute("style") || "";
+    const toastId = toast.loading("Preparing PDF…");
 
     try {
       setPdfLoading(true);
-
-      if (host) {
-        host.setAttribute(
-          "style",
-          "position:fixed;left:0;top:0;width:297mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
-        );
-      }
-      await waitNextFrame();
-
-      const pageNodes = Array.from(
-        element.querySelectorAll("[data-print-page='true']"),
-      );
-      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
-
-      const captureOptions = {
-        scale: 1.25,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        imageTimeout: 0,
-        removeContainer: true,
-        foreignObjectRendering: false,
-        onclone: (clonedDoc) => {
-          clonedDoc.querySelectorAll("*").forEach((node) => {
-            if (!(node instanceof HTMLElement)) return;
-            node.style.overflow = "visible";
-            node.style.boxShadow = "none";
-          });
+      await downloadBalanceSheetPdf({
+        liabilities: ledgerLiablitiesTableData,
+        assets: ledgerAssetsTableData,
+        asOnDate,
+        t,
+        onProgress: (done, total) => {
+          toast.loading(`Writing rows ${done} / ${total}`, { id: toastId });
         },
-      };
-
-      const BATCH_SIZE = 3;
-      const pageImages = [];
-
-      for (let i = 0; i < pagesToCapture.length; i += BATCH_SIZE) {
-        const batch = pagesToCapture.slice(i, i + BATCH_SIZE);
-        const batchResults = await Promise.all(
-          batch.map(async (pageEl) => {
-            const canvas = await html2canvas(pageEl, captureOptions);
-            if (!canvas?.width || !canvas?.height) return null;
-            return canvas.toDataURL("image/jpeg", 0.92);
-          }),
-        );
-        pageImages.push(...batchResults);
-      }
-
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4",
-        compress: true,
       });
-      const pageWidth = 297;
-      const pageHeight = 210;
-      let pagesAdded = 0;
-
-      for (let i = 0; i < pageImages.length; i += 1) {
-        const imgData = pageImages[i];
-        if (!imgData) continue;
-
-        if (pagesAdded > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, pageHeight);
-        pagesAdded += 1;
-      }
-
-      if (pagesAdded < 1) {
-        toast.error(t("common.failedToCaptureReportForPdf"));
-        return;
-      }
-
-      pdf.save(`BalanceSheet-${asOnDate || "report"}.pdf`);
-      toast.success(t("common.pdfDownloaded"));
+      toast.success(t("common.pdfDownloaded"), { id: toastId });
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
-          ? t("common.failedToDownloadPdfWithError", {
-              error: error.message,
-            })
+          ? t("common.failedToDownloadPdfWithError", { error: error.message })
           : t("common.failedToDownloadPdf"),
+        { id: toastId },
       );
     } finally {
-      if (host) host.setAttribute("style", prevHostStyle);
       setPdfLoading(false);
     }
   };
@@ -204,7 +129,7 @@ const BalanceSheet = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label={t("common.asOnDate")}
+                  label={tForm("common.asOnDate")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -214,13 +139,13 @@ const BalanceSheet = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label={t("common.branch")}
+                      label={tForm("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder={t("common.selectBranch")}
-                      searchPlaceholder={t("common.searchBranch")}
+                      placeholder={tForm("common.selectBranch")}
+                      searchPlaceholder={tForm("common.searchBranch")}
                     />
                   )}
                 />

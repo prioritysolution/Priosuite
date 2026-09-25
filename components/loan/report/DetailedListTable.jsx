@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useEnglishOnly as useTranslation } from "@/i18n/useEnglishOnly";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,

@@ -1,5 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -20,12 +21,11 @@ import PreviewModal from "./PreviewModal";
 import { useReactToPrint } from "react-to-print";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas-pro";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import toast from "react-hot-toast";
+import { downloadTrialBalancePdf } from "../buildReportPdfs";
 import { createPortal } from "react-dom";
 
 const TrailBalance = ({
@@ -37,7 +37,8 @@ const TrailBalance = ({
   fromDate,
   toDate,
 }) => {
-  const { t } = useTranslation();
+  const { t: tForm } = useTranslation();
+  const { t } = useEnglishOnly();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -55,97 +56,27 @@ const TrailBalance = ({
     ledgerAssetsTableData?.groupedData?.length > 0 ||
     ledgerLiablitiesTableData?.groupedData?.length > 0;
 
-  const waitNextFrame = () =>
-    new Promise((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(resolve)),
-    );
-
-  const handleDownloadPDF = async () => {
-    const element = printRef.current;
-    const host = printHostRef.current;
-
-    if (!element) {
-      toast.error(t("report.trialBalance.nothingToDownload"));
-      return;
-    }
-
+    const handleDownloadPDF = async () => {
     if (!hasReportData) {
       toast.error(t("report.trialBalance.noTrialBalanceData"));
       return;
     }
 
-    const prevHostStyle = host?.getAttribute("style") || "";
+    const toastId = toast.loading("Preparing PDF…");
 
     try {
       setPdfLoading(true);
-
-      // Same PreviewModal used for print — bring on-screen for accurate capture
-      if (host) {
-        host.setAttribute(
-          "style",
-          "position:fixed;left:0;top:0;width:210mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
-        );
-      }
-      await waitNextFrame();
-
-      const pageNodes = Array.from(
-        element.querySelectorAll("[data-print-page='true']"),
-      );
-      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
-
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-        compress: true,
+      await downloadTrialBalancePdf({
+        liabilities: ledgerLiablitiesTableData,
+        assets: ledgerAssetsTableData,
+        fromDate,
+        toDate,
+        t,
+        onProgress: (done, total) => {
+          toast.loading(`Writing rows ${done} / ${total}`, { id: toastId });
+        },
       });
-      const pageWidth = 210;
-      const pageHeight = 297;
-      let pagesAdded = 0;
-
-      for (let i = 0; i < pagesToCapture.length; i += 1) {
-        const pageEl = pagesToCapture[i];
-
-        const canvas = await html2canvas(pageEl, {
-          scale: 1.5,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          backgroundColor: "#ffffff",
-          scrollX: 0,
-          scrollY: 0,
-          width: pageEl.scrollWidth,
-          height: pageEl.scrollHeight,
-          windowWidth: pageEl.scrollWidth,
-          windowHeight: pageEl.scrollHeight,
-          onclone: (clonedDoc) => {
-            clonedDoc.querySelectorAll("*").forEach((node) => {
-              if (!(node instanceof HTMLElement)) return;
-              node.style.overflow = "visible";
-              node.style.boxShadow = "none";
-            });
-          },
-        });
-
-        if (!canvas?.width || !canvas?.height) continue;
-
-        const imgData = canvas.toDataURL("image/jpeg", 0.92);
-        const imgWidth = pageWidth;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const renderHeight = Math.min(imgHeight, pageHeight);
-
-        if (pagesAdded > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, renderHeight);
-        pagesAdded += 1;
-      }
-
-      if (pagesAdded < 1) {
-        toast.error(t("report.trialBalance.failedToCapturePdf"));
-        return;
-      }
-
-      pdf.save(`TrailBalance-${toDate || "report"}.pdf`);
-      toast.success(t("report.trialBalance.pdfDownloaded"));
+      toast.success(t("report.trialBalance.pdfDownloaded"), { id: toastId });
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
@@ -154,9 +85,9 @@ const TrailBalance = ({
               error: error.message,
             })
           : t("report.trialBalance.failedToDownloadPdf"),
+        { id: toastId },
       );
     } finally {
-      if (host) host.setAttribute("style", prevHostStyle);
       setPdfLoading(false);
     }
   };
@@ -201,7 +132,7 @@ const TrailBalance = ({
                 <DatePickerField
                   control={form.control}
                   name="fromDate"
-                  label={t("common.fromDate")}                 
+                  label={tForm("common.fromDate")}                 
                   disabled
                   allowClear={false}
                 />
@@ -209,7 +140,7 @@ const TrailBalance = ({
                 <DatePickerField
                   control={form.control}
                   name="toDate"
-                  label={t("common.toDate")}                  
+                  label={tForm("common.toDate")}                  
                   disabled
                   allowClear={false}
                 />
@@ -221,13 +152,13 @@ const TrailBalance = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label={t("common.branch")}
+                      label={tForm("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder={t("common.selectBranch")}
-                      searchPlaceholder={t("common.searchBranch")}
+                      placeholder={tForm("common.selectBranch")}
+                      searchPlaceholder={tForm("common.searchBranch")}
                     />
                   )}
                 />

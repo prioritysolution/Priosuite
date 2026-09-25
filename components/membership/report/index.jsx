@@ -1,5 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { useSelector } from "react-redux";
@@ -26,8 +27,8 @@ import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import ShareIssueReceipt from "../shareIssue/ShareIssueReceipt";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import toast from "react-hot-toast";
+import { downloadMembershipReportPdf } from "./buildMembershipReportPdf";
 
 const MembershipReport = ({
   loading,
@@ -62,6 +63,7 @@ const MembershipReport = ({
   shareIssueReceiptData,
 }) => {
   const { t } = useTranslation();
+  const { t: tEn } = useEnglishOnly();
 
   const [showReportForm, setShowReportForm] = useState(true);
 
@@ -116,55 +118,55 @@ const MembershipReport = ({
     }-${toDate && format(toDate, "dd-MM-yyyy")}`,
   });
 
-  const handleDownloadPDF = async () => {
-    let element = null;
-    let docTitle = "document";
-    if (showData === "100") {
-      element = printMemberRegisterRef.current;
-      docTitle = `ShareMemberRegister-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
-    } else if (showData === "101") {
-      element = printTransactionRegisterRef.current;
-      docTitle = `ShareTransactionRegister-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
-    } else if (showData === "102") {
-      element = printWithdrawnRegisterRef.current;
-      docTitle = `ShareWithdrawnRegister-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
-    } else if (showData === "103") {
-      element = printDetailedListRef.current;
-      docTitle = `ShareDetailedList-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
-    } else if (showData === "104") {
-      element = printDividendListRef.current;
-      docTitle = `ShareDividendList-${fromDate && format(fromDate, "dd-MM-yyyy")}-${toDate && format(toDate, "dd-MM-yyyy")}`;
-    }
+  const formatReportDate = (value) =>
+    value ? format(value, "dd-MM-yyyy") : "";
 
-    if (!element) return;
+  const handleDownloadPDF = async () => {
+    const titles = {
+      100: "ShareMemberRegister",
+      101: "ShareTransactionRegister",
+      102: "ShareWithdrawnRegister",
+      103: "ShareDetailedList",
+      104: "ShareDividendList",
+    };
+
+    if (!titles[showData]) return;
+    if (!(tableData?.length > 0)) return;
+
+    const docTitle = `${titles[showData]}-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
+    const toastId = toast.loading("Preparing PDF…");
 
     try {
-      const isLandscape = showData === "101" || showData === "103";
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
+      await downloadMembershipReportPdf({
+        showData,
+        tableData,
+        fromDate,
+        toDate,
+        docTitle,
+        t: tEn,
+        totals: {
+          totalAdmFees,
+          totalIssue,
+          totalRelease,
+          totalAmount,
+          totalOpening,
+          totalClosing,
+          totalDividend,
+          totalBalance,
+        },
+        onProgress: (done, total) => {
+          toast.loading(`Writing rows ${done} / ${total}`, { id: toastId });
+        },
       });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF(isLandscape ? "l" : "p", "mm", "a4");
-      const imgWidth = isLandscape ? 297 : 210;
-      const pageHeight = isLandscape ? 210 : 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
-
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 15) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      pdf.save(`${docTitle}.pdf`);
+      toast.success("PDF downloaded", { id: toastId });
     } catch (error) {
       console.error("Error downloading PDF:", error);
+      toast.error(
+        error?.message
+          ? `Failed to download PDF: ${error.message}`
+          : "Failed to download PDF",
+        { id: toastId },
+      );
     }
   };
 
@@ -188,7 +190,7 @@ const MembershipReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">{t("membership.report.title")}</h3>
+                <h3 className="text-xl font-semibold ">{tEn("membership.report.title")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"

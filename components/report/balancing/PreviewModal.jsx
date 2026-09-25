@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import getCookieData from "@/utils/getCookieData";
-import { useTranslation } from "react-i18next";
+import { useEnglishOnly as useTranslation } from "@/i18n/useEnglishOnly";
 
 const PAGE_ROWS = 23;
 

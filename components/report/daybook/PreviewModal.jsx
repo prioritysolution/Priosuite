@@ -12,7 +12,7 @@ import {
 import getCookieData from "@/utils/getCookieData";
 import convertToWords from "@/utils/numberToWords";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useEnglishOnly as useTranslation } from "@/i18n/useEnglishOnly";
 
 const PreviewModal = ({
   printRef,

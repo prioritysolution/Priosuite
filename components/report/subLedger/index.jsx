@@ -1,5 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,9 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
+import toast from "react-hot-toast";
+import { downloadSubLedgerPdf } from "../buildReportPdfs";
 import SearchDropdownField from "@/common/formFields/SearchDropdownField";
 
 const SubLedger = ({
@@ -49,8 +52,10 @@ const SubLedger = ({
   subLedgerInput,
   setSubLedgerInput,
 }) => {
-  const { t } = useTranslation();
+  const { t: tForm } = useTranslation();
+  const { t } = useEnglishOnly();
   const [showReportForm, setShowReportForm] = useState(true);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
@@ -66,6 +71,42 @@ const SubLedger = ({
     contentRef: printRef,
     documentTitle: `SubLedger-${fromDate}-${toDate}`,
   });
+
+  const handleDownloadPDF = async () => {
+    if (!(subLedgerTableData?.length > 0)) return;
+
+    const ledgerName =
+      subLedgerData?.find((data) => data?.Id?.toString() === subLedgerId)
+        ?.Ledger_Name || "";
+    const toastId = toast.loading("Preparing PDF…");
+
+    try {
+      setPdfLoading(true);
+      await downloadSubLedgerPdf({
+        rows: subLedgerTableData,
+        fromDate,
+        toDate,
+        totalDebit,
+        totalCredit,
+        ledgerName,
+        t,
+        onProgress: (done, total) => {
+          toast.loading(`Writing rows ${done} / ${total}`, { id: toastId });
+        },
+      });
+      toast.success(t("common.pdfDownloaded"), { id: toastId });
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      toast.error(
+        error?.message
+          ? t("common.failedToDownloadPdfWithError", { error: error.message })
+          : t("common.failedToDownloadPdf"),
+        { id: toastId },
+      );
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   return (
     <div className="w-full h-full flex justify-between  bg-[#fefefe] rounded-lg ">
@@ -110,7 +151,7 @@ const SubLedger = ({
                   <DatePickerField
                     control={form.control}
                     name="fromDate"
-                    label={t("common.fromDate")}
+                    label={tForm("common.fromDate")}
                     startYear={2000}
                     endYear={2050}
                   />
@@ -120,7 +161,7 @@ const SubLedger = ({
                   <DatePickerField
                     control={form.control}
                     name="toDate"
-                    label={t("common.toDate")}
+                    label={tForm("common.toDate")}
                     startYear={2000}
                     endYear={2050}
                   />
@@ -132,13 +173,13 @@ const SubLedger = ({
                     name="branch"
                     render={({ field }) => (
                       <DropdownField
-                        label={t("common.branch")}
+                        label={tForm("common.branch")}
                         value={field.value}
                         onChange={field.onChange}
                         options={branchData}
                         optionLabelKey="Branch_Name" // Specify the key for label
-                        placeholder={t("common.selectBranch")}
-                        searchPlaceholder={t("common.searchBranch")}
+                        placeholder={tForm("common.selectBranch")}
+                        searchPlaceholder={tForm("common.searchBranch")}
                       />
                     )}
                   />
@@ -150,7 +191,7 @@ const SubLedger = ({
                     name="subLedger"
                     render={({ field }) => (
                       <SearchDropdownField
-                        label={t("common.subLedger")}
+                        label={tForm("common.subLedger")}
                         value={field.value}
                         onChange={field.onChange}
                         options={subLedgerData}
@@ -194,6 +235,29 @@ const SubLedger = ({
                     )}
                   >
                     <HiMiniPrinter />
+                  </div>
+                  <div
+                    onClick={() => {
+                      if (subLedgerTableData?.length > 0 && !pdfLoading)
+                        handleDownloadPDF();
+                    }}
+                    className={cn(
+                      "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
+                      {
+                        "cursor-not-allowed bg-gray-400 ":
+                          !(subLedgerTableData?.length > 0) || pdfLoading,
+                      },
+                    )}
+                  >
+                    {pdfLoading ? (
+                      <ClipLoader
+                        color="#d7e6f4"
+                        size={20}
+                        speedMultiplier={0.7}
+                      />
+                    ) : (
+                      <FiDownload />
+                    )}
                   </div>
                 </div>
               </div>

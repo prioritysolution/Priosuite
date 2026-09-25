@@ -12,6 +12,7 @@ import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 
 const ROWS_PER_PAGE = 48;
 
@@ -44,8 +45,11 @@ const PreviewVoucher = ({
   voucherDetailsData,
   totalDrAmount,
   totalCrAmount,
+  englishOnly = false,
 }) => {
-  const { t } = useTranslation();
+  const { t: tLive } = useTranslation();
+  const { t: tEn } = useEnglishOnly();
+  const t = englishOnly ? tEn : tLive;
 
   const [userName, setUserName] = useState("");
   const [orgName, setOrgName] = useState("");

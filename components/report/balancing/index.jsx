@@ -1,5 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -21,12 +22,11 @@ import PreviewModal from "./PreviewModal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas-pro";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import { HiMiniPrinter } from "react-icons/hi2";
 import toast from "react-hot-toast";
+import { downloadBalancingPdf } from "../buildReportPdfs";
 import { createPortal } from "react-dom";
 
 const Balancing = ({
@@ -40,7 +40,8 @@ const Balancing = ({
   borrowingsList,
   asOnDate,
 }) => {
-  const { t } = useTranslation();
+  const { t: tForm } = useTranslation();
+  const { t } = useEnglishOnly();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -61,93 +62,29 @@ const Balancing = ({
     investmentList?.length > 0 ||
     borrowingsList?.length > 0;
 
-  const waitNextFrame = () =>
-    new Promise((resolve) => requestAnimationFrame(resolve));
-
-  const handleDownloadPDF = async () => {
-    const element = printRef.current;
-    const host = printHostRef.current;
-
-    if (!element) {
-      toast.error(t("report.balancing.nothingToDownload"));
-      return;
-    }
-
+    const handleDownloadPDF = async () => {
     if (!hasReportData) {
       toast.error(t("report.balancing.noDataToDownload"));
       return;
     }
 
-    const prevHostStyle = host?.getAttribute("style") || "";
+    const toastId = toast.loading("Preparing PDF…");
 
     try {
       setPdfLoading(true);
-
-      if (host) {
-        host.setAttribute(
-          "style",
-          "position:fixed;left:0;top:0;width:210mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
-        );
-      }
-      await waitNextFrame();
-
-      const pageNodes = Array.from(
-        element.querySelectorAll("[data-print-page='true']"),
-      );
-      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
-
-      const captureOptions = {
-        scale: 1,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        imageTimeout: 0,
-        removeContainer: true,
-        foreignObjectRendering: false,
-      };
-
-      const BATCH_SIZE = 3;
-      const pageImages = [];
-
-      for (let i = 0; i < pagesToCapture.length; i += BATCH_SIZE) {
-        const batch = pagesToCapture.slice(i, i + BATCH_SIZE);
-        const batchResults = await Promise.all(
-          batch.map(async (pageEl) => {
-            const canvas = await html2canvas(pageEl, captureOptions);
-            if (!canvas?.width || !canvas?.height) return null;
-            return canvas.toDataURL("image/jpeg", 0.75);
-          }),
-        );
-        pageImages.push(...batchResults);
-      }
-
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-        compress: true,
+      await downloadBalancingPdf({
+        shareList,
+        depositList,
+        loanList,
+        investmentList,
+        borrowingsList,
+        asOnDate,
+        t,
+        onProgress: (done, total) => {
+          toast.loading(`Writing rows ${done} / ${total}`, { id: toastId });
+        },
       });
-      const pageWidth = 210;
-      const pageHeight = 297;
-      let pagesAdded = 0;
-
-      for (let i = 0; i < pageImages.length; i += 1) {
-        const imgData = pageImages[i];
-        if (!imgData) continue;
-
-        if (pagesAdded > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, pageHeight);
-        pagesAdded += 1;
-      }
-
-      if (pagesAdded < 1) {
-        toast.error(t("report.balancing.failedToCapturePdf"));
-        return;
-      }
-
-      pdf.save(`Balancing-${asOnDate || "report"}.pdf`);
-      toast.success(t("report.balancing.pdfDownloaded"));
+      toast.success(t("report.balancing.pdfDownloaded"), { id: toastId });
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
@@ -156,9 +93,9 @@ const Balancing = ({
               error: error.message,
             })
           : t("report.balancing.failedToDownloadPdf"),
+        { id: toastId },
       );
     } finally {
-      if (host) host.setAttribute("style", prevHostStyle);
       setPdfLoading(false);
     }
   };
@@ -203,7 +140,7 @@ const Balancing = ({
                 <DatePickerField
                   control={form.control}
                   name="date"
-                  label={t("common.date")}
+                  label={tForm("common.date")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -213,13 +150,13 @@ const Balancing = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label={t("common.branch")}
+                      label={tForm("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder={t("common.selectBranch")}
-                      searchPlaceholder={t("common.searchBranch")}
+                      placeholder={tForm("common.selectBranch")}
+                      searchPlaceholder={tForm("common.searchBranch")}
                     />
                   )}
                 />

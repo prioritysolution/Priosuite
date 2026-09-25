@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useSelector } from "react-redux";
@@ -23,10 +24,9 @@ import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import RepaymentRegisterPreview from "./RepaymentRegisterPreview";
 import CollectionReceipt from "../repayment/CollectionReceipt";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas-pro";
 import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
+import { downloadLoanReportPdf } from "./buildLoanReportPdf";
 
 const LoanReport = ({
   loading,
@@ -68,6 +68,7 @@ const LoanReport = ({
   collectionReceiptData,
 }) => {
   const { t } = useTranslation();
+  const { t: tEn } = useEnglishOnly();
 
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
@@ -111,136 +112,64 @@ const LoanReport = ({
   const formatReportDate = (value) =>
     value ? format(value, "dd-MM-yyyy") : "";
 
-  const waitNextFrame = () =>
-    new Promise((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(resolve)),
-    );
-
   const handleDownloadPDF = async () => {
-    let element = null;
-    let docTitle = "LoanReport";
+    const titles = {
+      110: "LoanDisburseRegister",
+      111: "LoanRepaymentRegister",
+      112: "LoanDetailedList",
+    };
 
-    if (showData === "110") {
-      element = printDisburseRegisterRef.current;
-      docTitle = `LoanDisburseRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
-    } else if (showData === "111") {
-      element = printRepaymentRegisterRef.current;
-      docTitle = `LoanRepaymentRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
-    } else if (showData === "112") {
-      element = printDetailedListRef.current;
-      docTitle = `LoanDetailedList-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
-    }
-
-    const host = printHostRef.current;
-
-    if (!element) {
-      toast.error(t("loan.nothingToDownload"));
+    if (!titles[showData]) {
+      toast.error(tEn("loan.nothingToDownload"));
       return;
     }
 
     if (!(tableData?.length > 0)) {
-      toast.error(t("loan.noLoanReportData"));
+      toast.error(tEn("loan.noLoanReportData"));
       return;
     }
 
-    const prevHostStyle = host?.getAttribute("style") || "";
+    const docTitle = `${titles[showData]}-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
+    const toastId = toast.loading("Preparing PDF…");
 
     try {
       setPdfLoading(true);
-
-      if (host) {
-        host.setAttribute(
-          "style",
-          "position:fixed;left:-10000px;top:0;width:297mm;background:#ffffff;pointer-events:none;z-index:-1;opacity:1;",
-        );
-      }
-      await waitNextFrame();
-
-      const pageNodes = Array.from(
-        element.querySelectorAll("[data-print-page='true']"),
-      );
-      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
-
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4",
-        compress: true,
+      await downloadLoanReportPdf({
+        showData,
+        tableData,
+        fromDate,
+        toDate,
+        docTitle,
+        t: tEn,
+        totals: {
+          totalDisburseAmount,
+          totalShareAmount,
+          totalInsAmount,
+          totalMisAmount,
+          totalNetDisburse,
+          totalOpening,
+          totalDisburse,
+          totalPrn,
+          totalIntt,
+          totalCurrOuts,
+          totalOdOuts,
+          totalCurrIntt,
+          totalOdIntt,
+        },
+        onProgress: (done, total) => {
+          toast.loading(`Writing rows ${done} / ${total}`, { id: toastId });
+        },
       });
-      const pageWidth = 297;
-      const pageHeight = 210;
-      const captureScale = Math.max(2.5, window.devicePixelRatio || 1);
-      let pagesAdded = 0;
-
-      for (let i = 0; i < pagesToCapture.length; i += 1) {
-        const pageEl = pagesToCapture[i];
-
-        const canvas = await html2canvas(pageEl, {
-          scale: captureScale,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          backgroundColor: "#ffffff",
-          scrollX: 0,
-          scrollY: 0,
-          width: pageEl.scrollWidth,
-          height: pageEl.scrollHeight,
-          windowWidth: pageEl.scrollWidth,
-          windowHeight: pageEl.scrollHeight,
-          onclone: (clonedDoc) => {
-            clonedDoc.querySelectorAll("*").forEach((node) => {
-              if (!(node instanceof HTMLElement)) return;
-              const tag = node.tagName;
-              if (
-                [
-                  "TABLE",
-                  "THEAD",
-                  "TBODY",
-                  "TFOOT",
-                  "TR",
-                  "TH",
-                  "TD",
-                  "COL",
-                  "COLGROUP",
-                ].includes(tag)
-              ) {
-                return;
-              }
-              node.style.overflow = "visible";
-              node.style.boxShadow = "none";
-              node.style.transform = "none";
-            });
-          },
-        });
-
-        if (!canvas?.width || !canvas?.height) continue;
-
-        const imgData = canvas.toDataURL("image/png");
-        const imgWidth = pageWidth;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const renderHeight = Math.min(imgHeight, pageHeight);
-
-        if (pagesAdded > 0) pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, renderHeight);
-        pagesAdded += 1;
-      }
-
-      if (pagesAdded < 1) {
-        toast.error(t("loan.failedToCaptureReport"));
-        return;
-      }
-
-      pdf.save(`${docTitle}.pdf`);
-      toast.success(t("loan.pdfDownloaded"));
+      toast.success(tEn("loan.pdfDownloaded"), { id: toastId });
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
           ? `Failed to download PDF: ${error.message}`
           : "Failed to download PDF",
+        { id: toastId },
       );
     } finally {
-      if (host) host.setAttribute("style", prevHostStyle);
       setPdfLoading(false);
     }
   };
@@ -266,7 +195,7 @@ const LoanReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-lg sm:text-xl font-semibold">{t("loan.loanReport")}</h3>
+                <h3 className="text-lg sm:text-xl font-semibold">{tEn("loan.loanReport")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"

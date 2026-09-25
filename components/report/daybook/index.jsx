@@ -1,5 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -33,11 +34,10 @@ import PreviewVoucher from "./PreviewVoucher";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas-pro";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
+import { downloadDaybookPdf } from "./buildDaybookPdf";
 import {
   Pagination,
   PaginationContent,
@@ -75,7 +75,8 @@ const Daybook = ({
   setCurrentPage,
   lastPage,
 }) => {
-  const { t } = useTranslation();
+  const { t: tForm } = useTranslation();
+  const { t } = useEnglishOnly();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -101,20 +102,7 @@ const Daybook = ({
     documentTitle: `Voucher`,
   });
 
-  const waitNextFrame = () =>
-    new Promise((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(resolve)),
-    );
-
   const handleDownloadPDF = async () => {
-    const element = printRef.current;
-    const host = printHostRef.current;
-
-    if (!element) {
-      toast.error(t("report.daybook.nothingToDownload"));
-      return;
-    }
-
     const hasData =
       (ledgerTableReceiptData && ledgerTableReceiptData.length > 0) ||
       (ledgerTablePaymentData && ledgerTablePaymentData.length > 0) ||
@@ -125,84 +113,39 @@ const Daybook = ({
       return;
     }
 
-    const prevHostStyle = host?.getAttribute("style") || "";
+    const toastId = toast.loading("Preparing PDF…");
 
     try {
       setPdfLoading(true);
-
-      // Same PreviewModal used for print — bring on-screen for accurate capture
-      if (host) {
-        host.setAttribute(
-          "style",
-          "position:fixed;left:0;top:0;width:297mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
-        );
-      }
-      await waitNextFrame();
-
-      const pageNodes = Array.from(
-        element.querySelectorAll("[data-print-page='true']"),
-      );
-      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
-
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4",
-        compress: true,
+      await downloadDaybookPdf({
+        receipts: ledgerTableReceiptData || [],
+        payments: ledgerTablePaymentData || [],
+        denomData: denomData || [],
+        toDate,
+        cashBalanceData,
+        t,
+        totals: {
+          totalCashReceived,
+          totalTranferReceived,
+          totalReceived,
+          totalCashPayment,
+          totalTranferPayment,
+          totalPayment,
+        },
+        onProgress: (done, total) => {
+          toast.loading(`Writing rows ${done} / ${total}`, { id: toastId });
+        },
       });
-      const pageWidth = 297;
-      const pageHeight = 210;
-      let pagesAdded = 0;
-
-      for (let i = 0; i < pagesToCapture.length; i += 1) {
-        const pageEl = pagesToCapture[i];
-
-        const canvas = await html2canvas(pageEl, {
-          scale: 1.25,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          backgroundColor: "#ffffff",
-          scrollX: 0,
-          scrollY: 0,
-          onclone: (clonedDoc) => {
-            clonedDoc.querySelectorAll("*").forEach((node) => {
-              if (!(node instanceof HTMLElement)) return;
-              node.style.overflow = "visible";
-              node.style.boxShadow = "none";
-            });
-          },
-        });
-
-        if (!canvas?.width || !canvas?.height) continue;
-
-        // JPEG keeps PDF smaller and avoids some PNG toDataURL failures
-        const imgData = canvas.toDataURL("image/jpeg", 0.92);
-        const imgWidth = pageWidth;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const renderHeight = Math.min(imgHeight, pageHeight);
-
-        if (pagesAdded > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, renderHeight);
-        pagesAdded += 1;
-      }
-
-      if (pagesAdded < 1) {
-        toast.error(t("report.daybook.failedToCapturePdf"));
-        return;
-      }
-
-      pdf.save(`Daybook-${toDate || "report"}.pdf`);
-      toast.success(t("report.daybook.pdfDownloaded"));
+      toast.success(t("report.daybook.pdfDownloaded"), { id: toastId });
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
           ? `${t("report.daybook.failedToDownloadPdf")}: ${error.message}`
           : t("report.daybook.failedToDownloadPdf"),
+        { id: toastId },
       );
     } finally {
-      if (host) host.setAttribute("style", prevHostStyle);
       setPdfLoading(false);
     }
   };
@@ -263,7 +206,7 @@ const Daybook = ({
                 <DatePickerField
                   control={form.control}
                   name="date"
-                  label={t("common.date")}
+                  label={tForm("common.date")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -273,13 +216,13 @@ const Daybook = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label={t("common.branch")}
+                      label={tForm("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder={t("common.selectBranch")}
-                      searchPlaceholder={t("common.searchBranch")}
+                      placeholder={tForm("common.selectBranch")}
+                      searchPlaceholder={tForm("common.searchBranch")}
                     />
                   )}
                 />
@@ -949,6 +892,7 @@ const Daybook = ({
           voucherDetailsData={voucherDetailsData}
           totalCrAmount={totalCrAmount}
           totalDrAmount={totalDrAmount}
+          englishOnly
         />
       </div>
     </div>

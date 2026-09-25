@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
+import { useEnglishOnly as useTranslation } from "@/i18n/useEnglishOnly";
 
 const DetailedListTable = ({ loading, tableData, handleShowLedger }) => {
   const { t } = useTranslation();

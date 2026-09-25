@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
+import { useEnglishOnly as useTranslation } from "@/i18n/useEnglishOnly";
 import React, { useEffect, useState } from "react";
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";

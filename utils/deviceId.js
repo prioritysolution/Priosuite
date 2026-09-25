@@ -43,6 +43,66 @@ const getDeviceFingerprint = () => {
  * Device id for the browser/device where this webapp is running.
  * Created once per device/browser and reused on later logins.
  */
+export const getOsName = () => {
+  if (!canUseStorage()) return "Unknown";
+  const platform = String(navigator.platform || "").toLowerCase();
+  const agent = String(navigator.userAgent || "").toLowerCase();
+  if (platform.includes("win")) return "Windows";
+  if (/iphone|ipod|ipad/.test(platform) || /iphone|ipod|ipad/.test(agent)) return "iOS";
+  if (platform.includes("mac")) return "MacOS";
+  if (/android/.test(platform) || /android/.test(agent)) return "Android";
+  if (platform.includes("linux")) return "Linux";
+  return "Unknown";
+};
+
+/** Browser/device details for the machine running this webapp. */
+export const collectDeviceInfo = () => {
+  if (!canUseStorage()) return { user_device_id: "", user_device: "Unknown" };
+
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+  return {
+    user_device_id: getDeviceId(),
+    user_device: getOsName(),
+    user_ip: "",
+    userAgent: navigator.userAgent || "",
+    language: navigator.language || "",
+    languages: navigator.languages || [],
+    platform: navigator.platform || "",
+    vendor: navigator.vendor || "",
+    hardwareConcurrency: navigator.hardwareConcurrency ?? null,
+    deviceMemory: navigator.deviceMemory ?? null,
+    maxTouchPoints: navigator.maxTouchPoints ?? null,
+    cookieEnabled: navigator.cookieEnabled ?? null,
+    onLine: navigator.onLine ?? null,
+    screen: {
+      width: screen?.width ?? null,
+      height: screen?.height ?? null,
+      availWidth: screen?.availWidth ?? null,
+      availHeight: screen?.availHeight ?? null,
+      colorDepth: screen?.colorDepth ?? null,
+      pixelDepth: screen?.pixelDepth ?? null,
+    },
+    devicePixelRatio: window.devicePixelRatio ?? null,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+    timezoneOffset: new Date().getTimezoneOffset(),
+    connection: connection
+      ? {
+          effectiveType: connection.effectiveType || "",
+          downlink: connection.downlink ?? null,
+          rtt: connection.rtt ?? null,
+          saveData: connection.saveData ?? null,
+        }
+      : null,
+  };
+};
+
+export const fetchClientIp = async () => {
+  const response = await fetch("https://api-bdc.net/data/client-ip");
+  const data = await response.json();
+  return data?.ipString || "";
+};
+
 export const getDeviceId = () => {
   if (!canUseStorage()) return "";
 

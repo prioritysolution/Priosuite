@@ -3,6 +3,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { useSelector } from "react-redux";
@@ -29,10 +30,9 @@ import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import DepositReceipt from "../deposit/DepositReceipt";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas-pro";
 import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
+import { downloadDepositReportPdf } from "./buildDepositReportPdf";
 
 const DepositReport = ({
   loading,
@@ -68,6 +68,7 @@ const DepositReport = ({
   depositReceiptData,
 }) => {
   const { t } = useTranslation();
+  const { t: tEn } = useEnglishOnly();
 
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
@@ -127,35 +128,16 @@ const DepositReport = ({
   const formatReportDate = (value) =>
     value ? format(value, "dd-MM-yyyy") : "";
 
-  const waitNextFrame = () =>
-    new Promise((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(resolve)),
-    );
-
   const handleDownloadPDF = async () => {
-    let element = null;
-    let docTitle = "DepositReport";
+    const titles = {
+      105: "AcountOpeningRegister",
+      106: "TransactionRegister",
+      107: "AcountClosingRegister",
+      108: "DetailedList",
+      109: "InterestLedger",
+    };
 
-    if (showData === "105") {
-      element = printOpeningRegisterRef.current;
-      docTitle = `AcountOpeningRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
-    } else if (showData === "106") {
-      element = printTransactionRegisterRef.current;
-      docTitle = `TransactionRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
-    } else if (showData === "107") {
-      element = printClosingRegisterRef.current;
-      docTitle = `AcountClosingRegister-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
-    } else if (showData === "108") {
-      element = printDetailedListRef.current;
-      docTitle = `DetailedList-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
-    } else if (showData === "109") {
-      element = printInterestListRef.current;
-      docTitle = `InterestLedger-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
-    }
-
-    const host = printHostRef.current;
-
-    if (!element) {
+    if (!titles[showData]) {
       toast.error("Nothing to download. Please generate the report first.");
       return;
     }
@@ -165,101 +147,41 @@ const DepositReport = ({
       return;
     }
 
-    const isLandscape = showData !== "109";
-    const pageWidth = isLandscape ? 297 : 210;
-    const pageHeight = isLandscape ? 210 : 297;
-    const hostWidth = isLandscape ? "297mm" : "210mm";
-    const prevHostStyle = host?.getAttribute("style") || "";
+    const docTitle = `${titles[showData]}-${formatReportDate(fromDate)}-${formatReportDate(toDate)}`;
+    const toastId = toast.loading("Preparing PDF…");
 
     try {
       setPdfLoading(true);
-
-      if (host) {
-        host.setAttribute(
-          "style",
-          `position:fixed;left:0;top:0;width:${hostWidth};background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;`,
-        );
-      }
-      await waitNextFrame();
-
-      const pageNodes = Array.from(
-        element.querySelectorAll("[data-print-page='true']"),
-      );
-      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
-
-      const pdf = new jsPDF({
-        orientation: isLandscape ? "landscape" : "portrait",
-        unit: "mm",
-        format: "a4",
-        compress: true,
+      await downloadDepositReportPdf({
+        showData,
+        tableData,
+        fromDate,
+        toDate,
+        docTitle,
+        t: tEn,
+        totals: {
+          totalOpening,
+          totalDeposit,
+          totalWithdrawn,
+          totalClosing,
+          totalPaidIntt,
+          totalDueIntt,
+          totalAmount,
+        },
+        onProgress: (done, total) => {
+          toast.loading(`Writing rows ${done} / ${total}`, { id: toastId });
+        },
       });
-      let pagesAdded = 0;
-
-      for (let i = 0; i < pagesToCapture.length; i += 1) {
-        const pageEl = pagesToCapture[i];
-
-        const canvas = await html2canvas(pageEl, {
-          scale: 1.25,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          backgroundColor: "#ffffff",
-          scrollX: 0,
-          scrollY: 0,
-          onclone: (clonedDoc) => {
-            clonedDoc.querySelectorAll("*").forEach((node) => {
-              if (!(node instanceof HTMLElement)) return;
-              const tag = node.tagName;
-              if (
-                [
-                  "TABLE",
-                  "THEAD",
-                  "TBODY",
-                  "TFOOT",
-                  "TR",
-                  "TH",
-                  "TD",
-                  "COL",
-                  "COLGROUP",
-                ].includes(tag)
-              ) {
-                return;
-              }
-              node.style.overflow = "visible";
-              node.style.boxShadow = "none";
-              node.style.transform = "none";
-            });
-          },
-        });
-
-        if (!canvas?.width || !canvas?.height) continue;
-
-        const imgData = canvas.toDataURL("image/jpeg", 0.92);
-        const imgWidth = pageWidth;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const renderHeight = Math.min(imgHeight, pageHeight);
-
-        if (pagesAdded > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, renderHeight);
-        pagesAdded += 1;
-      }
-
-      if (pagesAdded < 1) {
-        toast.error("Failed to capture report for PDF.");
-        return;
-      }
-
-      pdf.save(`${docTitle}.pdf`);
-      toast.success("PDF downloaded");
+      toast.success("PDF downloaded", { id: toastId });
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
           ? `Failed to download PDF: ${error.message}`
           : "Failed to download PDF",
+        { id: toastId },
       );
     } finally {
-      if (host) host.setAttribute("style", prevHostStyle);
       setPdfLoading(false);
     }
   };
@@ -284,7 +206,7 @@ const DepositReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">{t("deposit.report.title")}</h3>
+                <h3 className="text-xl font-semibold ">{tEn("deposit.report.title")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -305,8 +227,6 @@ const DepositReport = ({
                   control={form.control}
                   name="fromDate"
                   label={t("deposit.fields.fromDate")}
-                  // startYear={2000}
-                  // endYear={2050}
                   isManualInput={true}
                 />
 
@@ -314,8 +234,6 @@ const DepositReport = ({
                   control={form.control}
                   name="toDate"
                   label={t("deposit.fields.toDate")}
-                  // startYear={2000}
-                  // endYear={2050}
                   isManualInput={true}
                 />
 

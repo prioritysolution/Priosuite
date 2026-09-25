@@ -1,5 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
+import { useEnglishOnly } from "@/i18n/useEnglishOnly";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import { Button } from "@/components/ui/button";
@@ -29,9 +30,8 @@ import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { useState } from "react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas-pro";
 import toast from "react-hot-toast";
+import { downloadCashbookPdf } from "../buildReportPdfs";
 import { createPortal } from "react-dom";
 
 const Cashbook = ({
@@ -53,7 +53,8 @@ const Cashbook = ({
   totalCrAmount,
   denomData,
 }) => {
-  const { t } = useTranslation();
+  const { t: tForm } = useTranslation();
+  const { t } = useEnglishOnly();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -77,20 +78,7 @@ const Cashbook = ({
     (state) => state?.daybook?.voucherDetails,
   );
 
-  const waitNextFrame = () =>
-    new Promise((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(resolve)),
-    );
-
-  const handleDownloadPDF = async () => {
-    const element = printRef.current;
-    const host = printHostRef.current;
-
-    if (!element) {
-      toast.error(t("report.cashbook.nothingToDownload"));
-      return;
-    }
-
+    const handleDownloadPDF = async () => {
     const hasData =
       (ledgerTableReceiptData && ledgerTableReceiptData.length > 0) ||
       (ledgerTablePaymentData && ledgerTablePaymentData.length > 0) ||
@@ -101,82 +89,33 @@ const Cashbook = ({
       return;
     }
 
-    const prevHostStyle = host?.getAttribute("style") || "";
+    const toastId = toast.loading("Preparing PDF…");
 
     try {
       setPdfLoading(true);
-
-      if (host) {
-        host.setAttribute(
-          "style",
-          "position:fixed;left:0;top:0;width:297mm;background:#ffffff;pointer-events:none;z-index:2147483646;opacity:0.01;",
-        );
-      }
-      await waitNextFrame();
-
-      const pageNodes = Array.from(
-        element.querySelectorAll("[data-print-page='true']"),
-      );
-      const pagesToCapture = pageNodes.length > 0 ? pageNodes : [element];
-
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4",
-        compress: true,
+      await downloadCashbookPdf({
+        receipts: ledgerTableReceiptData || [],
+        payments: ledgerTablePaymentData || [],
+        denomData: denomData || [],
+        toDate,
+        totalReceived,
+        totalPayment,
+        cashBalanceData,
+        t,
+        onProgress: (done, total) => {
+          toast.loading(`Writing rows ${done} / ${total}`, { id: toastId });
+        },
       });
-      const pageWidth = 297;
-      const pageHeight = 210;
-      let pagesAdded = 0;
-
-      for (let i = 0; i < pagesToCapture.length; i += 1) {
-        const pageEl = pagesToCapture[i];
-
-        const canvas = await html2canvas(pageEl, {
-          scale: 1.25,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          backgroundColor: "#ffffff",
-          scrollX: 0,
-          scrollY: 0,
-          onclone: (clonedDoc) => {
-            clonedDoc.querySelectorAll("*").forEach((node) => {
-              if (!(node instanceof HTMLElement)) return;
-              node.style.overflow = "visible";
-              node.style.boxShadow = "none";
-            });
-          },
-        });
-
-        if (!canvas?.width || !canvas?.height) continue;
-
-        const imgData = canvas.toDataURL("image/jpeg", 0.92);
-        const imgWidth = pageWidth;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const renderHeight = Math.min(imgHeight, pageHeight);
-
-        if (pagesAdded > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, renderHeight);
-        pagesAdded += 1;
-      }
-
-      if (pagesAdded < 1) {
-        toast.error(t("report.cashbook.failedToCapturePdf"));
-        return;
-      }
-
-      pdf.save(`Cashbook-${toDate || "report"}.pdf`);
-      toast.success(t("report.cashbook.pdfDownloaded"));
+      toast.success(t("report.cashbook.pdfDownloaded"), { id: toastId });
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
         error?.message
           ? `${t("report.cashbook.failedToDownloadPdf")}: ${error.message}`
           : t("report.cashbook.failedToDownloadPdf"),
+        { id: toastId },
       );
     } finally {
-      if (host) host.setAttribute("style", prevHostStyle);
       setPdfLoading(false);
     }
   };
@@ -221,7 +160,7 @@ const Cashbook = ({
                 <DatePickerField
                   control={form.control}
                   name="date"
-                  label={t("common.date")}
+                  label={tForm("common.date")}
                   startYear={2000}
                   endYear={2050}
                 />
@@ -231,13 +170,13 @@ const Cashbook = ({
                   name="branch"
                   render={({ field }) => (
                     <DropdownField
-                      label={t("common.branch")}
+                      label={tForm("common.branch")}
                       value={field.value}
                       onChange={field.onChange}
                       options={branchData}
                       optionLabelKey="Branch_Name" // Specify the key for label
-                      placeholder={t("common.selectBranch")}
-                      searchPlaceholder={t("common.searchBranch")}
+                      placeholder={tForm("common.selectBranch")}
+                      searchPlaceholder={tForm("common.searchBranch")}
                     />
                   )}
                 />
@@ -697,6 +636,7 @@ const Cashbook = ({
           voucherDetailsData={voucherDetailsData}
           totalCrAmount={totalCrAmount}
           totalDrAmount={totalDrAmount}
+          englishOnly
         />
       </div>
     </div>

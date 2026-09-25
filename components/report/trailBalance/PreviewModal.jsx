@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
+import { useEnglishOnly as useTranslation } from "@/i18n/useEnglishOnly";
 import {
   Table,
   TableBody,

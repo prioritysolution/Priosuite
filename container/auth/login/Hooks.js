@@ -19,7 +19,7 @@ import { token, beg_date } from "./LoginReducer";
 import { formatDateForApi } from "@/utils/dateHelpers";
 import { clearStoredUserDashboard } from "@/utils/userDashboardStorage";
 import { getStoredLanguage, setAppLanguage } from "@/i18n";
-import { getDeviceId } from "@/utils/deviceId";
+import { getDeviceId, getOsName } from "@/utils/deviceId";
 
 const SUPPORTED_LANGS = ["en", "bn", "hi", "or"];
 
@@ -158,15 +158,7 @@ export const useLogin = () => {
     },
   });
 
-  const getOS = () => {
-    const platform = navigator.platform.toLowerCase();
-    if (platform.includes("win")) return "Windows";
-    if (platform.includes("mac")) return "MacOS";
-    if (platform.includes("linux")) return "Linux";
-    if (/iphone|ipod|ipad/.test(platform)) return "iOS";
-    if (/android/.test(platform)) return "Android";
-    return "Unknown";
-  };
+  const getOS = () => getOsName();
 
   // Handle form submission
   const handleLoginSubmit = (values) => {

@@ -11,7 +11,7 @@ import {
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
 import { Fragment, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useEnglishOnly as useTranslation } from "@/i18n/useEnglishOnly";
 
 const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
   const { t } = useTranslation();
