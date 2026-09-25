@@ -701,4 +701,9 @@ export const endPoints = {
     return `${createApi}Org/ProcessModuleReport/Loan/GetProduct?org_id=${org_id}`;
   },
 
+  getLoginPasswordPolicy: (orgId) =>
+    `${createApi}Org/MasterSetup/GetLoginPasswordPolicy?org_id=${orgId}`,
+  addLoginPasswordPolicy: `${createApi}Org/MasterSetup/AddLoginPasswordPolicy`,
+  updateLoginPasswordPolicy: `${createApi}Org/MasterSetup/UpdateLoginPasswordPolicy`,
+
 };
