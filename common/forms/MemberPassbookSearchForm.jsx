@@ -12,6 +12,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Form,
   FormControl,
@@ -46,28 +48,69 @@ const MemberPassbookSearchForm = ({
     lastMemberPage,
   } = useIssueMembership();
 
-  const handleSearchMember = () => {
-    if (form.getValues("dialougeMemberName"))
-      getMemberDataByNameApiCall(
-        orgId,
-        currentMemberPage,
-        form.getValues("dialougeMemberName"),
-      );
-    else toast.error(t("memberSearch.pleaseEnterName"));
+  const RadioData = [
+    { label: t("memberSearch.individualCustomer"), value: "1" },
+    { label: t("memberSearch.group"), value: "2" },
+    { label: t("memberSearch.institution"), value: "3" },
+    { label: t("memberSearch.staff"), value: "4" },
+  ];
+
+  const [selectedRadio, setSelectedRadio] = useState("1");
+
+  const handleSearchMember = (e) => {
+    e?.preventDefault?.();
+    if (!orgId) return;
+    if (form.getValues("dialougeMemberName")) {
+      if (currentMemberPage === 1) {
+        getMemberDataByNameApiCall(
+          orgId,
+          1,
+          form.getValues("dialougeMemberName"),
+          selectedRadio || "1",
+        );
+      } else {
+        setCurrentMemberPage(1);
+      }
+    } else {
+      toast.error(t("memberSearch.pleaseEnterName"));
+    }
   };
 
   const memberDataByName = useSelector(
     (state) => state?.issueMembership?.memberDataByName,
   );
 
+  const handleDialogueOpenChange = (open) => {
+    if (open) {
+      form.setValue("dialougeMemberName", "");
+      setCurrentMemberPage(1);
+      dispatch(getMemberDataByName([]));
+    } else {
+      dispatch(getMemberDataByName([]));
+    }
+    setDialougeOpen(open);
+  };
+
   useEffect(() => {
-    form.setValue("dialougeMemberName", "");
+    if (!dialougeOpen || !orgId) return;
+    const name = form.getValues("dialougeMemberName");
+    if (!name) return;
+    getMemberDataByNameApiCall(
+      orgId,
+      currentMemberPage,
+      name,
+      selectedRadio || "1",
+    );
+  }, [currentMemberPage]);
+
+  useEffect(() => {
+    if (!dialougeOpen) return;
     dispatch(getMemberDataByName([]));
     setCurrentMemberPage(1);
-  }, [dialougeOpen]);
+  }, [selectedRadio]);
 
   return (
-    <Dialog open={dialougeOpen} onOpenChange={setDialougeOpen}>
+    <Dialog open={dialougeOpen} onOpenChange={handleDialogueOpenChange}>
       <FormField
         control={form.control}
         name="memberNo"
@@ -108,6 +151,29 @@ const MemberPassbookSearchForm = ({
             {t("memberSearch.searchMembers")}
           </DialogTitle>
         </DialogHeader>
+
+        <RadioGroup
+          defaultValue="1"
+          value={selectedRadio}
+          onValueChange={setSelectedRadio}
+          className="flex flex-wrap items-center gap-x-3 gap-y-2 shrink-0"
+        >
+          {RadioData.map((item, index) => (
+            <div className="flex items-center gap-2 min-w-0" key={index}>
+              <RadioGroupItem
+                value={item.value}
+                id={`passbook-${item.value}`}
+              />
+              <Label
+                htmlFor={`passbook-${item.value}`}
+                className="text-xs sm:text-sm whitespace-nowrap"
+              >
+                {item.label}
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+
         <div className="w-full min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
           <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4 shrink-0">
             <FormField
@@ -115,7 +181,11 @@ const MemberPassbookSearchForm = ({
               name="dialougeMemberName"
               render={({ field }) => (
                 <FormItem className="w-full min-w-0">
-                  <FormLabel>{t("memberSearch.memberName")}</FormLabel>
+                  <FormLabel>
+                    {RadioData.find(
+                      (item) => item.value === selectedRadio,
+                    )?.label || t("memberSearch.memberName")}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       autoComplete="off"

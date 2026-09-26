@@ -53,10 +53,7 @@ export const usePassbookPrint = () => {
           format(value, "yyyy-MM-dd") <= maxDate
         );
       }),
-    memberNo: yup
-      .string()
-      .required("Member no. is required")
-      .matches(/^\d{1,5}$/, "Enter a valid member no."),
+    memberNo: yup.string().required("Member no. is required"),
     dialougeMemberName: yup.string(),
   });
 

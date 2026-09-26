@@ -174,7 +174,7 @@ const MemberSearchForm = ({
     //       );
     //   }
     // }),
-    memberNo: yup.string().matches(/^\d{1,10}$/, "Enter a valid member no."),
+    memberNo: yup.string().required("Member no. is required"),
     dialougeMemberName: yup.string(),
   });
   const form = useForm({
@@ -321,7 +321,9 @@ const MemberSearchForm = ({
                         <div className=" w-full h-full">
                           <div className=" w-full relative ">
                             <Input
-                              placeholder={t("memberSearch.memberNoPlaceholder")}
+                              placeholder={t(
+                                "memberSearch.memberNoPlaceholder",
+                              )}
                               className="w-full"
                               type="number"
                               onInput={(e) => {

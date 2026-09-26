@@ -32,6 +32,16 @@ import {
 } from "../ui/dropdown-menu";
 import QuickActions from "@/components/dashboard/QuickActions";
 import { cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const LANGUAGE_OPTIONS = [
   { code: "en", label: "English", short: "EN" },
@@ -61,6 +71,7 @@ const Navbar = ({
   const searchInputRef = useRef(null);
   const router = useRouter();
   const { i18n } = useTranslation();
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   const resolvedLang = (i18n.language || "en").split("-")[0];
   const currentLang =
@@ -446,7 +457,10 @@ const Navbar = ({
               Profile
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={!logoutLoading ? handleLogout : undefined}
+              onClick={(e) => {
+                e.preventDefault();
+                if (!logoutLoading) setLogoutDialogOpen(true);
+              }}
               disabled={logoutLoading}
               className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg cursor-pointer text-sm text-red-600 hover:bg-red-50 focus:bg-red-50 transition-colors duration-150 ease-out"
             >
@@ -456,6 +470,29 @@ const Navbar = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <AlertDialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will end your current session.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel  className="cursor-pointer">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setLogoutDialogOpen(false);
+                handleLogout();
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+            >
+              Logout
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </header>
   );
 };
