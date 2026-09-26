@@ -94,8 +94,9 @@ const PreviewVoucher = ({
         return (
           <div
             key={pageIndex}
+            data-print-page="true"
             className={cn(
-              "w-full h-[148mm] py-2 px-1 text-center mb-4 flex flex-col justify-between scale-[.97]",
+              "w-full h-[148mm] py-2 px-1 text-center mb-4 flex flex-col justify-between scale-[.97] break-inside-avoid",
               { "h-[297mm]": pageRows.length > 17 },
             )}
           >

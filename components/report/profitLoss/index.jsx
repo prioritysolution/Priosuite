@@ -246,12 +246,10 @@ const ProfitLoss = ({
                       (group, index) => (
                         <Fragment key={index}>
                           <TableRow>
-                            <TableCell
-                              colSpan={2}
-                              className="font-semibold border border-secondary bg-gray-50 text-left"
-                            >
+                            <TableCell className="font-semibold border border-secondary bg-gray-50 text-left">
                               {group.headName}
                             </TableCell>
+                            <TableCell className="font-semibold border border-secondary bg-gray-50 text-right" />
                             <TableCell className="font-semibold border border-secondary bg-gray-50 text-right">
                               {group.subtotalAmount &&
                                 group.subtotalAmount.toFixed(2)}
@@ -365,12 +363,10 @@ const ProfitLoss = ({
                     ledgerIncomeTableData?.groupedData.map((group, index) => (
                       <Fragment key={index}>
                         <TableRow>
-                          <TableCell
-                            colSpan={2}
-                            className="font-semibold border border-secondary bg-gray-50 text-left"
-                          >
+                          <TableCell className="font-semibold border border-secondary bg-gray-50 text-left">
                             {group.headName}
                           </TableCell>
+                          <TableCell className="font-semibold border border-secondary bg-gray-50 text-right" />
                           <TableCell className="font-semibold border border-secondary bg-gray-50 text-right">
                             {group.subtotalAmount &&
                               group.subtotalAmount.toFixed(2)}

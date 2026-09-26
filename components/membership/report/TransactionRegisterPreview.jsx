@@ -131,7 +131,7 @@ const TransactionRegisterPreview = ({
       <Table className="w-full border-collapse border border-black text-[11px] overflow-hidden">
         {pageData.length > 0 && (
           <TableHeader>
-            <TableRow className="h-[40px]">
+            <TableRow className="!h-[40px]">
               <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("membership.reports.print.slNo")}</TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.memberType")}</TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">{t("membership.reports.print.customerName")}</TableHead>
@@ -152,7 +152,7 @@ const TransactionRegisterPreview = ({
                 return (
                   <TableRow
                     key={`date-${index}`}
-                    className="h-[40px] border border-black"
+                    className="!h-[40px] border border-black"
                   >
                     <TableCell
                       colSpan={10}
@@ -165,7 +165,7 @@ const TransactionRegisterPreview = ({
               case "txn":
                 return (
                   <Fragment key={`txn-${index}`}>
-                    <TableRow className="h-[40px] border border-black">
+                    <TableRow className="!h-[40px] border border-black">
                       <TableCell className="p-0 border border-black text-center">
                         {row.serial}
                       </TableCell>
@@ -201,7 +201,7 @@ const TransactionRegisterPreview = ({
                 );
               case "subTotal":
                 return (
-                  <TableRow className="h-[40px] border border-black">
+                  <TableRow className="!h-[40px] border border-black">
                     <TableCell
                       colSpan={8}
                       className="border border-black text-right p-0 pr-5 "
@@ -222,7 +222,7 @@ const TransactionRegisterPreview = ({
                 return (
                   <TableRow
                     key={`grandTotal-${index}`}
-                    className="h-[40px] bg-white border-black"
+                    className="!h-[40px] bg-white border-black"
                   >
                     <TableCell
                       colSpan={8}
@@ -279,7 +279,7 @@ const TransactionRegisterPreview = ({
           <div className="flex-1">{renderTable(page)}</div>
 
           {/* FOOTER */}
-          <div className="w-full h-[40px] flex items-end justify-between text-xs relative">
+          <div className="w-full !h-[40px] flex items-end justify-between text-xs relative">
             <p>{t("membership.reports.preview.generatedBySpaced")} {userName}</p>
             <p className="italic text-gray-600 text-center w-full absolute  left-1/2 -translate-x-1/2">
               {t("membership.reports.preview.footerNote")}

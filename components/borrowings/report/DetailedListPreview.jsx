@@ -50,7 +50,7 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const PAGE_ROWS = 23;
+  const PAGE_ROWS = 13;
 
   const paginateGroupedDataWithFooter = (groupedData) => {
     const pages = [];
@@ -130,38 +130,38 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
       <Table className="w-full border-collapse border border-black text-[11px] overflow-hidden">
         {pageData.length > 0 && (
           <TableHeader>
-            <TableRow className="h-[40px]">
-              <TableHead className="text-black p-0 border-black text-center w-[40px]">
+            <TableRow className="!h-[40px]">
+              <TableHead className="text-black p-0 border-black text-center w-[4.2%]">
                 {t("borrowings.print.slNo")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[7.7%]">
                 {t("borrowings.print.openingDate")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[14%]">
                 {t("borrowings.print.productName")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[11.2%]">
                 {t("borrowings.print.bankName")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[8.4%]">
                 {t("borrowings.print.accountNo")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">
                 {t("borrowings.print.disburse")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">
                 {t("borrowings.print.prnRefund")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">
                 {t("borrowings.print.inttRefund")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">
                 {t("borrowings.print.outsBal")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[8.1%]">
                 {t("borrowings.print.provIntt")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[7%]">
                 {t("borrowings.print.dueDate")}
               </TableHead>
             </TableRow>
@@ -174,7 +174,7 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
                 return (
                   <TableRow
                     key={`ledger-${index}`}
-                    className="h-[40px] border border-black"
+                    className="!h-[40px] border border-black"
                   >
                     <TableCell
                       colSpan={11}
@@ -187,7 +187,7 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
               case "txn":
                 return (
                   <Fragment key={`txn-${index}`}>
-                    <TableRow className="h-[40px] border border-black">
+                    <TableRow className="!h-[40px] border border-black">
                       <TableCell className="p-0 border border-black text-center">
                         {row.serial}
                       </TableCell>
@@ -239,7 +239,7 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
                 );
               case "subTotal":
                 return (
-                  <TableRow className="h-[40px] border border-black">
+                  <TableRow className="!h-[40px] border border-black">
                     <TableCell
                       colSpan={5}
                       className="border border-black text-right p-0 pr-5 "
@@ -274,7 +274,7 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
                 return (
                   <TableRow
                     key={`grandTotal-${index}`}
-                    className="h-[40px] bg-white border-black"
+                    className="!h-[40px] bg-white border-black"
                   >
                     <TableCell
                       colSpan={5}

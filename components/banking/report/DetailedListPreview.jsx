@@ -130,29 +130,29 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
       <Table className="w-full border-collapse border border-black text-[11px] overflow-hidden">
         {pageData.length > 0 && (
           <TableHeader>
-            <TableRow className="h-[40px]">
-              <TableHead className="text-black p-0 border-black text-center w-[40px]">
+            <TableRow className="!h-[40px]">
+              <TableHead className="text-black p-0 border-black text-center w-[7.1%]">
                 {t("bank.print.slNo")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[23.3%]">
                 {t("bank.print.bankName")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[14.1%]">
                 {t("bank.print.accountNo")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[13.1%]">
                 {t("bank.print.accountType")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[10.6%]">
                 {t("bank.print.opening")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[10.6%]">
                 {t("bank.print.deposit")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[10.6%]">
                 {t("bank.print.withdrawn")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[10.6%]">
                 {t("bank.print.closing")}
               </TableHead>
             </TableRow>
@@ -165,7 +165,7 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
                 return (
                   <TableRow
                     key={`ledger-${index}`}
-                    className="h-[40px] border border-black"
+                    className="!h-[40px] border border-black"
                   >
                     <TableCell
                       colSpan={8}
@@ -178,7 +178,7 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
               case "txn":
                 return (
                   <Fragment key={`txn-${index}`}>
-                    <TableRow className="h-[40px] border border-black">
+                    <TableRow className="!h-[40px] border border-black">
                       <TableCell className="p-0 border border-black text-center">
                         {row.serial}
                       </TableCell>
@@ -216,7 +216,7 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
                 );
               case "subTotal":
                 return (
-                  <TableRow className="h-[40px] border border-black">
+                  <TableRow className="!h-[40px] border border-black">
                     <TableCell
                       colSpan={4}
                       className="border border-black text-right p-0 pr-5 "
@@ -249,7 +249,7 @@ const DetailedListPreview = ({ printRef, tableData, fromDate, toDate }) => {
                 return (
                   <TableRow
                     key={`grandTotal-${index}`}
-                    className="h-[40px] bg-white border-black"
+                    className="!h-[40px] bg-white border-black"
                   >
                     <TableCell
                       colSpan={4}

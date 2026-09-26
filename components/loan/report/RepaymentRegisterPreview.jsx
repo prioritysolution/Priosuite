@@ -57,7 +57,7 @@ const RepaymentRegisterPreview = ({
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const PAGE_ROWS = 15;
+  const PAGE_ROWS = 13;
 
   const paginateGroupedDataWithFooter = (groupedData) => {
     const pages = [];
@@ -135,16 +135,16 @@ const RepaymentRegisterPreview = ({
       <Table className="w-full border-collapse border border-black text-[11px] overflow-hidden">
         {pageData.length > 0 && (
           <TableHeader>
-            <TableRow className="h-[40px]">
-              <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("loan.print.slNo")}</TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[200px]">{t("loan.print.customerName")}</TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[200px]">{t("loan.print.guardianName")}</TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.accountNo")}</TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center">{t("loan.print.refAcNo")}</TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.transMode")}</TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">{t("loan.print.principal")}</TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">{t("loan.print.interest")}</TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">{t("loan.print.amount")}</TableHead>
+            <TableRow className="!h-[40px]">
+              <TableHead className="text-black p-0 border-black text-center w-[4.2%]">{t("loan.print.slNo")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[16.1%]">{t("loan.print.customerName")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[14.7%]">{t("loan.print.guardianName")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">{t("loan.print.accountNo")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[8.4%]">{t("loan.print.refAcNo")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">{t("loan.print.transMode")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[12.3%]">{t("loan.print.principal")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[12.3%]">{t("loan.print.interest")}</TableHead>
+              <TableHead className="text-black p-0 border-black border-l text-center w-[12.3%]">{t("loan.print.amount")}</TableHead>
             </TableRow>
           </TableHeader>
         )}
@@ -155,7 +155,7 @@ const RepaymentRegisterPreview = ({
                 return (
                   <TableRow
                     key={`date-${index}`}
-                    className="h-[40px] border border-black"
+                    className="!h-[40px] border border-black"
                   >
                     <TableCell
                       colSpan={9}
@@ -168,7 +168,7 @@ const RepaymentRegisterPreview = ({
               case "txn":
                 return (
                   <Fragment key={`txn-${index}`}>
-                    <TableRow className="h-[40px] border border-black">
+                    <TableRow className="!h-[40px] border border-black">
                       <TableCell className="p-0 border border-black text-center">
                         {row.serial}
                       </TableCell>
@@ -207,7 +207,7 @@ const RepaymentRegisterPreview = ({
                 );
               case "subTotal":
                 return (
-                  <TableRow className="h-[40px] border border-black">
+                  <TableRow className="!h-[40px] border border-black">
                     <TableCell
                       colSpan={6}
                       className="border border-black text-right p-0 pr-5 "
@@ -233,7 +233,7 @@ const RepaymentRegisterPreview = ({
                 return (
                   <TableRow
                     key={`grandTotal-${index}`}
-                    className="h-[40px] bg-white border-black"
+                    className="!h-[40px] bg-white border-black"
                   >
                     <TableCell
                       colSpan={6}

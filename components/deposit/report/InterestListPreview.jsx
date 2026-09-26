@@ -12,7 +12,7 @@ import {
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
 
-const PAGE_ROWS = 17;
+const PAGE_ROWS = 22;
 
 const chunkPagesWithFooterLogic = (rows) => {
   const pages = [];
@@ -104,7 +104,7 @@ const InterestListPreview = ({
             data-print-page="true"
           >
             {/* Org Header Only on First Page */}
-            <div className="text-sm flex flex-col h-[120px] text-center justify-between uppercase mb-2">
+            <div className="text-sm flex flex-col gap-1 text-center justify-between uppercase mb-2">
               <p>{orgName}</p>
               <p>{branchName}</p>
               <p>{address}</p>
@@ -121,29 +121,29 @@ const InterestListPreview = ({
               <Table className="w-full border-collapse border border-black text-[11px]">
                 {/* Main Header Every Page */}
                 <TableHeader>
-                  <TableRow className="h-[60px] border-black">
-                    <TableHead className="text-black p-0 border-black text-center w-[40px]">
+                  <TableRow className="!h-[40px] border-black">
+                    <TableHead className="text-black p-0 border-black text-center w-[7.1%]">
                       {t("deposit.reports.print.slNo")}
                     </TableHead>
-                    <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+                    <TableHead className="text-black p-0 border-black border-l text-center w-[12.1%]">
                       {t("deposit.reports.print.date")}
                     </TableHead>
-                    <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
+                    <TableHead className="text-black p-0 border-black border-l text-center w-[16.2%]">
                       {t("deposit.reports.print.customerName")}
                     </TableHead>
-                    <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+                    <TableHead className="text-black p-0 border-black border-l text-center w-[14.1%]">
                       {t("deposit.reports.print.accountNo")}
                     </TableHead>
-                    <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+                    <TableHead className="text-black p-0 border-black border-l text-center w-[12.1%]">
                       {t("deposit.reports.print.refAcNo")}
                     </TableHead>
-                    <TableHead className="text-black p-0 border-black border-l text-center">
+                    <TableHead className="text-black p-0 border-black border-l text-center w-[9.1%]">
                       {t("deposit.reports.print.lfNo")}
                     </TableHead>
-                    <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                    <TableHead className="text-black p-0 border-black border-l text-center w-[11.1%]">
                       {t("deposit.reports.print.amount")}
                     </TableHead>
-                    <TableHead className="text-black p-0 border-black border-l text-center w-[180px]">
+                    <TableHead className="text-black p-0 border-black border-l text-center w-[18.2%]">
                       {t("deposit.reports.print.narration")}
                     </TableHead>
                   </TableRow>
@@ -151,30 +151,31 @@ const InterestListPreview = ({
 
                 <TableBody>
                   {pageRows.map((row, index) => (
-                    <TableRow key={index} className="bg-white h-[50px]">
+                    <TableRow key={index} className="bg-white !h-[40px]">
                       <TableCell className="border border-black p-0 text-center">
                         {globalSerialNo++}
                       </TableCell>
                       <TableCell className="border border-black p-0 text-center">
-                        {row?.Adm_Date && format(row?.Adm_Date, "dd-MM-yyyy")}
-                      </TableCell>
-                      <TableCell className="border border-black p-0 text-center">
-                        {row?.Member_Type}
+                        {row?.Trans_Date &&
+                          format(row?.Trans_Date, "dd-MM-yyyy")}
                       </TableCell>
                       <TableCell className="border border-black p-0 text-center">
                         {row?.Full_Name}
                       </TableCell>
                       <TableCell className="border border-black p-0 text-center">
-                        {row?.Relation_Name}
+                        {row?.Account_No}
                       </TableCell>
                       <TableCell className="border border-black p-0 text-center">
-                        {row?.Village}
+                        {row?.Ref_Ac_No}
                       </TableCell>
                       <TableCell className="border border-black p-0 text-center">
                         {row?.Ledg_Folio}
                       </TableCell>
                       <TableCell className="border border-black p-0 text-center">
-                        {row?.Adm_Fees}
+                        {row?.Amount ? Number(row.Amount).toFixed(2) : ""}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 text-center">
+                        {row?.Narration}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -185,14 +186,15 @@ const InterestListPreview = ({
                   <TableFooter>
                     <TableRow className="bg-white h-[50px]">
                       <TableCell
-                        colSpan={7}
-                        className="border border-black p-0 text-center"
+                        colSpan={6}
+                        className="border border-black p-0 text-center font-semibold"
                       >
                         Total
                       </TableCell>
-                      <TableCell className="border border-black p-0 text-center">
-                        {totalAmount?.toFixed(2)}
+                      <TableCell className="border border-black p-0 text-center font-semibold">
+                        {totalAmount ? Number(totalAmount).toFixed(2) : ""}
                       </TableCell>
+                      <TableCell className="border border-black p-0 text-center"></TableCell>
                     </TableRow>
                   </TableFooter>
                 )}

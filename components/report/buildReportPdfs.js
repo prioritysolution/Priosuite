@@ -53,7 +53,15 @@ export const downloadAccountLedgerPdf = async ({
   onProgress,
 }) => {
   const doc = openPdf("portrait");
-  const columns = ledgerColumns(t, "report.accountLedger");
+  const columns = [
+    { title: label(t, "report.accountLedger.print.slNo", "SL. NO."), w: 14, align: "center" },
+    { title: label(t, "report.accountLedger.print.transDate", "TRANS. DATE"), w: 26, align: "center" },
+    { title: label(t, "report.accountLedger.print.voucherNo", "VOUCHER NO."), w: 26, align: "center" },
+    { title: label(t, "report.accountLedger.print.narration", "NARRATION"), w: 50, align: "center", wrap: true },
+    { title: label(t, "report.accountLedger.print.debit", "DEBIT"), w: 26, align: "right" },
+    { title: label(t, "report.accountLedger.print.credit", "CREDIT"), w: 26, align: "right" },
+    { title: label(t, "report.accountLedger.print.balance", "BALANCE"), w: 30, align: "right" },
+  ];
   const title = [
     ledgerName,
     label(t, "report.accountLedger.ledgerFromTo", `Ledger From ${fromDate || ""} To ${toDate || ""}`, {
@@ -65,23 +73,25 @@ export const downloadAccountLedgerPdf = async ({
     .join("\n");
   const body = ledgerRows(rows, "Particular", "Balance_Type");
   body.push({
-    values: [
-      "",
-      "",
-      "",
-      label(t, "common.total", "Total"),
-      money(totalDebit),
-      money(totalCredit),
-      "",
-    ],
+    values: [label(t, "common.total", "Total"), money(totalDebit), money(totalCredit), ""],
+    spans: [4, 1, 1, 1],
     bold: true,
   });
+  const meta = orgMeta(title, t);
+  ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
+    meta[key] = String(meta[key] || "").toUpperCase();
+  });
+  const headH = 16;
   await fillTable(doc, {
-    meta: orgMeta(title, t),
+    meta,
     columns,
     rows: body,
     startX: 6,
-    drawHead: simpleHead(columns),
+    rowH: 10.6,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 6.4,
+    drawHead: (pdf, y, x) => drawColumnHead(pdf, y, x, columns, headH, 8),
     onProgress,
   });
   save(doc, `AccountLedger-${fromDate || ""}-${toDate || ""}`);
@@ -144,12 +154,12 @@ export const downloadBalancingPdf = async ({
 }) => {
   const doc = openPdf("portrait");
   const columns = [
-    { title: label(t, "report.balancing.print.slNo", "SL. NO."), w: 12, align: "center" },
-    { title: label(t, "report.balancing.print.productName", "PRODUCT"), w: 32, align: "center" },
-    { title: label(t, "report.balancing.print.glHead", "GL HEAD"), w: 46, align: "left" },
-    { title: label(t, "report.balancing.print.glBalance", "GL BALANCE"), w: 28, align: "right" },
-    { title: label(t, "report.balancing.print.subLedger", "SUB LEDGER"), w: 36, align: "right" },
-    { title: label(t, "report.balancing.print.difference", "DIFFERENCE"), w: 44, align: "left" },
+    { title: label(t, "report.balancing.print.slNo", "SL. NO."), w: 14, align: "center" },
+    { title: label(t, "report.balancing.print.productName", "PRODUCT NAME"), w: 24, align: "center", wrap: true },
+    { title: label(t, "report.balancing.print.glHead", "GL HEAD"), w: 50, align: "center", wrap: true },
+    { title: label(t, "report.balancing.print.glBalance", "GL BALANCE"), w: 28, align: "center", wrap: true },
+    { title: label(t, "report.balancing.print.subLedger", "SUB-LEDGER"), w: 30, align: "center", wrap: true },
+    { title: label(t, "report.balancing.print.difference", "DIFFERENCE"), w: 52, align: "center", wrap: true },
   ];
   const groups = [
     ["SHARE", shareList],
@@ -162,7 +172,7 @@ export const downloadBalancingPdf = async ({
   groups.forEach(([type, list]) => {
     if (!list?.length) return;
     rows.push({
-      banner: `${label(t, "report.balancing.productType", "Product Type")} : ${type}`,
+      banner: `${label(t, "report.balancing.productType", "PRODUCT TYPE")} : ${type}`,
     });
     list.forEach((row, index) => {
       rows.push({
@@ -177,17 +187,52 @@ export const downloadBalancingPdf = async ({
       });
     });
   });
+  const meta = orgMeta(
+    label(t, "report.balancing.glBalancingAsOn", `GL Balancing As On ${asOnDate || ""}`, {
+      date: asOnDate,
+    }),
+    t,
+  );
+  ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
+    meta[key] = String(meta[key] || "").toUpperCase();
+  });
+  const headH = 16;
+  const drawHead = (pdf, y, x) => {
+    const width = columns.reduce((sum, col) => sum + col.w, 0);
+    pdf.setFillColor(243, 244, 246);
+    pdf.rect(x, y, width, headH, "F");
+    pdf.setDrawColor(0);
+    pdf.rect(x, y, width, headH, "S");
+    pdf.setTextColor(0);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(8);
+    let cursor = x;
+    columns.forEach((col) => {
+      pdf.setDrawColor(0);
+      pdf.line(cursor, y, cursor, y + headH);
+      const lines = pdf.splitTextToSize(col.title, Math.max(col.w - 1.4, 4));
+      const block = lines.length * 3.4;
+      let textY = y + (headH - block) / 2 + 3.1;
+      lines.forEach((line) => {
+        pdf.setTextColor(0);
+        pdf.text(line, cursor + col.w / 2, textY, { align: "center" });
+        textY += 3.4;
+      });
+      cursor += col.w;
+    });
+    pdf.line(x + width, y, x + width, y + headH);
+    return y + headH;
+  };
   await fillTable(doc, {
-    meta: orgMeta(
-      label(t, "report.balancing.glBalancingAsOn", `GL Balancing As On ${asOnDate || ""}`, {
-        date: asOnDate,
-      }),
-      t,
-    ),
+    meta,
     columns,
     rows,
     startX: 6,
-    drawHead: simpleHead(columns),
+    rowH: 10.6,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 6.4,
+    drawHead,
     onProgress,
   });
   save(doc, `GLBalancing-${asOnDate || "report"}`);
@@ -196,12 +241,12 @@ export const downloadBalancingPdf = async ({
 export const downloadUserScrollPdf = async ({ reportData, asOnDate, t, onProgress }) => {
   const doc = openPdf("portrait");
   const columns = [
-    { title: label(t, "report.userScroll.print.slNo", "SL. NO."), w: 12, align: "center" },
-    { title: label(t, "report.userScroll.print.refVoucher", "REF. VOUCHER"), w: 28, align: "center" },
-    { title: label(t, "report.userScroll.print.voucherNo", "VOUCHER NO."), w: 28, align: "center" },
-    { title: label(t, "report.userScroll.print.particulars", "PARTICULARS"), w: 70, align: "left" },
-    { title: label(t, "report.userScroll.print.receipt", "RECEIPT"), w: 30, align: "right" },
-    { title: label(t, "report.userScroll.print.payment", "PAYMENT"), w: 30, align: "right" },
+    { title: label(t, "report.userScroll.print.slNo", "SL. NO."), w: 14, align: "center" },
+    { title: label(t, "report.userScroll.print.refVoucher", "REF. VOUCH."), w: 28, align: "center" },
+    { title: label(t, "report.userScroll.print.voucherNo", "VOUCH. NO."), w: 28, align: "center" },
+    { title: label(t, "report.userScroll.print.particulars", "PARTICULARS"), w: 58, align: "center", wrap: true },
+    { title: label(t, "report.userScroll.print.receipt", "RECEIPT"), w: 35, align: "right" },
+    { title: label(t, "report.userScroll.print.payment", "PAYMENT"), w: 35, align: "right" },
   ];
   const rows = [];
   let grandReceive = 0;
@@ -230,37 +275,76 @@ export const downloadUserScrollPdf = async ({ reportData, asOnDate, t, onProgres
       grandReceive += subReceive;
       grandPayment += subPayment;
       rows.push({
-        values: ["", "", "", label(t, "common.total", "Total"), money(subReceive), money(subPayment)],
+        values: [label(t, "common.total", "Total"), money(subReceive), money(subPayment)],
+        spans: [4, 1, 1],
+        aligns: ["left", "right", "right"],
         bold: true,
       });
     }
   });
   rows.push({
-    values: [
-      "",
-      "",
-      "",
-      label(t, "common.grandTotal", "Grand Total"),
-      money(grandReceive),
-      money(grandPayment),
-    ],
+    values: [label(t, "common.grandTotal", "Grand Total"), money(grandReceive), money(grandPayment)],
+    spans: [4, 1, 1],
+    aligns: ["center", "right", "right"],
     bold: true,
   });
+  const meta = orgMeta(
+    label(t, "report.userScroll.asOnDate", `User Scroll As On ${asOnDate || ""}`, {
+      date: asOnDate,
+    }),
+    t,
+  );
+  ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
+    meta[key] = String(meta[key] || "").toUpperCase();
+  });
+  const headH = 16;
+  const drawHead = (pdf, y, x) => {
+    const width = columns.reduce((sum, col) => sum + col.w, 0);
+    pdf.setFillColor(243, 244, 246);
+    pdf.rect(x, y, width, headH, "F");
+    pdf.setDrawColor(0);
+    pdf.rect(x, y, width, headH, "S");
+    pdf.setTextColor(0);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(8);
+    let cursor = x;
+    columns.forEach((col) => {
+      pdf.setDrawColor(0);
+      pdf.line(cursor, y, cursor, y + headH);
+      const lines = pdf.splitTextToSize(col.title, Math.max(col.w - 1.4, 4));
+      const block = lines.length * 3.4;
+      let textY = y + (headH - block) / 2 + 3.1;
+      lines.forEach((line) => {
+        pdf.setTextColor(0);
+        pdf.text(line, cursor + col.w / 2, textY, { align: "center" });
+        textY += 3.4;
+      });
+      cursor += col.w;
+    });
+    pdf.line(x + width, y, x + width, y + headH);
+    return y + headH;
+  };
   await fillTable(doc, {
-    meta: orgMeta(
-      label(t, "report.userScroll.asOnDate", `User Scroll As On ${asOnDate || ""}`, {
-        date: asOnDate,
-      }),
-      t,
-    ),
+    meta,
     columns,
     rows,
     startX: 6,
-    drawHead: simpleHead(columns),
+    rowH: 10.6,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 6.4,
+    drawHead,
     onProgress,
   });
   save(doc, `UserScroll-${asOnDate || "report"}`);
 };
+
+const sheetSpanRow = (text, amount, aligns) => ({
+  values: [text, amount],
+  spans: [2, 1],
+  aligns,
+  bold: true,
+});
 
 const flattenSheetSide = (grouped, grandAmount, t) => {
   const rows = [];
@@ -281,10 +365,12 @@ const flattenSheetSide = (grouped, grandAmount, t) => {
         });
       });
   });
-  rows.push({
-    values: [label(t, "common.grandTotal", "Grand Total"), "", money(grandAmount)],
-    bold: true,
-  });
+  rows.push(
+    sheetSpanRow(label(t, "common.grandTotal", "Grand Total"), money(grandAmount), [
+      "center",
+      "center",
+    ]),
+  );
   return rows;
 };
 
@@ -297,66 +383,93 @@ export const downloadBalanceSheetPdf = async ({
 }) => {
   const doc = openPdf("landscape");
   const columns = [
-    { title: "", w: 70, align: "left" },
-    { title: label(t, "common.breakUp", "Break Up"), w: 36, align: "right" },
-    { title: label(t, "common.balance", "Balance"), w: 36, align: "right" },
+    { title: "", w: 78, align: "left", wrap: true },
+    { title: label(t, "common.breakUp", "Break Up"), w: 32, align: "right" },
+    { title: label(t, "common.balance", "Balance"), w: 32, align: "right" },
   ];
-  const leftTitle = label(t, "report.balanceSheet.liabilities", "LIABILITIES");
-  const rightTitle = label(t, "report.balanceSheet.assets", "ASSETS");
+  const leftTitle = label(t, "report.balanceSheet.liabilities", "Liabilities");
+  const rightTitle = label(t, "report.balanceSheet.assets", "Assets");
+  const headH = 10.6;
   const drawHead = (pdf, y, leftX, rightX) => {
-    const headCols = (title) => [
-      { ...columns[0], title },
-      columns[1],
-      columns[2],
+    const headColumns = (title) => [
+      { ...columns[0], title, align: "center", wrap: false },
+      { ...columns[1], align: "center" },
+      { ...columns[2], align: "center" },
     ];
-    drawColumnHead(pdf, y, leftX, headCols(leftTitle));
-    drawColumnHead(pdf, y, rightX, headCols(rightTitle));
+    drawColumnHead(pdf, y, leftX, headColumns(leftTitle), headH, 8);
+    drawColumnHead(pdf, y, rightX, headColumns(rightTitle), headH, 8);
   };
-  const [leftRows, rightRows] = padPair(
-    flattenSheetSide(liabilities?.groupedData, liabilities?.grandTotals?.grandTotalAmount, t),
-    flattenSheetSide(assets?.groupedData, assets?.grandTotals?.grandTotalAmount, t),
+  const leftSide = flattenSheetSide(
+    liabilities?.groupedData,
+    liabilities?.grandTotals?.grandTotalAmount,
+    t,
   );
+  const rightSide = flattenSheetSide(
+    assets?.groupedData,
+    assets?.grandTotals?.grandTotalAmount,
+    t,
+  );
+  const leftTotal = leftSide.pop();
+  const rightTotal = rightSide.pop();
+  const [leftRows, rightRows] = padPair(leftSide, rightSide);
+  leftRows.push(leftTotal);
+  rightRows.push(rightTotal);
+  const meta = orgMeta(
+    `${label(t, "report.balanceSheet.balanceSheetAsOn", "Balance Sheet As On")} ${asOnDate || ""}`,
+    t,
+  );
+  ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
+    meta[key] = String(meta[key] || "").toUpperCase();
+  });
   const placed = await fillPair(doc, {
-    meta: orgMeta(
-      `${label(t, "report.balanceSheet.balanceSheetAsOn", "Balance Sheet As On")} ${asOnDate || ""}`,
-      t,
-    ),
+    meta,
     columns,
     leftRows,
     rightRows,
     startX: 6.5,
-    headH: 7,
+    headH,
+    rowH: 10.6,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 6.4,
     drawHead,
     onProgress,
   });
-  const note = [
-    label(t, "report.balanceSheet.auditorsCertificate", "Auditor's Certificate"),
-    `I report that I have audited the above balance Sheet as on ${asOnDate || ""} and the annexed Profit and Loss Account for the year ended ${asOnDate || ""} and have obtained all the information and explanation I have required. In my opinion the Balance Sheet and the Profit and Loss Account have been drawn up inconformity with the law and subject to my separate report of even date, the Balance Sheet exhibits a true and correct view of the state of the society's affair according to the best of information and explanations given to me and as shown by the book of the society. In my opinion the books of accounts have been kept as required under the Act, the rules and the By-Laws.`,
-  ].join("\n");
+  const certificateTitle = label(
+    t,
+    "report.balanceSheet.auditorsCertificate",
+    "Auditor's Certificate",
+  );
+  const certificateBody = `I report that I have audited the above balance Sheet as on ${asOnDate || ""} and the annexed Profit and Loss Account for the year ended ${asOnDate || ""} and have obtained all the information and explanation I have required. In my opinion the Balance Sheet and the Profit and Loss Account have been drawn up inconformity with the law and subject to my separate report of even date, the Balance Sheet exhibits a true and correct view of the state of the society's affair according to the best of information and explanations given to me and as shown by the book of the society. In my opinion the books of accounts have been kept as required under the Act, the rules and the By-Laws.`;
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7);
-  const lines = doc.splitTextToSize(note, placed.width - 4);
-  let y = placed.y + 4;
+  doc.setFontSize(8);
+  const lines = doc.splitTextToSize(certificateBody, placed.width - 4);
+  const bodyH = 5 + lines.length * 3.6;
+  let y = placed.y + 16;
   const pageH = doc.internal.pageSize.getHeight();
-  if (y + lines.length * 3.2 > pageH - 10) {
+  if (y + bodyH > pageH - 10) {
     doc.addPage();
-    y = drawChrome(doc, orgMeta(
-      `${label(t, "report.balanceSheet.balanceSheetAsOn", "Balance Sheet As On")} ${asOnDate || ""}`,
-      t,
-    ));
-    drawFooter(doc, orgMeta("", t));
+    y = drawChrome(doc, meta) + 16;
+    drawFooter(doc, meta);
   }
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.text(certificateTitle, placed.startX + placed.width / 2, y, { align: "center" });
+  y += 5;
+  doc.setFont("helvetica", "normal");
   doc.text(lines, placed.startX + 2, y);
   save(doc, `BalanceSheet-${asOnDate || "report"}`);
 };
 
+const profitSpanRow = (text, amount) => ({
+  values: [text, "", amount],
+  bold: true,
+});
+
 const flattenProfitSide = (grouped, netRow, subTotal, t) => {
   const rows = [];
   (grouped || []).forEach((group) => {
-    rows.push({
-      values: [group?.headName ?? "", "", money(group?.subtotalAmount)],
-      bold: true,
-    });
+    rows.push(profitSpanRow(group?.headName ?? "", money(group?.subtotalAmount)));
     (group?.transactions || []).forEach((txn) => {
       rows.push({
         values: [
@@ -369,21 +482,31 @@ const flattenProfitSide = (grouped, netRow, subTotal, t) => {
   });
   const sub = parseFloat(subTotal || 0);
   const netAmount = parseFloat(netRow?.Amount || 0);
-  rows.push({
-    values: [label(t, "common.subTotal", "Sub Total"), "", money(sub)],
-    bold: true,
-  });
-  if (netRow) {
-    rows.push({
-      values: [netRow?.Head_Name ?? "", "", money(netAmount)],
-      bold: true,
-    });
+  return {
+    rows,
+    subTotal: profitSpanRow(label(t, "common.subTotal", "Sub Total"), money(sub)),
+    net: netRow
+      ? profitSpanRow(netRow?.Head_Name ?? "", money(netAmount))
+      : null,
+    grandTotal: profitSpanRow(
+      label(t, "common.grandTotal", "Grand Total"),
+      money(sub + (netRow ? netAmount : 0)),
+    ),
+  };
+};
+
+const alignProfitTotals = (left, right) => {
+  const [leftRows, rightRows] = padPair(left.rows, right.rows);
+  const blank = { values: ["", "", ""] };
+  leftRows.push(left.subTotal);
+  rightRows.push(right.subTotal);
+  if (left.net || right.net) {
+    leftRows.push(left.net || blank);
+    rightRows.push(right.net || blank);
   }
-  rows.push({
-    values: [label(t, "common.grandTotal", "Grand Total"), "", money(sub + (netRow ? netAmount : 0))],
-    bold: true,
-  });
-  return rows;
+  leftRows.push(left.grandTotal);
+  rightRows.push(right.grandTotal);
+  return [leftRows, rightRows];
 };
 
 export const downloadProfitLossPdf = async ({
@@ -397,18 +520,26 @@ export const downloadProfitLossPdf = async ({
 }) => {
   const doc = openPdf("portrait");
   const columns = [
-    { title: "", w: 49, align: "left" },
+    { title: "", w: 49, align: "left", wrap: true },
     { title: label(t, "common.breakUp", "Break Up"), w: 25, align: "right" },
     { title: label(t, "common.amount", "Amount"), w: 25, align: "right" },
   ];
   const leftTitle = label(t, "report.profitLoss.expenditure", "EXPENDITURE");
   const rightTitle = label(t, "report.profitLoss.income", "INCOME");
   const fromLabel = showDate(fromDate);
+  const headH = 9;
   const drawHead = (pdf, y, leftX, rightX) => {
-    drawColumnHead(pdf, y, leftX, [{ ...columns[0], title: leftTitle }, columns[1], columns[2]]);
-    drawColumnHead(pdf, y, rightX, [{ ...columns[0], title: rightTitle }, columns[1], columns[2]]);
+    const headColumns = (title) => [
+      { ...columns[0], title, align: "center", wrap: false },
+      { ...columns[1], align: "center" },
+      { ...columns[2], align: "center" },
+    ];
+    const leftHead = headColumns(leftTitle);
+    const rightHead = headColumns(rightTitle);
+    drawColumnHead(pdf, y, leftX, leftHead, headH, 8);
+    drawColumnHead(pdf, y, rightX, rightHead, headH, 8);
   };
-  const [leftRows, rightRows] = padPair(
+  const [leftRows, rightRows] = alignProfitTotals(
     flattenProfitSide(
       expenditure?.groupedData,
       (netData || []).find((row) => row?.Position === "L"),
@@ -422,21 +553,29 @@ export const downloadProfitLossPdf = async ({
       t,
     ),
   );
-  await fillPair(doc, {
-    meta: orgMeta(
-      label(
-        t,
-        "report.profitLoss.profitLossFromTo",
-        `Profit & Loss From ${fromLabel} To ${toDate || ""}`,
-        { fromDate: fromLabel, toDate },
-      ),
+  const meta = orgMeta(
+    label(
       t,
+      "report.profitLoss.profitLossFromTo",
+      `Profit & Loss From ${fromLabel} To ${toDate || ""}`,
+      { fromDate: fromLabel, toDate },
     ),
+    t,
+  );
+  ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
+    meta[key] = String(meta[key] || "").toUpperCase();
+  });
+  await fillPair(doc, {
+    meta,
     columns,
     leftRows,
     rightRows,
     startX: 6,
-    headH: 7,
+    headH,
+    rowH: 9.2,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 4.2,
     drawHead,
     onProgress,
   });
@@ -447,10 +586,10 @@ const flattenAppropriation = (list) => {
   const rows = [];
   (list || []).forEach((item) => {
     if (item?.Heading_Name) {
-      rows.push({ values: [item.Heading_Name, item?.Amount ?? ""], bold: true });
+      rows.push({ values: [item.Heading_Name, money(item?.Amount)], bold: true });
     }
     if (item?.Ledger_Name) {
-      rows.push({ values: [item.Ledger_Name, item?.Amount ?? ""] });
+      rows.push({ values: [item.Ledger_Name, money(item?.Amount)] });
     }
   });
   return rows;
@@ -467,38 +606,48 @@ export const downloadPlAppropriationPdf = async ({
 }) => {
   const doc = openPdf("portrait");
   const columns = [
-    { title: "", w: 69, align: "left" },
-    { title: label(t, "common.amount", "Amount"), w: 30, align: "right" },
+    { title: "", w: 67, align: "left", wrap: true },
+    { title: label(t, "common.amount", "Amount"), w: 32, align: "right" },
   ];
   const leftTitle = label(t, "report.plAppropiation.expenditure", "EXPENDITURE");
   const rightTitle = label(t, "report.plAppropiation.income", "INCOME");
+  const headH = 10.6;
   const drawHead = (pdf, y, leftX, rightX) => {
-    drawColumnHead(pdf, y, leftX, [{ ...columns[0], title: leftTitle }, columns[1]]);
-    drawColumnHead(pdf, y, rightX, [{ ...columns[0], title: rightTitle }, columns[1]]);
+    const headColumns = (title) => [
+      { ...columns[0], title, align: "center", wrap: false },
+      { ...columns[1], align: "center" },
+    ];
+    drawColumnHead(pdf, y, leftX, headColumns(leftTitle), headH, 8);
+    drawColumnHead(pdf, y, rightX, headColumns(rightTitle), headH, 8);
   };
   const left = flattenAppropriation(expenditure);
   const right = flattenAppropriation(income);
-  left.push({
-    values: [label(t, "common.grandTotal", "Grand Total"), money(totalExpenditure)],
+  const grandRow = (amount) => ({
+    values: [label(t, "common.grandTotal", "Grand Total"), money(amount)],
+    aligns: ["center", "right"],
     bold: true,
   });
-  right.push({
-    values: [label(t, "common.grandTotal", "Grand Total"), money(totalIncome)],
-    bold: true,
+  const [leftRows, rightRows] = padPair(left, right);
+  leftRows.push(grandRow(totalExpenditure));
+  rightRows.push(grandRow(totalIncome));
+  const meta = orgMeta(
+    `${label(t, "report.plAppropiation.plAppropiationAsOn", "PL Appropiation As On")} ${asOnDate || ""}`,
+    t,
+  );
+  ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
+    meta[key] = String(meta[key] || "").toUpperCase();
   });
-  const [leftRows, rightRows] = padPair(left.slice(0, -1), right.slice(0, -1));
-  leftRows.push(left[left.length - 1]);
-  rightRows.push(right[right.length - 1]);
   await fillPair(doc, {
-    meta: orgMeta(
-      `${label(t, "report.plAppropiation.plAppropiationAsOn", "PL Appropiation As On")} ${asOnDate || ""}`,
-      t,
-    ),
+    meta,
     columns,
     leftRows,
     rightRows,
     startX: 6,
-    headH: 7,
+    headH,
+    rowH: 10.6,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 6.4,
     drawHead,
     onProgress,
   });
@@ -507,7 +656,7 @@ export const downloadPlAppropriationPdf = async ({
 
 const moneyPairColumns = (t, prefix) => [
   { title: label(t, `${prefix}.print.vNo`, "V. NO."), w: 16, align: "center" },
-  { title: label(t, `${prefix}.print.particulars`, "PARTICULARS"), w: 52, align: "left" },
+  { title: label(t, `${prefix}.print.particulars`, "PARTICULARS"), w: 52, align: "left", wrap: true },
   { title: label(t, `${prefix}.print.cash`, "CASH"), w: 24.5, align: "right" },
   { title: label(t, `${prefix}.print.transfer`, "TRANSFER"), w: 24.5, align: "right" },
   { title: label(t, `${prefix}.print.total`, "TOTAL"), w: 25, align: "right" },
@@ -549,15 +698,15 @@ export const downloadCashAccountPdf = async ({
   const receiptsTitle = label(t, "report.cashAccount.print.receipts", "RECEIPTS");
   const paymentsTitle = label(t, "report.cashAccount.print.payments", "PAYMENTS");
   const drawHead = (pdf, y, leftX, rightX, width) => {
-    const headH = 12;
-    const subH = 6;
+    const headH = 16;
+    const subH = 8;
     [receiptsTitle, paymentsTitle].forEach((title, side) => {
       const x = side === 0 ? leftX : rightX;
       pdf.setFillColor(243, 244, 246);
       pdf.rect(x, y, width, headH, "F");
       pdf.rect(x, y, width, headH);
       pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(6);
+      pdf.setFontSize(8);
       let cursor = x;
       columns.forEach((col, index) => {
         if (index < 2) pdf.line(cursor, y, cursor, y + headH);
@@ -570,17 +719,17 @@ export const downloadCashAccountPdf = async ({
         pdf.line(split, y + subH, split, y + headH);
         split += col.w;
       });
-      pdf.text(clipText(pdf, columns[0].title, columns[0].w - 1), x + columns[0].w / 2, y + 7, {
+      pdf.text(clipText(pdf, columns[0].title, columns[0].w - 1), x + columns[0].w / 2, y + 9.5, {
         align: "center",
       });
-      pdf.text(clipText(pdf, columns[1].title, columns[1].w - 1), x + columns[0].w + 0.7, y + 7);
-      pdf.text(title, moneyX + (width - columns[0].w - columns[1].w) / 2, y + 4, {
+      pdf.text(clipText(pdf, columns[1].title, columns[1].w - 1), x + columns[0].w + 0.7, y + 9.5);
+      pdf.text(title, moneyX + (width - columns[0].w - columns[1].w) / 2, y + 5.5, {
         align: "center",
       });
       const subs = [columns[2].title, columns[3].title, columns[4].title];
       let subX = moneyX;
       columns.slice(2).forEach((col, index) => {
-        pdf.text(clipText(pdf, subs[index], col.w - 1), subX + col.w - 0.6, y + subH + 4, {
+        pdf.text(clipText(pdf, subs[index], col.w - 1), subX + col.w - 0.6, y + subH + 5.5, {
           align: "right",
         });
         subX += col.w;
@@ -654,14 +803,18 @@ export const downloadCashAccountPdf = async ({
     leftRows,
     rightRows,
     startX: 6.5,
-    headH: 12,
+    headH: 16,
+    rowH: 10.6,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 6.4,
     drawHead,
     onProgress,
   });
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(6.5);
-  doc.rect(placed.startX, placed.y, placed.width, 5.2);
-  doc.text(clipText(doc, closingWords(closing, t), placed.width - 3), placed.startX + placed.width - 1.2, placed.y + 3.5, {
+  doc.setFontSize(8);
+  doc.rect(placed.startX, placed.y, placed.width, 8.2);
+  doc.text(clipText(doc, closingWords(closing, t), placed.width - 3), placed.startX + placed.width - 1.2, placed.y + 5.5, {
     align: "right",
   });
   drawDenomPage(doc, meta, denomData, t);
@@ -683,8 +836,8 @@ export const downloadCashbookPdf = async ({
   const columns = [
     { title: label(t, "report.cashbook.print.sl", "SL."), w: 12, align: "center" },
     { title: label(t, "report.cashbook.print.vouchNo", "VOUCH NO."), w: 24, align: "center" },
-    { title: label(t, "report.cashbook.print.ledgerName", "LEDGER"), w: 36, align: "left" },
-    { title: label(t, "report.cashbook.print.particulars", "PARTICULARS"), w: 42, align: "left" },
+    { title: label(t, "report.cashbook.print.ledgerName", "LEDGER"), w: 36, align: "left", wrap: true },
+    { title: label(t, "report.cashbook.print.particulars", "PARTICULARS"), w: 42, align: "left", wrap: true },
     { title: label(t, "report.cashbook.print.amount", "AMOUNT"), w: 28, align: "right" },
   ];
   const receiptTitle = label(t, "report.cashbook.print.receipt", "RECEIPT");
@@ -693,18 +846,18 @@ export const downloadCashbookPdf = async ({
     [receiptTitle, paymentTitle].forEach((title, side) => {
       const x = side === 0 ? leftX : rightX;
       pdf.setFillColor(243, 244, 246);
-      pdf.rect(x, y, width, 6, "F");
-      pdf.rect(x, y, width, 12);
-      pdf.line(x, y + 6, x + width, y + 6);
+      pdf.rect(x, y, width, 8, "F");
+      pdf.rect(x, y, width, 16);
+      pdf.line(x, y + 8, x + width, y + 8);
       pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(6.5);
-      pdf.text(title, x + width / 2, y + 4, { align: "center" });
+      pdf.setFontSize(8);
+      pdf.text(title, x + width / 2, y + 5.5, { align: "center" });
       let cursor = x;
       columns.forEach((col) => {
-        pdf.line(cursor, y + 6, cursor, y + 12);
+        pdf.line(cursor, y + 8, cursor, y + 16);
         const textX = col.align === "right" ? cursor + col.w - 0.6 : cursor + col.w / 2;
-        pdf.setFontSize(6);
-        pdf.text(clipText(pdf, col.title, col.w - 1), textX, y + 10, {
+        pdf.setFontSize(8);
+        pdf.text(clipText(pdf, col.title, col.w - 1), textX, y + 13.5, {
           align: col.align === "right" ? "right" : "center",
         });
         cursor += col.w;
@@ -748,17 +901,21 @@ export const downloadCashbookPdf = async ({
     leftRows,
     rightRows,
     startX: 6.5,
-    headH: 12,
+    headH: 16,
+    rowH: 10.6,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 6.4,
     drawHead,
     onProgress,
   });
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(6.5);
-  doc.rect(placed.startX, placed.y, placed.width, 5.2);
+  doc.setFontSize(8);
+  doc.rect(placed.startX, placed.y, placed.width, 8.2);
   doc.text(
     clipText(doc, closingWords(cashBalanceData?.Closing, t), placed.width - 3),
     placed.startX + placed.width - 1.2,
-    placed.y + 3.5,
+    placed.y + 5.5,
     { align: "right" },
   );
   drawDenomPage(doc, meta, denomData, t);
@@ -832,12 +989,12 @@ export const downloadTrialBalancePdf = async ({
 }) => {
   const doc = openPdf("portrait");
   const columns = [
-    { title: label(t, "common.headOfAccount", "HEAD OF ACCOUNT"), w: 48, align: "left" },
-    { title: label(t, "common.openingBalance", "OPENING"), w: 30, align: "right" },
-    { title: label(t, "common.totalDebit", "DEBIT"), w: 30, align: "right" },
-    { title: label(t, "common.totalCredit", "CREDIT"), w: 30, align: "right" },
-    { title: label(t, "common.breakUp", "BREAK UP"), w: 30, align: "right" },
-    { title: label(t, "common.balance", "BALANCE"), w: 30, align: "right" },
+    { title: label(t, "common.headOfAccount", "Head Of Account"), w: 56.5, align: "center", wrap: true },
+    { title: label(t, "common.openingBalance", "Opening Balance"), w: 28.3, align: "center", wrap: true },
+    { title: label(t, "common.totalDebit", "Total Debit"), w: 28.3, align: "center", wrap: true },
+    { title: label(t, "common.totalCredit", "Total Credit"), w: 28.3, align: "center", wrap: true },
+    { title: label(t, "common.breakUp", "Break Up"), w: 28.3, align: "center" },
+    { title: label(t, "common.balance", "Balance"), w: 28.3, align: "center" },
   ];
   const title = label(
     t,
@@ -845,32 +1002,76 @@ export const downloadTrialBalancePdf = async ({
     `Trial Balance From ${fromDate || ""} To ${toDate || ""}`,
     { fromDate, toDate },
   );
+  const rowH = 10.6;
+  const closingTitle = label(t, "common.closing", "Closing");
   const drawHead = (section) => (pdf, y, x, width) => {
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(7);
+    pdf.setFontSize(8);
+    pdf.setTextColor(0);
+    pdf.setDrawColor(0);
     pdf.setFillColor(243, 244, 246);
-    pdf.rect(x, y, width, 6, "F");
-    pdf.rect(x, y, width, 6);
-    pdf.text(section, x + width / 2, y + 4, { align: "center" });
-    return drawColumnHead(pdf, y + 6, x, columns);
+    pdf.rect(x, y, width, rowH, "F");
+    pdf.setDrawColor(0);
+    pdf.rect(x, y, width, rowH, "S");
+    pdf.setTextColor(0);
+    pdf.text(section, x + width / 2, y + rowH / 2 + 1.2, { align: "center" });
+    y += rowH;
+    const bandH = rowH * 2;
+    pdf.setFillColor(243, 244, 246);
+    pdf.rect(x, y, width, bandH, "F");
+    pdf.setDrawColor(0);
+    pdf.rect(x, y, width, bandH, "S");
+    pdf.setTextColor(0);
+    let cursor = x;
+    columns.slice(0, 4).forEach((col) => {
+      pdf.line(cursor, y, cursor, y + bandH);
+      const lines = pdf.splitTextToSize(col.title, Math.max(col.w - 1.6, 4));
+      const block = lines.length * 3.6;
+      let textY = y + (bandH - block) / 2 + 3.2;
+      lines.forEach((line) => {
+        pdf.text(line, cursor + col.w / 2, textY, { align: "center" });
+        textY += 3.6;
+      });
+      cursor += col.w;
+    });
+    const closeW = columns[4].w + columns[5].w;
+    pdf.line(cursor, y, cursor, y + bandH);
+    pdf.line(cursor, y + rowH, cursor + closeW, y + rowH);
+    pdf.line(cursor + columns[4].w, y + rowH, cursor + columns[4].w, y + bandH);
+    pdf.text(closingTitle, cursor + closeW / 2, y + rowH / 2 + 1.2, { align: "center" });
+    pdf.text(columns[4].title, cursor + columns[4].w / 2, y + rowH + rowH / 2 + 1.2, { align: "center" });
+    pdf.text(columns[5].title, cursor + columns[4].w + columns[5].w / 2, y + rowH + rowH / 2 + 1.2, {
+      align: "center",
+    });
+    pdf.line(x + width, y, x + width, y + bandH);
+    return y + bandH;
   };
   const meta = orgMeta(title, t);
+  ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
+    meta[key] = String(meta[key] || "").toUpperCase();
+  });
+  const tableOptions = {
+    rowH,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 6.4,
+    startX: 6,
+    onProgress,
+  };
   await fillTable(doc, {
     meta,
     columns,
     rows: flattenTrial(liabilities?.groupedData, liabilities?.grandTotals, t),
-    startX: 6,
-    drawHead: drawHead(label(t, "report.trialBalance.liabilitiesAndIncomeTitle", "LIABILITIES & INCOME")),
-    onProgress,
+    drawHead: drawHead(label(t, "report.trialBalance.liabilitiesAndIncomeTitle", "Liabilities & Income")),
+    ...tableOptions,
   });
   doc.addPage();
   await fillTable(doc, {
     meta,
     columns,
     rows: flattenTrial(assets?.groupedData, assets?.grandTotals, t),
-    startX: 6,
-    drawHead: drawHead(label(t, "report.trialBalance.assetsAndExpenses", "ASSETS & EXPENSES")),
-    onProgress,
+    drawHead: drawHead(label(t, "report.trialBalance.assetsAndExpenses", "Assets & Expenses")),
+    ...tableOptions,
   });
   save(doc, `TrailBalance-${fromDate || ""}-${toDate || ""}`);
 };

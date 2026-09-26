@@ -57,7 +57,7 @@ const TransactionRegisterPreview = ({
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const PAGE_ROWS = 15;
+  const PAGE_ROWS = 13;
 
   const paginateGroupedDataWithFooter = (groupedData) => {
     const pages = [];
@@ -135,35 +135,35 @@ const TransactionRegisterPreview = ({
       <Table className="w-full border-collapse border border-black text-[11px] overflow-hidden">
         {pageData.length > 0 && (
           <TableHeader>
-            <TableRow className="h-[40px]">
-              <TableHead className="text-black p-0 border-black text-center w-[40px]">
+            <TableRow className="!h-[40px]">
+              <TableHead className="text-black p-0 border-black text-center w-[4.2%]">
                 {t("deposit.reports.print.slNo")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[14.0%]">
                 {t("deposit.reports.print.customerName")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">
                 {t("deposit.reports.print.accountNo")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[7.7%]">
                 {t("deposit.reports.print.refAcNo")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[5.6%]">
                 {t("deposit.reports.print.lfNo")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[8.4%]">
                 {t("deposit.reports.print.transMode")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">
                 {t("deposit.reports.print.deposit")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">
                 {t("deposit.reports.print.withdrawn")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[8.4%]">
                 {t("deposit.reports.print.interest")}
               </TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">
+              <TableHead className="text-black p-0 border-black border-l text-center w-[22.1%]">
                 {t("deposit.reports.print.narration")}
               </TableHead>
             </TableRow>

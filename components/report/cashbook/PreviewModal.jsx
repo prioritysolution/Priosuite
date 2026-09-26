@@ -62,7 +62,7 @@ const PreviewModal = ({
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const PAGE_ROWS = 14;
+  const PAGE_ROWS = 13;
 
   const paginateWithFooterCheck = (data) => {
     const pages = [];
@@ -123,30 +123,30 @@ const PreviewModal = ({
                         pageIndex <= rightTablePages.length - 1) ||
                       rightTablePages.length === 0) && (
                       <TableHeader>
-                        <TableRow className="h-[40px]">
+                        <TableRow className="h-[28px]">
                           <TableHead
                             colSpan={5}
-                            className="border border-black text-black p-0 text-center w-full h-[40px]"
+                            className="border border-black text-black p-0 text-center w-full h-[28px]"
                           >
                             {tableIndex === 0
                               ? t("report.cashbook.print.receipt")
                               : t("report.cashbook.print.payment")}
                           </TableHead>
                         </TableRow>
-                        <TableRow className="  h-[40px] border border-black">
-                          <TableHead className=" border-black text-black p-0 text-center h-[40px] w-[30px]">
+                        <TableRow className="h-[28px] border border-black">
+                          <TableHead className=" border-black text-black p-0 text-center h-[28px] w-[8.5%]">
                             {t("report.cashbook.print.sl")}
                           </TableHead>
-                          <TableHead className=" border-black text-black p-0 border-l text-center h-[40px] w-[80px]">
+                          <TableHead className=" border-black text-black p-0 border-l text-center h-[28px] w-[16.9%]">
                             {t("report.cashbook.print.vouchNo")}
                           </TableHead>
-                          <TableHead className=" border-black text-black p-0 border-l text-center h-[40px] w-[120px]">
+                          <TableHead className=" border-black text-black p-0 border-l text-center h-[28px] w-[25.4%]">
                             {t("report.cashbook.print.ledgerName")}
                           </TableHead>
-                          <TableHead className=" border-black text-black p-0 border-l text-center h-[40px]">
+                          <TableHead className=" border-black text-black p-0 border-l text-center h-[28px] w-[29.6%]">
                             {t("report.cashbook.print.particulars")}
                           </TableHead>
-                          <TableHead className=" border-black text-black p-0 border-l text-center h-[40px] w-[100px]">
+                          <TableHead className=" border-black text-black p-0 border-l text-center h-[28px] w-[19.6%]">
                             {t("report.cashbook.print.amount")}
                           </TableHead>
                         </TableRow>
@@ -154,7 +154,7 @@ const PreviewModal = ({
                     )}
                     <TableBody>
                       {tableData.map((data, index) => (
-                        <TableRow key={index} className="h-[40px]">
+                        <TableRow key={index} className="h-[40px] !h-[40px]">
                           <TableCell className="border border-black text-center p-0 h-[40px]">
                             {index + 1}
                           </TableCell>

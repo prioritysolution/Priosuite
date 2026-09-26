@@ -14,7 +14,12 @@ import Link from "next/link";
 import getCookieData from "@/utils/getCookieData";
 import { getMenuLabelParts } from "@/utils/menuLabel";
 
-const MenuLabelStack = ({ name, nameLang, primaryClassName, secondaryClassName }) => {
+const MenuLabelStack = ({
+  name,
+  nameLang,
+  primaryClassName,
+  secondaryClassName,
+}) => {
   const { primary, secondary } = getMenuLabelParts(name, nameLang);
   if (!primary) return null;
 
@@ -68,7 +73,7 @@ const Sidebar = ({ loading, onClose }) => {
       <ScrollArea className="flex-1 min-h-0 [&>[data-orientation=vertical]]:w-2.5 [&>[data-orientation=vertical]]:bg-white/10 [&>[data-orientation=vertical]_.relative]:bg-white/45 [&>[data-orientation=vertical]_.relative]:hover:bg-white/70">
         <nav className="py-2 sm:py-3 px-1.5 sm:px-2 space-y-1">
           {loading || !sidebarData || !sidebarData.length
-            ? Array.from({ length: 12 }).map((_, i) => (
+            ? Array.from({ length: 20 }).map((_, i) => (
                 <Skeleton
                   key={i}
                   className="w-full h-10 rounded-lg bg-white/10"

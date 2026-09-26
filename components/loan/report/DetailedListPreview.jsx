@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { formatDateForDisplay } from "@/utils/dateHelpers";
 
 /** Rows per landscape page — fills full page height */
-const PAGE_ROWS = 25;
+const PAGE_ROWS = 13;
 
 const chunkPages = (rows) => {
   const pages = [];
@@ -107,8 +107,7 @@ const DetailedListPreview = ({
       {pages.map((pageRows, pageIndex) => {
         const isLastPage = pageIndex === pages.length - 1;
         const bodyRowCount = pageRows.length + (isLastPage ? 1 : 0);
-        const rowHeight =
-          bodyRowCount > 0 ? `${(100 / bodyRowCount).toFixed(4)}%` : "auto";
+        const rowHeight = "40px";
 
         return (
           <div
@@ -140,18 +139,18 @@ const DetailedListPreview = ({
               >
                 <colgroup>
                   <col style={{ width: "3.5%" }} />
-                  <col style={{ width: "13%" }} />
-                  <col style={{ width: "12%" }} />
-                  <col style={{ width: "8%" }} />
-                  <col style={{ width: "7.5%" }} />
-                  <col style={{ width: "7%" }} />
-                  <col style={{ width: "7%" }} />
-                  <col style={{ width: "7%" }} />
-                  <col style={{ width: "7%" }} />
-                  <col style={{ width: "7%" }} />
-                  <col style={{ width: "7%" }} />
-                  <col style={{ width: "7%" }} />
-                  <col style={{ width: "7%" }} />
+                  <col style={{ width: "11.9%" }} />
+                  <col style={{ width: "11.2%" }} />
+                  <col style={{ width: "7.7%" }} />
+                  <col style={{ width: "7.0%" }} />
+                  <col style={{ width: "7.0%" }} />
+                  <col style={{ width: "7.0%" }} />
+                  <col style={{ width: "7.0%" }} />
+                  <col style={{ width: "7.0%" }} />
+                  <col style={{ width: "7.7%" }} />
+                  <col style={{ width: "7.7%" }} />
+                  <col style={{ width: "7.7%" }} />
+                  <col style={{ width: "7.4%" }} />
                 </colgroup>
                 <thead>
                   <tr>
@@ -197,7 +196,10 @@ const DetailedListPreview = ({
                 </thead>
                 <tbody>
                   {pageRows.map((row, index) => (
-                    <tr key={row?.Acct_Id || index} style={{ height: rowHeight }}>
+                    <tr
+                      key={row?.Acct_Id || index}
+                      style={{ height: rowHeight }}
+                    >
                       <td style={{ ...cell, textAlign: "center" }}>
                         {globalSerialNo++}
                       </td>
@@ -268,9 +270,7 @@ const DetailedListPreview = ({
                           whiteSpace: "nowrap",
                         }}
                       >
-                        {formatAmount(
-                          row?.Current_Principal ?? row?.Curr_Outs,
-                        )}
+                        {formatAmount(row?.Current_Principal ?? row?.Curr_Outs)}
                       </td>
                       <td
                         style={{

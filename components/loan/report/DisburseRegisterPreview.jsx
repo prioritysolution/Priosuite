@@ -11,8 +11,7 @@ import {
 } from "@/components/ui/table";
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
-
-const PAGE_ROWS = 15;
+const PAGE_ROWS = 13;
 
 const chunkPagesWithFooterLogic = (rows) => {
   const pages = [];
@@ -119,24 +118,24 @@ const DisburseRegisterPreview = ({
             <Table className="w-full border-collapse border border-black text-[11px]">
               {/* Main Header Every Page */}
               <TableHeader>
-                <TableRow className="h-[50px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("loan.print.slNo")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("loan.print.date")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">{t("loan.print.customerName")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">{t("loan.print.guardianName")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.accountNo")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center">{t("loan.print.refAcNo")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.disburse")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.share")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.insAmt")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.misAmt")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("loan.print.netDisburse")}</TableHead>
+                <TableRow className="!h-[40px] border-black">
+                  <TableHead className="text-black p-0 border-black text-center w-[4.2%]">{t("loan.print.slNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[7.7%]">{t("loan.print.date")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[14%]">{t("loan.print.customerName")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[12.6%]">{t("loan.print.guardianName")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[9.1%]">{t("loan.print.accountNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[7.7%]">{t("loan.print.refAcNo")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[8.4%]">{t("loan.print.disburse")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[7.7%]">{t("loan.print.share")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[7.7%]">{t("loan.print.insAmt")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[7.7%]">{t("loan.print.misAmt")}</TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[13.0%]">{t("loan.print.netDisburse")}</TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
                 {pageRows.map((row, index) => (
-                  <TableRow key={index} className="bg-white h-[40px]">
+                  <TableRow key={index} className="bg-white !h-[40px]">
                     <TableCell className="border border-black p-0 text-center">
                       {globalSerialNo++}
                     </TableCell>
@@ -177,7 +176,7 @@ const DisburseRegisterPreview = ({
               {/* Only show total on last page */}
               {pageIndex === pages.length - 1 && (
                 <TableFooter>
-                  <TableRow className="bg-white h-[40px]">
+                  <TableRow className="bg-white !h-[40px]">
                     <TableCell
                       colSpan={6}
                       className="border border-black p-0 text-center"

@@ -34,7 +34,7 @@ import PreviewVoucher from "./PreviewVoucher";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
 import { downloadDaybookPdf } from "./buildDaybookPdf";
@@ -79,6 +79,11 @@ const Daybook = ({
   const { t } = useEnglishOnly();
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
@@ -317,7 +322,7 @@ const Daybook = ({
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead
                       rowSpan={2}
-                      className=" text-white text-center w-16"
+                      className=" text-white text-center w-[80px] whitespace-nowrap"
                     >
                       {t("report.daybook.vNo")}
                     </TableHead>
@@ -456,13 +461,13 @@ const Daybook = ({
                   <TableRow className="bg-primary text-white hover:bg-primary">
                     <TableHead
                       rowSpan={2}
-                      className=" text-white text-center w-16"
+                      className=" text-white text-center w-[80px] whitespace-nowrap"
                     >
                       {t("report.daybook.vNo")}
                     </TableHead>
                     <TableHead
                       rowSpan={2}
-                      className=" text-white  border-x border-white text-center w-[250px]"
+                      className=" text-white  border-x border-white text-center"
                     >
                       {t("report.daybook.particulars")}
                     </TableHead>
@@ -853,7 +858,7 @@ const Daybook = ({
         </DialogContent>
       </Dialog>
 
-      {typeof document !== "undefined" &&
+      {mounted && typeof document !== "undefined" &&
         createPortal(
           <div
             ref={printHostRef}

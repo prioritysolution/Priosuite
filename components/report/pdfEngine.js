@@ -100,25 +100,68 @@ export const drawFooter = (doc, meta) => {
   doc.setTextColor(0);
 };
 
-const paintCells = (doc, x, y, width, columns, values, rowH, bold) => {
+const layoutCells = (doc, columns, values, bold, spans, metrics = {}, aligns) => {
+  const fontSize = metrics.fontSize || 6.2;
+  const lineH = metrics.lineH || 3.1;
+  const minH = metrics.rowH || 5.2;
+  const padTop = metrics.padTop || 3.5;
   doc.setFont("helvetica", bold ? "bold" : "normal");
-  doc.setFontSize(6.2);
+  doc.setFontSize(fontSize);
+  const cells = [];
+  let colIndex = 0;
+  let valueIndex = 0;
+
+  while (colIndex < columns.length) {
+    const span = spans?.[valueIndex] || 1;
+    const slice = columns.slice(colIndex, colIndex + span);
+    const cellW = slice.reduce((sum, col) => sum + col.w, 0);
+    const col = slice[0] || { align: "left" };
+    const raw = String(values?.[valueIndex] ?? "");
+    let lines = [""];
+    if (raw) {
+      if (col.wrap || span > 1) {
+        const wrapped = doc.splitTextToSize(raw, Math.max(cellW - 1.6, 4));
+        lines = wrapped.length ? wrapped : [""];
+      } else {
+        lines = [clipText(doc, raw, cellW - 1.1)];
+      }
+    }
+    cells.push({ lines, width: cellW, align: aligns?.[valueIndex] || col.align });
+    colIndex += span;
+    valueIndex += 1;
+  }
+
+  const lineCount = Math.max(...cells.map((cell) => cell.lines.length), 1);
+  return {
+    cells,
+    fontSize,
+    lineH,
+    padTop,
+    height: Math.max(minH, padTop + (lineCount - 1) * lineH + 2.4),
+  };
+};
+
+const paintCells = (doc, x, y, width, columns, values, rowH, bold, prepared, spans, metrics) => {
+  const layout = prepared || layoutCells(doc, columns, values, bold, spans, metrics);
+  doc.setFont("helvetica", bold ? "bold" : "normal");
+  doc.setFontSize(layout.fontSize || 6.2);
   doc.setDrawColor(0);
   doc.rect(x, y, width, rowH);
   let cursor = x;
-  columns.forEach((col, index) => {
+  layout.cells.forEach((cell) => {
     doc.line(cursor, y, cursor, y + rowH);
-    const text = clipText(doc, values?.[index] ?? "", col.w - 1.1);
     const textX =
-      col.align === "right"
-        ? cursor + col.w - 0.6
-        : col.align === "center"
-          ? cursor + col.w / 2
-          : cursor + 0.6;
-    doc.text(text, textX, y + 3.5, {
-      align: col.align === "left" ? "left" : col.align,
+      cell.align === "right"
+        ? cursor + cell.width - 0.8
+        : cell.align === "center"
+          ? cursor + cell.width / 2
+          : cursor + 1.2;
+    cell.lines.forEach((line, lineIndex) => {
+      doc.text(line, textX, y + (layout.padTop || 3.5) + lineIndex * (layout.lineH || 3.1), {
+        align: cell.align === "left" ? "left" : cell.align,
+      });
     });
-    cursor += col.w;
+    cursor += cell.width;
   });
   doc.line(x + width, y, x + width, y + rowH);
 };
@@ -132,9 +175,15 @@ export async function fillTable(doc, options) {
     drawHead,
     onProgress,
     rowH = 5.2,
+    fontSize = 6.2,
+    lineH = 3.1,
+    padTop = 3.5,
   } = options;
   const width = columns.reduce((sum, col) => sum + col.w, 0);
   const pageH = doc.internal.pageSize.getHeight();
+  const wrapRows = columns.some((col) => col.wrap);
+  const custom = wrapRows || fontSize !== 6.2 || lineH !== 3.1 || padTop !== 3.5 || rowH !== 5.2;
+  const metrics = { fontSize, lineH, rowH, padTop };
   let y = 0;
 
   const openPage = (fresh) => {
@@ -152,11 +201,30 @@ export async function fillTable(doc, options) {
 
   for (let i = 0; i < rows.length; i += 1) {
     const row = rows[i];
-    ensure(rowH);
-    if (row?.banner != null) {
+    let height = rowH;
+    let layout = null;
+    if (row?.banner != null && custom) {
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(fontSize);
+      const lines = doc.splitTextToSize(String(row.banner), Math.max(width - 2.4, 4));
+      height = Math.max(rowH, padTop + Math.max(lines.length - 1, 0) * lineH + 2.4);
+      ensure(height);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(fontSize);
+      doc.rect(startX, y, width, height);
+      lines.forEach((line, lineIndex) => {
+        doc.text(
+          line,
+          row.align === "left" ? startX + 1.2 : startX + width / 2,
+          y + padTop + lineIndex * lineH,
+          { align: row.align === "left" ? "left" : "center" },
+        );
+      });
+    } else if (row?.banner != null) {
+      ensure(height);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(6.5);
-      doc.rect(startX, y, width, rowH);
+      doc.rect(startX, y, width, height);
       doc.text(
         clipText(doc, row.banner, width - 2),
         row.align === "left" ? startX + 1.2 : startX + width / 2,
@@ -164,9 +232,26 @@ export async function fillTable(doc, options) {
         { align: row.align === "left" ? "left" : "center" },
       );
     } else {
-      paintCells(doc, startX, y, width, columns, row?.values, rowH, !!row?.bold);
+      if (custom) {
+        layout = layoutCells(doc, columns, row?.values, !!row?.bold, row?.spans, metrics, row?.aligns);
+        height = Math.max(rowH, layout.height);
+      }
+      ensure(height);
+      paintCells(
+        doc,
+        startX,
+        y,
+        width,
+        columns,
+        row?.values,
+        height,
+        !!row?.bold,
+        layout,
+        row?.spans,
+        custom ? metrics : undefined,
+      );
     }
-    y += rowH;
+    y += height;
     if (i > 0 && i % 250 === 0) {
       onProgress?.(i + 1, rows.length);
       await yieldUi();
@@ -186,11 +271,16 @@ export async function fillPair(doc, options) {
     drawHead,
     onProgress,
     rowH = 5.2,
+    fontSize = 6.2,
+    lineH = 3.1,
+    padTop = 3.5,
   } = options;
   const width = columns.reduce((sum, col) => sum + col.w, 0);
   const rightX = startX + width;
   const pageH = doc.internal.pageSize.getHeight();
   const count = Math.max(leftRows.length, rightRows.length);
+  const wrapRows = columns.some((col) => col.wrap);
+  const metrics = { fontSize, lineH, rowH, padTop };
   let y = 0;
 
   const openPage = (fresh) => {
@@ -208,26 +298,63 @@ export async function fillPair(doc, options) {
   openPage(false);
 
   for (let i = 0; i < count; i += 1) {
-    ensure(rowH);
     const left = leftRows[i] || { values: [] };
     const right = rightRows[i] || { values: [] };
+    const leftLayout =
+      wrapRows && left.banner == null
+        ? layoutCells(doc, columns, left.values, !!left.bold, left.spans, metrics, left.aligns)
+        : null;
+    const rightLayout =
+      wrapRows && right.banner == null
+        ? layoutCells(doc, columns, right.values, !!right.bold, right.spans, metrics, right.aligns)
+        : null;
+    const height = Math.max(rowH, leftLayout?.height || 0, rightLayout?.height || 0);
+    ensure(height);
     if (left.banner != null) {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(6.2);
-      doc.rect(startX, y, width, rowH);
-      doc.text(clipText(doc, left.banner, width - 2), startX + 1.2, y + 3.5);
+      doc.rect(startX, y, width, height);
+      const bannerLines = doc.splitTextToSize(String(left.banner), width - 2);
+      bannerLines.forEach((line, lineIndex) => {
+        doc.text(line, startX + 1.2, y + 3.5 + lineIndex * 3.1);
+      });
     } else {
-      paintCells(doc, startX, y, width, columns, left.values, rowH, !!left.bold);
+      paintCells(
+        doc,
+        startX,
+        y,
+        width,
+        columns,
+        left.values,
+        height,
+        !!left.bold,
+        leftLayout,
+        left.spans,
+      );
     }
     if (right.banner != null) {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(6.2);
-      doc.rect(rightX, y, width, rowH);
-      doc.text(clipText(doc, right.banner, width - 2), rightX + 1.2, y + 3.5);
+      doc.rect(rightX, y, width, height);
+      const bannerLines = doc.splitTextToSize(String(right.banner), width - 2);
+      bannerLines.forEach((line, lineIndex) => {
+        doc.text(line, rightX + 1.2, y + 3.5 + lineIndex * 3.1);
+      });
     } else {
-      paintCells(doc, rightX, y, width, columns, right.values, rowH, !!right.bold);
+      paintCells(
+        doc,
+        rightX,
+        y,
+        width,
+        columns,
+        right.values,
+        height,
+        !!right.bold,
+        rightLayout,
+        right.spans,
+      );
     }
-    y += rowH;
+    y += height;
     if (i > 0 && i % 250 === 0) {
       onProgress?.(i + 1, count);
       await yieldUi();
@@ -237,26 +364,32 @@ export async function fillPair(doc, options) {
   return { y, width: width * 2, startX };
 }
 
-export const drawColumnHead = (doc, y, x, columns, headH = 7) => {
+export const drawColumnHead = (doc, y, x, columns, headH = 7, fontSize = 6) => {
   const width = columns.reduce((sum, col) => sum + col.w, 0);
   doc.setFillColor(243, 244, 246);
   doc.rect(x, y, width, headH, "F");
   doc.setDrawColor(0);
   doc.rect(x, y, width, headH);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(6);
+  doc.setFontSize(fontSize);
   let cursor = x;
   columns.forEach((col) => {
     doc.line(cursor, y, cursor, y + headH);
-    const text = clipText(doc, col.title, col.w - 1.2);
+    const lines = doc.splitTextToSize(String(col.title || ""), Math.max(col.w - 1.2, 4));
     const textX =
       col.align === "right"
         ? cursor + col.w - 0.7
         : col.align === "center"
           ? cursor + col.w / 2
           : cursor + 0.7;
-    doc.text(text, textX, y + 4.4, {
-      align: col.align === "left" ? "left" : col.align,
+          
+    const lineH = fontSize * 0.4;
+    const startY = y + headH / 2 - ((lines.length - 1) * lineH) / 2 + fontSize * 0.15;
+    
+    lines.forEach((line, lineIndex) => {
+      doc.text(line, textX, startY + lineIndex * lineH, {
+        align: col.align === "left" ? "left" : col.align,
+      });
     });
     cursor += col.w;
   });

@@ -12,7 +12,7 @@ import {
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
 
-const PAGE_ROWS = 14;
+const PAGE_ROWS = 13;
 
 const chunkPagesWithFooterLogic = (rows) => {
   const pages = [];
@@ -109,29 +109,29 @@ const CloseRegisterPreview = ({ printRef, tableData, fromDate, toDate }) => {
             <Table className="w-full border-collapse border border-black text-[11px]">
               {/* Main Header Every Page */}
               <TableHeader>
-                <TableRow className="h-[60px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[40px]">
+                <TableRow className="!h-[40px] border-black">
+                  <TableHead className="text-black p-0 border-black text-center w-[5.6%]">
                     {t("deposit.reports.print.slNo")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[9.8%]">
                     {t("deposit.reports.print.date")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[180px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[18.2%]">
                     {t("deposit.reports.print.customerName")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[180px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[16.8%]">
                     {t("deposit.reports.print.guardianName")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[12.6%]">
                     {t("deposit.reports.print.accountNo")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[10.5%]">
                     {t("deposit.reports.print.refAcNo")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[8.4%]">
                     {t("deposit.reports.print.lfNo")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[17.9%]">
                     {t("deposit.reports.print.operationMode")}
                   </TableHead>
                 </TableRow>
@@ -139,7 +139,7 @@ const CloseRegisterPreview = ({ printRef, tableData, fromDate, toDate }) => {
 
               <TableBody>
                 {pageRows.map((row, index) => (
-                  <TableRow key={index} className="bg-white h-[40px]">
+                  <TableRow key={index} className="bg-white !h-[40px]">
                     <TableCell className="border border-black p-0 text-center">
                       {globalSerialNo++}
                     </TableCell>

@@ -57,56 +57,62 @@ const PreviewModal = ({
 
   const PAGE_ROWS = 15;
 
-  const paginateGroupedDataWithFooter = (groupedData, totalAmount) => {
+  const paginateBody = (groupedData) => {
     const pages = [];
     let currentPage = [];
-    let currentRowCount = 0;
 
-    const allRows = [];
-
-    groupedData.forEach((group) => {
-      const validTxns = group.transactions.filter(
-        (txn) => txn?.Ledger_Id !== null,
-      );
-      allRows.push({ type: "group", data: group });
-
-      if (validTxns.length > 0) {
-        validTxns.forEach((txn) => {
-          allRows.push({ type: "txn", data: txn });
-        });
-      }
+    (groupedData || []).forEach((group) => {
+      const rows = [{ type: "group", data: group }];
+      (group.transactions || [])
+        .filter((txn) => txn?.Ledger_Id !== null)
+        .forEach((txn) => rows.push({ type: "txn", data: txn }));
+      rows.forEach((row) => {
+        if (currentPage.length >= PAGE_ROWS) {
+          pages.push(currentPage);
+          currentPage = [];
+        }
+        currentPage.push(row);
+      });
     });
 
-    allRows.forEach((row) => {
-      const limit = PAGE_ROWS;
-
-      if (currentRowCount >= limit) {
-        pages.push(currentPage);
-        currentPage = [];
-        currentRowCount = 0;
-      }
-
-      currentPage.push(row);
-      currentRowCount++;
-    });
-
-    if (currentPage.length > 0) {
-      currentPage.push({ type: "grandTotal", amount: totalAmount });
-      pages.push(currentPage);
-    }
-
+    if (currentPage.length > 0 || pages.length === 0) pages.push(currentPage);
     return pages;
   };
 
-  const leftTablePages = paginateGroupedDataWithFooter(
-    ledgerTableLiablitiesData?.groupedData || [],
-    ledgerTableLiablitiesData?.grandTotals?.grandTotalAmount || 0,
-  );
+  const leftTablePages = paginateBody(ledgerTableLiablitiesData?.groupedData);
+  const rightTablePages = paginateBody(ledgerTableAssetsData?.groupedData);
+  const pageCount = Math.max(leftTablePages.length, rightTablePages.length, 1);
+  while (leftTablePages.length < pageCount) leftTablePages.push([]);
+  while (rightTablePages.length < pageCount) rightTablePages.push([]);
 
-  const rightTablePages = paginateGroupedDataWithFooter(
-    ledgerTableAssetsData?.groupedData || [],
-    ledgerTableAssetsData?.grandTotals?.grandTotalAmount || 0,
+  const lastIndex = leftTablePages.length - 1;
+  if (
+    leftTablePages[lastIndex].length + 1 > PAGE_ROWS ||
+    rightTablePages[lastIndex].length + 1 > PAGE_ROWS
+  ) {
+    leftTablePages.push([]);
+    rightTablePages.push([]);
+  }
+
+  const finalIndex = leftTablePages.length - 1;
+  const bodyLength = Math.max(
+    leftTablePages[finalIndex].length,
+    rightTablePages[finalIndex].length,
   );
+  while (leftTablePages[finalIndex].length < bodyLength) {
+    leftTablePages[finalIndex].push({ type: "blank" });
+  }
+  while (rightTablePages[finalIndex].length < bodyLength) {
+    rightTablePages[finalIndex].push({ type: "blank" });
+  }
+  leftTablePages[finalIndex].push({
+    type: "grandTotal",
+    amount: ledgerTableLiablitiesData?.grandTotals?.grandTotalAmount || 0,
+  });
+  rightTablePages[finalIndex].push({
+    type: "grandTotal",
+    amount: ledgerTableAssetsData?.grandTotals?.grandTotalAmount || 0,
+  });
 
   const totalPages = Math.max(leftTablePages.length, rightTablePages.length, 1);
   const lastLeftPage = leftTablePages[totalPages - 1] || [];
@@ -139,12 +145,10 @@ const PreviewModal = ({
               case "group":
                 return (
                   <TableRow key={`group-${index}`} className="h-[40px]">
-                    <TableCell
-                      colSpan={2}
-                      className="font-semibold border p-0 pl-2 text-start border-black"
-                    >
+                    <TableCell className="font-semibold border p-0 pl-2 text-start border-black">
                       {row.data.headName}
                     </TableCell>
+                    <TableCell className="font-semibold border p-0 border-black" />
                     <TableCell className="font-semibold border p-0 pr-[2px] text-right border-black">
                       {row.data.subtotalAmount?.toFixed(2)}
                     </TableCell>
@@ -166,6 +170,14 @@ const PreviewModal = ({
                     </TableCell>
                   </TableRow>
                 ) : null;
+              case "blank":
+                return (
+                  <TableRow key={`blank-${index}`} className="h-[40px]">
+                    <TableCell className="border border-black p-0" />
+                    <TableCell className="border border-black p-0" />
+                    <TableCell className="border border-black p-0" />
+                  </TableRow>
+                );
               case "grandTotal":
                 return (
                   <TableRow key={`grandTotal-${index}`} className="h-[40px]">

@@ -66,7 +66,7 @@ const PreviewModal = ({
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const PAGE_ROWS = 14;
+  const PAGE_ROWS = 13;
 
   const paginateWithFooterCheck = (data) => {
     const pages = [];
@@ -127,37 +127,37 @@ const PreviewModal = ({
                           pageIndex <= rightTablePages.length - 1) ||
                         rightTablePages.length === 0) && (
                         <TableHeader>
-                          <TableRow className=" h-[40px] ">
+                          <TableRow className=" h-[28px] ">
                             <TableHead
                               rowSpan={2}
-                              className="border border-black  text-black p-0 text-center w-[30px]"
+                              className="border border-black  text-black p-0 text-center w-[11.2%]"
                             >
                               {t("report.daybook.print.vNo")}
                             </TableHead>
                             <TableHead
                               rowSpan={2}
-                              className="border border-black  text-black p-0 border-x  text-center"
+                              className="border border-black  text-black p-0 border-x  text-center w-[36.6%]"
                             >
                               {t("report.daybook.print.particulars")}
                             </TableHead>
 
                             <TableHead
                               colSpan={3}
-                              className="  border-l text-black p-0 text-center h-[40px]"
+                              className="  border-l text-black p-0 text-center h-[28px]"
                             >
                               {tableIndex === 0
                                 ? t("report.daybook.print.receipts")
                                 : t("report.daybook.print.payments")}
                             </TableHead>
                           </TableRow>
-                          <TableRow className="h-[40px]">
-                            <TableHead className="border border-black text-black p-0 text-center w-[100px] h-[40px]">
+                          <TableRow className="h-[28px]">
+                            <TableHead className="border border-black text-black p-0 text-center w-[17.4%] h-[28px]">
                               {t("report.daybook.print.cash")}
                             </TableHead>
-                            <TableHead className="border border-black text-black  p-0 border-l text-center w-[100px] h-[40px]">
+                            <TableHead className="border border-black text-black  p-0 border-l text-center w-[17.4%] h-[28px]">
                               {t("report.daybook.print.transfer")}
                             </TableHead>
-                            <TableHead className="border border-black text-black p-0 border-l text-center w-[100px] h-[40px]">
+                            <TableHead className="border border-black text-black p-0 border-l text-center w-[17.4%] h-[28px]">
                               {t("report.daybook.print.total")}
                             </TableHead>
                           </TableRow>
@@ -165,7 +165,7 @@ const PreviewModal = ({
                       )}
                       <TableBody>
                         {tableData.map((data, index) => (
-                          <TableRow key={index}>
+                          <TableRow key={index} className="!h-[40px]">
                             <TableCell className="border border-black px-1 py-3 text-center">
                               {data?.Vouch_No}
                             </TableCell>
@@ -191,7 +191,7 @@ const PreviewModal = ({
                         (pageIndex === leftTablePages.length - 1 ||
                           leftTablePages.length === 0) ? (
                           <>
-                            <TableRow className="bg-white h-[40px]">
+                            <TableRow className="bg-white !h-[40px]">
                               <TableCell
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
@@ -208,7 +208,7 @@ const PreviewModal = ({
                                 {totalReceived?.toFixed(2)}
                               </TableCell>
                             </TableRow>
-                            <TableRow className="bg-white h-[40px]">
+                            <TableRow className="bg-white !h-[40px]">
                               <TableCell
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
@@ -223,7 +223,7 @@ const PreviewModal = ({
                               <TableCell className="border border-black p-0"></TableCell>
                               <TableCell className="border border-black p-0"></TableCell>
                             </TableRow>
-                            <TableRow className="bg-white h-[40px]">
+                            <TableRow className="bg-white !h-[40px]">
                               <TableCell
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
@@ -251,7 +251,7 @@ const PreviewModal = ({
                           (pageIndex === rightTablePages.length - 1 ||
                             rightTablePages.length === 0) ? (
                           <>
-                            <TableRow className="bg-white h-[40px]">
+                            <TableRow className="bg-white !h-[40px]">
                               <TableCell
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
@@ -268,7 +268,7 @@ const PreviewModal = ({
                                 {totalPayment?.toFixed(2)}
                               </TableCell>
                             </TableRow>
-                            <TableRow className="bg-white h-[40px]">
+                            <TableRow className="bg-white !h-[40px]">
                               <TableCell
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
@@ -283,7 +283,7 @@ const PreviewModal = ({
                               <TableCell className="border border-black p-0"></TableCell>
                               <TableCell className="border border-black p-0"></TableCell>
                             </TableRow>
-                            <TableRow className="bg-white h-[40px]">
+                            <TableRow className="bg-white !h-[40px]">
                               <TableCell
                                 colSpan={2}
                                 className="font-medium border border-black p-0"
@@ -346,12 +346,12 @@ const PreviewModal = ({
         className="w-full h-[210mm] relative pt-5 bg-white"
       >
         <div className="w-[350px] ml-20">
-          <p className="text-[11px] text-center flex items-center justify-center h-[40px]">
+          <p className="text-[11px] text-center flex items-center justify-center !h-[40px]">
             {t("report.daybook.physicalDenomination")}
           </p>
           <Table className="w-full border border-black text-[11px]">
             <TableHeader>
-              <TableRow className=" text-black  h-[40px] ">
+              <TableRow className=" text-black  !h-[40px] ">
                 <TableHead className=" border-black text-black p-0 text-center w-[50px]">
                   {t("report.daybook.print.slNo")}
                 </TableHead>
@@ -368,7 +368,7 @@ const PreviewModal = ({
             </TableHeader>
             <TableBody>
               {(denomData || []).map((denom, index) => (
-                <TableRow key={index} className="h-[40px]">
+                <TableRow key={index} className="!h-[40px]">
                   <TableCell className="border border-black p-0 text-center">
                     {index + 1}
                   </TableCell>
@@ -385,7 +385,7 @@ const PreviewModal = ({
               ))}
             </TableBody>
             <TableFooter>
-              <TableRow className="bg-white h-[40px]">
+              <TableRow className="bg-white !h-[40px]">
                 <TableCell
                   className="border border-black p-0 text-center"
                   colSpan={2}

@@ -67,7 +67,7 @@ const PreviewModal = ({
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const PAGE_ROWS = 11;
+  const PAGE_ROWS = 13;
 
   const paginateWithFooterCheck = (data) => {
     const pages = [];
@@ -133,13 +133,13 @@ const PreviewModal = ({
                         <TableRow className="border-0 hover:bg-transparent">
                           <TableHead
                             rowSpan={2}
-                            className="border border-black text-black !h-auto p-1 text-center align-middle w-[36px] font-semibold whitespace-normal"
+                            className="border border-black text-black !h-[56px] p-1 text-center align-middle w-[11.2%] font-semibold whitespace-normal"
                           >
                             {t("report.cashAccount.print.vNo")}
                           </TableHead>
                           <TableHead
                             rowSpan={2}
-                            className="border border-black text-black !h-auto p-1 text-center align-middle font-semibold whitespace-normal"
+                            className="border border-black text-black !h-[56px] p-1 text-center align-middle w-[36.6%] font-semibold whitespace-normal"
                           >
                             {t("report.cashAccount.print.particulars")}
                           </TableHead>
@@ -153,13 +153,13 @@ const PreviewModal = ({
                           </TableHead>
                         </TableRow>
                         <TableRow className="border-0 hover:bg-transparent">
-                          <TableHead className="border border-black text-black !h-[28px] p-1 text-center align-middle w-[18%] font-semibold">
+                          <TableHead className="border border-black text-black !h-[28px] p-1 text-center align-middle w-[17.4%] font-semibold">
                             {t("report.cashAccount.print.cash")}
                           </TableHead>
-                          <TableHead className="border border-black text-black !h-[28px] p-1 text-center align-middle w-[18%] font-semibold">
+                          <TableHead className="border border-black text-black !h-[28px] p-1 text-center align-middle w-[17.4%] font-semibold">
                             {t("report.cashAccount.print.transfer")}
                           </TableHead>
-                          <TableHead className="border border-black text-black !h-[28px] p-1 text-center align-middle w-[18%] font-semibold">
+                          <TableHead className="border border-black text-black !h-[28px] p-1 text-center align-middle w-[17.4%] font-semibold">
                             {t("report.cashAccount.print.total")}
                           </TableHead>
                         </TableRow>
@@ -169,7 +169,7 @@ const PreviewModal = ({
                       {tableData.map((data, index) => (
                         <TableRow
                           key={index}
-                          className="border-0 hover:bg-transparent"
+                          className="border-0 hover:bg-transparent !h-[40px]"
                         >
                           <TableCell className="border border-black p-1 text-center align-middle whitespace-normal">
                             {data?.Vouch_No}

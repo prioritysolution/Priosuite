@@ -12,7 +12,7 @@ import {
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
 
-const PAGE_ROWS = 11;
+const PAGE_ROWS = 13;
 
 const chunkPagesWithFooterLogic = (rows) => {
   const pages = [];
@@ -120,50 +120,50 @@ const DetailedListPreview = ({
             <Table className="w-full border-collapse border border-black text-[11px]">
               {/* Main Header Every Page */}
               <TableHeader>
-                <TableRow className="h-[60px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[40px]">
+                <TableRow className="!h-[40px] border-black">
+                  <TableHead className="text-black p-0 border-black text-center w-[3.5%]">
                     {t("deposit.reports.print.slNo")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[11.2%]">
                     {t("deposit.reports.print.customerName")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[10.5%]">
                     {t("deposit.reports.print.guardianName")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[50px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[7.7%]">
                     {t("deposit.reports.print.accNo")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[40px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[5.6%]">
                     {t("deposit.reports.print.refAcNo")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center ">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[4.2%]">
                     {t("deposit.reports.print.lfNo")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[7.0%]">
                     {t("deposit.reports.print.openingDate")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[40px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[4.2%]">
                     {t("deposit.reports.print.roi")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[70px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[7.0%]">
                     {t("deposit.reports.print.maturityDate")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[6.3%]">
                     {t("deposit.reports.print.opening")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[6.3%]">
                     {t("deposit.reports.print.deposit")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[7.0%]">
                     {t("deposit.reports.print.withdrawn")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[6.3%]">
                     {t("deposit.reports.print.closing")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[6.3%]">
                     {t("deposit.reports.print.paidIntt")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[6.7%]">
                     {t("deposit.reports.print.dueIntt")}
                   </TableHead>
                 </TableRow>
@@ -171,7 +171,7 @@ const DetailedListPreview = ({
 
               <TableBody>
                 {pageRows.map((row, index) => (
-                  <TableRow key={index} className="bg-white h-[50px]">
+                  <TableRow key={index} className="bg-white !h-[40px]">
                     <TableCell className="border border-black p-0 text-center">
                       {globalSerialNo++}
                     </TableCell>

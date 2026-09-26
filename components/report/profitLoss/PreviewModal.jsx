@@ -60,64 +60,74 @@ const PreviewModal = ({
 
   const PAGE_ROWS = 23; // Global row limit
 
-  const paginateGroupedDataWithFooter = (
-    groupedData,
-    netRow,
-    subTotalAmount,
-  ) => {
+  const paginateBody = (groupedData) => {
     const pages = [];
     let currentPage = [];
-    let currentRowCount = 0;
 
-    const allRows = [];
-
-    groupedData.forEach((group) => {
-      allRows.push({ type: "group", data: group });
-      group.transactions.forEach((txn) => {
-        allRows.push({ type: "txn", data: txn });
+    (groupedData || []).forEach((group) => {
+      const rows = [
+        { type: "group", data: group },
+        ...(group.transactions || []).map((txn) => ({ type: "txn", data: txn })),
+      ];
+      rows.forEach((row) => {
+        if (currentPage.length >= PAGE_ROWS) {
+          pages.push(currentPage);
+          currentPage = [];
+        }
+        currentPage.push(row);
       });
     });
 
-    allRows.forEach((row) => {
-      if (currentRowCount >= PAGE_ROWS) {
-        pages.push(currentPage);
-        currentPage = [];
-        currentRowCount = 0;
-      }
-
-      currentPage.push(row);
-      currentRowCount++;
-    });
-
-    if (currentPage.length > 0) {
-      currentPage.push({ type: "subtotal", amount: subTotalAmount });
-
-      if (netRow) {
-        currentPage.push({ type: "net", data: netRow });
-      }
-
-      const grandTotal =
-        parseFloat(subTotalAmount || 0) + parseFloat(netRow?.Amount || 0);
-
-      currentPage.push({ type: "grandTotal", amount: grandTotal });
-
-      pages.push(currentPage);
-    }
-
+    if (currentPage.length > 0 || pages.length === 0) pages.push(currentPage);
     return pages;
   };
 
-  const leftTablePages = paginateGroupedDataWithFooter(
-    ledgerTableExpenditureData?.groupedData || [],
-    netData?.find((d) => d.Position === "L"),
-    ledgerTableExpenditureData?.grandTotals?.grandTotalAmount || 0,
-  );
+  const leftNet = netData?.find((d) => d.Position === "L");
+  const rightNet = netData?.find((d) => d.Position === "R");
+  const leftSub = ledgerTableExpenditureData?.grandTotals?.grandTotalAmount || 0;
+  const rightSub = ledgerTableIncomeData?.grandTotals?.grandTotalAmount || 0;
+  const footerCount = leftNet || rightNet ? 3 : 2;
 
-  const rightTablePages = paginateGroupedDataWithFooter(
-    ledgerTableIncomeData?.groupedData || [],
-    netData?.find((d) => d.Position === "R"),
-    ledgerTableIncomeData?.grandTotals?.grandTotalAmount || 0,
+  const leftTablePages = paginateBody(ledgerTableExpenditureData?.groupedData);
+  const rightTablePages = paginateBody(ledgerTableIncomeData?.groupedData);
+  const pageCount = Math.max(leftTablePages.length, rightTablePages.length, 1);
+  while (leftTablePages.length < pageCount) leftTablePages.push([]);
+  while (rightTablePages.length < pageCount) rightTablePages.push([]);
+
+  const lastIndex = leftTablePages.length - 1;
+  if (
+    leftTablePages[lastIndex].length + footerCount > PAGE_ROWS ||
+    rightTablePages[lastIndex].length + footerCount > PAGE_ROWS
+  ) {
+    leftTablePages.push([]);
+    rightTablePages.push([]);
+  }
+
+  const finalIndex = leftTablePages.length - 1;
+  const bodyLength = Math.max(
+    leftTablePages[finalIndex].length,
+    rightTablePages[finalIndex].length,
   );
+  while (leftTablePages[finalIndex].length < bodyLength) {
+    leftTablePages[finalIndex].push({ type: "blank" });
+  }
+  while (rightTablePages[finalIndex].length < bodyLength) {
+    rightTablePages[finalIndex].push({ type: "blank" });
+  }
+
+  const appendFooter = (pages, subAmount, netRow) => {
+    const page = pages[pages.length - 1];
+    page.push({ type: "subtotal", amount: subAmount });
+    if (leftNet || rightNet) {
+      page.push(netRow ? { type: "net", data: netRow } : { type: "blank" });
+    }
+    page.push({
+      type: "grandTotal",
+      amount: parseFloat(subAmount || 0) + parseFloat(netRow?.Amount || 0),
+    });
+  };
+  appendFooter(leftTablePages, leftSub, leftNet);
+  appendFooter(rightTablePages, rightSub, rightNet);
 
   return (
     <div className="w-[210mm] h-full" ref={printRef}>
@@ -179,12 +189,10 @@ const PreviewModal = ({
                                   key={`group-${index}`}
                                   className="h-[40px]"
                                 >
-                                  <TableCell
-                                    colSpan={2}
-                                    className="font-semibold border p-0 text-left pl-3 text-xs border-black"
-                                  >
+                                  <TableCell className="font-semibold border p-0 text-left pl-3 text-xs border-black">
                                     {row.data.headName}
                                   </TableCell>
+                                  <TableCell className="font-semibold border p-0 text-right border-black pr-1" />
                                   <TableCell className="font-semibold border p-0 text-right border-black pr-1">
                                     {row.data.subtotalAmount?.toFixed(2)}
                                   </TableCell>
@@ -258,6 +266,14 @@ const PreviewModal = ({
                                   <TableCell className="font-semibold border border-black p-0 text-right pr-1">
                                     {parseFloat(row.amount).toFixed(2)}
                                   </TableCell>
+                                </TableRow>
+                              );
+                            case "blank":
+                              return (
+                                <TableRow key={`blank-${index}`} className="h-[40px]">
+                                  <TableCell className="border border-black p-0" />
+                                  <TableCell className="border border-black p-0" />
+                                  <TableCell className="border border-black p-0" />
                                 </TableRow>
                               );
                             default:

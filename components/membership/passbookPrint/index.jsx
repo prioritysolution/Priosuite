@@ -88,10 +88,10 @@ const PassbookPrint = ({
 
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">{t("membership.passbookPrint.title")}</h3>
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold pb-2">{t("membership.passbookPrint.title")}</h3>
 
-        <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
+        <ScrollArea className="w-full h-full px-1">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
@@ -134,7 +134,7 @@ const PassbookPrint = ({
 
                 {form.watch().printType === "2" && (
                   <>
-                    <div className="w-full sm:w-48">
+                    <div className="w-full sm:w-64">
                       <DatePickerField
                         control={form.control}
                         name="date"
@@ -154,8 +154,8 @@ const PassbookPrint = ({
                   </>
                 )}
 
-                <div className="flex gap-3 ml-auto w-full sm:w-auto justify-end">
-                  <Button type="submit" className="w-32 h-10">
+                <div className="flex flex-wrap gap-3 w-full sm:w-auto ml-auto justify-end">
+                  <Button type="submit" className="w-full sm:w-32 h-10">
                     {loading ? (
                       <ClipLoader
                         color="#d7e6f4"
@@ -163,12 +163,12 @@ const PassbookPrint = ({
                         speedMultiplier={0.7}
                       />
                     ) : (
-                      t("common.next")
+                      t("common.buttons.next", "Next")
                     )}
                   </Button>
                   <div
                     className={cn(
-                      "w-32 h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
+                      "w-full sm:w-32 h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
                       {
                         "pointer-events-none opacity-50":
                           !pageData || pageData?.length < 1,

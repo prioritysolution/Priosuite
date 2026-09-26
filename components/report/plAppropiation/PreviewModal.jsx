@@ -5,14 +5,13 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import getCookieData from "@/utils/getCookieData";
 import convertToWords from "@/utils/numberToWords";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const PreviewModal = ({
   printRef,
@@ -61,41 +60,71 @@ const PreviewModal = ({
 
   const PAGE_ROWS = 22;
 
-  const paginateData = (data) => {
+  const toRows = (data) => {
+    const rows = [];
+    (data || []).forEach((item) => {
+      if (item?.Heading_Name) rows.push({ type: "heading", data: item });
+      if (item?.Ledger_Name) rows.push({ type: "ledger", data: item });
+    });
+    return rows;
+  };
+
+  const paginateRows = (rows) => {
     const pages = [];
-    let index = 0;
-
-    // First page
-    if (data.length > 0) {
-      pages.push(data.slice(0, PAGE_ROWS));
-      index = PAGE_ROWS;
-    }
-
-    // Remaining pages
-    while (index < data.length) {
-      pages.push(data.slice(index, index + PAGE_ROWS));
-      index += PAGE_ROWS;
-    }
-
+    let currentPage = [];
+    rows.forEach((row) => {
+      if (currentPage.length >= PAGE_ROWS) {
+        pages.push(currentPage);
+        currentPage = [];
+      }
+      currentPage.push(row);
+    });
+    if (currentPage.length > 0 || pages.length === 0) pages.push(currentPage);
     return pages;
   };
 
-  const leftTablePages = paginateData(ledgerTableExpenditureData || []);
-  const rightTablePages = paginateData(ledgerTableIncomeData || []);
+  const leftTablePages = paginateRows(toRows(ledgerTableExpenditureData));
+  const rightTablePages = paginateRows(toRows(ledgerTableIncomeData));
+  const pageCount = Math.max(leftTablePages.length, rightTablePages.length, 1);
+  while (leftTablePages.length < pageCount) leftTablePages.push([]);
+  while (rightTablePages.length < pageCount) rightTablePages.push([]);
 
-  const totalPages = Math.max(leftTablePages.length, rightTablePages.length, 1);
+  const lastIndex = leftTablePages.length - 1;
+  if (
+    leftTablePages[lastIndex].length + 1 > PAGE_ROWS ||
+    rightTablePages[lastIndex].length + 1 > PAGE_ROWS
+  ) {
+    leftTablePages.push([]);
+    rightTablePages.push([]);
+  }
+
+  const finalIndex = leftTablePages.length - 1;
+  const bodyLength = Math.max(
+    leftTablePages[finalIndex].length,
+    rightTablePages[finalIndex].length,
+  );
+  while (leftTablePages[finalIndex].length < bodyLength) {
+    leftTablePages[finalIndex].push({ type: "blank" });
+  }
+  while (rightTablePages[finalIndex].length < bodyLength) {
+    rightTablePages[finalIndex].push({ type: "blank" });
+  }
+  leftTablePages[finalIndex].push({
+    type: "grandTotal",
+    amount: totalExpenditure,
+  });
+  rightTablePages[finalIndex].push({
+    type: "grandTotal",
+    amount: totalIncome,
+  });
+
+  const totalPages = leftTablePages.length;
 
   return (
     <div className="w-[210mm] h-full" ref={printRef}>
       {Array.from({ length: totalPages }).map((_, pageIndex) => {
         const leftPageData = leftTablePages[pageIndex] || [];
         const rightPageData = rightTablePages[pageIndex] || [];
-
-        const isLeftLastPage = pageIndex === leftTablePages.length - 1;
-        const isRightLastPage = pageIndex === rightTablePages.length - 1;
-
-        const leftHasRoomForFooter = leftPageData.length <= PAGE_ROWS - 3;
-        const rightHasRoomForFooter = rightPageData.length <= PAGE_ROWS - 3;
 
         return (
           <div
@@ -118,11 +147,6 @@ const PreviewModal = ({
             <div className="flex-1 flex w-full border border-black">
               {[leftPageData, rightPageData].map((tableData, tableIndex) => {
                 const isLeft = tableIndex === 0;
-                const isLastPage = isLeft ? isLeftLastPage : isRightLastPage;
-                const hasRoomForFooter = isLeft
-                  ? leftHasRoomForFooter
-                  : rightHasRoomForFooter;
-                const totalAmount = isLeft ? totalExpenditure : totalIncome;
 
                 return (
                   <div key={tableIndex} className="w-1/2">
@@ -142,45 +166,46 @@ const PreviewModal = ({
                         </TableHeader>
                       )}
                       <TableBody>
-                        {tableData.map((data, index) => (
-                          <Fragment key={index}>
-                            {data?.Heading_Name && (
-                              <TableRow className="h-[40px]">
-                                <TableCell className="font-semibold  border border-black text-start  p-0 pl-1">
-                                  {data?.Heading_Name}
-                                </TableCell>
-                                <TableCell className=" border border-black text-right p-0 pr-[2px]">
-                                  {data?.Amount}
-                                </TableCell>
+                        {tableData.map((row, index) => {
+                          if (row.type === "blank") {
+                            return (
+                              <TableRow key={`blank-${index}`} className="h-[40px]">
+                                <TableCell className="border border-black p-0" />
+                                <TableCell className="border border-black p-0" />
                               </TableRow>
-                            )}
-                            {data?.Ledger_Name && (
-                              <TableRow className="h-[40px]">
-                                <TableCell className="border border-black text-start p-0 pl-5">
-                                  {data?.Ledger_Name}
+                            );
+                          }
+                          if (row.type === "grandTotal") {
+                            return (
+                              <TableRow key={`grand-${index}`} className="h-[40px] bg-white">
+                                <TableCell className="font-medium border border-black text-center p-0">
+                                  {t("common.grandTotal")}
                                 </TableCell>
                                 <TableCell className="border border-black text-right p-0 pr-[2px]">
-                                  {data?.Amount}
+                                  {Number(row.amount || 0).toFixed(2)}
                                 </TableCell>
                               </TableRow>
-                            )}
-                          </Fragment>
-                        ))}
+                            );
+                          }
+                          const data = row.data;
+                          return (
+                            <TableRow key={index} className="h-[40px]">
+                              <TableCell
+                                className={
+                                  row.type === "heading"
+                                    ? "font-semibold border border-black text-start p-0 pl-1"
+                                    : "border border-black text-start p-0 pl-5"
+                                }
+                              >
+                                {row.type === "heading" ? data?.Heading_Name : data?.Ledger_Name}
+                              </TableCell>
+                              <TableCell className="border border-black text-right p-0 pr-[2px]">
+                                {data?.Amount}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                       </TableBody>
-
-                      {/* Conditionally render Grand Total on last page only if space allows */}
-                      {isLastPage && hasRoomForFooter && (
-                        <TableFooter className="font-normal">
-                          <TableRow className="bg-white h-[40px]">
-                            <TableCell className="font-medium border border-black text-center p-0">
-                              {t("common.grandTotal")}
-                            </TableCell>
-                            <TableCell className="border border-black text-right p-0 pr-[2px]">
-                              {totalAmount?.toFixed(2)}
-                            </TableCell>
-                          </TableRow>
-                        </TableFooter>
-                      )}
                     </Table>
                   </div>
                 );

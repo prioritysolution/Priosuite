@@ -94,7 +94,7 @@ const DividendListPreview = ({
       {pages.map((pageRows, pageIndex) => (
         <div
           key={pageIndex}
-          className="w-full h-[297mm] text-center py-2 px-1 flex flex-col justify-between scale-[.97]"
+          className="w-full h-[297mm] text-center py-2 px-1 flex flex-col justify-between scale-[.97] break-inside-avoid" data-print-page="true"
         >
           {/* Org Header Only on First Page */}
           <div className="text-xs flex flex-col gap-1 uppercase mb-1">
@@ -128,7 +128,7 @@ const DividendListPreview = ({
 
               <TableBody>
                 {pageRows.map((row, index) => (
-                  <TableRow key={index} className="bg-white h-[50px]">
+                  <TableRow key={index} className="bg-white !h-[40px]">
                     <TableCell className="border border-black p-0 text-center">
                       {globalSerialNo++}
                     </TableCell>
@@ -160,7 +160,7 @@ const DividendListPreview = ({
               {/* Only show total on last page */}
               {pageIndex === pages.length - 1 && (
                 <TableFooter>
-                  <TableRow className="bg-white h-[50px]">
+                  <TableRow className="bg-white !h-[40px]">
                     <TableCell
                       colSpan={7}
                       className="border border-black p-0 text-center"
@@ -175,7 +175,7 @@ const DividendListPreview = ({
           </div>
 
           {/* Footer */}
-          <div className="w-full h-[40px] mt-2 flex items-end justify-between text-xs relative">
+          <div className="w-full !h-[40px] mt-2 flex items-end justify-between text-xs relative">
             <p className="text-nowrap">{t("membership.reports.preview.generatedBy")} {userName}</p>
             <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">
               {t("membership.reports.preview.footerNote")}

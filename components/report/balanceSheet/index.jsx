@@ -242,12 +242,10 @@ const BalanceSheet = ({
                       (group, index) => (
                         <Fragment key={index}>
                           <TableRow>
-                            <TableCell
-                              colSpan={2}
-                              className="font-semibold border border-secondary bg-gray-50"
-                            >
+                            <TableCell className="font-semibold border border-secondary bg-gray-50">
                               {group.headName}
                             </TableCell>
+                            <TableCell className="font-semibold border border-secondary bg-gray-50" />
                             <TableCell className="font-semibold border border-secondary bg-gray-50">
                               {group.subtotalAmount &&
                                 group.subtotalAmount.toFixed(2)}
@@ -314,12 +312,10 @@ const BalanceSheet = ({
                     ledgerAssetsTableData.groupedData.map((group, index) => (
                       <Fragment key={index}>
                         <TableRow>
-                          <TableCell
-                            colSpan={2}
-                            className="font-semibold border border-secondary bg-gray-50"
-                          >
+                          <TableCell className="font-semibold border border-secondary bg-gray-50">
                             {group.headName}
                           </TableCell>
+                          <TableCell className="font-semibold border border-secondary bg-gray-50" />
                           <TableCell className="font-semibold border border-secondary bg-gray-50">
                             {group.subtotalAmount &&
                               group.subtotalAmount.toFixed(2)}

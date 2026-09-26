@@ -22,12 +22,13 @@ import DividendListPreview from "./DividendListPreview";
 import { cn } from "@/lib/utils";
 import DetailedListPreview from "./DetailedListPreview";
 import TransactionRegisterPreview from "./TransactionRegisterPreview";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
 import ShareIssueReceipt from "../shareIssue/ShareIssueReceipt";
 import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
 import { downloadMembershipReportPdf } from "./buildMembershipReportPdf";
 
 const MembershipReport = ({
@@ -66,6 +67,11 @@ const MembershipReport = ({
   const { t: tEn } = useEnglishOnly();
 
   const [showReportForm, setShowReportForm] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
@@ -378,54 +384,68 @@ const MembershipReport = ({
         ledgerTableData={ledgerTableData}
       />
 
-      <div style={{ position: "absolute", top: "-10000px", left: "-10000px" }}>
-        {showData === "100" ? (
-          <MemberRegisterPreview
-            printRef={printMemberRegisterRef}
-            tableData={tableData}
-            totalAdmFees={totalAdmFees}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "101" ? (
-          <TransactionRegisterPreview
-            printRef={printTransactionRegisterRef}
-            tableData={tableData}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "102" ? (
-          <WithdrawnRegisterPreview
-            printRef={printWithdrawnRegisterRef}
-            tableData={tableData}
-            totalAmount={totalAmount}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "103" ? (
-          <DetailedListPreview
-            printRef={printDetailedListRef}
-            tableData={tableData}
-            totalOpening={totalOpening}
-            totalIssue={totalIssue}
-            totalRelease={totalRelease}
-            totalClosing={totalClosing}
-            totalDividend={totalDividend}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : showData === "104" ? (
-          <DividendListPreview
-            printRef={printDividendListRef}
-            tableData={tableData}
-            totalBalance={totalBalance}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
-        ) : (
-          <></>
+      {mounted && typeof document !== "undefined" &&
+        createPortal(
+          <div
+            style={{
+              position: "fixed",
+              top: "-10000px",
+              left: "-10000px",
+              width: ["101", "103"].includes(showData) ? "297mm" : "210mm",
+              background: "#ffffff",
+              pointerEvents: "none",
+              zIndex: -1,
+            }}
+          >
+            {showData === "100" ? (
+              <MemberRegisterPreview
+                printRef={printMemberRegisterRef}
+                tableData={tableData}
+                totalAdmFees={totalAdmFees}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "101" ? (
+              <TransactionRegisterPreview
+                printRef={printTransactionRegisterRef}
+                tableData={tableData}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "102" ? (
+              <WithdrawnRegisterPreview
+                printRef={printWithdrawnRegisterRef}
+                tableData={tableData}
+                totalAmount={totalAmount}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "103" ? (
+              <DetailedListPreview
+                printRef={printDetailedListRef}
+                tableData={tableData}
+                totalOpening={totalOpening}
+                totalIssue={totalIssue}
+                totalRelease={totalRelease}
+                totalClosing={totalClosing}
+                totalDividend={totalDividend}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : showData === "104" ? (
+              <DividendListPreview
+                printRef={printDividendListRef}
+                tableData={tableData}
+                totalBalance={totalBalance}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            ) : (
+              <></>
+            )}
+          </div>,
+          document.body
         )}
-      </div>
 
       {showData === "101" ? (
         <ShareIssueReceipt

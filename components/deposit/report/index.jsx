@@ -25,7 +25,7 @@ import CloseRegisterPreview from "./CloseRegisterPreview";
 import InterestListPreview from "./InterestListPreview";
 import DetailedListPreview from "./DetailedListPreview";
 import TransactionRegisterPreview from "./TransactionRegisterPreview";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiEye, FiEyeOff, FiDownload } from "react-icons/fi";
 import { HiMiniPrinter } from "react-icons/hi2";
 import { PiFileMagnifyingGlassBold } from "react-icons/pi";
@@ -72,6 +72,11 @@ const DepositReport = ({
 
   const [showReportForm, setShowReportForm] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const branchData = useSelector((state) => state?.ledgerBalance?.branchData);
 
@@ -415,7 +420,7 @@ const DepositReport = ({
         ledgerTableData={ledgerTableData}
       />
 
-      {typeof document !== "undefined" &&
+      {mounted && typeof document !== "undefined" &&
         createPortal(
           <div
             ref={printHostRef}

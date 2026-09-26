@@ -1,51 +1,25 @@
-import jsPDF from "jspdf";
-import { format } from "date-fns";
-import getCookieData from "@/utils/getCookieData";
-
-const money = (value) => {
-  if (value == null || value === "") return "";
-  const numeric = Number(value);
-  return Number.isNaN(numeric) ? String(value) : numeric.toFixed(2);
-};
-
-const day = (value) => {
-  if (!value) return "";
-  const parsed = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(parsed.getTime())) return String(value);
-  return format(parsed, "dd-MM-yyyy");
-};
-
-const clipText = (doc, text, maxWidth) => {
-  const value = String(text ?? "");
-  if (!value) return "";
-  if (doc.getTextWidth(value) <= maxWidth) return value;
-  let end = value.length;
-  while (end > 1 && doc.getTextWidth(`${value.slice(0, end)}…`) > maxWidth) {
-    end -= 1;
-  }
-  return `${value.slice(0, end)}…`;
-};
-
-const yieldUi = () => new Promise((resolve) => setTimeout(resolve, 0));
-
-const label = (t, key, fallback) => {
-  if (typeof t !== "function") return fallback;
-  const value = t(key);
-  return value && value !== key ? value : fallback;
-};
+import {
+  label,
+  money,
+  showDate,
+  openPdf,
+  orgMeta,
+  fillTable,
+  drawColumnHead,
+} from "@/components/report/pdfEngine";
 
 const columnsFor = (t) => [
-  { title: label(t, "borrowings.print.slNo", "SL. NO."), w: 12, align: "center", key: "sl" },
-  { title: label(t, "borrowings.print.openingDate", "OPENING DATE"), w: 22, align: "center", key: "date" },
-  { title: label(t, "borrowings.print.productName", "PRODUCT NAME"), w: 40, align: "left", key: "product" },
-  { title: label(t, "borrowings.print.bankName", "BANK NAME"), w: 32, align: "left", key: "bank" },
-  { title: label(t, "borrowings.print.accountNo", "ACCOUNT NO."), w: 24, align: "center", key: "acc" },
-  { title: label(t, "borrowings.print.disburse", "DISBURSE"), w: 28, align: "right", key: "disburse" },
-  { title: label(t, "borrowings.print.prnRefund", "PRN. REFUND"), w: 28, align: "right", key: "prn" },
-  { title: label(t, "borrowings.print.inttRefund", "INTT. REFUND"), w: 28, align: "right", key: "intt" },
-  { title: label(t, "borrowings.print.outsBal", "OUTS. BAL."), w: 28, align: "right", key: "outs" },
-  { title: label(t, "borrowings.print.provIntt", "PROV. INTT"), w: 23, align: "right", key: "prov" },
-  { title: label(t, "borrowings.print.dueDate", "DUE DATE"), w: 20, align: "center", key: "due" },
+  { title: label(t, "borrowings.print.slNo", "SL. NO."), w: 12, align: "center" },
+  { title: label(t, "borrowings.print.openingDate", "OPENING DATE"), w: 22, align: "center" },
+  { title: label(t, "borrowings.print.productName", "PRODUCT NAME"), w: 40, align: "left", wrap: true },
+  { title: label(t, "borrowings.print.bankName", "BANK NAME"), w: 32, align: "left", wrap: true },
+  { title: label(t, "borrowings.print.accountNo", "ACCOUNT NO."), w: 24, align: "center" },
+  { title: label(t, "borrowings.print.disburse", "DISBURSE"), w: 28, align: "right" },
+  { title: label(t, "borrowings.print.prnRefund", "PRN. REFUND"), w: 28, align: "right" },
+  { title: label(t, "borrowings.print.inttRefund", "INTT. REFUND"), w: 28, align: "right" },
+  { title: label(t, "borrowings.print.outsBal", "OUTS. BAL."), w: 28, align: "right" },
+  { title: label(t, "borrowings.print.provIntt", "PROV. INTT"), w: 23, align: "right" },
+  { title: label(t, "borrowings.print.dueDate", "DUE DATE"), w: 20, align: "center" },
 ];
 
 const flattenGroups = (groups = [], t) => {
@@ -55,81 +29,62 @@ const flattenGroups = (groups = [], t) => {
   groups.forEach((group) => {
     if (group?.isGrandTotal) return;
     const ledger = group?.transactions?.[0]?.Ledger_Name || "";
-    rows.push({ kind: "banner", text: ledger ? `${glLabel} - ${ledger}` : "" });
+    if (ledger) {
+      rows.push({ banner: `${glLabel} - ${ledger}`, align: "center" });
+    }
+    
     (group?.transactions || []).forEach((txn, index) => {
       rows.push({
-        kind: "cells",
-        cells: {
-          sl: String(index + 1),
-          date: day(txn?.Disb_Date),
-          product: txn?.Product_Name || "",
-          bank: txn?.Bank_Name || "",
-          acc: txn?.Account_No || "",
-          disburse: money(txn?.Disburse),
-          prn: money(txn?.Prn_Refund),
-          intt: money(txn?.Intt_Refund),
-          outs: money(txn?.Outs_Bal),
-          prov: money(txn?.Provision_Intt),
-          due: day(txn?.Due_Date),
-        },
+        values: [
+          String(index + 1),
+          showDate(txn?.Disb_Date),
+          txn?.Product_Name || "",
+          txn?.Bank_Name || "",
+          txn?.Account_No || "",
+          money(txn?.Disburse),
+          money(txn?.Prn_Refund),
+          money(txn?.Intt_Refund),
+          money(txn?.Outs_Bal),
+          money(txn?.Provision_Intt),
+          showDate(txn?.Due_Date),
+        ],
       });
     });
+    
     rows.push({
-      kind: "total",
-      label: label(t, "borrowings.subTotal", "Sub Total"),
-      disburse: money(group?.subtotalDisburse),
-      prn: money(group?.subtotalPrnRefund),
-      intt: money(group?.subtotalInttRefund),
-      outs: money(group?.subtotalOutsBal),
+      values: [
+        label(t, "borrowings.subTotal", "Sub Total"),
+        money(group?.subtotalDisburse),
+        money(group?.subtotalPrnRefund),
+        money(group?.subtotalInttRefund),
+        money(group?.subtotalOutsBal),
+        "",
+        "",
+      ],
+      spans: [5, 1, 1, 1, 1, 1, 1],
+      bold: true,
+      aligns: ["right", "right", "right", "right", "right", "right", "right"],
     });
   });
 
   const grand = groups.find((group) => group?.isGrandTotal);
   if (grand) {
     rows.push({
-      kind: "total",
-      label: label(t, "borrowings.grandTotal", "Grand Total"),
-      disburse: money(grand.grandTotalDisburse),
-      prn: money(grand.grandTotalPrnRefund),
-      intt: money(grand.grandTotalInttRefund),
-      outs: money(grand.grandTotalOutsBal),
+      values: [
+        label(t, "borrowings.grandTotal", "Grand Total"),
+        money(grand.grandTotalDisburse),
+        money(grand.grandTotalPrnRefund),
+        money(grand.grandTotalInttRefund),
+        money(grand.grandTotalOutsBal),
+        "",
+        "",
+      ],
+      spans: [5, 1, 1, 1, 1, 1, 1],
+      bold: true,
+      aligns: ["right", "right", "right", "right", "right", "right", "right"],
     });
   }
   return rows;
-};
-
-const drawPageChrome = (doc, meta) => {
-  const pageW = doc.internal.pageSize.getWidth();
-  let y = 8;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.text(String(meta.orgName || ""), pageW / 2, y, { align: "center" });
-  y += 4;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.5);
-  [meta.branchName, meta.address, meta.regNo].filter(Boolean).forEach((line) => {
-    doc.text(String(line), pageW / 2, y, { align: "center" });
-    y += 3.4;
-  });
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.text(meta.title, pageW / 2, y, { align: "center" });
-  return y + 4;
-};
-
-const drawFooter = (doc, meta) => {
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-  const y = pageH - 5;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(7);
-  doc.setTextColor(40);
-  doc.text(`${meta.generatedBy} ${meta.userName || ""}`, 6, y);
-  doc.setTextColor(90);
-  doc.text(meta.generatedNote, pageW / 2, y, { align: "center" });
-  doc.setTextColor(40);
-  doc.text(`${meta.generatedOn} ${meta.stamp}`, pageW - 6, y, { align: "right" });
-  doc.setTextColor(0);
 };
 
 export const downloadBorrowingsReportPdf = async ({
@@ -141,137 +96,33 @@ export const downloadBorrowingsReportPdf = async ({
   t,
   onProgress,
 }) => {
-  const doc = new jsPDF({
-    orientation: "landscape",
-    unit: "mm",
-    format: "a4",
-    compress: true,
-  });
-
-  const range = `${day(fromDate)} ${label(t, "borrowings.to", "To")} ${day(toDate)}`;
-  const meta = {
-    orgName: getCookieData("userOrgName") || "",
-    branchName: getCookieData("userBranchName") || "",
-    address: getCookieData("userOrgAddress") || "",
-    regNo: getCookieData("userOrgRegistration") || "",
-    userName: getCookieData("userName") || "",
-    stamp: format(new Date(), "dd-MM-yyyy hh:mm:ss a"),
-    title: `${label(t, "borrowings.detailedListFrom", "Borrowings Detailed List From")} ${range}`,
-    generatedBy: label(t, "borrowings.generatedBy", "Generated By :"),
-    generatedOn: label(t, "borrowings.generatedOn", "Generated On :"),
-    generatedNote: label(
-      t,
-      "borrowings.reportGeneratedByPrioSuite",
-      "This report is generated by PrioSuite.",
-    ),
-  };
-
+  const doc = openPdf("landscape");
+  
+  const fromStr = fromDate ? showDate(fromDate) : "";
+  const toStr = toDate ? showDate(toDate) : "";
+  const range = `${fromStr} ${label(t, "borrowings.to", "To")} ${toStr}`;
+  const title = `${label(t, "borrowings.detailedListFrom", "Borrowings Detailed List From")} ${range}`;
+  
+  const meta = orgMeta(title, t);
   const columns = columnsFor(t);
+  const rows = showData === "113" ? flattenGroups(tableData, t) : [];
+  
   const usable = columns.reduce((sum, col) => sum + col.w, 0);
   const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
   const startX = Math.max(6, (pageW - usable) / 2);
-  const rowH = 5.2;
-  const headH = 7;
-  const rows = showData === "113" ? flattenGroups(tableData, t) : [];
 
-  const drawHead = (y) => {
-    let x = startX;
-    doc.setFillColor(243, 244, 246);
-    doc.rect(startX, y, usable, headH, "F");
-    doc.setDrawColor(0);
-    doc.rect(startX, y, usable, headH);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(6);
-    columns.forEach((col) => {
-      doc.line(x, y, x, y + headH);
-      const text = clipText(doc, col.title, col.w - 1.2);
-      const textX =
-        col.align === "right"
-          ? x + col.w - 0.7
-          : col.align === "center"
-            ? x + col.w / 2
-            : x + 0.7;
-      doc.text(text, textX, y + 4.4, {
-        align: col.align === "left" ? "left" : col.align,
-      });
-      x += col.w;
-    });
-    doc.line(startX + usable, y, startX + usable, y + headH);
-    return y + headH;
-  };
-
-  let y = drawPageChrome(doc, meta);
-  y = drawHead(y);
-  drawFooter(doc, meta);
-
-  const newPage = () => {
-    doc.addPage();
-    y = drawPageChrome(doc, meta);
-    y = drawHead(y);
-    drawFooter(doc, meta);
-  };
-
-  const ensureSpace = (height) => {
-    if (y + height > pageH - 10) newPage();
-  };
-
-  const paintCells = (values, bold = false) => {
-    ensureSpace(rowH);
-    let x = startX;
-    doc.setFont("helvetica", bold ? "bold" : "normal");
-    doc.setFontSize(6.2);
-    doc.rect(startX, y, usable, rowH);
-    columns.forEach((col, index) => {
-      doc.line(x, y, x, y + rowH);
-      const text = clipText(doc, values[index] ?? "", col.w - 1.1);
-      const textX =
-        col.align === "right"
-          ? x + col.w - 0.6
-          : col.align === "center"
-            ? x + col.w / 2
-            : x + 0.6;
-      doc.text(text, textX, y + 3.5, {
-        align: col.align === "left" ? "left" : col.align,
-      });
-      x += col.w;
-    });
-    doc.line(startX + usable, y, startX + usable, y + rowH);
-    y += rowH;
-  };
-
-  for (let i = 0; i < rows.length; i += 1) {
-    const row = rows[i];
-
-    if (row.kind === "banner") {
-      ensureSpace(rowH);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(7);
-      doc.rect(startX, y, usable, rowH);
-      const text = clipText(doc, row.text || "", usable - 4);
-      doc.text(text, startX + usable / 2, y + 3.5, { align: "center" });
-      y += rowH;
-    } else if (row.kind === "total") {
-      paintCells(
-        columns.map((col) => {
-          if (col.key === "product") return row.label;
-          if (col.key === "disburse") return row.disburse;
-          if (col.key === "prn") return row.prn;
-          if (col.key === "intt") return row.intt;
-          if (col.key === "outs") return row.outs;
-          return "";
-        }),
-        true,
-      );
-    } else {
-      paintCells(columns.map((col) => row.cells?.[col.key] ?? ""));
-    }
-
-    if (i > 0 && i % 250 === 0) {
-      onProgress?.(i + 1, rows.length);
-      await yieldUi();
-    }
-  }
+  await fillTable(doc, {
+    meta,
+    columns,
+    rows,
+    startX,
+    rowH: 10.6,
+    fontSize: 8,
+    lineH: 3.6,
+    padTop: 6.4,
+    drawHead: (pdf, y, x) => drawColumnHead(pdf, y, x, columns, 16, 8),
+    onProgress,
+  });
 
   doc.save(`${docTitle}.pdf`);
 };

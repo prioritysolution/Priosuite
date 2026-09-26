@@ -12,7 +12,7 @@ import {
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
 
-const PAGE_ROWS = 12;
+const PAGE_ROWS = 15;
 
 const chunkPagesWithFooterLogic = (rows) => {
   const pages = [];
@@ -108,7 +108,8 @@ const DetailedListPreview = ({
             <p>{regNo}</p>
             <p className="text-sm">
               {t("membership.reports.preview.detailedListFrom")}{" "}
-              {fromDate && format(fromDate, "dd-MM-yyyy")} {t("membership.reports.preview.to")}{" "}
+              {fromDate && format(fromDate, "dd-MM-yyyy")}{" "}
+              {t("membership.reports.preview.to")}{" "}
               {toDate && format(toDate, "dd-MM-yyyy")}
             </p>
           </div>
@@ -118,25 +119,49 @@ const DetailedListPreview = ({
             <Table className="w-full border-collapse border border-black text-[11px]">
               {/* Main Header Every Page */}
               <TableHeader>
-                <TableRow className="h-[40px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("membership.reports.print.slNo")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("membership.reports.print.date")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[60px]">{t("membership.reports.print.memberType")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[130px]">{t("membership.reports.print.customerName")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[130px]">{t("membership.reports.print.guardianName")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">{t("membership.reports.print.village")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center ">{t("membership.reports.print.lfNo")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.opening")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.issue")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.release")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.closing")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.divBal")}</TableHead>
+                <TableRow className="!h-[40px] border-black">
+                  <TableHead className="text-black p-0 border-black text-center w-[40px]">
+                    {t("membership.reports.print.slNo")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
+                    {t("membership.reports.print.date")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[60px]">
+                    {t("membership.reports.print.memberType")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[130px]">
+                    {t("membership.reports.print.customerName")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[130px]">
+                    {t("membership.reports.print.guardianName")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
+                    {t("membership.reports.print.village")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center ">
+                    {t("membership.reports.print.lfNo")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                    {t("membership.reports.print.opening")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                    {t("membership.reports.print.issue")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                    {t("membership.reports.print.release")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                    {t("membership.reports.print.closing")}
+                  </TableHead>
+                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
+                    {t("membership.reports.print.divBal")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
                 {pageRows.map((row, index) => (
-                  <TableRow key={index} className="bg-white h-[50px]">
+                  <TableRow key={index} className="bg-white !h-[40px]">
                     <TableCell className="border border-black p-0 text-center">
                       {globalSerialNo++}
                     </TableCell>
@@ -180,11 +205,13 @@ const DetailedListPreview = ({
               {/* Only show total on last page */}
               {pageIndex === pages.length - 1 && (
                 <TableFooter>
-                  <TableRow className="bg-white h-[50px]">
+                  <TableRow className="bg-white !h-[40px]">
                     <TableCell
                       colSpan={7}
                       className="border border-black p-0 text-center"
-                    >{t("common.total")}</TableCell>
+                    >
+                      {t("common.total")}
+                    </TableCell>
                     <TableCell className="border border-black p-0 pr-[2px] text-right">
                       {totalOpening?.toFixed(2)}
                     </TableCell>
@@ -207,13 +234,16 @@ const DetailedListPreview = ({
           </div>
 
           {/* Footer */}
-          <div className="w-full h-[40px] mt-2 flex items-end justify-between text-xs relative">
-            <p className="text-nowrap">{t("membership.reports.preview.generatedBy")} {userName}</p>
+          <div className="w-full !h-[40px] mt-2 flex items-end justify-between text-xs relative">
+            <p className="text-nowrap">
+              {t("membership.reports.preview.generatedBy")} {userName}
+            </p>
             <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">
               {t("membership.reports.preview.footerNote")}
             </p>
             <p className="text-nowrap">
-              {t("membership.reports.preview.generatedOn")} {currentDate} {currentTime}
+              {t("membership.reports.preview.generatedOn")} {currentDate}{" "}
+              {currentTime}
             </p>
           </div>
         </div>
