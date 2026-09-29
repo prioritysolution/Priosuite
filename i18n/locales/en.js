@@ -1,5 +1,8 @@
 const en = {
   translation: {
+    navbar: {
+      searchPages: "Search pages...",
+    },
     opening: {
       membershipOpening: {
         title: "Membership Opening",

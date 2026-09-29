@@ -79,7 +79,7 @@ const LoanReport = ({
     (state) => state?.loanReport?.loanProductList,
   );
 
-  console.log("productTypeData= ", productTypeData);
+  // console.log("productTypeData= ", productTypeData);
 
   const reportTypeData = useSelector(
     (state) => state?.memberReport?.reportTypeData,
@@ -195,7 +195,9 @@ const LoanReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-lg sm:text-xl font-semibold">{tEn("loan.loanReport")}</h3>
+                <h3 className="text-lg sm:text-xl font-semibold">
+                  {tEn("loan.loanReport")}
+                </h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
                   className="text-primary text-xl cursor-pointer"
@@ -215,18 +217,13 @@ const LoanReport = ({
                   control={form.control}
                   name="fromDate"
                   label={t("loan.fromDate")}
-                  // startYear={2000}
-                  // endYear={2050}
                   isManualInput={true}
-
                 />
 
                 <DatePickerField
                   control={form.control}
                   name="toDate"
                   label={t("loan.toDate")}
-                  // startYear={2000}
-                  // endYear={2050}
                   isManualInput={true}
                 />
 
@@ -288,9 +285,7 @@ const LoanReport = ({
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
                         "cursor-not-allowed bg-gray-400 ":
-                          loading ||
-                          pdfLoading ||
-                          !(tableData?.length > 0),
+                          loading || pdfLoading || !(tableData?.length > 0),
                       },
                     )}
                   >
@@ -314,9 +309,7 @@ const LoanReport = ({
                       "w-fit px-3 h-10 text-xl text-center text-white bg-primary rounded-md cursor-pointer flex items-center justify-center",
                       {
                         "cursor-not-allowed bg-gray-400 ":
-                          loading ||
-                          pdfLoading ||
-                          !(tableData?.length > 0),
+                          loading || pdfLoading || !(tableData?.length > 0),
                       },
                     )}
                   >

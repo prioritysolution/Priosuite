@@ -1,5 +1,8 @@
 const bn = {
   translation: {
+    navbar: {
+      searchPages: "পৃষ্ঠাগুলি খুঁজুন...",
+    },
     opening: {
       membershipOpening: {
         title: "সদস্যপদ খোলা",

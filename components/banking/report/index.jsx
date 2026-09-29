@@ -147,16 +147,14 @@ const BankingReport = ({
                   control={form.control}
                   name="fromDate"
                   label={t("bank.fromDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  isManualInput={true}
                 />
 
                 <DatePickerField
                   control={form.control}
                   name="toDate"
                   label={t("bank.toDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  isManualInput={true}
                 />
 
                 <FormField

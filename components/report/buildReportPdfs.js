@@ -17,16 +17,41 @@ import {
 
 const save = (doc, name) => doc.save(`${name}.pdf`);
 
-const simpleHead = (columns) => (doc, y, x) => drawColumnHead(doc, y, x, columns);
+const simpleHead = (columns) => (doc, y, x) =>
+  drawColumnHead(doc, y, x, columns);
 
 const ledgerColumns = (t, prefix) => [
-  { title: label(t, `${prefix}.print.slNo`, "SL. NO."), w: 12, align: "center" },
-  { title: label(t, `${prefix}.print.transDate`, "TRANS. DATE"), w: 24, align: "center" },
-  { title: label(t, `${prefix}.print.voucherNo`, "VOUCHER NO."), w: 22, align: "center" },
-  { title: label(t, `${prefix}.print.narration`, "NARRATION"), w: 62, align: "left" },
+  {
+    title: label(t, `${prefix}.print.slNo`, "SL. NO."),
+    w: 12,
+    align: "center",
+  },
+  {
+    title: label(t, `${prefix}.print.transDate`, "TRANS. DATE"),
+    w: 24,
+    align: "center",
+  },
+  {
+    title: label(t, `${prefix}.print.voucherNo`, "VOUCHER NO."),
+    w: 22,
+    align: "center",
+  },
+  {
+    title: label(t, `${prefix}.print.narration`, "NARRATION"),
+    w: 62,
+    align: "left",
+  },
   { title: label(t, `${prefix}.print.debit`, "DEBIT"), w: 26, align: "right" },
-  { title: label(t, `${prefix}.print.credit`, "CREDIT"), w: 26, align: "right" },
-  { title: label(t, `${prefix}.print.balance`, "BALANCE"), w: 26, align: "right" },
+  {
+    title: label(t, `${prefix}.print.credit`, "CREDIT"),
+    w: 26,
+    align: "right",
+  },
+  {
+    title: label(t, `${prefix}.print.balance`, "BALANCE"),
+    w: 26,
+    align: "right",
+  },
 ];
 
 const ledgerRows = (rows, narrationKey, typeKey) =>
@@ -54,26 +79,65 @@ export const downloadAccountLedgerPdf = async ({
 }) => {
   const doc = openPdf("portrait");
   const columns = [
-    { title: label(t, "report.accountLedger.print.slNo", "SL. NO."), w: 14, align: "center" },
-    { title: label(t, "report.accountLedger.print.transDate", "TRANS. DATE"), w: 26, align: "center" },
-    { title: label(t, "report.accountLedger.print.voucherNo", "VOUCHER NO."), w: 26, align: "center" },
-    { title: label(t, "report.accountLedger.print.narration", "NARRATION"), w: 50, align: "center", wrap: true },
-    { title: label(t, "report.accountLedger.print.debit", "DEBIT"), w: 26, align: "right" },
-    { title: label(t, "report.accountLedger.print.credit", "CREDIT"), w: 26, align: "right" },
-    { title: label(t, "report.accountLedger.print.balance", "BALANCE"), w: 30, align: "right" },
+    {
+      title: label(t, "report.accountLedger.print.slNo", "SL. NO."),
+      w: 14,
+      align: "center",
+    },
+    {
+      title: label(t, "report.accountLedger.print.transDate", "TRANS. DATE"),
+      w: 26,
+      align: "center",
+    },
+    {
+      title: label(t, "report.accountLedger.print.voucherNo", "VOUCHER NO."),
+      w: 26,
+      align: "center",
+    },
+    {
+      title: label(t, "report.accountLedger.print.narration", "NARRATION"),
+      w: 50,
+      align: "center",
+      wrap: true,
+    },
+    {
+      title: label(t, "report.accountLedger.print.debit", "DEBIT"),
+      w: 26,
+      align: "right",
+    },
+    {
+      title: label(t, "report.accountLedger.print.credit", "CREDIT"),
+      w: 26,
+      align: "right",
+    },
+    {
+      title: label(t, "report.accountLedger.print.balance", "BALANCE"),
+      w: 30,
+      align: "right",
+    },
   ];
   const title = [
     ledgerName,
-    label(t, "report.accountLedger.ledgerFromTo", `Ledger From ${fromDate || ""} To ${toDate || ""}`, {
-      fromDate,
-      toDate,
-    }),
+    label(
+      t,
+      "report.accountLedger.ledgerFromTo",
+      `Ledger From ${fromDate || ""} To ${toDate || ""}`,
+      {
+        fromDate,
+        toDate,
+      },
+    ),
   ]
     .filter(Boolean)
     .join("\n");
   const body = ledgerRows(rows, "Particular", "Balance_Type");
   body.push({
-    values: [label(t, "common.total", "Total"), money(totalDebit), money(totalCredit), ""],
+    values: [
+      label(t, "common.total", "Total"),
+      money(totalDebit),
+      money(totalCredit),
+      "",
+    ],
     spans: [4, 1, 1, 1],
     bold: true,
   });
@@ -81,16 +145,16 @@ export const downloadAccountLedgerPdf = async ({
   ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
     meta[key] = String(meta[key] || "").toUpperCase();
   });
-  const headH = 16;
+  const headH = 12;
   await fillTable(doc, {
     meta,
     columns,
     rows: body,
     startX: 6,
-    rowH: 10.6,
+    rowH: 7.6,
     fontSize: 8,
     lineH: 3.6,
-    padTop: 6.4,
+    padTop: 4.4,
     drawHead: (pdf, y, x) => drawColumnHead(pdf, y, x, columns, headH, 8),
     onProgress,
   });
@@ -111,10 +175,15 @@ export const downloadSubLedgerPdf = async ({
   const columns = ledgerColumns(t, "report.subLedger");
   const title = [
     ledgerName,
-    label(t, "report.subLedger.subLedgerFromTo", `Sub Ledger From ${fromDate || ""} To ${toDate || ""}`, {
-      fromDate,
-      toDate,
-    }),
+    label(
+      t,
+      "report.subLedger.subLedgerFromTo",
+      `Sub Ledger From ${fromDate || ""} To ${toDate || ""}`,
+      {
+        fromDate,
+        toDate,
+      },
+    ),
   ]
     .filter(Boolean)
     .join("\n");
@@ -154,12 +223,41 @@ export const downloadBalancingPdf = async ({
 }) => {
   const doc = openPdf("portrait");
   const columns = [
-    { title: label(t, "report.balancing.print.slNo", "SL. NO."), w: 14, align: "center" },
-    { title: label(t, "report.balancing.print.productName", "PRODUCT NAME"), w: 24, align: "center", wrap: true },
-    { title: label(t, "report.balancing.print.glHead", "GL HEAD"), w: 50, align: "center", wrap: true },
-    { title: label(t, "report.balancing.print.glBalance", "GL BALANCE"), w: 28, align: "center", wrap: true },
-    { title: label(t, "report.balancing.print.subLedger", "SUB-LEDGER"), w: 30, align: "center", wrap: true },
-    { title: label(t, "report.balancing.print.difference", "DIFFERENCE"), w: 52, align: "center", wrap: true },
+    {
+      title: label(t, "report.balancing.print.slNo", "SL. NO."),
+      w: 14,
+      align: "center",
+    },
+    {
+      title: label(t, "report.balancing.print.productName", "PRODUCT NAME"),
+      w: 24,
+      align: "left",
+      wrap: true,
+    },
+    {
+      title: label(t, "report.balancing.print.glHead", "GL HEAD"),
+      w: 50,
+      align: "left",
+      wrap: true,
+    },
+    {
+      title: label(t, "report.balancing.print.glBalance", "GL BALANCE"),
+      w: 28,
+      align: "right",
+      wrap: true,
+    },
+    {
+      title: label(t, "report.balancing.print.subLedger", "SUB-LEDGER"),
+      w: 30,
+      align: "right",
+      wrap: true,
+    },
+    {
+      title: label(t, "report.balancing.print.difference", "DIFFERENCE"),
+      w: 52,
+      align: "left",
+      wrap: true,
+    },
   ];
   const groups = [
     ["SHARE", shareList],
@@ -188,15 +286,20 @@ export const downloadBalancingPdf = async ({
     });
   });
   const meta = orgMeta(
-    label(t, "report.balancing.glBalancingAsOn", `GL Balancing As On ${asOnDate || ""}`, {
-      date: asOnDate,
-    }),
+    label(
+      t,
+      "report.balancing.glBalancingAsOn",
+      `GL Balancing As On ${asOnDate || ""}`,
+      {
+        date: asOnDate,
+      },
+    ),
     t,
   );
   ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
     meta[key] = String(meta[key] || "").toUpperCase();
   });
-  const headH = 16;
+  const headH = 12;
   const drawHead = (pdf, y, x) => {
     const width = columns.reduce((sum, col) => sum + col.w, 0);
     pdf.setFillColor(243, 244, 246);
@@ -228,25 +331,55 @@ export const downloadBalancingPdf = async ({
     columns,
     rows,
     startX: 6,
-    rowH: 10.6,
+    rowH: 7.6,
     fontSize: 8,
     lineH: 3.6,
-    padTop: 6.4,
+    padTop: 4.4,
     drawHead,
     onProgress,
   });
   save(doc, `GLBalancing-${asOnDate || "report"}`);
 };
 
-export const downloadUserScrollPdf = async ({ reportData, asOnDate, t, onProgress }) => {
+export const downloadUserScrollPdf = async ({
+  reportData,
+  asOnDate,
+  t,
+  onProgress,
+}) => {
   const doc = openPdf("portrait");
   const columns = [
-    { title: label(t, "report.userScroll.print.slNo", "SL. NO."), w: 14, align: "center" },
-    { title: label(t, "report.userScroll.print.refVoucher", "REF. VOUCH."), w: 28, align: "center" },
-    { title: label(t, "report.userScroll.print.voucherNo", "VOUCH. NO."), w: 28, align: "center" },
-    { title: label(t, "report.userScroll.print.particulars", "PARTICULARS"), w: 58, align: "center", wrap: true },
-    { title: label(t, "report.userScroll.print.receipt", "RECEIPT"), w: 35, align: "right" },
-    { title: label(t, "report.userScroll.print.payment", "PAYMENT"), w: 35, align: "right" },
+    {
+      title: label(t, "report.userScroll.print.slNo", "SL. NO."),
+      w: 14,
+      align: "center",
+    },
+    {
+      title: label(t, "report.userScroll.print.refVoucher", "REF. VOUCH."),
+      w: 28,
+      align: "center",
+    },
+    {
+      title: label(t, "report.userScroll.print.voucherNo", "VOUCH. NO."),
+      w: 28,
+      align: "center",
+    },
+    {
+      title: label(t, "report.userScroll.print.particulars", "PARTICULARS"),
+      w: 58,
+      align: "center",
+      wrap: true,
+    },
+    {
+      title: label(t, "report.userScroll.print.receipt", "RECEIPT"),
+      w: 35,
+      align: "right",
+    },
+    {
+      title: label(t, "report.userScroll.print.payment", "PAYMENT"),
+      w: 35,
+      align: "right",
+    },
   ];
   const rows = [];
   let grandReceive = 0;
@@ -275,7 +408,11 @@ export const downloadUserScrollPdf = async ({ reportData, asOnDate, t, onProgres
       grandReceive += subReceive;
       grandPayment += subPayment;
       rows.push({
-        values: [label(t, "common.total", "Total"), money(subReceive), money(subPayment)],
+        values: [
+          label(t, "common.total", "Total"),
+          money(subReceive),
+          money(subPayment),
+        ],
         spans: [4, 1, 1],
         aligns: ["left", "right", "right"],
         bold: true,
@@ -283,21 +420,30 @@ export const downloadUserScrollPdf = async ({ reportData, asOnDate, t, onProgres
     }
   });
   rows.push({
-    values: [label(t, "common.grandTotal", "Grand Total"), money(grandReceive), money(grandPayment)],
+    values: [
+      label(t, "common.grandTotal", "Grand Total"),
+      money(grandReceive),
+      money(grandPayment),
+    ],
     spans: [4, 1, 1],
     aligns: ["center", "right", "right"],
     bold: true,
   });
   const meta = orgMeta(
-    label(t, "report.userScroll.asOnDate", `User Scroll As On ${asOnDate || ""}`, {
-      date: asOnDate,
-    }),
+    label(
+      t,
+      "report.userScroll.asOnDate",
+      `User Scroll As On ${asOnDate || ""}`,
+      {
+        date: asOnDate,
+      },
+    ),
     t,
   );
   ["orgName", "branchName", "address", "regNo", "title"].forEach((key) => {
     meta[key] = String(meta[key] || "").toUpperCase();
   });
-  const headH = 16;
+  const headH = 12;
   const drawHead = (pdf, y, x) => {
     const width = columns.reduce((sum, col) => sum + col.w, 0);
     pdf.setFillColor(243, 244, 246);
@@ -329,10 +475,10 @@ export const downloadUserScrollPdf = async ({ reportData, asOnDate, t, onProgres
     columns,
     rows,
     startX: 6,
-    rowH: 10.6,
+    rowH: 7.6,
     fontSize: 8,
     lineH: 3.6,
-    padTop: 6.4,
+    padTop: 4.4,
     drawHead,
     onProgress,
   });
@@ -366,10 +512,11 @@ const flattenSheetSide = (grouped, grandAmount, t) => {
       });
   });
   rows.push(
-    sheetSpanRow(label(t, "common.grandTotal", "Grand Total"), money(grandAmount), [
-      "center",
-      "center",
-    ]),
+    sheetSpanRow(
+      label(t, "common.grandTotal", "Grand Total"),
+      money(grandAmount),
+      ["center", "center"],
+    ),
   );
   return rows;
 };
@@ -389,7 +536,7 @@ export const downloadBalanceSheetPdf = async ({
   ];
   const leftTitle = label(t, "report.balanceSheet.liabilities", "Liabilities");
   const rightTitle = label(t, "report.balanceSheet.assets", "Assets");
-  const headH = 10.6;
+  const headH = 7.6;
   const drawHead = (pdf, y, leftX, rightX) => {
     const headColumns = (title) => [
       { ...columns[0], title, align: "center", wrap: false },
@@ -428,10 +575,10 @@ export const downloadBalanceSheetPdf = async ({
     rightRows,
     startX: 6.5,
     headH,
-    rowH: 10.6,
+    rowH: 7.6,
     fontSize: 8,
     lineH: 3.6,
-    padTop: 6.4,
+    padTop: 4.4,
     drawHead,
     onProgress,
   });
@@ -454,7 +601,9 @@ export const downloadBalanceSheetPdf = async ({
   }
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
-  doc.text(certificateTitle, placed.startX + placed.width / 2, y, { align: "center" });
+  doc.text(certificateTitle, placed.startX + placed.width / 2, y, {
+    align: "center",
+  });
   y += 5;
   doc.setFont("helvetica", "normal");
   doc.text(lines, placed.startX + 2, y);
@@ -469,7 +618,9 @@ const profitSpanRow = (text, amount) => ({
 const flattenProfitSide = (grouped, netRow, subTotal, t) => {
   const rows = [];
   (grouped || []).forEach((group) => {
-    rows.push(profitSpanRow(group?.headName ?? "", money(group?.subtotalAmount)));
+    rows.push(
+      profitSpanRow(group?.headName ?? "", money(group?.subtotalAmount)),
+    );
     (group?.transactions || []).forEach((txn) => {
       rows.push({
         values: [
@@ -484,7 +635,10 @@ const flattenProfitSide = (grouped, netRow, subTotal, t) => {
   const netAmount = parseFloat(netRow?.Amount || 0);
   return {
     rows,
-    subTotal: profitSpanRow(label(t, "common.subTotal", "Sub Total"), money(sub)),
+    subTotal: profitSpanRow(
+      label(t, "common.subTotal", "Sub Total"),
+      money(sub),
+    ),
     net: netRow
       ? profitSpanRow(netRow?.Head_Name ?? "", money(netAmount))
       : null,
@@ -527,7 +681,7 @@ export const downloadProfitLossPdf = async ({
   const leftTitle = label(t, "report.profitLoss.expenditure", "EXPENDITURE");
   const rightTitle = label(t, "report.profitLoss.income", "INCOME");
   const fromLabel = showDate(fromDate);
-  const headH = 9;
+  const headH = 7;
   const drawHead = (pdf, y, leftX, rightX) => {
     const headColumns = (title) => [
       { ...columns[0], title, align: "center", wrap: false },
@@ -572,10 +726,10 @@ export const downloadProfitLossPdf = async ({
     rightRows,
     startX: 6,
     headH,
-    rowH: 9.2,
+    rowH: 7.2,
     fontSize: 8,
     lineH: 3.6,
-    padTop: 4.2,
+    padTop: 3.2,
     drawHead,
     onProgress,
   });
@@ -586,7 +740,10 @@ const flattenAppropriation = (list) => {
   const rows = [];
   (list || []).forEach((item) => {
     if (item?.Heading_Name) {
-      rows.push({ values: [item.Heading_Name, money(item?.Amount)], bold: true });
+      rows.push({
+        values: [item.Heading_Name, money(item?.Amount)],
+        bold: true,
+      });
     }
     if (item?.Ledger_Name) {
       rows.push({ values: [item.Ledger_Name, money(item?.Amount)] });
@@ -609,9 +766,13 @@ export const downloadPlAppropriationPdf = async ({
     { title: "", w: 67, align: "left", wrap: true },
     { title: label(t, "common.amount", "Amount"), w: 32, align: "right" },
   ];
-  const leftTitle = label(t, "report.plAppropiation.expenditure", "EXPENDITURE");
+  const leftTitle = label(
+    t,
+    "report.plAppropiation.expenditure",
+    "EXPENDITURE",
+  );
   const rightTitle = label(t, "report.plAppropiation.income", "INCOME");
-  const headH = 10.6;
+  const headH = 7.6;
   const drawHead = (pdf, y, leftX, rightX) => {
     const headColumns = (title) => [
       { ...columns[0], title, align: "center", wrap: false },
@@ -644,10 +805,10 @@ export const downloadPlAppropriationPdf = async ({
     rightRows,
     startX: 6,
     headH,
-    rowH: 10.6,
+    rowH: 7.6,
     fontSize: 8,
     lineH: 3.6,
-    padTop: 6.4,
+    padTop: 5.4,
     drawHead,
     onProgress,
   });
@@ -656,9 +817,18 @@ export const downloadPlAppropriationPdf = async ({
 
 const moneyPairColumns = (t, prefix) => [
   { title: label(t, `${prefix}.print.vNo`, "V. NO."), w: 16, align: "center" },
-  { title: label(t, `${prefix}.print.particulars`, "PARTICULARS"), w: 52, align: "left", wrap: true },
+  {
+    title: label(t, `${prefix}.print.particulars`, "PARTICULARS"),
+    w: 52,
+    align: "left",
+    wrap: true,
+  },
   { title: label(t, `${prefix}.print.cash`, "CASH"), w: 24.5, align: "right" },
-  { title: label(t, `${prefix}.print.transfer`, "TRANSFER"), w: 24.5, align: "right" },
+  {
+    title: label(t, `${prefix}.print.transfer`, "TRANSFER"),
+    w: 24.5,
+    align: "right",
+  },
   { title: label(t, `${prefix}.print.total`, "TOTAL"), w: 25, align: "right" },
 ];
 
@@ -695,8 +865,16 @@ export const downloadCashAccountPdf = async ({
 }) => {
   const doc = openPdf("landscape");
   const columns = moneyPairColumns(t, "report.cashAccount");
-  const receiptsTitle = label(t, "report.cashAccount.print.receipts", "RECEIPTS");
-  const paymentsTitle = label(t, "report.cashAccount.print.payments", "PAYMENTS");
+  const receiptsTitle = label(
+    t,
+    "report.cashAccount.print.receipts",
+    "RECEIPTS",
+  );
+  const paymentsTitle = label(
+    t,
+    "report.cashAccount.print.payments",
+    "PAYMENTS",
+  );
   const drawHead = (pdf, y, leftX, rightX, width) => {
     const headH = 16;
     const subH = 8;
@@ -719,19 +897,38 @@ export const downloadCashAccountPdf = async ({
         pdf.line(split, y + subH, split, y + headH);
         split += col.w;
       });
-      pdf.text(clipText(pdf, columns[0].title, columns[0].w - 1), x + columns[0].w / 2, y + 9.5, {
-        align: "center",
-      });
-      pdf.text(clipText(pdf, columns[1].title, columns[1].w - 1), x + columns[0].w + 0.7, y + 9.5);
-      pdf.text(title, moneyX + (width - columns[0].w - columns[1].w) / 2, y + 5.5, {
-        align: "center",
-      });
+      pdf.text(
+        clipText(pdf, columns[0].title, columns[0].w - 1),
+        x + columns[0].w / 2,
+        y + 9.5,
+        {
+          align: "center",
+        },
+      );
+      pdf.text(
+        clipText(pdf, columns[1].title, columns[1].w - 1),
+        x + columns[0].w + 0.7,
+        y + 9.5,
+      );
+      pdf.text(
+        title,
+        moneyX + (width - columns[0].w - columns[1].w) / 2,
+        y + 5.5,
+        {
+          align: "center",
+        },
+      );
       const subs = [columns[2].title, columns[3].title, columns[4].title];
       let subX = moneyX;
       columns.slice(2).forEach((col, index) => {
-        pdf.text(clipText(pdf, subs[index], col.w - 1), subX + col.w - 0.6, y + subH + 5.5, {
-          align: "right",
-        });
+        pdf.text(
+          clipText(pdf, subs[index], col.w - 1),
+          subX + col.w - 0.6,
+          y + subH + 5.5,
+          {
+            align: "right",
+          },
+        );
         subX += col.w;
       });
     });
@@ -753,7 +950,13 @@ export const downloadCashAccountPdf = async ({
       bold: true,
     },
     {
-      values: ["", label(t, "common.openingBalance", "Opening Balance"), money(opening), "", ""],
+      values: [
+        "",
+        label(t, "common.openingBalance", "Opening Balance"),
+        money(opening),
+        "",
+        "",
+      ],
       bold: true,
     },
     {
@@ -779,7 +982,13 @@ export const downloadCashAccountPdf = async ({
       bold: true,
     },
     {
-      values: ["", label(t, "common.closingBalance", "Closing Balance"), money(closing), "", ""],
+      values: [
+        "",
+        label(t, "common.closingBalance", "Closing Balance"),
+        money(closing),
+        "",
+        "",
+      ],
       bold: true,
     },
     {
@@ -814,9 +1023,14 @@ export const downloadCashAccountPdf = async ({
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.rect(placed.startX, placed.y, placed.width, 8.2);
-  doc.text(clipText(doc, closingWords(closing, t), placed.width - 3), placed.startX + placed.width - 1.2, placed.y + 5.5, {
-    align: "right",
-  });
+  doc.text(
+    clipText(doc, closingWords(closing, t), placed.width - 3),
+    placed.startX + placed.width - 1.2,
+    placed.y + 5.5,
+    {
+      align: "right",
+    },
+  );
   drawDenomPage(doc, meta, denomData, t);
   save(doc, `CashAccount-${fromDate || ""}-${toDate || ""}`);
 };
@@ -834,11 +1048,33 @@ export const downloadCashbookPdf = async ({
 }) => {
   const doc = openPdf("landscape");
   const columns = [
-    { title: label(t, "report.cashbook.print.sl", "SL."), w: 12, align: "center" },
-    { title: label(t, "report.cashbook.print.vouchNo", "VOUCH NO."), w: 24, align: "center" },
-    { title: label(t, "report.cashbook.print.ledgerName", "LEDGER"), w: 36, align: "left", wrap: true },
-    { title: label(t, "report.cashbook.print.particulars", "PARTICULARS"), w: 42, align: "left", wrap: true },
-    { title: label(t, "report.cashbook.print.amount", "AMOUNT"), w: 28, align: "right" },
+    {
+      title: label(t, "report.cashbook.print.sl", "SL."),
+      w: 12,
+      align: "center",
+    },
+    {
+      title: label(t, "report.cashbook.print.vouchNo", "VOUCH NO."),
+      w: 24,
+      align: "center",
+    },
+    {
+      title: label(t, "report.cashbook.print.ledgerName", "LEDGER"),
+      w: 36,
+      align: "left",
+      wrap: true,
+    },
+    {
+      title: label(t, "report.cashbook.print.particulars", "PARTICULARS"),
+      w: 42,
+      align: "left",
+      wrap: true,
+    },
+    {
+      title: label(t, "report.cashbook.print.amount", "AMOUNT"),
+      w: 28,
+      align: "right",
+    },
   ];
   const receiptTitle = label(t, "report.cashbook.print.receipt", "RECEIPT");
   const paymentTitle = label(t, "report.cashbook.print.payment", "PAYMENT");
@@ -855,7 +1091,8 @@ export const downloadCashbookPdf = async ({
       let cursor = x;
       columns.forEach((col) => {
         pdf.line(cursor, y + 8, cursor, y + 16);
-        const textX = col.align === "right" ? cursor + col.w - 0.6 : cursor + col.w / 2;
+        const textX =
+          col.align === "right" ? cursor + col.w - 0.6 : cursor + col.w / 2;
         pdf.setFontSize(8);
         pdf.text(clipText(pdf, col.title, col.w - 1), textX, y + 13.5, {
           align: col.align === "right" ? "right" : "center",
@@ -878,16 +1115,46 @@ export const downloadCashbookPdf = async ({
   const right = mapSide(payments);
   const [leftRows, rightRows] = padPair(left, right);
   leftRows.push(
-    { values: ["", "", "", label(t, "common.total", "Total"), money(totalReceived)], bold: true },
     {
-      values: ["", "", "", label(t, "common.openingBalance", "Opening Balance"), money(cashBalanceData?.Opening)],
+      values: [
+        "",
+        "",
+        "",
+        label(t, "common.total", "Total"),
+        money(totalReceived),
+      ],
+      bold: true,
+    },
+    {
+      values: [
+        "",
+        "",
+        "",
+        label(t, "common.openingBalance", "Opening Balance"),
+        money(cashBalanceData?.Opening),
+      ],
       bold: true,
     },
   );
   rightRows.push(
-    { values: ["", "", "", label(t, "common.total", "Total"), money(totalPayment)], bold: true },
     {
-      values: ["", "", "", label(t, "common.closingBalance", "Closing Balance"), money(cashBalanceData?.Closing)],
+      values: [
+        "",
+        "",
+        "",
+        label(t, "common.total", "Total"),
+        money(totalPayment),
+      ],
+      bold: true,
+    },
+    {
+      values: [
+        "",
+        "",
+        "",
+        label(t, "common.closingBalance", "Closing Balance"),
+        money(cashBalanceData?.Closing),
+      ],
       bold: true,
     },
   );
@@ -989,10 +1256,30 @@ export const downloadTrialBalancePdf = async ({
 }) => {
   const doc = openPdf("portrait");
   const columns = [
-    { title: label(t, "common.headOfAccount", "Head Of Account"), w: 56.5, align: "center", wrap: true },
-    { title: label(t, "common.openingBalance", "Opening Balance"), w: 28.3, align: "center", wrap: true },
-    { title: label(t, "common.totalDebit", "Total Debit"), w: 28.3, align: "center", wrap: true },
-    { title: label(t, "common.totalCredit", "Total Credit"), w: 28.3, align: "center", wrap: true },
+    {
+      title: label(t, "common.headOfAccount", "Head Of Account"),
+      w: 56.5,
+      align: "center",
+      wrap: true,
+    },
+    {
+      title: label(t, "common.openingBalance", "Opening Balance"),
+      w: 28.3,
+      align: "center",
+      wrap: true,
+    },
+    {
+      title: label(t, "common.totalDebit", "Total Debit"),
+      w: 28.3,
+      align: "center",
+      wrap: true,
+    },
+    {
+      title: label(t, "common.totalCredit", "Total Credit"),
+      w: 28.3,
+      align: "center",
+      wrap: true,
+    },
     { title: label(t, "common.breakUp", "Break Up"), w: 28.3, align: "center" },
     { title: label(t, "common.balance", "Balance"), w: 28.3, align: "center" },
   ];
@@ -1002,7 +1289,7 @@ export const downloadTrialBalancePdf = async ({
     `Trial Balance From ${fromDate || ""} To ${toDate || ""}`,
     { fromDate, toDate },
   );
-  const rowH = 10.6;
+  const rowH = 7.6;
   const closingTitle = label(t, "common.closing", "Closing");
   const drawHead = (section) => (pdf, y, x, width) => {
     pdf.setFont("helvetica", "bold");
@@ -1038,11 +1325,23 @@ export const downloadTrialBalancePdf = async ({
     pdf.line(cursor, y, cursor, y + bandH);
     pdf.line(cursor, y + rowH, cursor + closeW, y + rowH);
     pdf.line(cursor + columns[4].w, y + rowH, cursor + columns[4].w, y + bandH);
-    pdf.text(closingTitle, cursor + closeW / 2, y + rowH / 2 + 1.2, { align: "center" });
-    pdf.text(columns[4].title, cursor + columns[4].w / 2, y + rowH + rowH / 2 + 1.2, { align: "center" });
-    pdf.text(columns[5].title, cursor + columns[4].w + columns[5].w / 2, y + rowH + rowH / 2 + 1.2, {
+    pdf.text(closingTitle, cursor + closeW / 2, y + rowH / 2 + 1.2, {
       align: "center",
     });
+    pdf.text(
+      columns[4].title,
+      cursor + columns[4].w / 2,
+      y + rowH + rowH / 2 + 1.2,
+      { align: "center" },
+    );
+    pdf.text(
+      columns[5].title,
+      cursor + columns[4].w + columns[5].w / 2,
+      y + rowH + rowH / 2 + 1.2,
+      {
+        align: "center",
+      },
+    );
     pdf.line(x + width, y, x + width, y + bandH);
     return y + bandH;
   };
@@ -1054,7 +1353,7 @@ export const downloadTrialBalancePdf = async ({
     rowH,
     fontSize: 8,
     lineH: 3.6,
-    padTop: 6.4,
+    padTop: 4.4,
     startX: 6,
     onProgress,
   };
@@ -1062,7 +1361,13 @@ export const downloadTrialBalancePdf = async ({
     meta,
     columns,
     rows: flattenTrial(liabilities?.groupedData, liabilities?.grandTotals, t),
-    drawHead: drawHead(label(t, "report.trialBalance.liabilitiesAndIncomeTitle", "Liabilities & Income")),
+    drawHead: drawHead(
+      label(
+        t,
+        "report.trialBalance.liabilitiesAndIncomeTitle",
+        "Liabilities & Income",
+      ),
+    ),
     ...tableOptions,
   });
   doc.addPage();
@@ -1070,7 +1375,9 @@ export const downloadTrialBalancePdf = async ({
     meta,
     columns,
     rows: flattenTrial(assets?.groupedData, assets?.grandTotals, t),
-    drawHead: drawHead(label(t, "report.trialBalance.assetsAndExpenses", "Assets & Expenses")),
+    drawHead: drawHead(
+      label(t, "report.trialBalance.assetsAndExpenses", "Assets & Expenses"),
+    ),
     ...tableOptions,
   });
   save(doc, `TrailBalance-${fromDate || ""}-${toDate || ""}`);

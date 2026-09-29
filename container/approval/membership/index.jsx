@@ -90,7 +90,7 @@ const MembershipApproval = () => {
 
       <Card className="overflow-hidden border-none shadow-md">
         <div className="overflow-x-auto custom-scrollbar">
-          <Table>
+          <Table className="whitespace-nowrap">
             <TableHeader className="bg-primary">
               <TableRow className="hover:bg-primary">
                 <TableHead className="w-[50px] text-white font-bold">
@@ -98,6 +98,9 @@ const MembershipApproval = () => {
                 </TableHead>
                 <TableHead className="text-white font-bold">
                   {t("membershipApproval.transactionDate")}
+                </TableHead>
+                <TableHead className="text-white font-bold">
+                  {t("membershipApproval.transactionType")}
                 </TableHead>
                 <TableHead className="text-white font-bold">
                   {t("membershipApproval.queueNo")}
@@ -122,7 +125,7 @@ const MembershipApproval = () => {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-32 text-center">
+                  <TableCell colSpan={9} className="h-32 text-center">
                     <div className="flex justify-center items-center h-full w-full">
                       <Spinner />
                     </div>
@@ -140,10 +143,11 @@ const MembershipApproval = () => {
                       <TableCell>
                         {formatDate(item.Trans_Date)}
                       </TableCell>
+                      <TableCell>{item.Trans_Type || t("common.notAvailable")}</TableCell>
                       <TableCell>{item.Queue_No || t("common.notAvailable")}</TableCell>
                       <TableCell
-                        className="max-w-[200px] truncate font-medium text-gray-700"
-                        title={item.Particular}
+                        // className="max-w-[200px] truncate font-medium text-gray-700"
+                        // title={item.Particular}
                       >
                         {item.Particular || t("common.notAvailable")}
                       </TableCell>
@@ -177,7 +181,7 @@ const MembershipApproval = () => {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={8}
+                    colSpan={9}
                     className="h-32 text-center text-gray-500"
                   >
                     <div className="flex flex-col items-center justify-center gap-2">

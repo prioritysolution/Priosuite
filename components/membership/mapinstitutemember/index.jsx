@@ -275,7 +275,7 @@ const MapInstituteMember = ({
             form.setValue("designation", String(member.Deg_Id));
           form.trigger();
           if (d.Id && orgId) {
-            dispatch(getGrpDesigData());
+            dispatch(getGrpDesigData(orgId));
             // No need to fetch ECS account data since defaultsavings field is removed
           }
         }

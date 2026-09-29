@@ -149,16 +149,14 @@ const InvestmentReport = ({
                   control={form.control}
                   name="fromDate"
                   label={t("common.fromDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  isManualInput={true}
                 />
 
                 <DatePickerField
                   control={form.control}
                   name="toDate"
                   label={t("common.toDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  isManualInput={true}
                 />
 
                 <DropdownField

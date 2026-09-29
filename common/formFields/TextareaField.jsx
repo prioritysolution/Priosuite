@@ -29,10 +29,11 @@ const TextareaField = ({
         const hasError = !!fieldState?.error;
 
         return (
-          <FormItem className="flex flex-col w-full gap-1.5">
+          <FormItem className={cn("w-full min-w-0")}>
             {label && (
               <FormLabel className="text-sm font-medium text-foreground">
                 {label}
+                {"  "}
                 {isRequired && <span className="text-red-500 ml-1">*</span>}
               </FormLabel>
             )}
@@ -49,7 +50,7 @@ const TextareaField = ({
                     ? "border-destructive focus-visible:ring-destructive/30"
                     : "border-input",
                   disabled && "cursor-not-allowed bg-muted/80",
-                  className
+                  className,
                 )}
                 {...field}
               />

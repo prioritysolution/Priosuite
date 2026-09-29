@@ -1,5 +1,8 @@
 const or = {
   translation: {
+    navbar: {
+      searchPages: "ପୃଷ୍ଠାଗୁଡ଼ିକ ଖୋଜନ୍ତୁ...",
+    },
     opening: {
       membershipOpening: {
         title: "ସଦସ୍ୟତା ଖୋଲିବା",

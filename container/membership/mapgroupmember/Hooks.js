@@ -38,6 +38,7 @@ export const useMapGroupMember = () => {
   const [memberData, setMemberData] = useState(null);
   const [addedMembers, setAddedMembers] = useState([]);
   const [resetTrigger, setResetTrigger] = useState(0);
+  const [groupResetTrigger, setGroupResetTrigger] = useState(0);
   const [showForm, setShowForm] = useState(false);
 
   const orgId = getCookieData("orgId");
@@ -256,16 +257,22 @@ export const useMapGroupMember = () => {
     const hasAllFields =
       watchedFields[0] && // mmemberNo
       watchedFields[1] && // mmemberName
-      watchedFields[2] && // designation
-      watchedFields[3]; // defaultsavings
+      watchedFields[2]
 
-    const hasEcsData = ecsAccountData.length > 0;
+    // const hasAllFields =
+    //   watchedFields[0] && // mmemberNo
+    //   watchedFields[1] && // mmemberName
+    //   watchedFields[2] && // designation
+    //   watchedFields[3]; // defaultsavings
+
+    // const hasEcsData = ecsAccountData.length > 0;
 
     // Remove hasAddedMembers requirement - allow adding first member
-    const disabled = !(hasAllFields && hasEcsData);
+    // const disabled = !(hasAllFields && hasEcsData);
+    const disabled = !(hasAllFields);
 
-    console.log("Debug - hasAllFields:", hasAllFields);
-    console.log("Debug - hasEcsData:", hasEcsData);
+    // console.log("Debug - hasAllFields:", hasAllFields);
+    // console.log("Debug - hasEcsData:", hasEcsData);
     console.log("Debug - isAddMemberDisabled:", disabled);
 
     return disabled;
@@ -478,9 +485,6 @@ export const useMapGroupMember = () => {
 
     // Reset member data state
     setMemberData(null);
-
-    // Reset selected radio option
-    setSelectedOption("existing");
 
     // Re-enable RadioGroup after reset
     setShowForm(false);
@@ -779,6 +783,8 @@ export const useMapGroupMember = () => {
         form.setValue("gmemberId", "");
         form.setValue("member_info", []);
         resetForm();
+        setGroupResetTrigger((prev) => prev + 1);
+        setSelectedOption("existing");
       } else {
         toast.error(response.message || "Failed to map group members");
       }
@@ -803,6 +809,7 @@ export const useMapGroupMember = () => {
     handleUpdateMember,
     addedMembers,
     resetTrigger,
+    groupResetTrigger,
     isAddMemberDisabled,
     designationData: finalDesignationData,
     // defaultSavingsData,

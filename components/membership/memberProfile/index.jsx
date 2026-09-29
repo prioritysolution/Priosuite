@@ -74,7 +74,11 @@ const AddressSectionFields = ({
       <TextareaField
         control={form.control}
         name={names.address}
-        label={addressLabel === "Address" ? t("membership.memberProfile.fields.address") : addressLabel}
+        label={
+          addressLabel === "Address"
+            ? t("membership.memberProfile.fields.address")
+            : addressLabel
+        }
         placeholder={t("membership.memberProfile.placeholders.address")}
         rows={3}
         isRequired
@@ -263,7 +267,9 @@ const MemberProfile = ({
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
       <div className="flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">{t("membership.memberProfile.title")}</h3>
+        <h3 className="text-2xl font-semibold ">
+          {t("membership.memberProfile.title")}
+        </h3>
         <ScrollArea className="w-full p-2 sm:px-10 ">
           <Form {...form}>
             <form
@@ -288,7 +294,9 @@ const MemberProfile = ({
                         },
                         {
                           value: "U",
-                          label: t("membership.memberProfile.modes.updateExisting"),
+                          label: t(
+                            "membership.memberProfile.modes.updateExisting",
+                          ),
                         },
                       ]}
                       className="border border-default-200 rounded-md px-3 h-10 flex items-center"
@@ -297,7 +305,7 @@ const MemberProfile = ({
                   )}
                 />
 
-                    {/* reset and next button */}
+                {/* reset and next button */}
                 {showForm ? (
                   <div
                     className="self-end h-10 w-32 text-white bg-primary rounded-md flex items-center justify-center cursor-pointer"
@@ -336,7 +344,9 @@ const MemberProfile = ({
                     control={form.control}
                     name="memberNo"
                     label={t("membership.memberProfile.fields.memberNo")}
-                    placeholder={t("membership.memberProfile.placeholders.memberNo")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.memberNo",
+                    )}
                     onInput={(e) => {
                       if (e.target.value.length > 5) {
                         e.target.value = e.target.value.slice(0, 5);
@@ -359,7 +369,9 @@ const MemberProfile = ({
                     control={form.control}
                     name="firstName"
                     label={t("membership.memberProfile.fields.firstName")}
-                    placeholder={t("membership.memberProfile.placeholders.firstName")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.firstName",
+                    )}
                     isRequired
                   />
 
@@ -367,14 +379,18 @@ const MemberProfile = ({
                     control={form.control}
                     name="middleName"
                     label={t("membership.memberProfile.fields.middleName")}
-                    placeholder={t("membership.memberProfile.placeholders.middleName")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.middleName",
+                    )}
                   />
 
                   <InputField
                     control={form.control}
                     name="lastName"
                     label={t("membership.memberProfile.fields.lastName")}
-                    placeholder={t("membership.memberProfile.placeholders.lastName")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.lastName",
+                    )}
                     isRequired
                   />
 
@@ -382,7 +398,9 @@ const MemberProfile = ({
                     control={form.control}
                     name="relationName"
                     label={t("membership.memberProfile.fields.relationName")}
-                    placeholder={t("membership.memberProfile.placeholders.relationName")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.relationName",
+                    )}
                     isRequired
                   />
 
@@ -442,7 +460,9 @@ const MemberProfile = ({
                     control={form.control}
                     name="mobile"
                     label={t("membership.memberProfile.fields.mobileNo")}
-                    placeholder={t("membership.memberProfile.placeholders.mobileNo")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.mobileNo",
+                    )}
                     type="number"
                     onInput={(e) => {
                       if (e.target.value.length > 10) {
@@ -455,7 +475,9 @@ const MemberProfile = ({
                     control={form.control}
                     name="email"
                     label={t("membership.memberProfile.fields.email")}
-                    placeholder={t("membership.memberProfile.placeholders.email")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.email",
+                    )}
                     type="email"
                   />
                 </div>
@@ -517,9 +539,13 @@ const MemberProfile = ({
                     names={PRESENT_NAMES}
                     disabled={sameAsPermanent}
                     stateData={stateData}
-                    districtData={sameAsPermanent ? districtData : presentDistrictData}
+                    districtData={
+                      sameAsPermanent ? districtData : presentDistrictData
+                    }
                     blockData={sameAsPermanent ? blockData : presentBlockData}
-                    villageData={sameAsPermanent ? villageData : presentVillageData}
+                    villageData={
+                      sameAsPermanent ? villageData : presentVillageData
+                    }
                     policeStationData={
                       sameAsPermanent
                         ? policeStationData
@@ -563,7 +589,9 @@ const MemberProfile = ({
                     control={form.control}
                     name="aadhaarNo"
                     label={t("membership.memberProfile.fields.aadhaarNo")}
-                    placeholder={t("membership.memberProfile.placeholders.aadhaarNo")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.aadhaarNo",
+                    )}
                     type="number"
                     onInput={(e) => {
                       if (e.target.value.length > 12) {
@@ -576,7 +604,9 @@ const MemberProfile = ({
                     control={form.control}
                     name="voterId"
                     label={t("membership.memberProfile.fields.voterId")}
-                    placeholder={t("membership.memberProfile.placeholders.voterId")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.voterId",
+                    )}
                     onChange={(e) => {
                       form.setValue("voterId", e.target.value.toUpperCase(), {
                         shouldValidate: true,
@@ -589,7 +619,9 @@ const MemberProfile = ({
                     control={form.control}
                     name="rationNo"
                     label={t("membership.memberProfile.fields.rationCard")}
-                    placeholder={t("membership.memberProfile.placeholders.rationCard")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.rationCard",
+                    )}
                     onChange={(e) => {
                       form.setValue("rationNo", e.target.value.toUpperCase(), {
                         shouldValidate: true,
@@ -602,7 +634,10 @@ const MemberProfile = ({
                     control={form.control}
                     name="panNo"
                     label={t("membership.memberProfile.fields.panCard")}
-                    placeholder={t("membership.memberProfile.placeholders.panCard")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.panCard",
+                    )}
+                    maxLength={10}
                     onChange={(e) => {
                       form.setValue("panNo", e.target.value.toUpperCase(), {
                         shouldValidate: true,

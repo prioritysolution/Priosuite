@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useTranslation } from "react-i18next";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import MemberSearchForm from "@/common/forms/MemberSearchForm";
@@ -49,14 +48,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import KYCDropdownField from "../../../common/formFields/KYCDropdownField";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   getGrpDesigData,
   getEcsAccountData,
 } from "../../../container/membership/mapgroupmember/mapgroupmemberReduces";
 import { getMemberDataByIdAPI } from "../../../container/membership/issueMembership/IssueMembershipApis";
-import { getYear } from "date-fns";
+
+import TextareaField from "../../../common/formFields/TextareaField";
 
 const SectionCard = ({ title, icon: Icon, children, className = "" }) => (
   <div
@@ -131,7 +131,8 @@ const ResponsiveTable = ({
   emptyText,
 }) => {
   const { t } = useTranslation();
-  const resolvedEmpty = emptyText ?? t("membership.mapGroupMember.empty.default");
+  const resolvedEmpty =
+    emptyText ?? t("membership.mapGroupMember.empty.default");
   if (rows.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
@@ -231,6 +232,7 @@ const MapGroupMember = ({
   handleUpdateMember,
   addedMembers,
   resetTrigger,
+  groupResetTrigger,
   isAddMemberDisabled,
   designationData,
   ecsAccountData,
@@ -282,7 +284,7 @@ const MapGroupMember = ({
             form.setValue("defaultsavings", String(member.sb_id));
           form.trigger();
           if (d.Id && orgId) {
-            dispatch(getGrpDesigData());
+            dispatch(getGrpDesigData(orgId));
             dispatch(getEcsAccountData({ orgId, memb_id: d.Id }));
           }
         }
@@ -305,10 +307,20 @@ const MapGroupMember = ({
     { key: "sl", label: t("membership.mapGroupMember.table.hash") },
     { key: "name", label: t("membership.mapGroupMember.fields.memberName") },
     { key: "cif", label: t("membership.mapGroupMember.fields.cifNo") },
-    { key: "designation", label: t("membership.mapGroupMember.fields.designation") },
+    {
+      key: "designation",
+      label: t("membership.mapGroupMember.fields.designation"),
+    },
     { key: "relation", label: t("membership.mapGroupMember.fields.relation") },
-    { key: "joinDate", label: t("membership.mapGroupMember.fields.joiningDate") },
-    { key: "savings", label: t("membership.mapGroupMember.fields.savingsAc"), fullWidth: true },
+    {
+      key: "joinDate",
+      label: t("membership.mapGroupMember.fields.joiningDate"),
+    },
+    {
+      key: "savings",
+      label: t("membership.mapGroupMember.fields.savingsAc"),
+      fullWidth: true,
+    },
     { key: "status", label: t("membership.mapGroupMember.fields.status") },
     { key: "actions", label: t("membership.mapGroupMember.table.actions") },
   ];
@@ -318,8 +330,15 @@ const MapGroupMember = ({
     { key: "cif", label: t("membership.mapGroupMember.fields.memberCif") },
     { key: "name", label: t("membership.mapGroupMember.fields.memberName") },
     { key: "relation", label: t("membership.mapGroupMember.fields.relation") },
-    { key: "savings", label: t("membership.mapGroupMember.fields.savingsAc"), fullWidth: true },
-    { key: "designation", label: t("membership.mapGroupMember.fields.designation") },
+    {
+      key: "savings",
+      label: t("membership.mapGroupMember.fields.savingsAc"),
+      fullWidth: true,
+    },
+    {
+      key: "designation",
+      label: t("membership.mapGroupMember.fields.designation"),
+    },
     { key: "status", label: t("membership.mapGroupMember.fields.status") },
     { key: "actions", label: t("membership.mapGroupMember.table.action") },
   ];
@@ -359,7 +378,8 @@ const MapGroupMember = ({
           onClick={() => fetchMemberDataAndOpenDialog(m)}
           className="h-7 px-2.5 text-xs border-primary/30 text-primary hover:bg-primary hover:text-white gap-1 shrink-0"
         >
-          <Pencil className="w-3 h-3" /> {t("membership.mapGroupMember.buttons.edit")}
+          <Pencil className="w-3 h-3" />{" "}
+          {t("membership.mapGroupMember.buttons.edit")}
         </Button>
         <Button
           size="sm"
@@ -404,6 +424,7 @@ const MapGroupMember = ({
               <MemberSearchForm
                 handleSubmit={handleMapGroupSubmit}
                 loading={getGroupLoading}
+                resetTrigger={groupResetTrigger}
                 formLabel={t("membership.mapGroupMember.title")}
                 showDateFix
                 disableNextButton={
@@ -414,7 +435,10 @@ const MapGroupMember = ({
 
               {/* 2 ── Group basic info */}
               {visibleBlock && (
-                <SectionCard title={t("membership.mapGroupMember.sections.groupBasicInfo")} icon={Users}>
+                <SectionCard
+                  title={t("membership.mapGroupMember.sections.groupBasicInfo")}
+                  icon={Users}
+                >
                   {getGroupLoading ? (
                     <SkeletonGrid />
                   ) : (
@@ -422,11 +446,36 @@ const MapGroupMember = ({
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                         {/* Simple read-only inputs */}
                         {[
-                          { name: "gmemberNo", label: t("membership.mapGroupMember.fields.groupNo") },
-                          { name: "gcifNo", label: t("membership.mapGroupMember.fields.groupCif") },
-                          { name: "gmemberName", label: t("membership.mapGroupMember.fields.groupName") },
-                          { name: "gmobile", label: t("membership.mapGroupMember.fields.mobileNo") },
-                          { name: "gBenefNo", label: t("membership.mapGroupMember.fields.noOfMembers") },
+                          {
+                            name: "gmemberNo",
+                            label: t(
+                              "membership.mapGroupMember.fields.groupNo",
+                            ),
+                          },
+                          {
+                            name: "gcifNo",
+                            label: t(
+                              "membership.mapGroupMember.fields.groupCif",
+                            ),
+                          },
+                          {
+                            name: "gmemberName",
+                            label: t(
+                              "membership.mapGroupMember.fields.groupName",
+                            ),
+                          },
+                          {
+                            name: "gmobile",
+                            label: t(
+                              "membership.mapGroupMember.fields.mobileNo",
+                            ),
+                          },
+                          {
+                            name: "gBenefNo",
+                            label: t(
+                              "membership.mapGroupMember.fields.noOfMembers",
+                            ),
+                          },
                         ].map(({ name, label }) => (
                           <InputField
                             key={name}
@@ -440,7 +489,7 @@ const MapGroupMember = ({
                         ))}
 
                         {/* Address – wider on sm */}
-                        <InputField
+                        <TextareaField
                           control={form.control}
                           name="gaddress"
                           label={t("membership.mapGroupMember.fields.address")}
@@ -454,8 +503,12 @@ const MapGroupMember = ({
                         <DatePickerField
                           control={form.control}
                           name="gCustDOB"
-                          label={t("membership.mapGroupMember.fields.formationDate")}
-                          placeholder={t("membership.mapGroupMember.placeholders.selectDate")}
+                          label={t(
+                            "membership.mapGroupMember.fields.formationDate",
+                          )}
+                          placeholder={t(
+                            "membership.mapGroupMember.placeholders.selectDate",
+                          )}
                           onPopover
                         />
                         {/* <DatePickerField
@@ -479,14 +532,18 @@ const MapGroupMember = ({
                           {[
                             {
                               value: "existing",
-                              label: t("membership.mapGroupMember.modes.viewExisting"),
+                              label: t(
+                                "membership.mapGroupMember.modes.viewExisting",
+                              ),
                               disabled:
                                 addedMembers.length > 0 &&
                                 selectedOption === "new",
                             },
                             {
                               value: "new",
-                              label: t("membership.mapGroupMember.modes.addNew"),
+                              label: t(
+                                "membership.mapGroupMember.modes.addNew",
+                              ),
                               disabled: false,
                             },
                           ].map(({ value, label, disabled }) => (
@@ -519,7 +576,12 @@ const MapGroupMember = ({
 
               {/* 3 ── Existing members */}
               {visibleBlock && selectedOption === "existing" && (
-                <SectionCard title={t("membership.mapGroupMember.sections.existingGroupMembers")} icon={UserCheck}>
+                <SectionCard
+                  title={t(
+                    "membership.mapGroupMember.sections.existingGroupMembers",
+                  )}
+                  icon={UserCheck}
+                >
                   <ResponsiveTable
                     headers={existingHeaders}
                     rows={existingRows}
@@ -548,21 +610,48 @@ const MapGroupMember = ({
                       onSubmit={form.handleSubmit(handleMapGroupSubmit)}
                       autoComplete="off"
                     >
-                      <SectionCard title={t("membership.mapGroupMember.sections.memberInfo")} icon={UserPlus}>
+                      <SectionCard
+                        title={t(
+                          "membership.mapGroupMember.sections.memberInfo",
+                        )}
+                        icon={UserPlus}
+                      >
                         {getGroupLoading ? (
                           <SkeletonGrid />
                         ) : (
                           <>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                               {[
-                                { name: "mmemberNo", label: t("membership.mapGroupMember.fields.memberNo") },
-                                { name: "mcifNo", label: t("membership.mapGroupMember.fields.cifNo") },
-                                { name: "mmemberName", label: t("membership.mapGroupMember.fields.memberName") },
+                                {
+                                  name: "mmemberNo",
+                                  label: t(
+                                    "membership.mapGroupMember.fields.memberNo",
+                                  ),
+                                },
+                                {
+                                  name: "mcifNo",
+                                  label: t(
+                                    "membership.mapGroupMember.fields.cifNo",
+                                  ),
+                                },
+                                {
+                                  name: "mmemberName",
+                                  label: t(
+                                    "membership.mapGroupMember.fields.memberName",
+                                  ),
+                                },
                                 {
                                   name: "mgurdianName",
-                                  label: t("membership.mapGroupMember.fields.guardianName"),
+                                  label: t(
+                                    "membership.mapGroupMember.fields.guardianName",
+                                  ),
                                 },
-                                { name: "mmobile", label: t("membership.mapGroupMember.fields.mobileNo") },
+                                {
+                                  name: "mmobile",
+                                  label: t(
+                                    "membership.mapGroupMember.fields.mobileNo",
+                                  ),
+                                },
                               ].map(({ name, label }) => (
                                 <InputField
                                   key={name}
@@ -576,10 +665,12 @@ const MapGroupMember = ({
                               ))}
 
                               {/* Address */}
-                              <InputField
+                              <TextareaField
                                 control={form.control}
                                 name="maddress"
-                                label={t("membership.mapGroupMember.fields.address")}
+                                label={t(
+                                  "membership.mapGroupMember.fields.address",
+                                )}
                                 readOnly
                                 rows={2}
                                 className="resize-none bg-muted/40 border-border text-sm"
@@ -591,7 +682,9 @@ const MapGroupMember = ({
                               <InputField
                                 control={form.control}
                                 name="BranchName"
-                                label={t("membership.mapGroupMember.fields.branchName")}
+                                label={t(
+                                  "membership.mapGroupMember.fields.branchName",
+                                )}
                                 readOnly
                                 className={`h-9 border-border text-sm
                                 ${
@@ -606,15 +699,21 @@ const MapGroupMember = ({
                               <DropdownField
                                 control={form.control}
                                 name="designation"
-                                label={t("membership.mapGroupMember.fields.designation")}
+                                label={t(
+                                  "membership.mapGroupMember.fields.designation",
+                                )}
                                 options={
                                   Array.isArray(designationData)
                                     ? designationData
                                     : []
                                 }
                                 optionLabelKey="Option_Value"
-                                placeholder={t("membership.mapGroupMember.placeholders.designation")}
-                                searchPlaceholder={t("membership.mapGroupMember.placeholders.search")}
+                                placeholder={t(
+                                  "membership.mapGroupMember.placeholders.designation",
+                                )}
+                                searchPlaceholder={t(
+                                  "membership.mapGroupMember.placeholders.search",
+                                )}
                                 className="h-9"
                                 loading={mapGroupMemberLoading?.grpDesig}
                                 isRequired={true}
@@ -624,24 +723,34 @@ const MapGroupMember = ({
                               <DropdownField
                                 control={form.control}
                                 name="defaultsavings"
-                                label={t("membership.mapGroupMember.fields.defaultSavings")}
+                                label={t(
+                                  "membership.mapGroupMember.fields.defaultSavings",
+                                )}
                                 options={
                                   Array.isArray(ecsAccountData)
                                     ? ecsAccountData
                                     : []
                                 }
                                 optionLabelKey="Option_Value"
-                                placeholder={t("membership.mapGroupMember.placeholders.defaultSavings")}
-                                searchPlaceholder={t("membership.mapGroupMember.placeholders.search")}
+                                placeholder={t(
+                                  "membership.mapGroupMember.placeholders.defaultSavings",
+                                )}
+                                searchPlaceholder={t(
+                                  "membership.mapGroupMember.placeholders.search",
+                                )}
                                 className="h-9"
-                                isRequired={true}
+                                // isRequired={true}
                               />
 
                               <DatePickerField
                                 control={form.control}
                                 name="date"
-                                label={t("membership.mapGroupMember.fields.joinDate")}
-                                placeholder={t("membership.mapGroupMember.placeholders.selectDate")}
+                                label={t(
+                                  "membership.mapGroupMember.fields.joinDate",
+                                )}
+                                placeholder={t(
+                                  "membership.mapGroupMember.placeholders.selectDate",
+                                )}
                                 // disabledDateAfter={new Date()}
                                 defaultValue={new Date(beg_date)}
                                 disabled={true}
@@ -657,7 +766,9 @@ const MapGroupMember = ({
                                 className="flex items-center gap-2 px-5 font-semibold group disabled:opacity-50"
                               >
                                 <UserPlus className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                {t("membership.mapGroupMember.buttons.addMember")}
+                                {t(
+                                  "membership.mapGroupMember.buttons.addMember",
+                                )}
                               </Button>
                             </div>
                           </>
@@ -667,7 +778,10 @@ const MapGroupMember = ({
                   </Form>
 
                   {/* Added members list */}
-                  <SectionCard title={t("membership.mapGroupMember.sections.addedMembers")} icon={Users}>
+                  <SectionCard
+                    title={t("membership.mapGroupMember.sections.addedMembers")}
+                    icon={Users}
+                  >
                     <ResponsiveTable
                       headers={addedHeaders}
                       rows={addedRows}
@@ -683,7 +797,7 @@ const MapGroupMember = ({
                       disabled={addedMembers.length === 0}
                       className="px-8 font-semibold disabled:opacity-50"
                     >
-                      Map Group Member
+                      {t("membership.mapGroupMember.title")}
                     </Button>
                   </div>
                 </>
@@ -784,15 +898,21 @@ const MapGroupMember = ({
                         loading={mapGroupMemberLoading?.grpDesig}
                       /> */}
                       <DropdownField
-                        label={t("membership.mapGroupMember.fields.designation")}
+                        label={t(
+                          "membership.mapGroupMember.fields.designation",
+                        )}
                         value={field.value}
                         onChange={field.onChange}
                         options={
                           Array.isArray(designationData) ? designationData : []
                         }
                         optionLabelKey="Option_Value"
-                        placeholder={t("membership.mapGroupMember.placeholders.designation")}
-                        searchPlaceholder={t("membership.mapGroupMember.placeholders.search")}
+                        placeholder={t(
+                          "membership.mapGroupMember.placeholders.designation",
+                        )}
+                        searchPlaceholder={t(
+                          "membership.mapGroupMember.placeholders.search",
+                        )}
                         className="h-9"
                         loading={mapGroupMemberLoading?.grpDesig}
                         isRequired={true}
@@ -806,15 +926,21 @@ const MapGroupMember = ({
                   render={({ field }) => (
                     <FormControl>
                       <DropdownField
-                        label={t("membership.mapGroupMember.fields.defaultSavings")}
+                        label={t(
+                          "membership.mapGroupMember.fields.defaultSavings",
+                        )}
                         value={field.value}
                         onChange={field.onChange}
                         options={
                           Array.isArray(ecsAccountData) ? ecsAccountData : []
                         }
                         optionLabelKey="Option_Value"
-                        placeholder={t("membership.mapGroupMember.placeholders.defaultSavings")}
-                        searchPlaceholder={t("membership.mapGroupMember.placeholders.search")}
+                        placeholder={t(
+                          "membership.mapGroupMember.placeholders.defaultSavings",
+                        )}
+                        searchPlaceholder={t(
+                          "membership.mapGroupMember.placeholders.search",
+                        )}
                         className="h-9"
                         loading={mapGroupMemberLoading?.ecsAccount}
                         isRequired={true}
@@ -829,7 +955,9 @@ const MapGroupMember = ({
                 <DatePickerField
                   name="withdrawnDate"
                   label={t("membership.mapGroupMember.fields.withdrawnDate")}
-                  placeholder={t("membership.mapGroupMember.placeholders.selectDate")}
+                  placeholder={t(
+                    "membership.mapGroupMember.placeholders.selectDate",
+                  )}
                   className="h-9"
                 />
                 <FormField
@@ -843,7 +971,9 @@ const MapGroupMember = ({
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder={t("membership.mapGroupMember.placeholders.remarks")}
+                          placeholder={t(
+                            "membership.mapGroupMember.placeholders.remarks",
+                          )}
                           className="h-9 text-sm"
                         />
                       </FormControl>
@@ -857,7 +987,9 @@ const MapGroupMember = ({
                 control={form.control}
                 name="joinongdate"
                 label={t("membership.mapGroupMember.fields.joinDate")}
-                placeholder={t("membership.mapGroupMember.placeholders.selectDate")}
+                placeholder={t(
+                  "membership.mapGroupMember.placeholders.selectDate",
+                )}
                 defaultValue={new Date(beg_date)}
                 disabled={true}
               />
@@ -903,7 +1035,8 @@ const MapGroupMember = ({
                 setEditingMember(null);
               }}
             >
-              <Save className="w-4 h-4" /> {t("membership.mapGroupMember.buttons.saveChanges")}
+              <Save className="w-4 h-4" />{" "}
+              {t("membership.mapGroupMember.buttons.saveChanges")}
             </Button>
           </div>
         </DialogContent>

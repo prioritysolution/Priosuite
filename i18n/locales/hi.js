@@ -1,5 +1,8 @@
 const hi = {
   translation: {
+    navbar: {
+      searchPages: "पृष्ठ खोजें...",
+    },
     opening: {
       membershipOpening: {
         title: "सदस्यता खोलना",

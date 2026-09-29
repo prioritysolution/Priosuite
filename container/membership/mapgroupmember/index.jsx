@@ -19,6 +19,7 @@ const MapGroupMemberContainer = () => {
     handleUpdateMember,
     addedMembers,
     resetTrigger,
+    groupResetTrigger,
     isAddMemberDisabled,
     visibleBlock,
     showForm,
@@ -52,6 +53,7 @@ const MapGroupMemberContainer = () => {
       handleUpdateMember={handleUpdateMember}
       addedMembers={addedMembers}
       resetTrigger={resetTrigger}
+      groupResetTrigger={groupResetTrigger}
       isAddMemberDisabled={isAddMemberDisabled}
       designationData={designationData}
       ecsAccountData={ecsAccountData}

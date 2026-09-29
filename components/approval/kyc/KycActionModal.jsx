@@ -174,8 +174,16 @@ const KycActionModal = ({
           labelKey: "Option_Value",
         },
         { name: "grp_name", label: t("kycApproval.fields.groupName") },
-        { name: "gerp_dob", label: t("kycApproval.fields.dateOfFormation"), fieldType: "date" },
-        { name: "grp_ben", label: t("kycApproval.fields.noOfBeneficiary"), fieldType: "number" },
+        {
+          name: "gerp_dob",
+          label: t("kycApproval.fields.dateOfFormation"),
+          fieldType: "date",
+        },
+        {
+          name: "grp_ben",
+          label: t("kycApproval.fields.noOfBeneficiary"),
+          fieldType: "number",
+        },
         {
           name: "grp_mob",
           label: t("kycApproval.fields.mobileNo"),
@@ -237,8 +245,16 @@ const KycActionModal = ({
     } else if (type === "4") {
       config.profile = [
         { name: "inst_name", label: t("kycApproval.fields.institutionName") },
-        { name: "inst_dob", label: t("kycApproval.fields.dateOfFormation"), fieldType: "date" },
-        { name: "inst_ben", label: t("kycApproval.fields.noOfBeneficiary"), fieldType: "number" },
+        {
+          name: "inst_dob",
+          label: t("kycApproval.fields.dateOfFormation"),
+          fieldType: "date",
+        },
+        {
+          name: "inst_ben",
+          label: t("kycApproval.fields.noOfBeneficiary"),
+          fieldType: "number",
+        },
         {
           name: "inst_mob",
           label: t("kycApproval.fields.mobileNo"),
@@ -323,7 +339,11 @@ const KycActionModal = ({
           optionsList: masterDataLists.relationTypes,
           labelKey: "Option_Value",
         },
-        { name: "dob", label: t("kycApproval.fields.dateOfBirth"), fieldType: "date" },
+        {
+          name: "dob",
+          label: t("kycApproval.fields.dateOfBirth"),
+          fieldType: "date",
+        },
         {
           name: "gender",
           label: t("kycApproval.fields.gender"),
@@ -355,7 +375,11 @@ const KycActionModal = ({
       ];
 
       config.permanentLocation = [
-        { name: "address", label: t("kycApproval.fields.address"), fieldType: "text" },
+        {
+          name: "address",
+          label: t("kycApproval.fields.address"),
+          fieldType: "text",
+        },
         {
           name: "stateId",
           label: t("kycApproval.fields.state"),
@@ -406,7 +430,11 @@ const KycActionModal = ({
       ];
 
       config.presentLocation = [
-        { name: "presentAddress", label: t("kycApproval.fields.address"), fieldType: "text" },
+        {
+          name: "presentAddress",
+          label: t("kycApproval.fields.address"),
+          fieldType: "text",
+        },
         {
           name: "presentStateId",
           label: t("kycApproval.fields.state"),
@@ -463,9 +491,22 @@ const KycActionModal = ({
           fieldType: "number",
           maxLength: 12,
         },
-        { name: "voterId", label: t("kycApproval.fields.voterId"), uppercase: true },
-        { name: "rationNo", label: t("kycApproval.fields.rationCard"), uppercase: true },
-        { name: "panNo", label: t("kycApproval.fields.panCard"), uppercase: true },
+        {
+          name: "voterId",
+          label: t("kycApproval.fields.voterId"),
+          uppercase: true,
+        },
+        {
+          name: "rationNo",
+          label: t("kycApproval.fields.rationCard"),
+          uppercase: true,
+        },
+        {
+          name: "panNo",
+          label: t("kycApproval.fields.panCard"),
+          maxLength: 10,
+          uppercase: true,
+        },
       ];
     }
 
@@ -622,7 +663,9 @@ const KycActionModal = ({
               <div className="flex flex-col gap-2 min-w-0 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
                 <div className="min-w-0 space-y-1">
                   <p className="text-xs sm:text-sm text-gray-500 leading-snug break-all">
-                    <span className="text-gray-400">{t("kycApproval.appNo")}</span>{" "}
+                    <span className="text-gray-400">
+                      {t("kycApproval.appNo")}
+                    </span>{" "}
                     <span className="font-medium text-gray-700">
                       {selectedApplication?.Appl_No ||
                         selectedApplication?.Application_No ||
@@ -762,7 +805,8 @@ const KycActionModal = ({
                 className="bg-primary hover:bg-primary/90 px-4 sm:px-6 font-semibold w-full sm:w-auto"
                 disabled={loading}
               >
-                <Save className="w-4 h-4 mr-2 shrink-0" /> {t("kycApproval.saveAndUpdate")}
+                <Save className="w-4 h-4 mr-2 shrink-0" />{" "}
+                {t("kycApproval.saveAndUpdate")}
               </Button>
             ) : (
               <div className="hidden sm:block" />
@@ -774,14 +818,16 @@ const KycActionModal = ({
                 onClick={() => setShowRejectModal(true)}
                 disabled={isEditMode || loading}
               >
-                <Ban className="w-4 h-4 mr-2 shrink-0" /> {t("kycApproval.reject")}
+                <Ban className="w-4 h-4 mr-2 shrink-0" />{" "}
+                {t("kycApproval.reject")}
               </Button>
               <Button
                 className="bg-primary hover:bg-primary/90 text-white px-4 sm:px-8 font-bold min-w-0 sm:min-w-[120px] transition-all flex-1 sm:flex-none sm:w-auto"
                 onClick={() => onApproveReject(1)}
                 disabled={isEditMode || loading}
               >
-                <CheckCircle2 className="w-4 h-4 mr-2 shrink-0" /> {t("kycApproval.approve")}
+                <CheckCircle2 className="w-4 h-4 mr-2 shrink-0" />{" "}
+                {t("kycApproval.approve")}
               </Button>
             </div>
           </div>

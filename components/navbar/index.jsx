@@ -70,7 +70,7 @@ const Navbar = ({
   const searchWrapRef = useRef(null);
   const searchInputRef = useRef(null);
   const router = useRouter();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   const resolvedLang = (i18n.language || "en").split("-")[0];
@@ -229,7 +229,7 @@ const Navbar = ({
           >
             {mobileSearchOpen ? (
               <p className="lg:hidden mb-2 px-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#00264D]/55">
-                Search pages
+                {t("navbar.searchPages", "Search pages")}
               </p>
             ) : null}
 
@@ -246,7 +246,7 @@ const Navbar = ({
                     <InputField
                       control={searchForm.control}
                       name="search"
-                      placeholder="Search pages..."
+                      placeholder={t("navbar.searchPages", "Search pages")}
                       autoComplete="off"
                       formItemClassName="gap-0 space-y-0 w-full"
                       className={cn(
@@ -457,9 +457,10 @@ const Navbar = ({
               Profile
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={(e) => {
-                e.preventDefault();
-                if (!logoutLoading) setLogoutDialogOpen(true);
+              onSelect={(e) => {
+                if (!logoutLoading) {
+                  setTimeout(() => setLogoutDialogOpen(true), 150);
+                }
               }}
               disabled={logoutLoading}
               className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg cursor-pointer text-sm text-red-600 hover:bg-red-50 focus:bg-red-50 transition-colors duration-150 ease-out"
@@ -480,7 +481,7 @@ const Navbar = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel  className="cursor-pointer">Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setLogoutDialogOpen(false)} className="cursor-pointer">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 setLogoutDialogOpen(false);

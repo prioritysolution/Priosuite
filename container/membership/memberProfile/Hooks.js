@@ -249,6 +249,7 @@ export const useMemberProfile = () => {
     panNo: yup
       .string()
       .nullable() // Allows null or empty value
+      .max(10, "PAN No. must not exceed 10 characters")
       .test(
         "is-valid-pan",
         "Please enter a valid PAN No.",

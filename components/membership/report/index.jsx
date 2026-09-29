@@ -216,16 +216,14 @@ const MembershipReport = ({
                   control={form.control}
                   name="fromDate"
                   label={t("membership.report.fields.fromDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  isManualInput={true}
                 />
 
                 <DatePickerField
                   control={form.control}
                   name="toDate"
                   label={t("membership.report.fields.toDate")}
-                  startYear={2000}
-                  endYear={2050}
+                  isManualInput={true}
                 />
 
                 <DropdownField

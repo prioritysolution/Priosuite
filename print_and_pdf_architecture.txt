@@ -1,0 +1,42 @@
+# Print Layout and PDF Download Architecture
+
+This document explains how the print preview and PDF generation features are implemented in this project, so you can replicate the mechanism in another project.
+
+## 1. Browser Print Layout (HTML/React-to-Print)
+
+For printing directly from the browser (the "Printer" icon), the project uses HTML-based templates and the `react-to-print` library.
+
+**Key Components & Flow:**
+- **Hidden Print Host (`index.jsx`):** 
+  The print layout is rendered into a React Portal attached to `document.body` but hidden off-screen using CSS (`position: fixed`, `left: -10000px`, `zIndex: -1`). This allows the browser to render the DOM elements fully without them taking up space or being visible on the actual screen.
+- **`useReactToPrint` Hook (`index.jsx`):** 
+  This hook from `react-to-print` is linked to a `printRef`. When `generatePrint()` is called, it takes the DOM tree inside the `printRef` and sends it to the browser's native Print dialog.
+- **The Print Template (`PreviewModal.jsx`):**
+  This component represents what the physical printed page will look like.
+  - It specifies explicit physical dimensions for a standard page (e.g., `w-[210mm]` and page heights like `h-[297mm]`).
+  - It handles its own pagination data logically (`paginateBody`), chunking data into pages based on a max row limit (`PAGE_ROWS = 23`).
+  - It uses Tailwind print modifiers (like `print:break-after-page`) on the wrapper divs for each logical page to ensure the browser inserts page breaks correctly.
+  - The tables and data rows are explicitly mapped to HTML `<table>`, `<tr>`, `<td>` to preserve a strict tabular layout.
+
+## 2. PDF Download Engine (`jspdf`)
+
+For downloading an actual `.pdf` file (the "Download" icon), the project does *not* convert HTML to PDF. Instead, it constructs the PDF directly drawing shapes and text using `jspdf`.
+
+**Key Components & Flow:**
+- **The Core Engine (`pdfEngine.js`):**
+  This file serves as a wrapper around the `jspdf` API. It abstracts the complex positioning logic.
+  - `openPdf(orientation)` creates the jsPDF instance.
+  - `drawChrome`, `drawFooter`, `drawColumnHead`: Standardizes the headers and footers (Organisation name, report title, generated date/time) across all reports.
+  - `fillTable` and `fillPair`: Highly robust functions that loop through data rows and draw rectangles (`doc.rect`), lines (`doc.line`), and text (`doc.text`). They automatically handle calculating text widths (`doc.splitTextToSize`), row heights, text wrapping, and most importantly, triggering `doc.addPage()` when the y-coordinate approaches the bottom of the page (`pageH - 10`).
+- **Report Builders (`buildReportPdfs.js`):**
+  This file contains the specific layouts for each report (like `downloadProfitLossPdf`).
+  - It structures the raw data fetched from the API into an array of normalized "row" objects containing `values` (an array of strings corresponding to columns).
+  - It maps out column configurations (widths, alignments).
+  - It handles adding grouped rows, subtotals, and grand totals to the final payload.
+  - It calls the functions from `pdfEngine.js` and finally calls `doc.save('filename.pdf')`.
+- **UI Trigger (`index.jsx`):**
+  The "Download" button calls the async builder function (e.g., `downloadProfitLossPdf`). A toast notification is used to show a loading state, taking advantage of a progress callback (`onProgress`) inside the PDF engine to prevent the UI from seeming frozen during heavy PDF generation.
+
+### Summary of which approach to use:
+- **`react-to-print` (HTML)** is used when the user hits "Print" to bring up the browser's native print overlay.
+- **`jspdf` (Canvas/Drawing)** is used when the user hits "Download PDF" to generate a raw standalone PDF file that gets saved to their computer, bypassing any browser styling inconsistencies.
