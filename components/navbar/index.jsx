@@ -6,6 +6,7 @@
 import {
   MdCall,
   MdNotifications,
+  MdSupportAgent,
   MdOutlineArrowDropDown,
   MdMenu,
   MdPerson,
@@ -17,6 +18,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import getCookieData from "../../utils/getCookieData";
 import { useRouter } from "next/navigation";
+import { useSupportLive } from "@/container/support/SupportLiveProvider";
 import { useTranslation } from "react-i18next";
 import { setAppLanguage } from "@/i18n";
 import { Skeleton } from "../ui/skeleton";
@@ -72,6 +74,9 @@ const Navbar = ({
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [bellOpen, setBellOpen] = useState(false);
+  const { unreadCount, notices, openTicket, markAllRead } = useSupportLive();
+  const badge = unreadCount > 9 ? "9+" : unreadCount > 0 ? String(unreadCount) : "";
 
   const resolvedLang = (i18n.language || "en").split("-")[0];
   const currentLang =
@@ -396,12 +401,88 @@ const Navbar = ({
 
         <button
           type="button"
-          className="relative p-1.5 sm:p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-150 ease-out flex-shrink-0"
-          aria-label="Notifications"
+          data-support-icon
+          data-count={unreadCount}
+          onClick={() => router.push("/support")}
+          className={`relative p-1.5 sm:p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-150 ease-out flex-shrink-0 ${
+            unreadCount > 0 ? "has-news" : ""
+          }`}
+          aria-label={unreadCount > 0 ? `Support, ${unreadCount} new` : "Support"}
         >
-          <MdNotifications className="text-xl" />
-          <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 w-2 h-2 bg-red-400 rounded-full border border-[#00264D] animate-pulse" />
+          <MdSupportAgent className="text-xl" />
+          {badge ? (
+            <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[10px] leading-4 font-bold text-center border border-[#00264D]">
+              {badge}
+            </span>
+          ) : null}
         </button>
+
+        <div className="relative flex-shrink-0">
+          <button
+            type="button"
+            data-support-bell
+            data-count={unreadCount}
+            onClick={() => setBellOpen((open) => !open)}
+            className={`relative p-1.5 sm:p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-150 ease-out ${
+              unreadCount > 0 ? "has-news" : ""
+            }`}
+            aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} new` : "Notifications"}
+          >
+            <MdNotifications className="text-xl" />
+            {badge ? (
+              <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[10px] leading-4 font-bold text-center border border-[#00264D]">
+                {badge}
+              </span>
+            ) : null}
+          </button>
+          {bellOpen ? (
+            <div className="absolute right-0 top-full z-50 mt-2 w-[min(20rem,calc(100vw-1.5rem))] rounded-xl border border-slate-200 bg-white text-slate-800 shadow-xl">
+              <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100">
+                <p className="text-sm font-semibold">Notifications</p>
+                <button
+                  type="button"
+                  className="text-xs font-semibold text-[#00264D]"
+                  onClick={markAllRead}
+                >
+                  Mark all read
+                </button>
+              </div>
+              <div className="max-h-80 overflow-y-auto">
+                {notices.length ? (
+                  notices.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      className="flex w-full flex-col gap-0.5 px-3 py-2 text-left hover:bg-slate-50"
+                      onClick={() => {
+                        setBellOpen(false);
+                        openTicket(item.number);
+                      }}
+                    >
+                      <span className="flex items-center gap-2 text-sm font-semibold">
+                        {item.unread ? (
+                          <span className="h-2 w-2 rounded-full bg-red-500" />
+                        ) : null}
+                        {item.title || "Support update"}
+                      </span>
+                      <span className="text-xs text-slate-500">{item.number}</span>
+                      {item.body ? (
+                        <span className="text-xs text-slate-600 line-clamp-2">{item.body}</span>
+                      ) : null}
+                      <span className="text-[10px] text-slate-400">
+                        {item.at ? new Date(item.at).toLocaleString() : ""}
+                      </span>
+                    </button>
+                  ))
+                ) : (
+                  <p className="px-3 py-6 text-center text-sm text-slate-500">
+                    No notifications yet
+                  </p>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </div>
 
         <button
           type="button"

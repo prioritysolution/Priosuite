@@ -33,6 +33,8 @@ const CashAccountContainer = () => {
     showVoucherDetails,
     setShowVoucherDetails,
     handleShowVoucherDetails,
+    getVoucherListLoading,
+    getVoucherDetailsLoading,
     totalDrAmount,
     totalCrAmount,
     denomData,
@@ -69,6 +71,8 @@ const CashAccountContainer = () => {
       showVoucherDetails={showVoucherDetails}
       setShowVoucherDetails={setShowVoucherDetails}
       handleShowVoucherDetails={handleShowVoucherDetails}
+      getVoucherListLoading={getVoucherListLoading}
+      getVoucherDetailsLoading={getVoucherDetailsLoading}
       totalDrAmount={totalDrAmount}
       totalCrAmount={totalCrAmount}
       denomData={denomData}

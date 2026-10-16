@@ -11,6 +11,7 @@ import useAutoLogout from "../../utils/useAutoLogout.jsx";
 import usePreventNumberScroll from "../../utils/usePreventNumberInput";
 import { useDispatch } from "react-redux";
 import { beg_date } from "../../container/auth/login/LoginReducer";
+import { SupportLiveProvider } from "../../container/support/SupportLiveProvider";
 
 const DashboardLayout = ({ children }) => {
   const { SessionTimeoutModal } = useAutoLogout();
@@ -48,6 +49,7 @@ const DashboardLayout = ({ children }) => {
   }, [token, router]);
 
   return (
+    <SupportLiveProvider>
     <div className="flex h-full w-full overflow-hidden bg-gray-100">
       <SessionTimeoutModal />
 
@@ -85,6 +87,7 @@ const DashboardLayout = ({ children }) => {
         <FooterContainer />
       </div>
     </div>
+    </SupportLiveProvider>
   );
 };
 

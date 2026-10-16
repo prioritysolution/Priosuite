@@ -4,10 +4,15 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import CentralLoader from "./CentralLoader";
 
+const AUTH_PATHS = ["/login", "/forgotPassword"];
+
+const isAuthPath = (path) =>
+  AUTH_PATHS.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+
 function PageLoadWatcher() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(() => !isAuthPath(pathname || ""));
   const isFirstRoute = useRef(true);
   const hideTimer = useRef(null);
 
@@ -17,8 +22,17 @@ function PageLoadWatcher() {
     hideTimer.current = window.setTimeout(() => setVisible(false), ms);
   };
 
+  const hideLoader = () => {
+    if (hideTimer.current) window.clearTimeout(hideTimer.current);
+    setVisible(false);
+  };
+
   // Full page first paint
   useEffect(() => {
+    if (isAuthPath(pathname || "")) {
+      hideLoader();
+      return undefined;
+    }
     showLoader(400);
     return () => {
       if (hideTimer.current) window.clearTimeout(hideTimer.current);
@@ -29,6 +43,10 @@ function PageLoadWatcher() {
   useEffect(() => {
     if (isFirstRoute.current) {
       isFirstRoute.current = false;
+      return;
+    }
+    if (isAuthPath(pathname || "")) {
+      hideLoader();
       return;
     }
     showLoader(550);
@@ -56,6 +74,7 @@ function PageLoadWatcher() {
         ) {
           return;
         }
+        if (isAuthPath(url.pathname)) return;
         showLoader(800);
       } catch {
         // ignore invalid urls
@@ -74,7 +93,7 @@ function PageLoadWatcher() {
 const PageLoadProvider = ({ children }) => {
   return (
     <>
-      <Suspense fallback={<CentralLoader fullScreen />}>
+      <Suspense fallback={null}>
         <PageLoadWatcher />
       </Suspense>
       {children}

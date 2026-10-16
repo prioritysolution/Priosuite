@@ -133,7 +133,7 @@ const TransactionRegisterPreview = ({
           <TableHeader>
             <TableRow className="!h-[40px]">
               <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("membership.reports.print.slNo")}</TableHead>
-              <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">{t("membership.reports.print.memberType")}</TableHead>
+              <TableHead className="text-black p-0 pl-1 border-black border-l text-left w-[100px]">{t("membership.reports.print.memberType")}</TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">{t("membership.reports.print.customerName")}</TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[160px]">{t("membership.reports.print.guardianName")}</TableHead>
               <TableHead className="text-black p-0 border-black border-l text-center w-[140px]">{t("membership.reports.print.village")}</TableHead>
@@ -169,7 +169,7 @@ const TransactionRegisterPreview = ({
                       <TableCell className="p-0 border border-black text-center">
                         {row.serial}
                       </TableCell>
-                      <TableCell className="p-0 border border-black text-center">
+                      <TableCell className="p-0 pl-1 border border-black text-left">
                         {row.data.Member_Type}
                       </TableCell>
                       <TableCell className="p-0 border border-black text-center">

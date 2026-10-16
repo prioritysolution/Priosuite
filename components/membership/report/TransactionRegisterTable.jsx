@@ -27,7 +27,7 @@ const TransactionRegisterTable = ({
       <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow className="bg-gray-100">
           <TableHead className="text-center">{t("membership.reports.slNo")}</TableHead>
-          <TableHead className="">{t("membership.reports.memberType")}</TableHead>
+          <TableHead className="text-left">{t("membership.reports.memberType")}</TableHead>
           <TableHead className="">{t("membership.reports.customerName")}</TableHead>
           <TableHead className="">{t("membership.reports.guardianName")}</TableHead>
           <TableHead className="">{t("membership.reports.village")}</TableHead>
@@ -79,7 +79,7 @@ const TransactionRegisterTable = ({
                       <TableCell className="font-medium text-center">
                         {index + 1 + groupIndex} {/* Global serial */}
                       </TableCell>
-                      <TableCell className="">{data?.Member_Type}</TableCell>
+                      <TableCell className="text-left">{data?.Member_Type}</TableCell>
                       <TableCell
                         className="cursor-pointer text-blue-500"
                         onClick={() => handleShowLedger(data.Id)}

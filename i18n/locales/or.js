@@ -1320,6 +1320,9 @@ const or = {
           editTitle: "ସଦସ୍ୟ ସୂଚନା ସମ୍ପାଦନ",
           description:
             "ନିମ୍ନ ବିବରଣୀ ଅପଡେଟ୍ କରନ୍ତୁ, ତା'ପରେ ନିଶ୍ଚିତ କରିବାକୁ ସଂରକ୍ଷଣ କ୍ଲିକ୍ କରନ୍ତୁ।",
+          removeTitle: "ସଦସ୍ୟ ହଟାନ୍ତୁ?",
+          removeDescription: "ଆପଣ ନିଶ୍ଚିତ କି ଏହି ସଦସ୍ୟଙ୍କୁ ହଟାଇବେ?",
+          cancel: "ବାତିଲ",
         },
         table: {
           hash: "#",
@@ -1382,7 +1385,7 @@ const or = {
       reports: {
         slNo: "କ୍ରମିକ ସଂଖ୍ୟା",
         date: "ତାରିଖ",
-        memberType: "ସଦସ୍ୟ ପ୍ରକାର",
+        memberType: "ପ୍ରକାର",
         customerName: "ଗ୍ରାହକ ନାମ",
         guardianName: "ଅଭିଭାବକଙ୍କ ନାମ",
         village: "ଗାଁ",
@@ -1414,7 +1417,7 @@ const or = {
         print: {
           slNo: "କ୍ରମିକ ସଂଖ୍ୟା",
           date: "ତାରିଖ",
-          memberType: "ସଦସ୍ୟ ପ୍ରକାର",
+          memberType: "ପ୍ରକାର",
           customerName: "ଗ୍ରାହକ ନାମ",
           guardianName: "ଅଭିଭାବକ ନାମ",
           village: "ଗାଁ",
@@ -2619,6 +2622,7 @@ const or = {
       mail: "ମେଲ୍",
       serialNo: "କ୍ରମିକ ନମ୍ବର",
       notAvailable: "ଉପଲବ୍ଧ ନାହିଁ",
+      na: "ପ୍ରଯୁଜ୍ୟ ନୁହେଁ",
       view: "ଦେଖନ୍ତୁ",
       showing: "ଦେଖାଯାଉଛି",
       of: "ମଧ୍ୟରୁ",

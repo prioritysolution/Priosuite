@@ -1320,6 +1320,9 @@ const hi = {
           editTitle: "सदस्य जानकारी संपादित करें",
           description:
             "नीचे विवरण अपडेट करें, फिर पुष्टि के लिए सहेजें पर क्लिक करें।",
+          removeTitle: "सदस्य हटाएँ?",
+          removeDescription: "क्या आप वाकई इस सदस्य को हटाना चाहते हैं?",
+          cancel: "रद्द करें",
         },
         table: {
           hash: "#",
@@ -1382,7 +1385,7 @@ const hi = {
       reports: {
         slNo: "क्रमांक",
         date: "तिथि",
-        memberType: "सदस्य प्रकार",
+        memberType: "प्रकार",
         customerName: "ग्राहक का नाम",
         guardianName: "अभिभावक का नाम",
         village: "गाँव",
@@ -1414,7 +1417,7 @@ const hi = {
         print: {
           slNo: "क्रमांक",
           date: "तिथि",
-          memberType: "सदस्य प्रकार",
+          memberType: "प्रकार",
           customerName: "ग्राहक का नाम",
           guardianName: "अभिभावक का नाम",
           village: "गाँव",
@@ -2617,6 +2620,7 @@ const hi = {
       mail: "मेल",
       serialNo: "क्रमांक",
       notAvailable: "उपलब्ध नहीं",
+      na: "लागू नहीं",
       view: "देखें",
       showing: "दिखाया जा रहा है",
       of: "में से",

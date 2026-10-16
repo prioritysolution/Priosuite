@@ -1,0 +1,113 @@
+================================================================================
+PRIOSUITE / PRIO_BANK - COMPLETE PROJECT ANALYSIS
+================================================================================
+
+1. WHAT THIS PROJECT DOES (OVERALL PURPOSE)
+--------------------------------------------------------------------------------
+PrioSuite (or prio_bank) is a comprehensive, web-based Cooperative Banking Management System. It is designed for cooperative banks and credit societies to manage their entire day-to-day operations. The application is a Next.js (React) frontend that communicates with a remote backend REST API. 
+
+The software digitizes all core banking workflows, including:
+- Member Management (shares, groups, dividends)
+- Core Banking Operations (savings/deposits, loan processing, investments)
+- General Accounting (vouchers, daybook, trial balance, profit & loss, balance sheet)
+- Administration & Setup (system users, geographic tracking, product configurations)
+- Reporting & Printing (passbook generation, pdf reports, ledgers)
+
+The system is designed with a strict 3-tier frontend architecture:
+1. Routing (app/): Simple shell pages.
+2. Logic (container/): Business logic, API calls, form validation.
+3. UI (components/): Visual layout and user interactions.
+
+--------------------------------------------------------------------------------
+2. DETAILED EXPLANATION OF EVERY MODULE / PAGE WITH ROUTES
+--------------------------------------------------------------------------------
+The application is divided into several main domains. Below is the detailed function of every page within the system, alongside its URL route (relative to the dashboard):
+
+A. MEMBERSHIP (Managing the cooperative's members and shares)
+- issueMembership (Route: /membership/issueMembership): Enrolling a new individual member into the cooperative.
+- groupProfile (Route: /membership/groupProfile): Creating and managing profiles for groups (like SHGs).
+- institutionProfile (Route: /membership/institutionProfile): Creating and managing profiles for institutional members.
+- mapgroupmember (Route: /membership/mapgroupmember): Linking individual members to their respective groups.
+- mapinstitutemember (Route: /membership/mapinstitutemember): Linking individual members to institutions.
+- memberProfile (Route: /membership/memberProfile): Viewing and editing detailed information of an individual member.
+- memberEnquiry (Route: /membership/memberEnquiry): Searching and looking up member details quickly.
+- shareIssue (Route: /membership/shareIssue): Issuing new shares to members.
+- shareRefund (Route: /membership/shareRefund): Refunding shares if a member withdraws.
+- calculateDividend (Route: /membership/calculateDividend): Computing the yearly dividend payouts for members based on their shareholdings.
+- generateCertificate (Route: /membership/generateCertificate): Generating official printable share/membership certificates.
+- membershipWithdrawn (Route: /membership/membershipWithdrawn): Processing the exit of a member from the cooperative.
+- passbookPrint (Route: /membership/passbookPrint): Generating formatted views to print the member's passbook.
+- report (Route: /membership/report): Generates PDFs for member registers, dividend lists, and transaction histories.
+
+B. LOAN (Managing the lifecycle of loans given out by the bank)
+- newApplication (Route: /loan/newApplication): Initiating a new loan request for a member.
+- disburse (Route: /loan/disburse): Approving and disbursing the loan funds to the member's account.
+- repayment (Route: /loan/repayment): Logging installments and collections paid by the borrower.
+- generateSchedule (Route: /loan/generateSchedule): Calculating and viewing the EMI / Repayment schedule.
+- guarantorDetails (Route: /loan/guarantorDetails): Adding guarantors to a loan.
+- guarantorRelease (Route: /loan/guarantorRelease): Releasing guarantors once the loan is paid off.
+- defaulterList (Route: /loan/defaulterList): Tracking members who have missed their scheduled loan repayments.
+- accountStatement (Route: /loan/accountStatement): Viewing the full ledger of a specific loan account.
+- passbookPrint (Route: /loan/passbookPrint): Printing the loan passbook for the customer.
+- report (Route: /loan/report): Summaries of all disbursements and repayments.
+
+C. INVESTMENT (Managing the bank's investments / fixed deposits)
+- investmentOpenAccount (Route: /investment/investmentOpenAccount): Opening a new fixed deposit, recurring deposit, or other investment for a customer.
+- investmentRenewal (Route: /investment/investmentRenewal): Renewing a matured investment for a new term.
+- investmentClose (Route: /investment/investmentClose): Closing an investment account and paying out the principal + interest.
+- report (Route: /investment/report): Viewing active investments and maturities.
+
+D. VOUCHER & ACCOUNTING (Day-to-day bookkeeping)
+- voucherEntry (Route: /voucher/voucherEntry): The core screen for entering general receipts, payments, and journal vouchers.
+- adjustmentVoucher (Route: /voucher/adjustmentVoucher): Special vouchers to correct accounting mistakes.
+- provision (Route: /voucher/provision): Setting aside funds for provisions (e.g., NPA provisions).
+- daybook (Route: /report/daybook): The daily ledger showing all transactions in the bank for the day.
+- cashbook (Route: /report/cashbook): Tracking all physical cash coming in and going out.
+- accountLedger (Route: /report/accountLedger): Viewing the transaction history of specific accounting heads.
+- subLedger (Route: /report/subLedger): Viewing transaction history for sub-ledgers.
+- trailBalance (Route: /report/trailBalance): Generating the Trial Balance to ensure debits equal credits.
+- profitLoss (Route: /report/profitLoss): Generating the bank's income statements.
+- plAppropiation (Route: /report/plAppropiation): Profit and Loss appropriation account.
+- balanceSheet (Route: /report/balanceSheet): Generating the final Balance Sheet of the bank's assets and liabilities.
+- balancing (Route: /report/balancing): Tallying end-of-day balances.
+- userScroll (Route: /report/userScroll): Tallying user-specific transaction scrolls.
+
+E. MASTER (Admin configurations and setups)
+- depositProduct (Route: /master/depositProduct): Defining the rules, interest rates, and terms for different types of bank accounts.
+- loanProduct (Route: /master/loanProduct): Defining the rules and terms for loan products.
+- depositInterestSetup (Route: /master/depositInterestSetup): Updating the interest rate structures over time.
+- shareProduct (Route: /master/shareProduct): Defining the face value and limits of cooperative shares.
+- depositAgent (Route: /master/depositAgent): Managing collection agents.
+- operationalArea (Route: /master/operationalArea/...): Setting up the geographical areas (State, District, Block, Village, etc.) where the bank operates.
+- subLedger (Route: /master/subLedger): Creating the accounting tree (assets, liabilities, incomes, expenses).
+- demandMaster (Route: /master/demandMaster): Setting up rules for automated loan demands.
+- passbookSettings (Route: /master/passbookSettings): Aligning the print coordinates for physical passbook printing.
+
+F. OPENING (Migration and Year-Start entries)
+- bankOpening (Route: /opening/bankOpening): Setting the opening balance for the bank's cash/bank accounts.
+- ledgerBalance (Route: /opening/ledgerBalance): Setting the start-of-year balances for accounting ledgers.
+- denomination (Route: /opening/denomination): Setting the denomination for opening balances.
+- depositAccountOpening (Route: /opening/depositAccountOpening): Migrating opening balances for deposits.
+- loanOpening (Route: /opening/loanOpening): Migrating opening balances for loans.
+- membershipOpening (Route: /opening/membershipOpening): Migrating opening balances for members.
+- investmentOpening (Route: /opening/investmentOpening): Migrating opening balances for investments.
+
+G. TOOLS & RECTIFY (System Admin)
+- createUser (Route: /tools/createUser): Adding new bank employees to the system.
+- userRole (Route: /tools/userRole): Assigning permissions (cashier, manager, admin) to users.
+- loginPasswordPolicy (Route: /tools/loginPasswordPolicy): Enforcing security rules for passwords.
+- rectify/deposit (Route: /rectify/deposit): Administrative screens to fix severe data-entry errors in core accounts.
+- rectify/membership (Route: /rectify/membership): Administrative screens to fix membership data-entry errors.
+
+--------------------------------------------------------------------------------
+3. HOW IT ALL WORKS TOGETHER (THE WORKFLOW)
+--------------------------------------------------------------------------------
+1. SETUP: Admins first use the `master` module to set up geographies, products, and ledgers.
+2. MIGRATION: Existing balances are entered via the `opening` modules.
+3. DAILY OPERATIONS: 
+   - Cashiers use `membership` to enroll people.
+   - Customers open accounts via `investment` or take out credit via `loan`.
+   - Money movement is logged manually via `voucher` or automatically via the modules.
+4. END OF DAY/YEAR: Managers use the `report` modules to print Daybooks, Trial Balances, and Balance Sheets. 
+
+Through standard React-Hook-Forms and Redux, data flows seamlessly from the user input -> validated through Yup -> sent via Axios to the backend API -> and recorded in the database.

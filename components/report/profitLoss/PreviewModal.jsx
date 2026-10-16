@@ -119,7 +119,7 @@ const PreviewModal = ({
     const page = pages[pages.length - 1];
     page.push({ type: "subtotal", amount: subAmount });
     if (leftNet || rightNet) {
-      page.push(netRow ? { type: "net", data: netRow } : { type: "blank" });
+      page.push(netRow ? { type: "net", data: netRow } : { type: "netBlank" });
     }
     page.push({
       type: "grandTotal",
@@ -266,6 +266,12 @@ const PreviewModal = ({
                                   <TableCell className="font-semibold border border-black p-0 text-right pr-1">
                                     {parseFloat(row.amount).toFixed(2)}
                                   </TableCell>
+                                </TableRow>
+                              );
+                            case "netBlank":
+                              return (
+                                <TableRow key={`net-blank-${index}`} className="h-[40px]">
+                                  <TableCell colSpan={3} className="p-0 border border-black" />
                                 </TableRow>
                               );
                             case "blank":

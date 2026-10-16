@@ -25,7 +25,7 @@ const WithdrawnRegisterTable = ({
         <TableRow className="bg-gray-100">
           <TableHead className=" text-center">{t("membership.reports.slNo")}</TableHead>
           <TableHead className="">{t("membership.reports.date")}</TableHead>
-          <TableHead className="">{t("membership.reports.memberType")}</TableHead>
+          <TableHead className="text-left">{t("membership.reports.memberType")}</TableHead>
           <TableHead className="">{t("membership.reports.customerName")}</TableHead>
           <TableHead className="">{t("membership.reports.guardianName")}</TableHead>
           <TableHead className="">{t("membership.reports.village")}</TableHead>
@@ -53,7 +53,7 @@ const WithdrawnRegisterTable = ({
                   {data.Withdrwan_Date &&
                     format(data.Withdrwan_Date, "dd-MM-yyyy")}
                 </TableCell>
-                <TableCell className="">{data?.Member_Type}</TableCell>
+                <TableCell className="text-left">{data?.Member_Type}</TableCell>
                 <TableCell
                   className="cursor-pointer text-blue-500"
                   onClick={() => handleShowLedger(data.Id)}

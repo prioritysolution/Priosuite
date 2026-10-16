@@ -298,19 +298,19 @@ export async function fillPair(doc, options) {
   openPage(false);
 
   for (let i = 0; i < count; i += 1) {
-    const left = leftRows[i] || { values: [] };
-    const right = rightRows[i] || { values: [] };
+    const left = leftRows[i];
+    const right = rightRows[i];
     const leftLayout =
-      wrapRows && left.banner == null
+      left && wrapRows && left.banner == null
         ? layoutCells(doc, columns, left.values, !!left.bold, left.spans, metrics, left.aligns)
         : null;
     const rightLayout =
-      wrapRows && right.banner == null
+      right && wrapRows && right.banner == null
         ? layoutCells(doc, columns, right.values, !!right.bold, right.spans, metrics, right.aligns)
         : null;
     const height = Math.max(rowH, leftLayout?.height || 0, rightLayout?.height || 0);
     ensure(height);
-    if (left.banner != null) {
+    if (left?.banner != null) {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(6.2);
       doc.rect(startX, y, width, height);
@@ -318,7 +318,10 @@ export async function fillPair(doc, options) {
       bannerLines.forEach((line, lineIndex) => {
         doc.text(line, startX + 1.2, y + 3.5 + lineIndex * 3.1);
       });
-    } else {
+    } else if (left?.borderless) {
+      doc.setDrawColor(0);
+      doc.rect(startX, y, width, height);
+    } else if (left) {
       paintCells(
         doc,
         startX,
@@ -332,7 +335,7 @@ export async function fillPair(doc, options) {
         left.spans,
       );
     }
-    if (right.banner != null) {
+    if (right?.banner != null) {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(6.2);
       doc.rect(rightX, y, width, height);
@@ -340,7 +343,10 @@ export async function fillPair(doc, options) {
       bannerLines.forEach((line, lineIndex) => {
         doc.text(line, rightX + 1.2, y + 3.5 + lineIndex * 3.1);
       });
-    } else {
+    } else if (right?.borderless) {
+      doc.setDrawColor(0);
+      doc.rect(rightX, y, width, height);
+    } else if (right) {
       paintCells(
         doc,
         rightX,

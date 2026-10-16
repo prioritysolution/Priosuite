@@ -266,6 +266,10 @@ html {
   scroll-behavior: smooth;
 }
 
+.support-row-updated {
+  background-color: #fff7ed;
+}
+
 @keyframes bounce-dot {
   0%,
   60%,

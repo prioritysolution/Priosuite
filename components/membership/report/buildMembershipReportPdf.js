@@ -13,7 +13,7 @@ const LANDSCAPE = new Set(["101", "103"]);
 const identityColumns = (t, amountTitle, amountGet) => [
   { title: label(t, "membership.reports.print.slNo", "SL. NO."), w: 14, align: "center", get: (_r, i) => String(i + 1) },
   { title: label(t, "membership.reports.print.date", "DATE"), w: 24, align: "center", get: (r) => showDate(r?.Adm_Date) },
-  { title: label(t, "membership.reports.print.memberType", "MEMBER TYPE"), w: 26, align: "center", get: (r) => r?.Member_Type },
+  { title: label(t, "membership.reports.print.memberType", "TYPE"), w: 26, align: "left", get: (r) => r?.Member_Type },
   { title: label(t, "membership.reports.print.customerName", "CUSTOMER NAME"), w: 36, align: "left", get: (r) => r?.Full_Name, wrap: true },
   { title: label(t, "membership.reports.print.guardianName", "GUARDIAN NAME"), w: 34, align: "left", get: (r) => r?.Relation_Name, wrap: true },
   { title: label(t, "membership.reports.print.village", "VILLAGE"), w: 26, align: "left", get: (r) => r?.Village, wrap: true },
@@ -35,7 +35,7 @@ const buildColumns = (showData, t) => {
   if (showData === "101") {
     return [
       { title: label(t, "membership.reports.print.slNo", "SL. NO."), w: 12, align: "center" },
-      { title: label(t, "membership.reports.print.memberType", "MEMBER TYPE"), w: 26, align: "center" },
+      { title: label(t, "membership.reports.print.memberType", "TYPE"), w: 26, align: "left" },
       { title: label(t, "membership.reports.print.customerName", "CUSTOMER NAME"), w: 42, align: "left", wrap: true },
       { title: label(t, "membership.reports.print.guardianName", "GUARDIAN NAME"), w: 40, align: "left", wrap: true },
       { title: label(t, "membership.reports.print.village", "VILLAGE"), w: 32, align: "left", wrap: true },
@@ -50,7 +50,7 @@ const buildColumns = (showData, t) => {
   return [
     { title: label(t, "membership.reports.print.slNo", "SL. NO."), w: 12, align: "center", get: (_r, i) => String(i + 1) },
     { title: label(t, "membership.reports.print.date", "DATE"), w: 22, align: "center", get: (r) => showDate(r?.Adm_Date) },
-    { title: label(t, "membership.reports.print.memberType", "MEMBER TYPE"), w: 22, align: "center", get: (r) => r?.Member_Type },
+    { title: label(t, "membership.reports.print.memberType", "TYPE"), w: 22, align: "left", get: (r) => r?.Member_Type },
     { title: label(t, "membership.reports.print.customerName", "CUSTOMER NAME"), w: 36, align: "left", get: (r) => r?.Full_Name, wrap: true },
     { title: label(t, "membership.reports.print.guardianName", "GUARDIAN NAME"), w: 34, align: "left", get: (r) => r?.Relation_Name, wrap: true },
     { title: label(t, "membership.reports.print.village", "VILLAGE"), w: 28, align: "left", get: (r) => r?.Village, wrap: true },

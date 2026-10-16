@@ -55,7 +55,7 @@ function DatePickerControl({
   disableBeforeStartDate = false,
   showCurrentDate = false,
   onChange,
-  isManualInput = false,
+  isManualInput = true,
   startYear = getYear(new Date()) - 100,
   endYear = getYear(new Date()) + 100,
   disabledDateBefore,

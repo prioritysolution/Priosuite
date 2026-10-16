@@ -1,4 +1,5 @@
 const createApi = `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/`;
+const supportApi = process.env.NEXT_PUBLIC_SUPPORT_API_URL ;
 
 export const endPoints = {
   test: `${createApi}test`,
@@ -705,5 +706,18 @@ export const endPoints = {
     `${createApi}Org/MasterSetup/GetLoginPasswordPolicy?org_id=${orgId}`,
   addLoginPasswordPolicy: `${createApi}Org/MasterSetup/AddLoginPasswordPolicy`,
   updateLoginPasswordPolicy: `${createApi}Org/MasterSetup/UpdateLoginPasswordPolicy`,
+
+  supportProject: (domain) =>
+    `${supportApi}/integrations/redirect/project?domain=${encodeURIComponent(domain)}`,
+  supportTickets: `${supportApi}/integrations/redirect/tickets`,
+  supportTicketList: (query) =>
+    `${supportApi}/integrations/redirect/tickets?${query}`,
+  supportTicketDetail: (number, phone) =>
+    `${supportApi}/integrations/redirect/tickets/${encodeURIComponent(number)}?phone=${encodeURIComponent(phone)}`,
+  supportTicketMessages: (number, phone) =>
+    `${supportApi}/integrations/redirect/tickets/${encodeURIComponent(number)}/messages?phone=${encodeURIComponent(phone)}`,
+  supportRealtime: (query) =>
+    `${supportApi}/integrations/redirect/realtime?${query}`,
+  supportRealtimeAuth: `${supportApi}/integrations/redirect/realtime/auth`,
 
 };

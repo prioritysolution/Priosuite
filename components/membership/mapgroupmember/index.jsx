@@ -48,6 +48,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -252,6 +262,7 @@ const MapGroupMember = ({
   const [radioLocked, setRadioLocked] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
+  const [removeTarget, setRemoveTarget] = useState(null);
   const dispatch = useDispatch();
 
   const startDate = getCookieData("fin_start_date");
@@ -368,7 +379,16 @@ const MapGroupMember = ({
         {m.Joinong_Date || t("common.na")}
       </span>
     ),
-    savings: m.Savings_Account_No || m.Savings_Account || t("common.na"),
+    savings:
+      m.Savings_Account_No ||
+      m.Savings_Account ||
+      m.SB_Account_No ||
+      m.Sb_Acct_No ||
+      m.SB_Ac_No ||
+      m.Account_No ||
+      m.Default_SBAcNo ||
+      "N/A",
+      // t("common.notAvailable"),
     status: <StatusBadge status={m.Status} />,
     actions: (
       <div className="flex items-center gap-1.5 flex-wrap">
@@ -382,9 +402,10 @@ const MapGroupMember = ({
           {t("membership.mapGroupMember.buttons.edit")}
         </Button>
         <Button
+          type="button"
           size="sm"
           variant="destructive"
-          onClick={() => handelDeleteMember(m.Map_Id)}
+          onClick={() => setRemoveTarget({ kind: "existing", id: m.Map_Id })}
           className="h-7 px-2.5 text-xs gap-1 shrink-0"
         >
           <Trash2 className="w-3 h-3" /> {t("common.buttons.remove")}
@@ -406,7 +427,7 @@ const MapGroupMember = ({
         type="button"
         variant="destructive"
         size="sm"
-        onClick={() => handleRemoveMember(m.id)}
+        onClick={() => setRemoveTarget({ kind: "added", id: m.id })}
         className="h-7 px-2.5 text-xs gap-1 shrink-0"
       >
         <Trash2 className="w-3 h-3" /> {t("common.buttons.remove")}
@@ -806,6 +827,43 @@ const MapGroupMember = ({
           </div>
         </ScrollArea>
       </div>
+
+      <AlertDialog
+        open={!!removeTarget}
+        onOpenChange={(open) => {
+          if (!open) setRemoveTarget(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t("membership.mapGroupMember.dialog.removeTitle")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("membership.mapGroupMember.dialog.removeDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel type="button">
+              {t("membership.mapGroupMember.dialog.cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              type="button"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (!removeTarget) return;
+                if (removeTarget.kind === "existing") {
+                  handelDeleteMember(removeTarget.id);
+                } else {
+                  handleRemoveMember(removeTarget.id);
+                }
+              }}
+            >
+              {t("membership.mapGroupMember.buttons.remove")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* ── Success notification ── */}
       <SuccessMessage

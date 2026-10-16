@@ -1318,6 +1318,10 @@ const en = {
         dialog: {
           editTitle: "Edit Member Information",
           description: "Update the details below, then click Save to confirm.",
+          removeTitle: "Remove member?",
+          removeDescription:
+            "Are you sure you want to remove this member?",
+          cancel: "Cancel",
         },
         table: {
           hash: "#",
@@ -1380,7 +1384,7 @@ const en = {
       reports: {
         slNo: "Sl No.",
         date: "Date",
-        memberType: "Member Type",
+        memberType: "Type",
         customerName: "Customer Name",
         guardianName: "Gurdian Name",
         village: "Village",
@@ -1412,7 +1416,7 @@ const en = {
         print: {
           slNo: "SL. NO.",
           date: "DATE",
-          memberType: "MEMBER TYPE",
+          memberType: "TYPE",
           customerName: "CUSTOMER NAME",
           guardianName: "GUARDIAN NAME",
           village: "VILLAGE",
@@ -2618,6 +2622,7 @@ const en = {
       mail: "Mail",
       serialNo: "Serial No.",
       notAvailable: "N/A",
+      na: "N/A",
       view: "View",
       showing: "Showing",
       of: "of",

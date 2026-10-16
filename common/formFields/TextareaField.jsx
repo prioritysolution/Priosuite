@@ -19,6 +19,7 @@ const TextareaField = ({
   disabled = false,
   readOnly = false,
   rows = 3,
+  maxLength,
   isRequired = false,
 }) => {
   return (
@@ -44,6 +45,7 @@ const TextareaField = ({
                 disabled={disabled}
                 readOnly={readOnly}
                 rows={rows}
+                maxLength={maxLength}
                 className={cn(
                   "w-full resize-none transition-colors duration-200",
                   hasError

@@ -60,6 +60,8 @@ const CashAccount = ({
   showVoucherDetails,
   setShowVoucherDetails,
   handleShowVoucherDetails,
+  getVoucherListLoading,
+  getVoucherDetailsLoading,
   totalDrAmount,
   totalCrAmount,
   denomData,
@@ -578,6 +580,7 @@ const CashAccount = ({
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
+      {/* Voucher List Dialog */}
       <Dialog open={showVoucherList} onOpenChange={setShowVoucherList}>
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px]">
           <DialogHeader>
@@ -586,6 +589,11 @@ const CashAccount = ({
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
+            {getVoucherListLoading ? (
+              <div className="w-full h-[600px] flex items-center justify-center">
+                <ClipLoader color="#00264d" size={50} speedMultiplier={0.7} />
+              </div>
+            ) : (
             <ScrollArea className="w-full h-[600px]">
               <Table>
                 <TableHeader>
@@ -623,11 +631,17 @@ const CashAccount = ({
                 </TableBody>
               </Table>
             </ScrollArea>
+            )}
           </div>
         </DialogContent>
       </Dialog>
       <Dialog open={showVoucherDetails} onOpenChange={setShowVoucherDetails}>
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[625px]">
+          {getVoucherDetailsLoading ? (
+            <div className="w-full h-[300px] flex items-center justify-center">
+              <ClipLoader color="#00264d" size={50} speedMultiplier={0.7} />
+            </div>
+          ) : (
           <div className="py-4">
             <div className="w-full grid grid-cols-3 gap-2 pb-5 text-sm">
               <p>
@@ -712,6 +726,7 @@ const CashAccount = ({
                 voucherDetailsData[0]?.Particular}
             </p>
           </div>
+          )}
         </DialogContent>
       </Dialog>
 

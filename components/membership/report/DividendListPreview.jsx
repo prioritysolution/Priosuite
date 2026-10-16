@@ -117,7 +117,7 @@ const DividendListPreview = ({
                 <TableRow className="h-[60px] border-black">
                   <TableHead className="text-black p-0 border-black text-center w-[40px]">{t("membership.reports.print.slNo")}</TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("membership.reports.print.date")}</TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">{t("membership.reports.print.memberType")}</TableHead>
+                  <TableHead className="text-black p-0 pl-1 border-black border-l text-left w-[80px]">{t("membership.reports.print.memberType")}</TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[140px]">{t("membership.reports.print.customerName")}</TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[140px]">{t("membership.reports.print.guardianName")}</TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">{t("membership.reports.print.village")}</TableHead>
@@ -135,7 +135,7 @@ const DividendListPreview = ({
                     <TableCell className="border border-black p-0 text-center">
                       {row?.Adm_Date && format(row?.Adm_Date, "dd-MM-yyyy")}
                     </TableCell>
-                    <TableCell className="border border-black p-0 text-center">
+                    <TableCell className="border border-black p-0 pl-1 text-left">
                       {row?.Member_Type}
                     </TableCell>
                     <TableCell className="border border-black p-0 text-center">

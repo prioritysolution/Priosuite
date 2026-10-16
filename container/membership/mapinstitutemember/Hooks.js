@@ -437,7 +437,7 @@ export const useMapInstituteMember = () => {
     }
   };
 
-  const resetForm = () => {
+  const resetForm = ({ keepOption = false } = {}) => {
     // Reset search fields used by MemberSearchForm
     form.setValue("memberNo", "");
     form.setValue("groupNo", "");
@@ -462,8 +462,8 @@ export const useMapInstituteMember = () => {
     // Reset member data state
     setMemberData(null);
 
-    // Reset selected radio option
-    setSelectedOption("existing");
+    // Stay on Add New after adding a member; other resets return to existing
+    if (!keepOption) setSelectedOption("existing");
 
     // Re-enable RadioGroup after reset
     setShowForm(false);
@@ -495,7 +495,7 @@ export const useMapInstituteMember = () => {
 
     if (existingMember) {
       toast.error("This member is already mapped to this group!");
-      resetForm();
+      resetForm({ keepOption: true });
       return;
     }
 
@@ -509,7 +509,7 @@ export const useMapInstituteMember = () => {
     if (isDuplicate) {
       toast.error("This member is already added to the group!");
       dispatch(resetGrpDesigData());
-      resetForm();
+      resetForm({ keepOption: true });
       return;
     }
 
@@ -551,8 +551,8 @@ export const useMapInstituteMember = () => {
     // Add to members table
     setAddedMembers((prev) => [...prev, newMember]);
 
-    // Reset member fields
-    resetForm();
+    // Clear member fields and stay on Add New so another member can be added
+    resetForm({ keepOption: true });
 
     toast.success("Member added successfully!");
   };

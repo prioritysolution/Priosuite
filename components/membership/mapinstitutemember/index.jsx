@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import {
   UserPlus,
@@ -49,6 +49,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import KYCDropdownField from "../../../common/formFields/KYCDropdownField";
 import { useDispatch } from "react-redux";
 import {
@@ -249,7 +259,15 @@ const MapInstituteMember = ({
   const [radioLocked, setRadioLocked] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
+  const [removeTarget, setRemoveTarget] = useState(null);
   const dispatch = useDispatch();
+  const memberInfo = form.watch("member_info");
+
+  useEffect(() => {
+    if (!visibleBlock) return;
+    const count = Array.isArray(memberInfo) ? memberInfo.length : 0;
+    if (count === 0) setSelectedOption("new");
+  }, [visibleBlock, memberInfo, setSelectedOption]);
 
   /* ── fetch fresh member data → open edit dialog ── */
   const fetchMemberDataAndOpenDialog = async (member) => {
@@ -357,9 +375,10 @@ const MapInstituteMember = ({
           <Pencil className="w-3 h-3" /> {t("membership.mapGroupMember.buttons.edit")}
         </Button>
         <Button
+          type="button"
           size="sm"
           variant="destructive"
-          onClick={() => handelDeleteMember(m.Map_Id)}
+          onClick={() => setRemoveTarget({ kind: "existing", id: m.Map_Id })}
           className="h-7 px-2.5 text-xs gap-1 shrink-0"
         >
           <Trash2 className="w-3 h-3" /> {t("common.buttons.remove")}
@@ -381,7 +400,7 @@ const MapInstituteMember = ({
         type="button"
         variant="destructive"
         size="sm"
-        onClick={() => handleRemoveMember(m.id)}
+        onClick={() => setRemoveTarget({ kind: "added", id: m.id })}
         className="h-7 px-2.5 text-xs gap-1 shrink-0"
       >
         <Trash2 className="w-3 h-3" /> {t("common.buttons.remove")}
@@ -668,6 +687,43 @@ const MapInstituteMember = ({
           </div>
         </ScrollArea>
       </div>
+
+      <AlertDialog
+        open={!!removeTarget}
+        onOpenChange={(open) => {
+          if (!open) setRemoveTarget(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t("membership.mapGroupMember.dialog.removeTitle")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("membership.mapGroupMember.dialog.removeDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel type="button">
+              {t("membership.mapGroupMember.dialog.cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              type="button"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (!removeTarget) return;
+                if (removeTarget.kind === "existing") {
+                  handelDeleteMember(removeTarget.id);
+                } else {
+                  handleRemoveMember(removeTarget.id);
+                }
+              }}
+            >
+              {t("membership.mapGroupMember.buttons.remove")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* ── Success notification ── */}
       <SuccessMessage

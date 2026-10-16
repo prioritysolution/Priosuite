@@ -35,6 +35,9 @@ export const useCashAccount = () => {
   const [branch, setBranch] = useState(null);
 
   const [showVoucherDetails, setShowVoucherDetails] = useState(false);
+  const [getVoucherListLoading, setGetVoucherListLoading] = useState(false);
+  const [getVoucherDetailsLoading, setGetVoucherDetailsLoading] =
+    useState(false);
 
   const [totalDrAmount, setTotalDrAmount] = useState(0);
   const [totalCrAmount, setTotalCrAmount] = useState(0);
@@ -143,7 +146,8 @@ export const useCashAccount = () => {
   };
 
   const getReportVoucherListApiCall = async (mode, ledgerId) => {
-    setLoading(true);
+    setGetVoucherListLoading(true);
+    dispatch(getVoucherListData([]));
 
     const parsedFromDate =
       fromDate && parse(fromDate, "dd-MM-yyyy", new Date());
@@ -172,12 +176,15 @@ export const useCashAccount = () => {
       console.error(error);
       dispatch(getVoucherListData([]));
     } finally {
-      setLoading(false);
+      setGetVoucherListLoading(false);
     }
   };
 
   const getReportVoucherDetailsApiCall = async (orgId, txnId) => {
-    setLoading(true);
+    setGetVoucherDetailsLoading(true);
+    dispatch(getVoucherDetailsData([]));
+    setTotalDrAmount(0);
+    setTotalCrAmount(0);
 
     try {
       const res = await getReportVoucherDetailsAPI(orgId, txnId);
@@ -209,7 +216,7 @@ export const useCashAccount = () => {
       setTotalDrAmount(0);
       setTotalCrAmount(0);
     } finally {
-      setLoading(false);
+      setGetVoucherDetailsLoading(false);
     }
   };
 
@@ -235,6 +242,8 @@ export const useCashAccount = () => {
     showVoucherDetails,
     setShowVoucherDetails,
     handleShowVoucherDetails,
+    getVoucherListLoading,
+    getVoucherDetailsLoading,
     totalDrAmount,
     totalCrAmount,
     denomData,

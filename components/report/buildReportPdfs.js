@@ -651,7 +651,7 @@ const flattenProfitSide = (grouped, netRow, subTotal, t) => {
 
 const alignProfitTotals = (left, right) => {
   const [leftRows, rightRows] = padPair(left.rows, right.rows);
-  const blank = { values: ["", "", ""] };
+  const blank = { values: ["", "", ""], borderless: true };
   leftRows.push(left.subTotal);
   rightRows.push(right.subTotal);
   if (left.net || right.net) {
@@ -1259,7 +1259,7 @@ export const downloadTrialBalancePdf = async ({
     {
       title: label(t, "common.headOfAccount", "Head Of Account"),
       w: 56.5,
-      align: "center",
+      align: "left",
       wrap: true,
     },
     {

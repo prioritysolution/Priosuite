@@ -250,6 +250,30 @@ export const useLogin = () => {
           sameSite: "Strict", // Prevent CSRF attacks
           path: "/",
         });
+        Cookies.set("userMail", res.User_Mail || "", {
+          expires: 7,
+          secure: true,
+          sameSite: "Strict",
+          path: "/",
+        });
+        const userPhone = res.User_Phone || res.userPhone || res.Phone || "";
+        const userMob = res.User_Mob || res.user_mob || res.userMob || res.Mobile || "";
+        if (userPhone) {
+          Cookies.set("userPhone", String(userPhone), {
+            expires: 7,
+            secure: true,
+            sameSite: "Strict",
+            path: "/",
+          });
+        }
+        if (userMob) {
+          Cookies.set("userMob", String(userMob), {
+            expires: 7,
+            secure: true,
+            sameSite: "Strict",
+            path: "/",
+          });
+        }
         Cookies.set("userOrgName", res.org_name, {
           expires: 7, // 7 day expiration
           secure: true, // Secure cookies

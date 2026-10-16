@@ -169,7 +169,7 @@ const PreviewModal = ({
           <TableRow className="h-[40px]">
             <TableHead
               rowSpan={2}
-              className="p-0 text-sm text-center text-black border-black w-[200px]"
+              className="p-0 pl-2 text-sm text-left text-black border-black w-[200px]"
             >
               {t("common.headOfAccount")}
             </TableHead>
@@ -243,7 +243,7 @@ const PreviewModal = ({
               return (
                 <Fragment key={`txn-${index}`}>
                   <TableRow className="h-[40px] border border-black">
-                    <TableCell className="p-0 border border-black text-center">
+                    <TableCell className="p-0 pl-2 border border-black text-left">
                       {row.data.Ledgare_Name}
                     </TableCell>
                     <TableCell className="p-0 border border-black text-center">

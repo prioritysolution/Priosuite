@@ -10,6 +10,7 @@ import getCookieData from "@/utils/getCookieData";
 import { getSidebarData } from "@/container/sidebar/SidebarReducer";
 import { clearStoredUserDashboard } from "@/utils/userDashboardStorage";
 import { formatMenuLabel } from "@/utils/menuLabel";
+import { clearSupportBrowserSession } from "@/container/support/supportSession";
 
 const COOKIE_OPTIONS = {
   expires: 7,
@@ -87,6 +88,8 @@ export const useLogout = () => {
       Cookies.remove("prioBankClientToken");
       Cookies.remove("orgId");
       Cookies.remove("userName");
+      Cookies.remove("userMail");
+      Cookies.remove("Is_Main_Dash");
       Cookies.remove("userOrgName");
       Cookies.remove("userBranchId");
       Cookies.remove("userBranchName");
@@ -125,6 +128,9 @@ export const useLogout = () => {
       Cookies.remove("priosuite_Ims_is_pass_header");
       Cookies.remove("priosuite_Ims_beg_id");
       Cookies.remove("priosuite_Ims_beg_date");
+      Cookies.remove("userPhone");
+      Cookies.remove("userMob");
+      clearSupportBrowserSession();
 
       router.push("/login");
     } catch (error) {

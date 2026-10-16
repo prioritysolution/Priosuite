@@ -11,34 +11,47 @@ import {
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
 
-const PAGE_ROWS = 19;
-
-const chunkPagesWithFooterLogic = (rows) => {
-  const pages = [];
-  let currentPage = [];
-  let maxRows = PAGE_ROWS;
-  let count = 0;
-
-  rows?.forEach((row) => {
-    if (count === maxRows) {
-      pages.push(currentPage);
-      currentPage = [];
-      count = 0;
-    }
-    currentPage.push(row);
-    count++;
-  });
-
-  if (currentPage.length === maxRows) {
-    // Last page is full, move total row to new page
-    pages.push(currentPage);
-    pages.push([]); // New page for total
-  } else {
-    pages.push(currentPage); // Last page has room for total
+const formatDateSafe = (dateVal, formatStr = "dd-MM-yyyy") => {
+  if (!dateVal) return "";
+  try {
+    const parsedDate = new Date(dateVal);
+    if (isNaN(parsedDate.getTime())) return "";
+    return format(parsedDate, formatStr);
+  } catch (error) {
+    return "";
   }
+};
 
+const money = (value) => {
+  if (value === null || value === undefined || value === "") return "";
+  const amount = Number(value);
+  if (Number.isNaN(amount)) return String(value);
+  return amount.toFixed(2);
+};
+
+const FIRST_PAGE_ROWS = 28;
+const NEXT_PAGE_ROWS = 34;
+const chunkPages = (rows = []) => {
+  const pages = [];
+  const first = rows.slice(0, FIRST_PAGE_ROWS);
+  pages.push(first);
+  let index = first.length;
+  while (index < rows.length) {
+    pages.push(rows.slice(index, index + NEXT_PAGE_ROWS));
+    index += NEXT_PAGE_ROWS;
+  }
+  const last = pages[pages.length - 1];
+  const limit = pages.length === 1 ? FIRST_PAGE_ROWS : NEXT_PAGE_ROWS;
+  if (last.length >= limit) pages.push([]);
   return pages;
 };
+
+const Detail = ({ label, value, wide = false }) => (
+  <div className={`min-w-0 flex gap-1 ${wide ? "col-span-3" : ""}`}>
+    <p className="font-semibold shrink-0">{label}</p>
+    <p className="break-words">{value || ""}</p>
+  </div>
+);
 
 const LoanLedgerPreview = ({
   printRef,
@@ -55,6 +68,8 @@ const LoanLedgerPreview = ({
   const [branchName, setBranchName] = useState("");
   const [address, setAddress] = useState("");
   const [regNo, setRegNo] = useState("");
+  const [currentDate, setCurrentDate] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -66,237 +81,122 @@ const LoanLedgerPreview = ({
     }
   }, []);
 
-  const [currentDate, setCurrentDate] = useState("");
-  const [currentTime, setCurrentTime] = useState("");
-
   useEffect(() => {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const day = String(now.getDate()).padStart(2, "0");
-    let hours = String(now.getHours()).padStart(2, "0");
+    let hours = now.getHours();
     const minutes = String(now.getMinutes()).padStart(2, "0");
     const seconds = String(now.getSeconds()).padStart(2, "0");
     const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12;
-    hours = String(hours).padStart(2, "0");
-
+    hours = String(hours % 12 || 12).padStart(2, "0");
     setCurrentDate(`${day}-${month}-${year}`);
     setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
   }, []);
 
-  const pages = chunkPagesWithFooterLogic(ledgerTableData);
-
-  let globalSerialNo = 1;
+  const pages = chunkPages(ledgerTableData || []);
+  let serial = 1;
+  const period = `Loan Ledger From ${formatDateSafe(fromDate)} To ${formatDateSafe(toDate)}`;
 
   return (
-    <div className="w-[220mm]" ref={printRef}>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        /* Custom styled scrollbars */
-        ::-webkit-scrollbar {
-          width: 8px;
-          height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-          background: #f1f5f9;
-          border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb {
-          background: #000000;
-          border-radius: 9999px;
-          border: 2px solid #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-          background: #1a1a1a;
-        }
-        * {
-          scrollbar-width: thin;
-          scrollbar-color: #000000 #f1f5f9;
-        }
-      `,
-        }}
-      />
-      {pages.map((pageRows, pageIndex) => (
-        <div
-          key={pageIndex}
-          className="w-full h-[297mm] text-center py-2 px-1 flex flex-col justify-between scale-[.97]"
-        >
-          {/* Org Header Only on First Page */}
-          <div className="text-xs flex flex-col gap-1 uppercase mb-1">
-            <p>{orgName}</p>
-            <p>{branchName}</p>
-            <p>{address}</p>
-            <p>{regNo}</p>
-            <p className="text-sm">
-              Loan Ledger From {fromDate && format(fromDate, "dd-MM-yyyy")} To{" "}
-              {toDate && format(toDate, "dd-MM-yyyy")}
-            </p>
-          </div>
+    <div className="w-[210mm] bg-white text-black" ref={printRef}>
+      {pages.map((pageRows, pageIndex) => {
+        const isFirst = pageIndex === 0;
+        const isLast = pageIndex === pages.length - 1;
+        return (
+          <div
+            key={pageIndex}
+            data-print-page="true"
+            className={`w-full h-[297mm] px-3 py-2 flex flex-col bg-white overflow-hidden ${
+              isLast ? "" : "print:break-after-page"
+            }`}
+          >
+            <div className="shrink-0 text-center uppercase text-[11px] leading-4">
+              <p className="font-semibold">{orgName}</p>
+              <p>{branchName}</p>
+              <p className="normal-case">{address}</p>
+              <p>{regNo}</p>
+              <p className="text-xs font-semibold mt-0.5 normal-case">{period}</p>
+            </div>
 
-          <div className="h-[120px] w-full border border-black my-1 px-2 py-1 grid grid-cols-3 gap-1 text-xs text-start">
-            <div className="col-span-3 flex justify-around items-start w-full gap-1">
-              <div className="w-full flex gap-1">
-                <p className="font-semibold text-nowrap">Member Name : </p>
-                <p>{ledgerHeaderData?.Full_Name || ""}</p>
+            {isFirst ? (
+              <div className="shrink-0 mt-1 mb-1 border border-black px-2 py-1 grid grid-cols-3 gap-x-3 gap-y-0.5 text-[11px] text-left leading-4">
+                <Detail label="Member Name :" value={ledgerHeaderData?.Full_Name} />
+                <Detail label="Guardian Name :" value={ledgerHeaderData?.Relation_Name} />
+                <Detail label="Product Name :" value={ledgerHeaderData?.Product_Name} />
+                <Detail wide label="Address :" value={ledgerHeaderData?.Address} />
+                <Detail label="Account No. :" value={ledgerHeaderData?.Account_No} />
+                <Detail label="Ref. Ac. No. :" value={ledgerHeaderData?.Ref_Ac_No} />
+                <Detail label="Disbursement Amount :" value={money(ledgerHeaderData?.Disb_Amt)} />
+                <Detail label="Disbursement Date :" value={formatDateSafe(ledgerHeaderData?.Disb_Date)} />
+                <Detail label="Repay Within :" value={formatDateSafe(ledgerHeaderData?.Repay_Within)} />
+                <Detail label="ROI :" value={ledgerHeaderData?.Roi} />
+                <Detail label="Repay Mode :" value={ledgerHeaderData?.Repay_Mode} />
               </div>
-              <div className="w-full flex gap-1 items-start justify-start">
-                <p className="font-semibold text-nowrap">Guardian Name : </p>
-                <p>{ledgerHeaderData?.Relation_Name || ""}</p>
-              </div>
-            </div>
-            <div className="w-full flex gap-1 col-span-3">
-              <p className="font-semibold text-nowrap">Address : </p>
-              <p>{ledgerHeaderData?.Address || ""}</p>
-            </div>
-            <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Product Name : </p>
-              <p>{ledgerHeaderData?.Product_Name || ""}</p>
-            </div>
-            <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Account No. : </p>
-              <p>{ledgerHeaderData?.Account_No || ""}</p>
-            </div>
-            <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Ref. Ac. No. : </p>
-              <p>{ledgerHeaderData?.Ref_Ac_No || ""}</p>
-            </div>
-            <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">
-                Disbursement Amount :{" "}
+            ) : (
+              <p className="shrink-0 text-left text-[11px] font-semibold py-1">
+                {ledgerHeaderData?.Full_Name || ""}{" "}
+                {ledgerHeaderData?.Account_No ? `· A/c ${ledgerHeaderData.Account_No}` : ""}
               </p>
-              <p>{ledgerHeaderData?.Disb_Amt || ""}</p>
-            </div>
-            <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Disbursement Date : </p>
-              <p>
-                {ledgerHeaderData?.Disb_Date
-                  ? format(ledgerHeaderData?.Disb_Date, "dd-MM-yyyy")
-                  : ""}
-              </p>
-            </div>
-            <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Repay Within : </p>
-              <p>
-                {ledgerHeaderData?.Repay_Within
-                  ? format(ledgerHeaderData?.Repay_Within, "dd-MM-yyyy")
-                  : ""}
-              </p>
-            </div>
-            <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">ROI : </p>
-              <p>{ledgerHeaderData?.Roi || ""}</p>
-            </div>
-            <div className="w-full flex gap-1">
-              <p className="font-semibold text-nowrap">Repay Mode : </p>
-              <p>{ledgerHeaderData?.Repay_Mode || ""}</p>
-            </div>
-          </div>
+            )}
 
-          {/* Table */}
-          <div className="flex-1 w-full">
-            <Table className="w-full border-collapse border border-black text-[11px] overflow-hidden">
-              {/* Main Header Every Page */}
-              <TableHeader>
-                <TableRow className="h-[50px] border-black">
-                  <TableHead className="text-black p-0 border-black text-center w-[40px]">
-                    SL. NO.
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    DATE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center">
-                    PARTICULAR
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    DISBURSE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    PRN. REFUND
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[100px]">
-                    INTT. REFUND
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[120px]">
-                    BALANCE
-                  </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
-                    DUE INTT.
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {pageRows.map((row, index) => (
-                  <TableRow key={index} className="bg-white h-[40px]">
-                    <TableCell className="border border-black p-0 text-center">
-                      {globalSerialNo++}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 text-center">
-                      {row?.Trans_Date && format(row?.Trans_Date, "dd-MM-yyyy")}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 text-center">
-                      {row?.Particular}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Disb_Amt}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Prn_Ref}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Intt_Ref}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Balance}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {row?.Due_Intt}
-                    </TableCell>
+            <div className="flex-1 min-h-0 w-full">
+              <Table className="w-full border-collapse border border-black text-[11px]">
+                <TableHeader>
+                  <TableRow className="h-[8mm] border-black">
+                    <TableHead className="text-black p-0 border-black text-center w-[28px]">SL. NO.</TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[68px]">DATE</TableHead>
+                    <TableHead className="text-black p-0 pl-1 border-l border-black text-left">PARTICULAR</TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[64px]">DISBURSE</TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[68px]">PRN. REFUND</TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[68px]">INTT. REFUND</TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[70px]">BALANCE</TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[58px]">DUE INTT.</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
+                </TableHeader>
+                <TableBody className="[&_td]:h-[7.2mm]">
+                  {pageRows.map((row, index) => (
+                    <TableRow key={`${pageIndex}-${index}`} className="h-[7.2mm] bg-white">
+                      <TableCell className="border border-black p-0 text-center">{serial++}</TableCell>
+                      <TableCell className="border border-black p-0 text-center whitespace-nowrap">{formatDateSafe(row?.Trans_Date)}</TableCell>
+                      <TableCell className="border border-black p-0 pl-1 pr-1 text-left break-words">{row?.Particular || ""}</TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Disb_Amt)}</TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Prn_Ref)}</TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Intt_Ref)}</TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Balance)}</TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Due_Intt)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+                {isLast && (
+                  <TableFooter>
+                    <TableRow className="h-[7.2mm] bg-white">
+                      <TableCell colSpan={3} className="border border-black p-0 pl-1 text-left font-semibold">Total</TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right font-semibold">{money(totalDisburse)}</TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right font-semibold">{money(totalPrincipalRefund)}</TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right font-semibold">{money(totalInterestRefund)}</TableCell>
+                      <TableCell className="border border-black p-0" />
+                      <TableCell className="border border-black p-0" />
+                    </TableRow>
+                  </TableFooter>
+                )}
+              </Table>
+            </div>
 
-              {/* Only show total on last page */}
-              {pageIndex === pages.length - 1 && (
-                <TableFooter>
-                  <TableRow className="bg-white h-[40px]">
-                    <TableCell
-                      colSpan={3}
-                      className="border border-black p-0 text-center"
-                    >
-                      Total
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalDisburse?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalPrincipalRefund?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black p-0 pr-[2px] text-right">
-                      {totalInterestRefund?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="border border-black"></TableCell>
-                    <TableCell className="border border-black"></TableCell>
-                  </TableRow>
-                </TableFooter>
-              )}
-            </Table>
+            <div className="shrink-0 h-8 mt-1 flex items-end justify-between text-[10px] relative">
+              <p className="whitespace-nowrap">Generated By: {userName}</p>
+              <p className="absolute left-1/2 -translate-x-1/2 italic text-gray-600 whitespace-nowrap">
+                This report is generated by PrioSuite.
+              </p>
+              <p className="whitespace-nowrap">
+                Generated On: {currentDate} {currentTime}
+                <span className="ml-3">Page {pageIndex + 1} of {pages.length}</span>
+              </p>
+            </div>
           </div>
-
-          {/* Footer */}
-          <div className="w-full h-[40px] mt-2 flex items-end justify-between text-xs relative">
-            <p className="text-nowrap">Generated By: {userName}</p>
-            <p className="absolute left-[50%] translate-x-[-50%] italic text-gray-600 text-nowrap">
-              This report is generated by PrioSuite.
-            </p>
-            <p className="text-nowrap">
-              Generated On: {currentDate} {currentTime}
-            </p>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

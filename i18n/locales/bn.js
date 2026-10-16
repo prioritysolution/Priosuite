@@ -1320,6 +1320,9 @@ const bn = {
           editTitle: "সদস্য তথ্য সম্পাদনা",
           description:
             "নিচের বিবরণ আপডেট করুন, তারপর নিশ্চিত করতে সংরক্ষণ ক্লিক করুন।",
+          removeTitle: "সদস্য সরান?",
+          removeDescription: "আপনি কি নিশ্চিত যে এই সদস্যকে সরাতে চান?",
+          cancel: "বাতিল",
         },
         table: {
           hash: "#",
@@ -1382,7 +1385,7 @@ const bn = {
       reports: {
         slNo: "ক্রমিক নং",
         date: "তারিখ",
-        memberType: "সদস্যের ধরন",
+        memberType: "ধরন",
         customerName: "গ্রাহকের নাম",
         guardianName: "অভিভাবকের নাম",
         village: "গ্রাম",
@@ -1414,7 +1417,7 @@ const bn = {
         print: {
           slNo: "ক্রমিক নং",
           date: "তারিখ",
-          memberType: "সদস্যের ধরন",
+          memberType: "ধরন",
           customerName: "গ্রাহকের নাম",
           guardianName: "অভিভাবকের নাম",
           village: "গ্রাম",
@@ -2617,6 +2620,7 @@ const bn = {
       mail: "মেইল",
       serialNo: "ক্রমিক নং",
       notAvailable: "উপলব্ধ নয়",
+      na: "প্রযোজ্য নয়",
       view: "দেখুন",
       showing: "দেখানো হচ্ছে",
       of: "এর মধ্যে",

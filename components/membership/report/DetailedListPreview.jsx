@@ -126,7 +126,7 @@ const DetailedListPreview = ({
                   <TableHead className="text-black p-0 border-black border-l text-center w-[80px]">
                     {t("membership.reports.print.date")}
                   </TableHead>
-                  <TableHead className="text-black p-0 border-black border-l text-center w-[60px]">
+                  <TableHead className="text-black p-0 pl-1 border-black border-l text-left w-[60px]">
                     {t("membership.reports.print.memberType")}
                   </TableHead>
                   <TableHead className="text-black p-0 border-black border-l text-center w-[130px]">
@@ -168,7 +168,7 @@ const DetailedListPreview = ({
                     <TableCell className="border border-black p-0 text-center">
                       {row?.Adm_Date && format(row?.Adm_Date, "dd-MM-yyyy")}
                     </TableCell>
-                    <TableCell className="border border-black p-0 text-center">
+                    <TableCell className="border border-black p-0 pl-1 text-left">
                       {row?.Member_Type}
                     </TableCell>
                     <TableCell className="border border-black p-0 text-center">
