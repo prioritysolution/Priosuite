@@ -2512,6 +2512,7 @@ const hi = {
         download: "डाउनलोड",
         next: "आगे"
       },
+      next: "आगे",
       add: "जोड़ें",
       cash: "नकद",
       transfer: "हस्तांतरण",

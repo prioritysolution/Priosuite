@@ -2514,6 +2514,7 @@ const en = {
         download: "Download",
         next: "Next"
       },
+      next: "Next",
       add: "Add",
       cash: "Cash",
       transfer: "Transfer",

@@ -2512,6 +2512,7 @@ const bn = {
         download: "ডাউনলোড",
         next: "পরবর্তী"
       },
+      next: "পরবর্তী",
       add: "যোগ করুন",
       cash: "নগদ",
       transfer: "স্থানান্তর",
