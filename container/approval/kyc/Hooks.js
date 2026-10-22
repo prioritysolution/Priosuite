@@ -26,37 +26,157 @@ import {
 } from "./KycApis";
 import { getKycList, setLoading } from "./KycReducer";
 
+let kycListInFlight = null;
+
+const EMPTY_MASTERS = {
+  memberTypes: [],
+  relationTypes: [],
+  genders: [],
+  castes: [],
+  religions: [],
+  groupTypes: [],
+  states: [],
+  districts: [],
+  blocks: [],
+  policeStations: [],
+  postOffices: [],
+  villages: [],
+  presentDistricts: [],
+  presentBlocks: [],
+  presentPoliceStations: [],
+  presentPostOffices: [],
+  presentVillages: [],
+};
+
+const sameId = (left, right) => String(left ?? "") === String(right ?? "");
+const storeId = (value) => (value == null || value === "" ? null : String(value));
+const safeDate = (dateStr) => (dateStr ? new Date(dateStr) : null);
+
+const normalizeData = (data, idKey = "Id") => {
+  if (!Array.isArray(data)) return [];
+  return data.map((item) => {
+    const rawId =
+      item[idKey] ??
+      item.Id ??
+      item.id ??
+      item.value ??
+      item.Value ??
+      item.Option_Id;
+    return { ...item, Id: rawId };
+  });
+};
+
+const formatDate = (date) => {
+  if (!date) return null;
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const buildFormValues = (item, orgId, branchId) => {
+  const type = item.Customer_Type?.toString();
+
+  if (["2", "3"].includes(type)) {
+    return {
+      grp_no: item.Cust_No,
+      cust_type: item.Customer_Type,
+      grp_name: item.Full_Name,
+      gerp_dob: safeDate(item.Cust_DOB),
+      grp_add: item.Cust_Add,
+      stateId: item.Cust_State,
+      districtId: item.Cust_Dist,
+      blockId: item.Cust_Blk,
+      villageId: item.Cust_Vill,
+      policeStationId: item.Cust_Police,
+      postOfficeId: item.Cust_Post,
+      grp_ben: item.Benef_No,
+      grp_mob: item.Cust_Mob,
+      branch_id: branchId,
+      org_id: orgId,
+      grp_doc: item.Cust_Voter,
+    };
+  }
+
+  if (type === "4") {
+    return {
+      inst_name: item.Full_Name,
+      inst_dob: safeDate(item.Cust_DOB),
+      inst_add: item.Cust_Add,
+      stateId: item.Cust_State,
+      districtId: item.Cust_Dist,
+      blockId: item.Cust_Blk,
+      villageId: item.Cust_Vill,
+      policeStationId: item.Cust_Police,
+      postOfficeId: item.Cust_Post,
+      inst_ben: item.Benef_No,
+      inst_mob: item.Cust_Mob,
+      branch_id: branchId,
+      org_id: orgId,
+      inst_doc: item.Cust_Voter,
+    };
+  }
+
+  return {
+    memberNo: item.Member_No || item.Cust_No,
+    memberType: item.Customer_Type,
+    firstName: item.Cust_Fst_Name,
+    middleName: item.Cust_Mid_Name,
+    lastName: item.Cust_Lst_Name,
+    relationName: item.Relation_Name,
+    relationType: item.Rel_Type,
+    dob: safeDate(item.Cust_DOB),
+    gender: item.Cust_Gend,
+    caste: item.Cust_Caste,
+    religion: item.Cust_Relig,
+    address: item.Cust_Add,
+    stateId: item.Cust_State,
+    districtId: item.Cust_Dist,
+    blockId: item.Cust_Blk,
+    villageId: item.Cust_Vill,
+    policeStationId: item.Cust_Police,
+    postOfficeId: item.Cust_Post,
+    presentAddress: item.Cust_Pre_Add,
+    presentStateId: item.Cust_Pre_State,
+    presentDistrictId: item.Cust_Pre_Dist,
+    presentBlockId: item.Cust_Pre_Blk,
+    presentVillageId: item.Cusr_Pre_Vill,
+    presentPoliceStationId: item.Cust_Pre_Police,
+    presentPostOfficeId: item.Cust_Pre_Post,
+    mobile: item.Cust_Mob,
+    email: item.Cust_Mail,
+    aadhaarNo: item.Cust_Aadar,
+    voterId: item.Cust_Voter,
+    rationNo: item.Cust_Ration,
+    panNo: item.Cust_Pan,
+    org_id: orgId,
+  };
+};
+
+const pickMessage = (details, fallback) => {
+  if (typeof details === "string") return details;
+  if (Array.isArray(details) && details.length > 0) {
+    return details[0]?.Message || fallback;
+  }
+  if (details && typeof details === "object") {
+    return details.Message || fallback;
+  }
+  return fallback;
+};
+
 export const useKycApproval = () => {
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
-
+  const [detailLoading, setDetailLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessageText, setSuccessMessageText] = useState("");
-
-  const [localMasterData, setLocalMasterData] = useState({
-    memberTypes: [],
-    relationTypes: [],
-    genders: [],
-    castes: [],
-    religions: [],
-    groupTypes: [],
-    states: [],
-    districts: [],
-    blocks: [],
-    policeStations: [],
-    postOffices: [],
-    villages: [],
-    presentDistricts: [],
-    presentBlocks: [],
-    presentPoliceStations: [],
-    presentPostOffices: [],
-    presentVillages: [],
-  });
+  const [localMasterData, setLocalMasterData] = useState(EMPTY_MASTERS);
 
   const orgId = getCookieData("orgId");
   const branchId = getCookieData("userBranchId");
@@ -69,54 +189,8 @@ export const useKycApproval = () => {
     mode: "onChange",
   });
 
-  // NORMALIZATION FUNCTION: Ensures every item has an 'Id' property
-  const normalizeData = (data, idKey = "Id") => {
-    if (!Array.isArray(data)) return [];
-    return data.map((item) => {
-      // Comprehensive ID extraction from common property names
-      const rawId =
-        item[idKey] ??
-        item.Id ??
-        item.id ??
-        item.value ??
-        item.Value ??
-        item.Option_Id;
-      return {
-        ...item,
-        Id: rawId,
-      };
-    });
-  };
-
-  const fetchBasicMasterData = async () => {
-    try {
-      const [memRes, relRes, genRes, cstRes, rlgRes, grpRes, stateRes] =
-        await Promise.all([
-          getMemberTypeAPI(orgId),
-          getRelationTypeAPI(orgId),
-          getGenderAPI(orgId),
-          getCasteAPI(orgId),
-          getReligionAPI(orgId),
-          getGroupTypeAPI(orgId),
-          getStateAPI(orgId),
-        ]);
-
-      setLocalMasterData((prev) => ({
-        ...prev,
-        memberTypes: normalizeData(memRes?.details, "Id"),
-        relationTypes: normalizeData(relRes?.details, "Id"),
-        genders: normalizeData(genRes?.details, "Id"),
-        castes: normalizeData(cstRes?.details, "Id"),
-        religions: normalizeData(rlgRes?.details, "Id"),
-        groupTypes: normalizeData(grpRes?.details, "Id"),
-        states: normalizeData(stateRes?.details, "State_Id"),
-      }));
-    } catch (error) {
-      console.error("Error fetching basic master data", error);
-    }
-  };
-
-  // Track last fetched IDs to avoid redundant API calls and rate limits (429)
+  const basicMastersLoadedRef = useRef(false);
+  const locationLoadedForRef = useRef(null);
   const fetchedIdsRef = useRef({
     stateId: null,
     districtId: null,
@@ -126,171 +200,323 @@ export const useKycApproval = () => {
     presentBlockId: null,
   });
 
-  const fetchKycList = useCallback(async () => {
-    dispatch(setLoading(true));
-    try {
-      const res = await getKycApplicationListAPI(orgId, branchId);
-      if (res?.message === "Success" || res?.status === 200) {
-        dispatch(getKycList(res.details || []));
-      } else {
-        dispatch(getKycList([]));
-      }
-    } catch (error) {
-      toast.error("Failed to fetch applications");
-    } finally {
-      dispatch(setLoading(false));
-    }
-  }, [dispatch, orgId, branchId]);
+  const patchMasters = useCallback((patch) => {
+    setLocalMasterData((prev) => ({ ...prev, ...patch }));
+  }, []);
 
-  // --- DEPENDENT DROPDOWN LOGIC FOR EDIT MODE ---
+  const fetchBasicMasterData = useCallback(async () => {
+    if (basicMastersLoadedRef.current) return;
+    const currentOrgId = getCookieData("orgId");
+    if (!currentOrgId) return;
+
+    try {
+      const [memRes, relRes, genRes, cstRes, rlgRes, grpRes, stateRes] =
+        await Promise.all([
+          getMemberTypeAPI(currentOrgId),
+          getRelationTypeAPI(currentOrgId),
+          getGenderAPI(currentOrgId),
+          getCasteAPI(currentOrgId),
+          getReligionAPI(currentOrgId),
+          getGroupTypeAPI(currentOrgId),
+          getStateAPI(currentOrgId),
+        ]);
+
+      patchMasters({
+        memberTypes: normalizeData(memRes?.details, "Id"),
+        relationTypes: normalizeData(relRes?.details, "Id"),
+        genders: normalizeData(genRes?.details, "Id"),
+        castes: normalizeData(cstRes?.details, "Id"),
+        religions: normalizeData(rlgRes?.details, "Id"),
+        groupTypes: normalizeData(grpRes?.details, "Id"),
+        states: normalizeData(stateRes?.details, "State_Id"),
+      });
+      basicMastersLoadedRef.current = true;
+    } catch (error) {
+      console.error("Error fetching basic master data", error);
+      toast.error("Failed to load master data");
+    }
+  }, [patchMasters]);
+
+  const fetchLocationDetails = useCallback(
+    async (item, { force = false } = {}) => {
+      const appKey = String(item?.Id ?? item?.Appl_No ?? "");
+      if (!force && appKey && locationLoadedForRef.current === appKey) return;
+
+      const currentOrgId = getCookieData("orgId");
+      if (!currentOrgId || !item) return;
+
+      const stateId = item.Cust_State;
+      const distId = item.Cust_Dist;
+      const blockId = item.Cust_Blk;
+      const preStateId = item.Cust_Pre_State;
+      const preDistId = item.Cust_Pre_Dist;
+      const preBlockId = item.Cust_Pre_Blk;
+
+      fetchedIdsRef.current = {
+        stateId: storeId(stateId),
+        districtId: storeId(distId),
+        blockId: storeId(blockId),
+        presentStateId: storeId(preStateId),
+        presentDistrictId: storeId(preDistId),
+        presentBlockId: storeId(preBlockId),
+      };
+
+      const promises = [];
+
+      if (stateId) {
+        promises.push(
+          getDistrictAPI(stateId, currentOrgId).then((res) => ({
+            key: "districts",
+            data: normalizeData(res?.details, "Dist_Id"),
+          })),
+        );
+      }
+      if (distId) {
+        promises.push(
+          getPoliceStationAPI(currentOrgId, distId).then((res) => ({
+            key: "policeStations",
+            data: normalizeData(res?.details, "Police_Station_Id"),
+          })),
+        );
+        promises.push(
+          getPostOfficeAPI(currentOrgId, distId).then((res) => ({
+            key: "postOffices",
+            data: normalizeData(res?.details, "Post_Office_Id"),
+          })),
+        );
+        if (stateId) {
+          promises.push(
+            getBlockAPI(currentOrgId, distId, stateId).then((res) => ({
+              key: "blocks",
+              data: normalizeData(res?.details, "Block_Id"),
+            })),
+          );
+        }
+      }
+      if (blockId) {
+        promises.push(
+          getVillageAPI(currentOrgId, blockId).then((res) => ({
+            key: "villages",
+            data: normalizeData(res?.details, "Village_Id"),
+          })),
+        );
+      }
+      if (preStateId) {
+        promises.push(
+          getDistrictAPI(preStateId, currentOrgId).then((res) => ({
+            key: "presentDistricts",
+            data: normalizeData(res?.details, "Dist_Id"),
+          })),
+        );
+      }
+      if (preDistId) {
+        promises.push(
+          getPoliceStationAPI(currentOrgId, preDistId).then((res) => ({
+            key: "presentPoliceStations",
+            data: normalizeData(res?.details, "Police_Station_Id"),
+          })),
+        );
+        promises.push(
+          getPostOfficeAPI(currentOrgId, preDistId).then((res) => ({
+            key: "presentPostOffices",
+            data: normalizeData(res?.details, "Post_Office_Id"),
+          })),
+        );
+        if (preStateId) {
+          promises.push(
+            getBlockAPI(currentOrgId, preDistId, preStateId).then((res) => ({
+              key: "presentBlocks",
+              data: normalizeData(res?.details, "Block_Id"),
+            })),
+          );
+        }
+      }
+      if (preBlockId) {
+        promises.push(
+          getVillageAPI(currentOrgId, preBlockId).then((res) => ({
+            key: "presentVillages",
+            data: normalizeData(res?.details, "Village_Id"),
+          })),
+        );
+      }
+
+      try {
+        const results = await Promise.all(promises);
+        const patch = {};
+        results.forEach((row) => {
+          if (row?.data) patch[row.key] = row.data;
+        });
+        if (Object.keys(patch).length) patchMasters(patch);
+        if (appKey) locationLoadedForRef.current = appKey;
+      } catch (error) {
+        console.error("Error fetching location details", error);
+        toast.error("Failed to load location details");
+      }
+    },
+    [patchMasters],
+  );
+
+  const fetchKycList = useCallback(async () => {
+    const currentOrgId = getCookieData("orgId");
+    const currentBranchId = getCookieData("userBranchId");
+    if (!currentOrgId) return;
+    if (kycListInFlight) return kycListInFlight;
+
+    kycListInFlight = (async () => {
+      dispatch(setLoading(true));
+      try {
+        const res = await getKycApplicationListAPI(currentOrgId, currentBranchId);
+        if (res?.message === "Success" || res?.status === 200) {
+          dispatch(getKycList(res.details || []));
+        } else {
+          dispatch(getKycList([]));
+        }
+      } catch (error) {
+        toast.error("Failed to fetch applications");
+      } finally {
+        dispatch(setLoading(false));
+        kycListInFlight = null;
+      }
+    })();
+
+    return kycListInFlight;
+  }, [dispatch]);
+
+  // Page load: list + shared masters once
+  useEffect(() => {
+    fetchKycList();
+    fetchBasicMasterData();
+  }, [fetchKycList, fetchBasicMasterData]);
+
+  // Edit-mode dependent dropdowns — only when the user changes a value
   const watchedStateId = form.watch("stateId");
   const watchedDistrictId = form.watch("districtId");
   const watchedBlockId = form.watch("blockId");
-  
   const watchedPresentStateId = form.watch("presentStateId");
   const watchedPresentDistrictId = form.watch("presentDistrictId");
   const watchedPresentBlockId = form.watch("presentBlockId");
 
-  // Fetch districts when state changes
   useEffect(() => {
-    if (
-      isEditMode &&
-      watchedStateId &&
-      watchedStateId !== fetchedIdsRef.current.stateId
-    ) {
-      fetchedIdsRef.current.stateId = watchedStateId;
-      getDistrictAPI(watchedStateId, orgId).then((res) => {
-        setLocalMasterData((prev) => ({
-          ...prev,
-          districts: normalizeData(res?.details, "Dist_Id"),
-        }));
-      });
-    }
-  }, [watchedStateId, isEditMode, orgId]);
+    if (!isEditMode || !watchedStateId) return;
+    if (sameId(watchedStateId, fetchedIdsRef.current.stateId)) return;
 
-  // Fetch block/police/post when district changes
+    fetchedIdsRef.current.stateId = storeId(watchedStateId);
+    fetchedIdsRef.current.districtId = null;
+    fetchedIdsRef.current.blockId = null;
+    getDistrictAPI(watchedStateId, orgId).then((res) => {
+      patchMasters({
+        districts: normalizeData(res?.details, "Dist_Id"),
+        blocks: [],
+        villages: [],
+        policeStations: [],
+        postOffices: [],
+      });
+    });
+  }, [watchedStateId, isEditMode, orgId, patchMasters]);
+
   useEffect(() => {
-    if (
-      isEditMode &&
-      watchedDistrictId &&
-      watchedDistrictId !== fetchedIdsRef.current.districtId
-    ) {
-      fetchedIdsRef.current.districtId = watchedDistrictId;
-      // 1. Police Stations
-      getPoliceStationAPI(orgId, watchedDistrictId).then((res) => {
-        setLocalMasterData((prev) => ({
-          ...prev,
-          policeStations: normalizeData(res?.details, "Police_Station_Id"),
-        }));
+    if (!isEditMode || !watchedDistrictId) return;
+    if (sameId(watchedDistrictId, fetchedIdsRef.current.districtId)) return;
+
+    fetchedIdsRef.current.districtId = storeId(watchedDistrictId);
+    fetchedIdsRef.current.blockId = null;
+
+    getPoliceStationAPI(orgId, watchedDistrictId).then((res) => {
+      patchMasters({
+        policeStations: normalizeData(res?.details, "Police_Station_Id"),
       });
-      // 2. Post Offices
-      getPostOfficeAPI(orgId, watchedDistrictId).then((res) => {
-        setLocalMasterData((prev) => ({
-          ...prev,
-          postOffices: normalizeData(res?.details, "Post_Office_Id"),
-        }));
+    });
+    getPostOfficeAPI(orgId, watchedDistrictId).then((res) => {
+      patchMasters({
+        postOffices: normalizeData(res?.details, "Post_Office_Id"),
       });
-      // 3. Blocks (Requires State ID)
-      if (watchedStateId) {
-        getBlockAPI(orgId, watchedDistrictId, watchedStateId).then((res) => {
-          setLocalMasterData((prev) => ({
-            ...prev,
-            blocks: normalizeData(res?.details, "Block_Id"),
-          }));
+    });
+    if (watchedStateId) {
+      getBlockAPI(orgId, watchedDistrictId, watchedStateId).then((res) => {
+        patchMasters({
+          blocks: normalizeData(res?.details, "Block_Id"),
+          villages: [],
         });
-      }
-    }
-  }, [watchedDistrictId, watchedStateId, isEditMode, orgId]);
-
-  // Fetch villages when block changes
-  useEffect(() => {
-    if (
-      isEditMode &&
-      watchedBlockId &&
-      watchedBlockId !== fetchedIdsRef.current.blockId
-    ) {
-      fetchedIdsRef.current.blockId = watchedBlockId;
-      getVillageAPI(orgId, watchedBlockId).then((res) => {
-        setLocalMasterData((prev) => ({
-          ...prev,
-          villages: normalizeData(res?.details, "Village_Id"),
-        }));
       });
     }
-  }, [watchedBlockId, isEditMode, orgId]);
+  }, [watchedDistrictId, watchedStateId, isEditMode, orgId, patchMasters]);
 
-  // --- PRESENT ADDRESS DEPENDENT DROPDOWN LOGIC ---
   useEffect(() => {
-    if (
-      isEditMode &&
-      watchedPresentStateId &&
-      watchedPresentStateId !== fetchedIdsRef.current.presentStateId
-    ) {
-      fetchedIdsRef.current.presentStateId = watchedPresentStateId;
-      getDistrictAPI(watchedPresentStateId, orgId).then((res) => {
-        setLocalMasterData((prev) => ({
-          ...prev,
-          presentDistricts: normalizeData(res?.details, "Dist_Id"),
-        }));
+    if (!isEditMode || !watchedBlockId) return;
+    if (sameId(watchedBlockId, fetchedIdsRef.current.blockId)) return;
+
+    fetchedIdsRef.current.blockId = storeId(watchedBlockId);
+    getVillageAPI(orgId, watchedBlockId).then((res) => {
+      patchMasters({
+        villages: normalizeData(res?.details, "Village_Id"),
       });
+    });
+  }, [watchedBlockId, isEditMode, orgId, patchMasters]);
+
+  useEffect(() => {
+    if (!isEditMode || !watchedPresentStateId) return;
+    if (sameId(watchedPresentStateId, fetchedIdsRef.current.presentStateId)) return;
+
+    fetchedIdsRef.current.presentStateId = storeId(watchedPresentStateId);
+    fetchedIdsRef.current.presentDistrictId = null;
+    fetchedIdsRef.current.presentBlockId = null;
+    getDistrictAPI(watchedPresentStateId, orgId).then((res) => {
+      patchMasters({
+        presentDistricts: normalizeData(res?.details, "Dist_Id"),
+        presentBlocks: [],
+        presentVillages: [],
+        presentPoliceStations: [],
+        presentPostOffices: [],
+      });
+    });
+  }, [watchedPresentStateId, isEditMode, orgId, patchMasters]);
+
+  useEffect(() => {
+    if (!isEditMode || !watchedPresentDistrictId) return;
+    if (sameId(watchedPresentDistrictId, fetchedIdsRef.current.presentDistrictId)) {
+      return;
     }
-  }, [watchedPresentStateId, isEditMode, orgId]);
 
-  useEffect(() => {
-    if (
-      isEditMode &&
-      watchedPresentDistrictId &&
-      watchedPresentDistrictId !== fetchedIdsRef.current.presentDistrictId
-    ) {
-      fetchedIdsRef.current.presentDistrictId = watchedPresentDistrictId;
-      
-      getPoliceStationAPI(orgId, watchedPresentDistrictId).then((res) => {
-        setLocalMasterData((prev) => ({
-          ...prev,
-          presentPoliceStations: normalizeData(res?.details, "Police_Station_Id"),
-        }));
+    fetchedIdsRef.current.presentDistrictId = storeId(watchedPresentDistrictId);
+    fetchedIdsRef.current.presentBlockId = null;
+
+    getPoliceStationAPI(orgId, watchedPresentDistrictId).then((res) => {
+      patchMasters({
+        presentPoliceStations: normalizeData(res?.details, "Police_Station_Id"),
       });
-      
-      getPostOfficeAPI(orgId, watchedPresentDistrictId).then((res) => {
-        setLocalMasterData((prev) => ({
-          ...prev,
-          presentPostOffices: normalizeData(res?.details, "Post_Office_Id"),
-        }));
+    });
+    getPostOfficeAPI(orgId, watchedPresentDistrictId).then((res) => {
+      patchMasters({
+        presentPostOffices: normalizeData(res?.details, "Post_Office_Id"),
       });
-      
-      if (watchedPresentStateId) {
-        getBlockAPI(orgId, watchedPresentDistrictId, watchedPresentStateId).then((res) => {
-          setLocalMasterData((prev) => ({
-            ...prev,
-            presentBlocks: normalizeData(res?.details, "Block_Id"),
-          }));
+    });
+    if (watchedPresentStateId) {
+      getBlockAPI(orgId, watchedPresentDistrictId, watchedPresentStateId).then((res) => {
+        patchMasters({
+          presentBlocks: normalizeData(res?.details, "Block_Id"),
+          presentVillages: [],
         });
-      }
-    }
-  }, [watchedPresentDistrictId, watchedPresentStateId, isEditMode, orgId]);
-
-  useEffect(() => {
-    if (
-      isEditMode &&
-      watchedPresentBlockId &&
-      watchedPresentBlockId !== fetchedIdsRef.current.presentBlockId
-    ) {
-      fetchedIdsRef.current.presentBlockId = watchedPresentBlockId;
-      getVillageAPI(orgId, watchedPresentBlockId).then((res) => {
-        setLocalMasterData((prev) => ({
-          ...prev,
-          presentVillages: normalizeData(res?.details, "Village_Id"),
-        }));
       });
     }
-  }, [watchedPresentBlockId, isEditMode, orgId]);
-  // ----------------------------------------------
+  }, [
+    watchedPresentDistrictId,
+    watchedPresentStateId,
+    isEditMode,
+    orgId,
+    patchMasters,
+  ]);
 
   useEffect(() => {
-    if (orgId) {
-      fetchKycList();
-    }
-  }, [orgId, branchId, fetchKycList]);
+    if (!isEditMode || !watchedPresentBlockId) return;
+    if (sameId(watchedPresentBlockId, fetchedIdsRef.current.presentBlockId)) return;
+
+    fetchedIdsRef.current.presentBlockId = storeId(watchedPresentBlockId);
+    getVillageAPI(orgId, watchedPresentBlockId).then((res) => {
+      patchMasters({
+        presentVillages: normalizeData(res?.details, "Village_Id"),
+      });
+    });
+  }, [watchedPresentBlockId, isEditMode, orgId, patchMasters]);
 
   const filteredKycList = kycList.filter((item) => {
     if (!searchTerm) return true;
@@ -306,235 +532,53 @@ export const useKycApproval = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredKycList.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredKycList.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredKycList.length / itemsPerPage) || 0;
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const formatDate = (date) => {
-    if (!date) return null;
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  const fetchLocationDetails = async (item) => {
-    try {
-      const stateId = item.Cust_State;
-      const distId = item.Cust_Dist;
-      const blockId = item.Cust_Blk;
-
-      const preStateId = item.Cust_Pre_State;
-      const preDistId = item.Cust_Pre_Dist;
-      const preBlockId = item.Cust_Pre_Blk;
-
-      // Update refs to avoid re-fetching in useEffect if already loaded
-      fetchedIdsRef.current.stateId = stateId;
-      fetchedIdsRef.current.districtId = distId;
-      fetchedIdsRef.current.blockId = blockId;
-
-      fetchedIdsRef.current.presentStateId = preStateId;
-      fetchedIdsRef.current.presentDistrictId = preDistId;
-      fetchedIdsRef.current.presentBlockId = preBlockId;
-
-      const promises = [];
-
-      if (stateId) {
-        promises.push(
-          getDistrictAPI(stateId, orgId).then((res) => ({
-            key: "districts",
-            data: normalizeData(res?.details, "Dist_Id"),
-          })),
-        );
-      }
-      if (distId) {
-        promises.push(
-          getPoliceStationAPI(orgId, distId).then((res) => ({
-            key: "policeStations",
-            data: normalizeData(res?.details, "Police_Station_Id"),
-          })),
-        );
-        promises.push(
-          getPostOfficeAPI(orgId, distId).then((res) => ({
-            key: "postOffices",
-            data: normalizeData(res?.details, "Post_Office_Id"),
-          })),
-        );
-        if (stateId) {
-          promises.push(
-            getBlockAPI(orgId, distId, stateId).then((res) => ({
-              key: "blocks",
-              data: normalizeData(res?.details, "Block_Id"),
-            })),
-          );
-        }
-      }
-      if (blockId) {
-        promises.push(
-          getVillageAPI(orgId, blockId).then((res) => ({
-            key: "villages",
-            data: normalizeData(res?.details, "Village_Id"),
-          })),
-        );
-      }
-
-      // Present Location APIs
-      if (preStateId) {
-        promises.push(
-          getDistrictAPI(preStateId, orgId).then((res) => ({
-            key: "presentDistricts",
-            data: normalizeData(res?.details, "Dist_Id"),
-          })),
-        );
-      }
-      if (preDistId) {
-        promises.push(
-          getPoliceStationAPI(orgId, preDistId).then((res) => ({
-            key: "presentPoliceStations",
-            data: normalizeData(res?.details, "Police_Station_Id"),
-          })),
-        );
-        promises.push(
-          getPostOfficeAPI(orgId, preDistId).then((res) => ({
-            key: "presentPostOffices",
-            data: normalizeData(res?.details, "Post_Office_Id"),
-          })),
-        );
-        if (preStateId) {
-          promises.push(
-            getBlockAPI(orgId, preDistId, preStateId).then((res) => ({
-              key: "presentBlocks",
-              data: normalizeData(res?.details, "Block_Id"),
-            })),
-          );
-        }
-      }
-      if (preBlockId) {
-        promises.push(
-          getVillageAPI(orgId, preBlockId).then((res) => ({
-            key: "presentVillages",
-            data: normalizeData(res?.details, "Village_Id"),
-          })),
-        );
-      }
-
-      const results = await Promise.all(promises);
-
-      setLocalMasterData((prev) => {
-        const newData = { ...prev };
-        results.forEach((r) => {
-          if (r.data) newData[r.key] = r.data;
-        });
-        return newData;
-      });
-    } catch (error) {
-      console.error("Error fetching location details", error);
-    }
-  };
-
-  const fetchMasterDataForEdit = async () => {
-    await fetchBasicMasterData();
-  };
-
   const handleView = async (item) => {
-    console.log("Viewing profile:", item);
     if (!item) return;
 
     setSelectedApplication(item);
     setIsEditMode(false);
     setOpenModal(true);
+    setDetailLoading(true);
 
-    // Fetch basic master data for view mode to show proper labels
-    await fetchBasicMasterData();
-    await fetchLocationDetails(item);
-
-    const type = item.Customer_Type?.toString();
-    let defaultValues = {};
-
-    const safeDate = (dateStr) => (dateStr ? new Date(dateStr) : null);
-
-    if (["2", "3"].includes(type)) {
-      defaultValues = {
-        grp_no: item.Cust_No,
-        cust_type: item.Customer_Type,
-        grp_name: item.Full_Name,
-        gerp_dob: safeDate(item.Cust_DOB),
-        grp_add: item.Cust_Add,
-        stateId: item.Cust_State,
-        districtId: item.Cust_Dist,
-        blockId: item.Cust_Blk,
-        villageId: item.Cust_Vill,
-        policeStationId: item.Cust_Police,
-        postOfficeId: item.Cust_Post,
-        grp_ben: item.Benef_No,
-        grp_mob: item.Cust_Mob,
-        branch_id: branchId,
-        org_id: orgId,
-        grp_doc: item.Cust_Voter,
-      };
-    } else if (type === "4") {
-      defaultValues = {
-        inst_name: item.Full_Name,
-        inst_dob: safeDate(item.Cust_DOB),
-        inst_add: item.Cust_Add,
-        stateId: item.Cust_State,
-        districtId: item.Cust_Dist,
-        blockId: item.Cust_Blk,
-        villageId: item.Cust_Vill,
-        policeStationId: item.Cust_Police,
-        postOfficeId: item.Cust_Post,
-        inst_ben: item.Benef_No,
-        inst_mob: item.Cust_Mob,
-        branch_id: branchId,
-        org_id: orgId,
-        inst_doc: item.Cust_Voter,
-      };
-    } else {
-      defaultValues = {
-        memberNo: item.Member_No || item.Cust_No,
-        memberType: item.Customer_Type,
-        firstName: item.Cust_Fst_Name,
-        middleName: item.Cust_Mid_Name,
-        lastName: item.Cust_Lst_Name,
-        relationName: item.Relation_Name,
-        relationType: item.Rel_Type,
-        dob: safeDate(item.Cust_DOB),
-        gender: item.Cust_Gend,
-        caste: item.Cust_Caste,
-        religion: item.Cust_Relig,
-        address: item.Cust_Add,
-        stateId: item.Cust_State,
-        districtId: item.Cust_Dist,
-        blockId: item.Cust_Blk,
-        villageId: item.Cust_Vill,
-        policeStationId: item.Cust_Police,
-        postOfficeId: item.Cust_Post,
-        presentAddress: item.Cust_Pre_Add,
-        presentStateId: item.Cust_Pre_State,
-        presentDistrictId: item.Cust_Pre_Dist,
-        presentBlockId: item.Cust_Pre_Blk,
-        presentVillageId: item.Cusr_Pre_Vill,
-        presentPoliceStationId: item.Cust_Pre_Police,
-        presentPostOfficeId: item.Cust_Pre_Post,
-        mobile: item.Cust_Mob,
-        email: item.Cust_Mail,
-        aadhaarNo: item.Cust_Aadar,
-        voterId: item.Cust_Voter,
-        rationNo: item.Cust_Ration,
-        panNo: item.Cust_Pan,
-        org_id: orgId,
-      };
+    try {
+      await Promise.all([
+        fetchBasicMasterData(),
+        fetchLocationDetails(item),
+      ]);
+      form.reset(
+        buildFormValues(item, getCookieData("orgId"), getCookieData("userBranchId")),
+      );
+    } finally {
+      setDetailLoading(false);
     }
-
-    form.reset(defaultValues);
   };
+
+  const handleEnterEditMode = useCallback(() => {
+    setIsEditMode(true);
+  }, []);
+
+  const handleCloseModal = useCallback(
+    (open) => {
+      setOpenModal(open);
+      if (!open) {
+        setIsEditMode(false);
+        setSelectedApplication(null);
+        setDetailLoading(false);
+        form.reset({});
+      }
+    },
+    [form],
+  );
 
   const onUpdate = async (data) => {
     const type = selectedApplication?.Customer_Type?.toString();
+    const currentOrgId = getCookieData("orgId");
+    const currentBranchId = getCookieData("userBranchId");
     let payload = {};
-
-    console.log("update data=", data);
 
     if (["2", "3"].includes(type)) {
       payload = {
@@ -550,14 +594,13 @@ export const useKycApproval = () => {
         grp_police: data.policeStationId,
         grp_post: data.postOfficeId,
         grp_ben: data.grp_ben,
-        branch_id: branchId,
-        org_id: orgId,
+        branch_id: currentBranchId,
+        org_id: currentOrgId,
         grp_mob: data.grp_mob,
         group_no: data.grp_no,
         doc_no: data.grp_doc,
       };
     } else if (type === "4") {
-      // Updated Institution Profile Payload
       payload = {
         inst_id: selectedApplication?.Id,
         inst_name: data.inst_name,
@@ -570,8 +613,8 @@ export const useKycApproval = () => {
         inst_police: data.policeStationId,
         inst_post: data.postOfficeId,
         inst_ben: data.inst_ben,
-        branch_id: branchId,
-        org_id: orgId,
+        branch_id: currentBranchId,
+        org_id: currentOrgId,
         inst_mob: data.inst_mob,
         inst_no: data.inst_no,
         doc_no: data.inst_doc,
@@ -603,7 +646,7 @@ export const useKycApproval = () => {
         mem_pres_village: data.presentVillageId,
         mem_pres_police: data.presentPoliceStationId,
         mem_pres_post: data.presentPostOfficeId,
-        org_id: orgId,
+        org_id: currentOrgId,
         mem_mob: data.mobile,
         mem_mail: data.email,
         mem_aadhar: data.aadhaarNo,
@@ -627,38 +670,15 @@ export const useKycApproval = () => {
       if (res?.status === 200 || res?.message === "Success") {
         toast.success("Profile Updated Successfully");
         setIsEditMode(false);
+        locationLoadedForRef.current = null;
         fetchKycList();
       } else {
-        toast.error(res?.details || "Update Failed");
+        toast.error(pickMessage(res?.details, "Update Failed"));
       }
     } catch (err) {
       toast.error("Operation Failed");
     }
   };
-
-  // const onApproveReject = async (status, remarks) => {
-  //   if (!selectedApplication) return;
-  //   const payload = {
-  //     appl_id: selectedApplication.Id,
-  //     apprv_status: status,
-  //     remarks: remarks || "",
-  //     org_id: orgId,
-  //   };
-  //   try {
-  //     const res = await postKycApprovalAPI(payload);
-  //     if (res?.status === 200 || res?.message === "Success") {
-  //       toast.success(
-  //         status === 1 ? "Approved Successfully" : "Rejected Successfully",
-  //       );
-  //       setOpenModal(false);
-  //       fetchKycList();
-  //     } else {
-  //       toast.error(res?.details || "Process Failed");
-  //     }
-  //   } catch (err) {
-  //     toast.error("Critical Error");
-  //   }
-  // };
 
   const onApproveReject = async (status, remarks) => {
     if (!selectedApplication) return;
@@ -666,35 +686,20 @@ export const useKycApproval = () => {
       appl_id: selectedApplication.Id,
       apprv_status: status,
       remarks: remarks || "",
-      org_id: orgId,
+      org_id: getCookieData("orgId"),
     };
     try {
       const res = await postKycApprovalAPI(payload);
       if (res?.status === 200 || res?.message === "Success") {
-        let msgText =
+        const fallback =
           status === 1 ? "Approved Successfully" : "Rejected Successfully";
-
-        if (typeof res?.details === "string") {
-          msgText = res.details;
-        } else if (Array.isArray(res?.details) && res?.details.length > 0) {
-          msgText = res.details[0]?.Message || msgText;
-        } else if (res?.details && typeof res.details === "object") {
-          msgText = res.details.Message || msgText;
-        }
-
-        setSuccessMessageText(msgText);
+        setSuccessMessageText(pickMessage(res?.details, fallback));
         setShowSuccessModal(true);
         setOpenModal(false);
+        setIsEditMode(false);
+        locationLoadedForRef.current = null;
       } else {
-        let errText = "Process Failed";
-        if (typeof res?.details === "string") {
-          errText = res.details;
-        } else if (Array.isArray(res?.details) && res?.details.length > 0) {
-          errText = res.details[0]?.Message || errText;
-        } else if (res?.details && typeof res.details === "object") {
-          errText = res.details.Message || errText;
-        }
-        toast.error(errText);
+        toast.error(pickMessage(res?.details, "Process Failed"));
       }
     } catch (err) {
       toast.error("Critical Error");
@@ -711,10 +716,12 @@ export const useKycApproval = () => {
     kycList: currentItems,
     totalItems: filteredKycList.length,
     loading,
+    detailLoading,
     form,
     openModal,
-    setOpenModal,
+    setOpenModal: handleCloseModal,
     handleView,
+    handleEnterEditMode,
     selectedApplication,
     onUpdate,
     onApproveReject,
@@ -727,10 +734,7 @@ export const useKycApproval = () => {
     itemsPerPage,
     paginate,
     totalPages,
-    fetchMasterDataForEdit,
-    fetchLocationDetails,
     showSuccessModal,
-
     successMessageText,
     handleCloseSuccessMessage,
   };

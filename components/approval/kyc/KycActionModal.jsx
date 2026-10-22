@@ -37,9 +37,8 @@ const KycActionModal = ({
   onApproveReject,
   isEditMode,
   setIsEditMode,
+  onEnterEditMode,
   masterDataLists = {},
-  fetchMasterDataForEdit,
-  fetchLocationDetails,
   loading,
 }) => {
   const { t } = useTranslation();
@@ -119,31 +118,21 @@ const KycActionModal = ({
       }
     }
 
-    if (changedFields.length > 0) {
-      console.log("Changed fields:", changedFields);
-      return true;
-    }
-
-    return false; // No changes found
+    return changedFields.length > 0;
   };
 
-  const handleUpdateProfileClick = async () => {
-    await fetchMasterDataForEdit();
-    await fetchLocationDetails(selectedApplication);
+  const handleUpdateProfileClick = () => {
+    if (loading) return;
     setOriginalValues(getValues());
-    setIsEditMode(true);
+    onEnterEditMode?.();
   };
 
   const handleUpdate = (data) => {
     if (!hasFormChanged()) {
-      // Debug: Log the values for troubleshooting
-      console.log("Original values:", originalValues);
-      console.log("Current values:", getValues());
       toast.error(t("kycApproval.noChangesDetected"));
       return;
     }
     onUpdate(data);
-    // console.log("Updating profile with data:", data);
   };
 
   const type = selectedApplication?.Customer_Type?.toString();

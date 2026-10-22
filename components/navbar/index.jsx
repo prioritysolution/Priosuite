@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import {
@@ -69,8 +66,10 @@ const Navbar = ({
   const [mounted, setMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [desktopSuggestPos, setDesktopSuggestPos] = useState(null);
   const searchWrapRef = useRef(null);
   const searchInputRef = useRef(null);
+  const suggestionsPanelRef = useRef(null);
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
@@ -87,6 +86,8 @@ const Navbar = ({
 
   const query = String(searchValue || "").trim();
   const isSuggestionsOpen = Boolean(showSuggestions && query);
+  const useFixedDesktopSuggestions =
+    isSuggestionsOpen && !mobileSearchOpen && Boolean(desktopSuggestPos);
 
   useEffect(() => {
     setOrgName(getCookieData("userOrgName"));
@@ -99,11 +100,40 @@ const Navbar = ({
   }, [searchValue]);
 
   useEffect(() => {
+    if (!isSuggestionsOpen || mobileSearchOpen) {
+      setDesktopSuggestPos(null);
+      return;
+    }
+
+    const updatePos = () => {
+      const anchor =
+        searchInputRef.current?.querySelector?.("input") ||
+        searchInputRef.current ||
+        searchWrapRef.current;
+      if (!anchor) return;
+      const rect = anchor.getBoundingClientRect();
+      setDesktopSuggestPos({
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: Math.max(rect.width, 240),
+      });
+    };
+
+    updatePos();
+    window.addEventListener("resize", updatePos);
+    window.addEventListener("scroll", updatePos, true);
+    return () => {
+      window.removeEventListener("resize", updatePos);
+      window.removeEventListener("scroll", updatePos, true);
+    };
+  }, [isSuggestionsOpen, mobileSearchOpen, searchValue]);
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        searchWrapRef.current &&
-        !searchWrapRef.current.contains(event.target)
-      ) {
+      const target = event.target;
+      const inSearch = searchWrapRef.current?.contains(target);
+      const inSuggestions = suggestionsPanelRef.current?.contains(target);
+      if (!inSearch && !inSuggestions) {
         setShowSuggestions?.(false);
         setMobileSearchOpen(false);
       }
@@ -170,7 +200,7 @@ const Navbar = ({
   };
 
   return (
-    <header className="relative h-[64px] w-full bg-[#00264D] flex-shrink-0 flex items-center px-2 sm:px-4 lg:px-5 gap-1 sm:gap-2 lg:gap-3">
+    <header className="relative z-40 h-[64px] w-full bg-[#00264D] flex-shrink-0 flex items-center px-2 sm:px-4 lg:px-5 gap-1 sm:gap-2 lg:gap-3 overflow-visible">
       <button
         type="button"
         onClick={onMenuToggle}
@@ -195,7 +225,7 @@ const Navbar = ({
           <button
             type="button"
             aria-label="Close search overlay"
-            className="lg:hidden fixed inset-0 z-40 bg-black/45 backdrop-blur-[2px] animate-in fade-in duration-150"
+            className="lg:hidden fixed inset-0 z-[60] bg-black/45 backdrop-blur-[2px] animate-in fade-in duration-150"
             onClick={() => {
               setMobileSearchOpen(false);
               setShowSuggestions?.(false);
@@ -205,7 +235,7 @@ const Navbar = ({
 
         <div
           ref={searchWrapRef}
-          className="relative flex items-center flex-shrink-0 z-50"
+          className="relative z-[70] flex flex-shrink-0 items-center"
         >
           <button
             type="button"
@@ -225,11 +255,10 @@ const Navbar = ({
 
           <div
             className={cn(
-              "z-50",
               mobileSearchOpen
-                ? "fixed left-1/2 top-[68px] z-50 w-[min(94vw,40rem)] -translate-x-1/2 rounded-2xl border border-[#00264D]/20 bg-white p-3.5 sm:p-4 shadow-[0_18px_50px_rgba(0,38,77,0.35)] animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200"
+                ? "fixed left-1/2 top-[68px] z-[70] w-[min(94vw,40rem)] -translate-x-1/2 rounded-2xl border border-[#00264D]/20 bg-white p-3.5 sm:p-4 shadow-[0_18px_50px_rgba(0,38,77,0.35)] animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200"
                 : "hidden",
-              "lg:relative lg:left-auto lg:top-auto lg:z-auto lg:flex lg:w-[240px] xl:w-[300px] lg:translate-x-0 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:animate-none",
+              "lg:relative lg:left-auto lg:top-auto lg:z-[70] lg:flex lg:w-[240px] xl:w-[300px] lg:translate-x-0 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:animate-none",
             )}
           >
             {mobileSearchOpen ? (
@@ -294,14 +323,10 @@ const Navbar = ({
               </Form>
             ) : null}
 
-            {isSuggestionsOpen ? (
+            {isSuggestionsOpen && mobileSearchOpen ? (
               <div
-                className={cn(
-                  "z-50 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150 ease-out",
-                  mobileSearchOpen
-                    ? "relative mt-2.5 rounded-xl border border-[#00264D]/12 bg-white max-h-[min(60vh,22rem)]"
-                    : "absolute left-0 right-0 top-full mt-1 rounded-lg border border-gray-200 bg-white shadow-xl",
-                )}
+                ref={suggestionsPanelRef}
+                className="relative z-[80] mt-2.5 max-h-[min(60vh,22rem)] overflow-hidden rounded-xl border border-[#00264D]/12 bg-white animate-in fade-in slide-in-from-top-1 duration-150 ease-out"
               >
                 {!hasMenuData ? (
                   <p className="px-3 py-3 text-xs text-gray-500">
@@ -316,16 +341,16 @@ const Navbar = ({
                           onMouseDown={(event) => event.preventDefault()}
                           onClick={() => handlePickSuggestion(item)}
                           className={cn(
-                            "w-full text-left px-3 py-2.5 transition-colors duration-100 ease-out border-l-[3px]",
+                            "w-full border-l-[3px] px-3 py-2.5 text-left transition-colors duration-100 ease-out",
                             index === activeIndex
-                              ? "bg-[#00264D]/08 border-[#00264D] text-[#00264D]"
+                              ? "border-[#00264D] bg-[#00264D]/08 text-[#00264D]"
                               : "border-transparent hover:bg-gray-50",
                           )}
                         >
-                          <p className="text-sm font-semibold truncate">
+                          <p className="truncate text-sm font-semibold">
                             {item.label}
                           </p>
-                          <p className="text-[11px] text-gray-500 truncate mt-0.5">
+                          <p className="mt-0.5 truncate text-[11px] text-gray-500">
                             {item.group}
                           </p>
                         </button>
@@ -339,11 +364,54 @@ const Navbar = ({
                 )}
               </div>
             ) : mobileSearchOpen ? (
-              <p className="lg:hidden mt-2 px-1 text-[11px] text-[#00264D]/45">
+              <p className="mt-2 px-1 text-[11px] text-[#00264D]/45 lg:hidden">
                 Type to find a menu page
               </p>
             ) : null}
           </div>
+
+          {useFixedDesktopSuggestions ? (
+            <div
+              ref={suggestionsPanelRef}
+              className="fixed z-[80] max-h-[min(60vh,22rem)] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-1 duration-150 ease-out"
+              style={{
+                top: desktopSuggestPos.top,
+                left: desktopSuggestPos.left,
+                width: desktopSuggestPos.width,
+              }}
+            >
+              {!hasMenuData ? (
+                <p className="px-3 py-3 text-xs text-gray-500">Loading pages…</p>
+              ) : suggestions.length ? (
+                <ul className="max-h-[min(55vh,20rem)] overflow-y-auto py-1">
+                  {suggestions.map((item, index) => (
+                    <li key={`${item.group}-${item.href}-${item.label}`}>
+                      <button
+                        type="button"
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => handlePickSuggestion(item)}
+                        className={cn(
+                          "w-full border-l-[3px] px-3 py-2.5 text-left transition-colors duration-100 ease-out",
+                          index === activeIndex
+                            ? "border-[#00264D] bg-[#00264D]/08 text-[#00264D]"
+                            : "border-transparent hover:bg-gray-50",
+                        )}
+                      >
+                        <p className="truncate text-sm font-semibold">
+                          {item.label}
+                        </p>
+                        <p className="mt-0.5 truncate text-[11px] text-gray-500">
+                          {item.group}
+                        </p>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="px-3 py-3 text-xs text-gray-500">No pages found</p>
+              )}
+            </div>
+          ) : null}
         </div>
 
         <QuickActions />

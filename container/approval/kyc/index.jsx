@@ -26,10 +26,12 @@ const KycApproval = () => {
   const {
     kycList,
     loading,
+    detailLoading,
     form,
     openModal,
     setOpenModal,
     handleView,
+    handleEnterEditMode,
     selectedApplication,
     onUpdate,
     onApproveReject,
@@ -43,8 +45,6 @@ const KycApproval = () => {
     paginate,
     totalItems,
     itemsPerPage,
-    fetchMasterDataForEdit,
-    fetchLocationDetails,
     successMessageText,
     handleCloseSuccessMessage,
     showSuccessModal,
@@ -252,7 +252,7 @@ const KycApproval = () => {
         )}
       </Card>
 
-      {openModal && (
+      {openModal ? (
         <KycActionModal
           open={openModal}
           setOpen={setOpenModal}
@@ -262,12 +262,11 @@ const KycApproval = () => {
           onApproveReject={onApproveReject}
           isEditMode={isEditMode}
           setIsEditMode={setIsEditMode}
+          onEnterEditMode={handleEnterEditMode}
           masterDataLists={masterDataLists}
-          fetchMasterDataForEdit={fetchMasterDataForEdit}
-          fetchLocationDetails={fetchLocationDetails}
-          loading={loading}
+          loading={detailLoading}
         />
-      )}
+      ) : null}
       <SuccessMessage
         showSuccessMessage={showSuccessModal}
         successMessage={successMessageText}

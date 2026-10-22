@@ -50,7 +50,7 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <SupportLiveProvider>
-    <div className="flex h-full w-full overflow-hidden bg-gray-100">
+    <div className="flex h-full w-full min-h-0 bg-gray-100">
       <SessionTimeoutModal />
 
       {/* ── Mobile backdrop overlay ── */}
@@ -64,7 +64,7 @@ const DashboardLayout = ({ children }) => {
       {/* ── SIDEBAR ── full viewport height, fixed on mobile / relative on desktop ── */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-30 w-64 flex-shrink-0
+          fixed inset-y-0 left-0 z-30 w-64 flex-shrink-0 overflow-hidden
           transform transition-transform duration-300 ease-in-out
           lg:relative lg:translate-x-0 lg:flex lg:flex-col
           ${sidebarOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:translate-x-0"}
@@ -74,17 +74,21 @@ const DashboardLayout = ({ children }) => {
       </aside>
 
       {/* ── RIGHT COLUMN ── navbar + content + footer ── */}
-      <div className="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
-        {/* Navbar — fixed height, perfectly aligned with sidebar logo area */}
-        <NavbarContainer onMenuToggle={() => setSidebarOpen((prev) => !prev)} />
+      <div className="flex flex-col flex-1 min-w-0 h-full min-h-0">
+        {/* Navbar above content so search suggestions are not clipped */}
+        <div className="relative z-40 flex-shrink-0">
+          <NavbarContainer onMenuToggle={() => setSidebarOpen((prev) => !prev)} />
+        </div>
 
         {/* Scrollable main content — ONLY this scrolls, not the page */}
-        <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-gray-50 custom-scrollbar">
+        <main className="relative z-0 flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-gray-50 custom-scrollbar">
           <div className="w-full h-full min-h-0 p-2 sm:p-4">{children}</div>
         </main>
 
         {/* Footer */}
-        <FooterContainer />
+        <div className="relative z-0 flex-shrink-0">
+          <FooterContainer />
+        </div>
       </div>
     </div>
     </SupportLiveProvider>

@@ -134,7 +134,7 @@ export default function useAutoLogout() {
     if (!showModal) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] p-4">
         <div className="bg-white rounded-2xl border border-gray-200 shadow-xl w-full max-w-md p-6 sm:p-8">
           <div className="flex flex-col items-center text-center">
             <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mb-5">
