@@ -75,7 +75,8 @@ const Navbar = ({
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const [bellOpen, setBellOpen] = useState(false);
   const { unreadCount, notices, openTicket, markAllRead } = useSupportLive();
-  const badge = unreadCount > 9 ? "9+" : unreadCount > 0 ? String(unreadCount) : "";
+  const badge =
+    unreadCount > 9 ? "9+" : unreadCount > 0 ? String(unreadCount) : "";
 
   const resolvedLang = (i18n.language || "en").split("-")[0];
   const currentLang =
@@ -381,7 +382,9 @@ const Navbar = ({
               }}
             >
               {!hasMenuData ? (
-                <p className="px-3 py-3 text-xs text-gray-500">Loading pages…</p>
+                <p className="px-3 py-3 text-xs text-gray-500">
+                  Loading pages…
+                </p>
               ) : suggestions.length ? (
                 <ul className="max-h-[min(55vh,20rem)] overflow-y-auto py-1">
                   {suggestions.map((item, index) => (
@@ -408,7 +411,9 @@ const Navbar = ({
                   ))}
                 </ul>
               ) : (
-                <p className="px-3 py-3 text-xs text-gray-500">No pages found</p>
+                <p className="px-3 py-3 text-xs text-gray-500">
+                  No pages found
+                </p>
               )}
             </div>
           ) : null}
@@ -475,7 +480,9 @@ const Navbar = ({
           className={`relative p-1.5 sm:p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-150 ease-out flex-shrink-0 ${
             unreadCount > 0 ? "has-news" : ""
           }`}
-          aria-label={unreadCount > 0 ? `Support, ${unreadCount} new` : "Support"}
+          aria-label={
+            unreadCount > 0 ? `Support, ${unreadCount} new` : "Support"
+          }
         >
           <MdSupportAgent className="text-xl" />
           {badge ? (
@@ -494,7 +501,11 @@ const Navbar = ({
             className={`relative p-1.5 sm:p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-150 ease-out ${
               unreadCount > 0 ? "has-news" : ""
             }`}
-            aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} new` : "Notifications"}
+            aria-label={
+              unreadCount > 0
+                ? `Notifications, ${unreadCount} new`
+                : "Notifications"
+            }
           >
             <MdNotifications className="text-xl" />
             {badge ? (
@@ -533,9 +544,13 @@ const Navbar = ({
                         ) : null}
                         {item.title || "Support update"}
                       </span>
-                      <span className="text-xs text-slate-500">{item.number}</span>
+                      <span className="text-xs text-slate-500">
+                        {item.number}
+                      </span>
                       {item.body ? (
-                        <span className="text-xs text-slate-600 line-clamp-2">{item.body}</span>
+                        <span className="text-xs text-slate-600 line-clamp-2">
+                          {item.body}
+                        </span>
                       ) : null}
                       <span className="text-[10px] text-slate-400">
                         {item.at ? new Date(item.at).toLocaleString() : ""}
@@ -552,13 +567,13 @@ const Navbar = ({
           ) : null}
         </div>
 
-        <button
+        {/* <button
           type="button"
           className="hidden sm:flex p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-150 ease-out flex-shrink-0"
           aria-label="Call"
         >
           <MdCall className="text-xl" />
-        </button>
+        </button> */}
 
         <div className="hidden sm:block h-6 w-px bg-white/20 mx-0.5 sm:mx-1 flex-shrink-0" />
 
@@ -624,13 +639,20 @@ const Navbar = ({
       <AlertDialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+            <AlertDialogTitle>
+              Are you sure you want to logout?
+            </AlertDialogTitle>
             <AlertDialogDescription>
               This action will end your current session.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setLogoutDialogOpen(false)} className="cursor-pointer">Cancel</AlertDialogCancel>
+            <AlertDialogCancel
+              onClick={() => setLogoutDialogOpen(false)}
+              className="cursor-pointer"
+            >
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 setLogoutDialogOpen(false);
