@@ -227,7 +227,6 @@ body > [data-central-loader="fullscreen"] {
 }
 
 .custom-scrollbar {
-  scrollbar-gutter: stable;
   scrollbar-width: auto;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }

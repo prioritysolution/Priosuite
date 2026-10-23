@@ -129,9 +129,9 @@ const Repayment = ({
   );
 
   return (
-    <div className="w-full h-full flex justify-between  bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2  w-full gap-2 overflow-hidden">
-        <div className="w-full">
+    <div className="w-full h-full min-h-0 overflow-hidden flex bg-[#fefefe] rounded-lg">
+      <div className="h-full min-h-0 flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
+        <div className="w-full shrink-0">
           <LoanAccountSearchForm
             handleSubmit={handleAccountFormSubmit}
             resetTrigger={resetTrigger}
@@ -144,7 +144,7 @@ const Repayment = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="w-full flex-1 min-h-0 overflow-y-scroll"
+            className="w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
             autoComplete="off"
           >
             <div className="grid lg:grid-cols-[7fr_3fr] gap-2 lg:h-full lg:min-h-0">

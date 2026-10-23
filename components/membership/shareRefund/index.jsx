@@ -102,9 +102,9 @@ const ShareRefund = ({
   const branchId = getCookieData("userBranchId");
 
   return (
-    <div className="w-full h-full flex justify-between p-1  bg-[#fefefe] rounded-lg">
-      <div className="w-full h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 px-2 sm:px-10  gap-2 min-h-0 overflow-hidden">
-        <div className="w-full">
+    <div className="w-full h-full min-h-0 overflow-hidden flex p-1 bg-[#fefefe] rounded-lg">
+      <div className="w-full h-full min-h-0 flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 px-2 sm:px-10 gap-2 overflow-hidden">
+        <div className="w-full shrink-0">
           <MemberSearchForm
             handleSubmit={handleMemberFormSubmit}
             loading={getMemberDataLoading}
@@ -122,7 +122,7 @@ const ShareRefund = ({
             onSubmit={form.handleSubmit(handleSubmit, (errors) =>
               console.log("Share Refund validation errors:", errors),
             )}
-            className="w-full flex-1 min-h-0 overflow-y-scroll"
+            className="w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
             autoComplete="off"
           >
             <div className="grid lg:grid-cols-[7fr_3fr] gap-2 lg:h-full lg:min-h-0">

@@ -33,7 +33,7 @@ const SubLedger = ({
   return (
     <div className="w-full h-full flex justify-between p-5 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col lg:flex-row items-center lg:items-start justify-center border-primary rounded-lg border-[2px] p-5 w-full gap-5 xl:gap-20 overflow-hidden">
-        <div className="h-full w-full text-center flex flex-col items-center gap-5 overflow-y-scroll">
+        <div className="h-full w-full min-h-0 text-center flex flex-col items-center gap-5 overflow-y-auto">
           <h2 className="text-lg sm:text-2xl font-semibold">{t("master.subLedger.title")}</h2>
           <div className="w-full flex items-center justify-end">
             <Button
@@ -71,7 +71,7 @@ const SubLedger = ({
               </ModalContent>
             </Modal>
           </div>
-          <div className=" w-[300px] sm:w-full h-full sm:overflow-y-scroll">
+          <div className=" w-[300px] sm:w-full h-full min-h-0 sm:overflow-y-auto">
             <SubLedgerTable
               data={subLedgerListData || []}
               handleEditData={handleEditData}

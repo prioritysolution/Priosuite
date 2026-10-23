@@ -565,14 +565,14 @@ export const useShareIssue = () => {
       form.setValue(
         "savingsName",
         savingsAccountData?.find(
-          (account) => account?.Id?.toString() === savings,
+          (account) => String(account?.Id) === String(savings),
         )?.Full_Name || "",
       );
     else {
       form.setValue("savingsName", "");
       form.setValue("savingsBalance", "");
     }
-  }, [savings]);
+  }, [savings, savingsAccountData, form]);
 
   useEffect(() => {
     form.setValue("savings", "");

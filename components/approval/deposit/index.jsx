@@ -91,7 +91,7 @@ const DepositApproval = ({
   };
 
   return (
-    <div className="p-4 sm:p-6 space-y-6 bg-gray-50/50 min-h-screen">
+    <div className="h-full min-h-0 overflow-y-auto p-4 sm:p-6 space-y-6 bg-gray-50/50">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div>

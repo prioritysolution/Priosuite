@@ -80,9 +80,9 @@ const DashboardLayout = ({ children }) => {
           <NavbarContainer onMenuToggle={() => setSidebarOpen((prev) => !prev)} />
         </div>
 
-        {/* Scrollable main content — ONLY this scrolls, not the page */}
-        <main className="relative z-0 flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-gray-50 custom-scrollbar">
-          <div className="w-full h-full min-h-0 p-2 sm:p-4">{children}</div>
+        {/* Page frame stays fixed. Each screen scrolls inside itself. */}
+        <main className="relative z-0 flex-1 min-h-0 overflow-hidden bg-gray-50">
+          <div className="w-full h-full min-h-0 overflow-hidden p-2 sm:p-4">{children}</div>
         </main>
 
         {/* Footer */}

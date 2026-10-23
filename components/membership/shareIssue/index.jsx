@@ -92,38 +92,29 @@ const ShareIssue = ({
     (state) => state?.openDepositAccount?.ecsAccountData,
   );
 
-  console.log("savingsAccountData=", savingsAccountData);
-
   const branchId = getCookieData("userBranchId");
+  const memberBranchId = form.watch("BranchId");
+  const isDifferentBranch =
+    memberBranchId != null &&
+    String(memberBranchId).trim() !== "" &&
+    String(memberBranchId) !== String(branchId ?? "");
 
   useEffect(() => {
-    console.log("useEffect triggered - savings:", savings);
-    console.log("savingsAccountData:", savingsAccountData);
-
     if (savings) {
       const foundAccount = savingsAccountData?.find(
-        (account) => account?.Id === savings,
+        (account) => String(account?.Id) === String(savings),
       );
-      console.log("foundAccount:", foundAccount);
 
-      if (foundAccount) {
-        form.setValue("savingsName", foundAccount.Full_Name || "");
-        // Force form to update
-        form.trigger("savingsName");
-      }
+      form.setValue("savingsName", foundAccount?.Full_Name || "");
     } else {
-      console.log("No savings selected, clearing savingsName");
       form.setValue("savingsName", "");
-      form.trigger("savingsName");
     }
   }, [savings, savingsAccountData, form]);
 
-  console.log("Current savingsName:", form.getValues("savingsName"));
-
   return (
-    <div className="w-full h-full flex justify-between p-1  bg-[#fefefe] rounded-lg">
-      <div className="w-full h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 px-2 sm:px-10  gap-2 min-h-0 overflow-hidden">
-        <div className="w-full">
+    <div className="w-full h-full min-h-0 overflow-hidden flex p-1 bg-[#fefefe] rounded-lg">
+      <div className="w-full h-full min-h-0 flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 px-2 sm:px-10 gap-2 overflow-hidden">
+        <div className="w-full shrink-0">
           <MemberSearchForm
             handleSubmit={handleMemberFormSubmit}
             loading={getMemberDataLoading}
@@ -139,10 +130,10 @@ const ShareIssue = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit, (errors) => console.log("Share Issue validation errors:", errors))}
-            className="w-full flex-1 min-h-0 overflow-y-scroll"
+            className="w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
             autoComplete="off"
           >
-            <div className="grid lg:grid-cols-[7fr_3fr] gap-2 lg:h-full lg:min-h-0">
+            <div className="grid lg:grid-cols-[7fr_3fr] gap-2 lg:h-full lg:min-h-0 lg:overflow-hidden">
               {visibleBlock && (
                 <>
                   <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
@@ -230,7 +221,11 @@ const ShareIssue = ({
                               label={t("membership.shareIssue.fields.branchName")}
                               placeholder={t("membership.shareIssue.placeholders.branchName")}
                               readOnly
-                              className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
+                              className={
+                                isDifferentBranch
+                                  ? "border-red-500 bg-red-50 [&_input]:text-red-600"
+                                  : ""
+                              }
                             />
 
                             <InputField

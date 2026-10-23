@@ -141,7 +141,7 @@ const AdminDashboard = ({ form, openingLedgerBranchData }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="h-full min-h-0 overflow-y-auto bg-slate-100">
       {/* ══ HEADER ══════════════════════════════════════════════ */}
       <header className="no-print sticky top-0 z-20 bg-white border-b border-slate-200 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
