@@ -37,6 +37,8 @@ const InterestPayoutContainer = () => {
     showBulkAccountTable,
     disablePayoutTypeForm,
     transMode,
+    bank,
+    refVouchNo,
     postingType,
     resetTrigger,
   } = useInterestPayout();
@@ -79,6 +81,8 @@ const InterestPayoutContainer = () => {
       showBulkAccountTable={showBulkAccountTable}
       disablePayoutTypeForm={disablePayoutTypeForm}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       postingType={postingType}
       resetTrigger={resetTrigger}
     />

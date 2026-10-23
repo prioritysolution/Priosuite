@@ -481,16 +481,21 @@ export const useMapGroupMember = () => {
     form.setValue("withdrawnDate", null);
     form.setValue("remarks", "");
     form.setValue("date", null);
-    // form.setValue("member_info", []);
+    form.setValue("joinongdate", null);
 
     // Reset member data state
     setMemberData(null);
-
-    // Re-enable RadioGroup after reset
     setShowForm(false);
+    dispatch(resetEcsAccountData());
 
     // Trigger MemberSearchForm reset
     setResetTrigger((prev) => prev + 1);
+  };
+
+  const handleSelectedOptionChange = (val) => {
+    if (val === selectedOption) return;
+    resetForm();
+    setSelectedOption(val);
   };
 
   const handleAddMember = () => {
@@ -667,6 +672,18 @@ export const useMapGroupMember = () => {
     }
   };
 
+  const pickApiErrorMessage = (res, fallback) => {
+    const details = res?.details ?? res?.data?.details;
+    if (typeof details === "string" && details.trim()) return details;
+    if (Array.isArray(details) && details.length) {
+      return details[0]?.Message || details[0]?.message || fallback;
+    }
+    if (details && typeof details === "object") {
+      return details.Message || details.message || fallback;
+    }
+    return res?.message || res?.data?.message || fallback;
+  };
+
   const handleUpdateMember = async (memberId, updatedData) => {
     console.log("handleUpdateMember=", updatedData);
     const formatDate = (date) => {
@@ -681,9 +698,6 @@ export const useMapGroupMember = () => {
     const payload = {
       map_id: updatedData.mapId,
       org_id: orgId,
-      // link_date: updatedData.joinongdate
-      //   ? formatDate(updatedData.joinongdate)
-      //   : null,
       link_date: updatedData.joinongdate
         ? format(updatedData.joinongdate, "yyyy-MM-dd")
         : null,
@@ -696,8 +710,6 @@ export const useMapGroupMember = () => {
         : null,
     };
 
-    // console.log("Updated member data:", payload);
-
     const response = await UpdateMapMemberAPI(payload);
 
     if (response.message === "Success" || response.status === "success") {
@@ -705,7 +717,7 @@ export const useMapGroupMember = () => {
       const gropcifNo = form.getValues("gcifNo");
       getGroupDataByIdApiCall(orgId, gropcifNo);
     } else {
-      toast.error(response.message || "Failed to update member");
+      toast.error(pickApiErrorMessage(response, "Failed to update member"));
     }
 
     resetForm();
@@ -724,26 +736,12 @@ export const useMapGroupMember = () => {
       const gropcifNo = form.getValues("gcifNo");
       getGroupDataByIdApiCall(orgId, gropcifNo);
     } else {
-      toast.error(response.message || "Failed to delete member");
+      toast.error(pickApiErrorMessage(response, "Failed to delete member"));
     }
   };
 
   const handleMapSubmit = async () => {
-    // Debug: Check all form values
-    const allValues = form.getValues();
-
-    // Format date to YYYY-MM-DD
-    const formatDate = (date) => {
-      if (!date) return null;
-      const d = new Date(date);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    };
-
     const payload = {
-      // link_date: formatDate(addedMembers[0]?.date || null),
       link_date: addedMembers[0]?.date
         ? format(addedMembers[0]?.date, "yyyy-MM-dd")
         : null,
@@ -757,17 +755,13 @@ export const useMapGroupMember = () => {
       })),
     };
 
-    console.log("Payload:", payload);
-
     try {
       const response = await PostMapGrpInstMember(payload);
 
       if (response.message === "Success" || response.status === "success") {
         toast.success("Group members mapped successfully!");
-        // Set success message for SuccessMessage component
         setSuccessMessage("Group members mapped successfully!");
         setShowSuccessMessage(true);
-        // Reset form and clear table after successful submission
         setAddedMembers([]);
         setGroupData(null);
         setVisibleBlock(false);
@@ -786,11 +780,18 @@ export const useMapGroupMember = () => {
         setGroupResetTrigger((prev) => prev + 1);
         setSelectedOption("existing");
       } else {
-        toast.error(response.message || "Failed to map group members");
+        toast.error(
+          pickApiErrorMessage(response, "Failed to map group members"),
+        );
       }
     } catch (error) {
       console.error("API error:", error);
-      toast.error("An error occurred while mapping group members");
+      toast.error(
+        pickApiErrorMessage(
+          error?.response?.data,
+          "An error occurred while mapping group members",
+        ),
+      );
     }
   };
 
@@ -823,5 +824,6 @@ export const useMapGroupMember = () => {
     handelDeleteMember,
     selectedOption,
     setSelectedOption,
+    handleSelectedOptionChange,
   };
 };

@@ -51,6 +51,8 @@ const Deposit = ({
   handleCloseSuccessMessage,
   showLedger,
   transMode,
+  bank,
+  refVouchNo,
   insufficientBalanceDisable,
   handleShowLedger,
   showLedgerDialog,
@@ -468,7 +470,9 @@ const Deposit = ({
                               <InputField
                                 control={form.control}
                                 name="refVouchNo"
+                                label={t("deposit.fields.refVoucherNo")}
                                 placeholder={t("deposit.placeholders.refVoucherNo")}
+                                isRequired={transMode === "bank"}
                               />
                               {transMode === "cash" ? (
                                 isActiveDenom ? (
@@ -501,6 +505,7 @@ const Deposit = ({
                                   optionLabelKey="Bank_Name"
                                   placeholder={t("deposit.placeholders.selectBank")}
                                   searchPlaceholder={t("deposit.placeholders.searchBank")}
+                                  isRequired
                                 />
                               ) : (
                                 <>
@@ -542,7 +547,8 @@ const Deposit = ({
                                     Number(cashOutTransactionGrandTotal) !==
                                     Number(form.getValues("depositAmount"))) ||
                                 (transMode === "bank" &&
-                                  !form.getValues("bank")) ||
+                                  (!bank ||
+                                    !String(refVouchNo || "").trim())) ||
                                 (transMode === "savings" &&
                                   !form.getValues("savings"))
                               }

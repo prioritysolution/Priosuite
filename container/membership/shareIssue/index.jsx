@@ -14,6 +14,7 @@ const ShareIssueContainer = () => {
     totalAmt,
     savings,
     bank,
+    refVouchNo,
     loading,
     getMemberDataLoading,
     postShareIssueLoading,
@@ -91,6 +92,7 @@ const ShareIssueContainer = () => {
       totalAmt={totalAmt}
       savings={savings}
       bank={bank}
+      refVouchNo={refVouchNo}
       insufficientBalanceDisable={insufficientBalanceDisable}
       showLedger={showLedger}
       handleShowLedger={handleShowLedger}

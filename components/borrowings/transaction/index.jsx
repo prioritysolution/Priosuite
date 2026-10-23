@@ -71,6 +71,8 @@ const Transaction = ({
   handleCloseSuccessMessage,
   mode,
   transMode,
+  bank,
+  refVouchNo,
   handleShowLedger,
   showLedger,
   setShowLedger,
@@ -312,6 +314,7 @@ const Transaction = ({
                     name="refVouchNo"
                     label={t("common.refVouchNo")}
                     placeholder={t("common.enterRefVouchNo")}
+                    isRequired={transMode === "bank"}
                   />
 
                   <InputField
@@ -418,6 +421,7 @@ const Transaction = ({
                           optionLabelKey="Bank_Name"
                           placeholder={t("borrowings.selectBank")}
                           searchPlaceholder={t("borrowings.searchBank")}
+                          isRequired
                         />
                       )}
                     />
@@ -435,7 +439,9 @@ const Transaction = ({
                     transMode === "cash" &&
                     isActiveDenom &&
                     cashTransactionGrandTotal !==
-                      Number(form.getValues("total")))
+                      Number(form.getValues("total"))) ||
+                  (transMode === "bank" &&
+                    (!bank || !String(refVouchNo || "").trim()))
                 }
               >
                 {loading ? (

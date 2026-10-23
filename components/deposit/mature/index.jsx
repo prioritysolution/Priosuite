@@ -81,6 +81,8 @@ const Mature = ({
   showSearchAccountForm,
   disableOperationTypeForm,
   transMode,
+  bank,
+  refVouchNo,
   handleSearchAccountListByMemberNo,
   handleSearchAccountListByName,
   handleSelectClick,
@@ -590,6 +592,7 @@ const Mature = ({
                             name="refVouchNo"
                             label={t("deposit.fields.refVoucherNo")}
                             placeholder={t("deposit.placeholders.refVoucherNo")}
+                            isRequired={transMode === "bank"}
                           />
                           {transMode === "cash" ? (
                             isActiveDenom ? (
@@ -625,6 +628,7 @@ const Mature = ({
                               optionLabelKey="Bank_Name"
                               placeholder={t("deposit.placeholders.selectBank")}
                               searchPlaceholder={t("deposit.placeholders.searchBank")}
+                              isRequired
                             />
                           ) : transMode === "savings" ? (
                             <>
@@ -923,7 +927,8 @@ const Mature = ({
                           : Number(cashInTransactionGrandTotal) -
                               Number(cashOutTransactionGrandTotal) !==
                             Number(form.getValues("totalAmount")))) ||
-                      (transMode === "bank" && !form.getValues("bank")) ||
+                      (transMode === "bank" &&
+                        (!bank || !String(refVouchNo || "").trim())) ||
                       (transMode === "savings" &&
                         (form.getValues("savingsAccountType") === "own"
                           ? !form.getValues("savings")

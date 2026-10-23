@@ -33,6 +33,7 @@ const MapInstituteMemberContainer = () => {
     handelDeleteMember,
     selectedOption,
     setSelectedOption,
+    handleSelectedOptionChange,
   } = useMapInstituteMember();
 
   return <MapInstituteMember
@@ -61,6 +62,7 @@ const MapInstituteMemberContainer = () => {
     setSuccessMessage={setSuccessMessage}
     selectedOption={selectedOption}
     setSelectedOption={setSelectedOption}
+    handleSelectedOptionChange={handleSelectedOptionChange}
     handelDeleteMember={handelDeleteMember}
   />;
 };

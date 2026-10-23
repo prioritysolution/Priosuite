@@ -25,6 +25,10 @@ const RenewalContainer = () => {
     checkDepositDurationDisable,
     checkDepositDurationMessage,
     resetTrigger,
+    transMode,
+    bank,
+    refVouchNo,
+    savings,
   } = useRenewal();
 
   const { getDurationTypeDataApiCall } = useOpenDepositAccount();
@@ -53,6 +57,10 @@ const RenewalContainer = () => {
       checkDepositDurationDisable={checkDepositDurationDisable}
       checkDepositDurationMessage={checkDepositDurationMessage}
       resetTrigger={resetTrigger}
+      transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
+      savings={savings}
     />
   );
 };

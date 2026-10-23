@@ -254,6 +254,7 @@ const MapGroupMember = ({
   setSuccessMessage,
   selectedOption,
   setSelectedOption,
+  handleSelectedOptionChange,
   handelDeleteMember,
 }) => {
   const { t } = useTranslation();
@@ -547,7 +548,11 @@ const MapGroupMember = ({
                           className="flex flex-col sm:flex-row gap-2 sm:gap-4"
                           onValueChange={(val) => {
                             if (!radioLocked) setRadioLocked(true);
-                            setSelectedOption(val);
+                            if (handleSelectedOptionChange) {
+                              handleSelectedOptionChange(val);
+                            } else {
+                              setSelectedOption?.(val);
+                            }
                           }}
                         >
                           {[

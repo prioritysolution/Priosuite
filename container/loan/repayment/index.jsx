@@ -31,6 +31,8 @@ const RepaymentContainer = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     transMode,
+    bank,
+    refVouchNo,
     insufficientBalanceDisable,
     showLedger,
     handleShowLedger,
@@ -102,6 +104,8 @@ const RepaymentContainer = () => {
       showSuccessMessage={showSuccessMessage}
       handleCloseSuccessMessage={handleCloseSuccessMessage}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       insufficientBalanceDisable={insufficientBalanceDisable}
       showLedger={showLedger}
       handleShowLedger={handleShowLedger}

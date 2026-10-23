@@ -17,6 +17,7 @@ import {
   getSingleAccountData,
 } from "./InterestPayoutReducer";
 import { useOpenDepositAccount } from "../openDepositAccount/Hooks";
+import { alphanumericWithHyphenUnderscoreRegex } from "@/utils/validationRegex";
 
 export const useInterestPayout = () => {
   const dispatch = useDispatch();
@@ -75,8 +76,37 @@ export const useInterestPayout = () => {
     paidDate: yup.date(),
     interestAmount: yup.string(),
     transMode: yup.string().required("Transanction mode is required"),
-    refVouchNo: yup.string(),
-    bank: yup.string(),
+    refVouchNo: yup
+      .string()
+      .transform((value) => (value === "" ? null : value))
+      .nullable()
+      .when("transMode", {
+        is: "bank",
+        then: (schema) =>
+          schema
+            .required("Reference voucher number is required")
+            .test(
+              "is-valid-ref-vouch-no",
+              "Reference voucher number is invalid",
+              (value) =>
+                value != null &&
+                alphanumericWithHyphenUnderscoreRegex.test(value),
+            ),
+        otherwise: (schema) =>
+          schema.test(
+            "is-valid-ref-vouch-no",
+            "Reference voucher number is invalid",
+            (value) => {
+              if (value == null) return true;
+              return alphanumericWithHyphenUnderscoreRegex.test(value);
+            },
+          ),
+      }),
+    bank: yup.string().when("transMode", {
+      is: "bank",
+      then: (schema) => schema.required("Bank is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
     savings: yup.string(),
   });
 
@@ -129,7 +159,7 @@ export const useInterestPayout = () => {
   });
 
   const { control } = form;
-  const { transMode } = useWatch({ control });
+  const { transMode, bank, refVouchNo } = useWatch({ control });
 
   const { postingType } = useWatch({ control: optionForm.control });
 
@@ -508,6 +538,8 @@ export const useInterestPayout = () => {
     showBulkAccountTable,
     disablePayoutTypeForm,
     transMode,
+    bank,
+    refVouchNo,
     postingType,
     resetTrigger,
   };

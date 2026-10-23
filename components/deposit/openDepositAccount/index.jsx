@@ -74,6 +74,8 @@ const OpenDepositAccount = ({
   accountType,
   openingDate,
   transMode,
+  bank,
+  refVouchNo,
   openingAmount,
   depositProduct,
   notes,
@@ -1650,6 +1652,7 @@ const OpenDepositAccount = ({
                             name="refVouchNo"
                             label={t("deposit.fields.refVoucherNo")}
                             placeholder={t("deposit.placeholders.refVoucherNo")}
+                            isRequired={transMode === "bank"}
                           />
                           {transMode === "cash" ? (
                             isActiveDenom ? (
@@ -1685,9 +1688,10 @@ const OpenDepositAccount = ({
                                   value={field.value}
                                   onChange={field.onChange}
                                   options={bankAccountData}
-                                  optionLabelKey="Bank_Name" // Specify the key for label
+                                  optionLabelKey="Bank_Name"
                                   placeholder={t("deposit.placeholders.selectBank")}
                                   searchPlaceholder={t("deposit.placeholders.searchBank")}
+                                  isRequired
                                 />
                               )}
                             />
@@ -1757,7 +1761,8 @@ const OpenDepositAccount = ({
                           Number(cashOutTransactionGrandTotal) !==
                           Number(openingAmount)) ||
                       !Number(openingAmount) ||
-                      (transMode === "bank" && !form.getValues("bank")) ||
+                      (transMode === "bank" &&
+                        (!bank || !String(refVouchNo || "").trim())) ||
                       (transMode === "savings" && !savings) ||
                       checkDepositAmountDisable ||
                       checkDepositDurationDisable ||

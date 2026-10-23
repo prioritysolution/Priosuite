@@ -22,7 +22,10 @@ import {
   getAccountDetailsByAccountNoAPI,
   getOperateProductAPI,
 } from "../deposit/DepositApis";
-import { maxTwoDecimalPlaces } from "@/utils/validationRegex";
+import {
+  alphanumericWithHyphenUnderscoreRegex,
+  maxTwoDecimalPlaces,
+} from "@/utils/validationRegex";
 import { getSearchAccountData } from "../deposit/DepositReducer";
 import { useOpenDepositAccount } from "../openDepositAccount/Hooks";
 import { getCheckBalanceAPI } from "@/container/membership/issueMembership/IssueMembershipApis";
@@ -142,16 +145,35 @@ export const useMature = () => {
     transMode: yup.string().required("Transanction mode is required"),
     refVouchNo: yup
       .string()
-      .transform((value) => (value === "" ? null : value)) // Convert empty strings to null
-      .nullable() // Allow null values
-      .test(
-        "is-valid-ref-vouch-no",
-        "Reference voucher number is invalid",
-        (value) => {
-          if (value === null) return true; // Skip validation if value is null or empty
-          return alphanumericWithHyphenUnderscoreRegex.test(value); // Validate with regex
-        },
-      ),
+      .transform((value) => (value === "" ? null : value))
+      .nullable()
+      .when("transMode", {
+        is: "bank",
+        then: (schema) =>
+          schema
+            .required("Reference voucher number is required")
+            .test(
+              "is-valid-ref-vouch-no",
+              "Reference voucher number is invalid",
+              (value) =>
+                value != null &&
+                alphanumericWithHyphenUnderscoreRegex.test(value),
+            ),
+        otherwise: (schema) =>
+          schema.test(
+            "is-valid-ref-vouch-no",
+            "Reference voucher number is invalid",
+            (value) => {
+              if (value == null) return true;
+              return alphanumericWithHyphenUnderscoreRegex.test(value);
+            },
+          ),
+      }),
+    bank: yup.string().when("transMode", {
+      is: "bank",
+      then: (schema) => schema.required("Bank is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
     savingsAccountType: yup.string(),
     savingsAccountNo: yup.string(),
     savingsAccountId: yup.string(),
@@ -189,6 +211,7 @@ export const useMature = () => {
       Joint_2: "",
       transMode: "cash",
       refVouchNo: "",
+      bank: "",
       savingsAccountType: "own",
       savings: "",
       savingsAccountNo: "",
@@ -217,6 +240,8 @@ export const useMature = () => {
     closeDate,
     savingsAccountType,
     findAmount,
+    bank,
+    refVouchNo,
   } = useWatch({ control });
 
   const { operationType } = useWatch({ control: optionForm.control });
@@ -1092,6 +1117,8 @@ export const useMature = () => {
     showSearchAccountForm,
     disableOperationTypeForm,
     transMode,
+    bank,
+    refVouchNo,
     showMatureDialog,
     setShowMatureDialog,
     handleCancelPremature,

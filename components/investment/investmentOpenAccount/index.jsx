@@ -43,6 +43,8 @@ const InvestmentOpenAccount = ({
   showSuccessMessage,
   handleCloseSuccessMessage,
   transMode,
+  bank,
+  refVouchNo,
   handleCalculateMatureAmount,
 }) => {
   const { t } = useTranslation();
@@ -302,6 +304,7 @@ const InvestmentOpenAccount = ({
                   name="refVouchNo"
                   label={t("investment.refVouchNo")}
                   placeholder={t("investment.enterRefVouchNo")}
+                  isRequired={transMode === "bank"}
                 />
 
                 {/* Transaction Mode */}
@@ -382,7 +385,14 @@ const InvestmentOpenAccount = ({
                 <Button
                   type="submit"
                   className="w-full sm:w-40 h-10 font-semibold"
-                  disabled={loading}
+                  disabled={
+                    loading ||
+                    (transMode === "cash"
+                      ? isActiveDenom &&
+                        Number(cashTransactionGrandTotal) !==
+                          Number(form.getValues("amount"))
+                      : !bank || !String(refVouchNo || "").trim())
+                  }
                 >
                   {loading ? (
                     <ClipLoader

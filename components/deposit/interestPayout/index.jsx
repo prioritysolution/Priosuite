@@ -62,6 +62,8 @@ const InterestPayout = ({
   showBulkAccountTable,
   disablePayoutTypeForm,
   transMode,
+  bank,
+  refVouchNo,
   postingType,
   resetTrigger,
 }) => {
@@ -474,6 +476,7 @@ const InterestPayout = ({
                             label={t("deposit.fields.refVoucherNo")}
                             placeholder={t("deposit.placeholders.refVoucherNo")}
                             className="w-fit"
+                            isRequired={transMode === "bank"}
                           />
                         </div>
                         {transMode === "cash" ? (
@@ -510,6 +513,7 @@ const InterestPayout = ({
                               optionLabelKey="Bank_Name"
                               placeholder={t("deposit.placeholders.selectBank")}
                               searchPlaceholder={t("deposit.placeholders.searchBank")}
+                              isRequired
                             />
                           </div>
                         ) : (
@@ -539,7 +543,11 @@ const InterestPayout = ({
                             isActiveDenom &&
                             Number(cashInTransactionGrandTotal) -
                               Number(cashOutTransactionGrandTotal) !==
-                              Number(form.getValues("interestAmount")))
+                              Number(form.getValues("interestAmount"))) ||
+                          (transMode === "bank" &&
+                            (!bank || !String(refVouchNo || "").trim())) ||
+                          (transMode === "savings" &&
+                            !form.getValues("savings"))
                         }
                       >
                         {postInterestPayoutLoading ? (

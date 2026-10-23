@@ -374,22 +374,40 @@ export const useOpenDepositAccount = () => {
     photo: yup.mixed(),
     signature: yup.mixed(),
     transMode: yup.string().required("Transaction mode is required"),
-    bank: yup.string(),
+    bank: yup.string().when("transMode", {
+      is: "bank",
+      then: (schema) => schema.required("Bank is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
     savings: yup.string(),
     savingsName: yup.string(),
     savingsBalance: yup.string(),
     refVouchNo: yup
       .string()
-      .transform((value) => (value === "" ? null : value)) // Convert empty strings to null
-      .nullable() // Allow null values
-      .test(
-        "is-valid-ref-vouch-no",
-        "Reference voucher number is invalid",
-        (value) => {
-          if (value === null) return true; // Skip validation if value is null or empty
-          return alphanumericWithHyphenUnderscoreRegex.test(value); // Validate with regex
-        },
-      ),
+      .transform((value) => (value === "" ? null : value))
+      .nullable()
+      .when("transMode", {
+        is: "bank",
+        then: (schema) =>
+          schema
+            .required("Reference voucher number is required")
+            .test(
+              "is-valid-ref-vouch-no",
+              "Reference voucher number is invalid",
+              (value) =>
+                value != null &&
+                alphanumericWithHyphenUnderscoreRegex.test(value),
+            ),
+        otherwise: (schema) =>
+          schema.test(
+            "is-valid-ref-vouch-no",
+            "Reference voucher number is invalid",
+            (value) => {
+              if (value == null) return true;
+              return alphanumericWithHyphenUnderscoreRegex.test(value);
+            },
+          ),
+      }),
   });
 
   const form = useForm({
@@ -437,6 +455,10 @@ export const useOpenDepositAccount = () => {
       signature: "",
       transMode: "cash",
       refVouchNo: "",
+      bank: "",
+      savings: "",
+      savingsName: "",
+      savingsBalance: "",
     },
   });
 
@@ -459,6 +481,8 @@ export const useOpenDepositAccount = () => {
     payoutAmount,
     savings,
     savingsBalance,
+    bank,
+    refVouchNo,
   } = useWatch({
     control,
   });
@@ -1576,6 +1600,8 @@ export const useOpenDepositAccount = () => {
     payoutAmount,
     savings,
     savingsBalance,
+    bank,
+    refVouchNo,
 
     setJointMemberDialougeOpen,
     setSpecialJointDialogOpen,

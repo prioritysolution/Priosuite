@@ -237,26 +237,38 @@ export const useInvestmentOpenAccount = () => {
     interestLedger: yup.string().required("Interest ledger is required"),
     refVouchNo: yup
       .string()
-      .transform((value) => (value === "" ? null : value)) // Convert empty strings to null
-      .nullable() // Allow null values
-      .test(
-        "is-valid-ref-vouch-no",
-        "Reference voucher number is invalid",
-        (value) => {
-          if (value === null) return true; // Skip validation if value is null or empty
-          return alphanumericWithHyphenUnderscoreRegex.test(value); // Validate with regex
-        },
-      ),
+      .transform((value) => (value === "" ? null : value))
+      .nullable()
+      .when("transMode", {
+        is: "bank",
+        then: (schema) =>
+          schema
+            .required("Reference voucher number is required")
+            .test(
+              "is-valid-ref-vouch-no",
+              "Reference voucher number is invalid",
+              (value) =>
+                value != null &&
+                alphanumericWithHyphenUnderscoreRegex.test(value),
+            ),
+        otherwise: (schema) =>
+          schema.test(
+            "is-valid-ref-vouch-no",
+            "Reference voucher number is invalid",
+            (value) => {
+              if (value == null) return true;
+              return alphanumericWithHyphenUnderscoreRegex.test(value);
+            },
+          ),
+      }),
     transMode: yup.string().required("Transaction mode is required"),
     particulars: yup.string().required("Particulars is required"),
-    bank: yup
-      .string()
-      .test("is-required-bank", "Bank is required", function (value) {
-        const { transMode } = this.parent;
-        if (transMode !== "bank") return true;
-        return !!value;
-      }),
-      durtype: yup.string().required("Duration type is required"),
+    bank: yup.string().when("transMode", {
+      is: "bank",
+      then: (schema) => schema.required("Bank is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    durtype: yup.string().required("Duration type is required"),
   });
 
   const form = useForm({
@@ -294,6 +306,8 @@ export const useInvestmentOpenAccount = () => {
     openingDate,
     transMode,
     durtype,
+    bank,
+    refVouchNo,
   ] = useWatch({
     control,
     name: [
@@ -306,6 +320,8 @@ export const useInvestmentOpenAccount = () => {
       "openingDate",
       "transMode",
       "durtype",
+      "bank",
+      "refVouchNo",
     ],
   });
 
@@ -660,7 +676,9 @@ export const useInvestmentOpenAccount = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     transMode,
+    bank,
+    refVouchNo,
     handleCalculateMatureAmount,
-    getInvestmentDurationApiCall
+    getInvestmentDurationApiCall,
   };
 };

@@ -44,6 +44,8 @@ const CloseAccount = ({
   showSuccessMessage,
   handleCloseSuccessMessage,
   transMode,
+  bank,
+  refVouchNo,
   handleShowLedger,
   showLedger,
   setShowLedger,
@@ -174,6 +176,7 @@ const CloseAccount = ({
                   name="refVouchNo"
                   label={t("bank.refVouchNo")}
                   placeholder={t("bank.enterRefVouchNo")}
+                  isRequired={transMode === "bank"}
                 />
 
                 {/* Transaction Mode */}
@@ -295,7 +298,8 @@ const CloseAccount = ({
                       isActiveDenom &&
                       Number(cashTransactionGrandTotal) !==
                         Number(form.getValues("closingAmount"))) ||
-                    (transMode === "bank" && !form.getValues("bank")) ||
+                    (transMode === "bank" &&
+                      (!bank || !String(refVouchNo || "").trim())) ||
                     (form.getValues("availableBalance") &&
                       Number(form.getValues("availableBalance")) <= 0)
                   }

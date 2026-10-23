@@ -146,6 +146,116 @@ const KycActionModal = ({
       identity: [],
     };
 
+    const permanentLocationFields = [
+      {
+        name: type === "4" ? "inst_add" : ["2", "3"].includes(type) ? "grp_add" : "address",
+        label: t("kycApproval.fields.address"),
+        fieldType: "text",
+      },
+      {
+        name: "stateId",
+        label: t("kycApproval.fields.state"),
+        type: "dropdown",
+        optionsList: masterDataLists.states,
+        labelKey: "State_Name",
+      },
+      {
+        name: "districtId",
+        label: t("kycApproval.fields.district"),
+        type: "dropdown",
+        optionsList: masterDataLists.districts,
+        labelKey: "Dist_Name",
+        isDisabled: !watchedStateId,
+      },
+      {
+        name: "blockId",
+        label: t("kycApproval.fields.block"),
+        type: "dropdown",
+        optionsList: masterDataLists.blocks,
+        labelKey: "Block_Name",
+        isDisabled: !watchedDistrictId,
+      },
+      {
+        name: "policeStationId",
+        label: t("kycApproval.fields.policeStation"),
+        type: "dropdown",
+        optionsList: masterDataLists.policeStations,
+        labelKey: "STation_Name",
+        isDisabled: !watchedDistrictId,
+      },
+      {
+        name: "postOfficeId",
+        label: t("kycApproval.fields.postOffice"),
+        type: "dropdown",
+        optionsList: masterDataLists.postOffices,
+        labelKey: "Post_Off_Name",
+        isDisabled: !watchedDistrictId,
+      },
+      {
+        name: "villageId",
+        label: t("kycApproval.fields.villageWardNo"),
+        type: "dropdown",
+        optionsList: masterDataLists.villages,
+        labelKey: "Vill_Name",
+        isDisabled: !watchedBlockId,
+      },
+    ];
+
+    const presentLocationFields = [
+      {
+        name: "presentAddress",
+        label: t("kycApproval.fields.address"),
+        fieldType: "text",
+      },
+      {
+        name: "presentStateId",
+        label: t("kycApproval.fields.state"),
+        type: "dropdown",
+        optionsList: masterDataLists.states,
+        labelKey: "State_Name",
+      },
+      {
+        name: "presentDistrictId",
+        label: t("kycApproval.fields.district"),
+        type: "dropdown",
+        optionsList: masterDataLists.presentDistricts,
+        labelKey: "Dist_Name",
+        isDisabled: !watchedPresentStateId,
+      },
+      {
+        name: "presentBlockId",
+        label: t("kycApproval.fields.block"),
+        type: "dropdown",
+        optionsList: masterDataLists.presentBlocks,
+        labelKey: "Block_Name",
+        isDisabled: !watchedPresentDistrictId,
+      },
+      {
+        name: "presentPoliceStationId",
+        label: t("kycApproval.fields.policeStation"),
+        type: "dropdown",
+        optionsList: masterDataLists.presentPoliceStations,
+        labelKey: "STation_Name",
+        isDisabled: !watchedPresentDistrictId,
+      },
+      {
+        name: "presentPostOfficeId",
+        label: t("kycApproval.fields.postOffice"),
+        type: "dropdown",
+        optionsList: masterDataLists.presentPostOffices,
+        labelKey: "Post_Off_Name",
+        isDisabled: !watchedPresentDistrictId,
+      },
+      {
+        name: "presentVillageId",
+        label: t("kycApproval.fields.villageWardNo"),
+        type: "dropdown",
+        optionsList: masterDataLists.presentVillages,
+        labelKey: "Vill_Name",
+        isDisabled: !watchedPresentBlockId,
+      },
+    ];
+
     if (["2", "3"].includes(type)) {
       config.profile = [
         {
@@ -179,58 +289,10 @@ const KycActionModal = ({
           fieldType: "number",
           maxLength: 10,
         },
-        { name: "grp_add", label: t("kycApproval.fields.address") },
         { name: "grp_doc", label: t("kycApproval.fields.regDocumentNo") },
       ];
-      config.location = [
-        {
-          name: "stateId",
-          label: t("kycApproval.fields.state"),
-          type: "dropdown",
-          optionsList: masterDataLists.states,
-          labelKey: "State_Name",
-        },
-        {
-          name: "districtId",
-          label: t("kycApproval.fields.district"),
-          type: "dropdown",
-          optionsList: masterDataLists.districts,
-          labelKey: "Dist_Name",
-          isDisabled: !watchedStateId,
-        },
-        {
-          name: "blockId",
-          label: t("kycApproval.fields.block"),
-          type: "dropdown",
-          optionsList: masterDataLists.blocks,
-          labelKey: "Block_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "policeStationId",
-          label: t("kycApproval.fields.policeStation"),
-          type: "dropdown",
-          optionsList: masterDataLists.policeStations,
-          labelKey: "STation_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "postOfficeId",
-          label: t("kycApproval.fields.postOffice"),
-          type: "dropdown",
-          optionsList: masterDataLists.postOffices,
-          labelKey: "Post_Off_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "villageId",
-          label: t("kycApproval.fields.villageWardNo"),
-          type: "dropdown",
-          optionsList: masterDataLists.villages,
-          labelKey: "Vill_Name",
-          isDisabled: !watchedBlockId,
-        },
-      ];
+      config.permanentLocation = permanentLocationFields;
+      config.presentLocation = presentLocationFields;
     } else if (type === "4") {
       config.profile = [
         { name: "inst_name", label: t("kycApproval.fields.institutionName") },
@@ -250,58 +312,10 @@ const KycActionModal = ({
           fieldType: "number",
           maxLength: 10,
         },
-        { name: "inst_add", label: t("kycApproval.fields.address") },
         { name: "inst_doc", label: t("kycApproval.fields.regDocumentNo") },
       ];
-      config.location = [
-        {
-          name: "stateId",
-          label: t("kycApproval.fields.state"),
-          type: "dropdown",
-          optionsList: masterDataLists.states,
-          labelKey: "State_Name",
-        },
-        {
-          name: "districtId",
-          label: t("kycApproval.fields.district"),
-          type: "dropdown",
-          optionsList: masterDataLists.districts,
-          labelKey: "Dist_Name",
-          isDisabled: !watchedStateId,
-        },
-        {
-          name: "blockId",
-          label: t("kycApproval.fields.block"),
-          type: "dropdown",
-          optionsList: masterDataLists.blocks,
-          labelKey: "Block_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "policeStationId",
-          label: t("kycApproval.fields.policeStation"),
-          type: "dropdown",
-          optionsList: masterDataLists.policeStations,
-          labelKey: "STation_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "postOfficeId",
-          label: t("kycApproval.fields.postOffice"),
-          type: "dropdown",
-          optionsList: masterDataLists.postOffices,
-          labelKey: "Post_Off_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "villageId",
-          label: t("kycApproval.fields.villageWardNo"),
-          type: "dropdown",
-          optionsList: masterDataLists.villages,
-          labelKey: "Vill_Name",
-          isDisabled: !watchedBlockId,
-        },
-      ];
+      config.permanentLocation = permanentLocationFields;
+      config.presentLocation = presentLocationFields;
     } else {
       config.profile = [
         {
@@ -363,115 +377,8 @@ const KycActionModal = ({
         { name: "email", label: t("kycApproval.fields.email") },
       ];
 
-      config.permanentLocation = [
-        {
-          name: "address",
-          label: t("kycApproval.fields.address"),
-          fieldType: "text",
-        },
-        {
-          name: "stateId",
-          label: t("kycApproval.fields.state"),
-          type: "dropdown",
-          optionsList: masterDataLists.states,
-          labelKey: "State_Name",
-        },
-        {
-          name: "districtId",
-          label: t("kycApproval.fields.district"),
-          type: "dropdown",
-          optionsList: masterDataLists.districts,
-          labelKey: "Dist_Name",
-          isDisabled: !watchedStateId,
-        },
-        {
-          name: "blockId",
-          label: t("kycApproval.fields.block"),
-          type: "dropdown",
-          optionsList: masterDataLists.blocks,
-          labelKey: "Block_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "policeStationId",
-          label: t("kycApproval.fields.policeStation"),
-          type: "dropdown",
-          optionsList: masterDataLists.policeStations,
-          labelKey: "STation_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "postOfficeId",
-          label: t("kycApproval.fields.postOffice"),
-          type: "dropdown",
-          optionsList: masterDataLists.postOffices,
-          labelKey: "Post_Off_Name",
-          isDisabled: !watchedDistrictId,
-        },
-        {
-          name: "villageId",
-          label: t("kycApproval.fields.villageWardNo"),
-          type: "dropdown",
-          optionsList: masterDataLists.villages,
-          labelKey: "Vill_Name",
-          isDisabled: !watchedBlockId,
-        },
-      ];
-
-      config.presentLocation = [
-        {
-          name: "presentAddress",
-          label: t("kycApproval.fields.address"),
-          fieldType: "text",
-        },
-        {
-          name: "presentStateId",
-          label: t("kycApproval.fields.state"),
-          type: "dropdown",
-          optionsList: masterDataLists.states,
-          labelKey: "State_Name",
-        },
-        {
-          name: "presentDistrictId",
-          label: t("kycApproval.fields.district"),
-          type: "dropdown",
-          optionsList: masterDataLists.presentDistricts,
-          labelKey: "Dist_Name",
-          isDisabled: !watchedPresentStateId,
-        },
-        {
-          name: "presentBlockId",
-          label: t("kycApproval.fields.block"),
-          type: "dropdown",
-          optionsList: masterDataLists.presentBlocks,
-          labelKey: "Block_Name",
-          isDisabled: !watchedPresentDistrictId,
-        },
-        {
-          name: "presentPoliceStationId",
-          label: t("kycApproval.fields.policeStation"),
-          type: "dropdown",
-          optionsList: masterDataLists.presentPoliceStations,
-          labelKey: "STation_Name",
-          isDisabled: !watchedPresentDistrictId,
-        },
-        {
-          name: "presentPostOfficeId",
-          label: t("kycApproval.fields.postOffice"),
-          type: "dropdown",
-          optionsList: masterDataLists.presentPostOffices,
-          labelKey: "Post_Off_Name",
-          isDisabled: !watchedPresentDistrictId,
-        },
-        {
-          name: "presentVillageId",
-          label: t("kycApproval.fields.villageWardNo"),
-          type: "dropdown",
-          optionsList: masterDataLists.presentVillages,
-          labelKey: "Vill_Name",
-          isDisabled: !watchedPresentBlockId,
-        },
-      ];
+      config.permanentLocation = permanentLocationFields;
+      config.presentLocation = presentLocationFields;
 
       config.identity = [
         {

@@ -31,6 +31,9 @@ const InvestmentInterestContainer = () => {
     currentTime,
     fromDate,
     getLedgerLoading,
+    transMode,
+    bank,
+    refVouchNo,
   } = useInvestmentInterestPosting();
 
   const { getBankAccountApiCall } = useBankDeposit();
@@ -62,6 +65,9 @@ const InvestmentInterestContainer = () => {
       currentTime={currentTime}
       fromDate={fromDate}
       getLedgerLoading={getLedgerLoading}
+      transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
     />
   );
 };

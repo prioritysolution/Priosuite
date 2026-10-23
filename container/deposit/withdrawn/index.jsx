@@ -37,6 +37,8 @@ const WithdrawnContainer = () => {
     photoLink,
     signatureLink,
     transMode,
+    bank,
+    refVouchNo,
     handleShowLedger,
     showLedgerDialog,
     setShowLedgerDialog,
@@ -91,6 +93,8 @@ const WithdrawnContainer = () => {
       photoLink={photoLink}
       signatureLink={signatureLink}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       handleShowLedger={handleShowLedger}
       showLedgerDialog={showLedgerDialog}
       setShowLedgerDialog={setShowLedgerDialog}

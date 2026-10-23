@@ -24,6 +24,8 @@ const CloseAccountContainer = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     transMode,
+    bank,
+    refVouchNo,
     handleShowLedger,
     showLedger,
     setShowLedger,
@@ -63,6 +65,8 @@ const CloseAccountContainer = () => {
       showSuccessMessage={showSuccessMessage}
       handleCloseSuccessMessage={handleCloseSuccessMessage}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       handleShowLedger={handleShowLedger}
       showLedger={showLedger}
       setShowLedger={setShowLedger}

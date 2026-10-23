@@ -17,6 +17,7 @@ import {
 import { getDisburseData } from "./DisburseReducer";
 import { useOpenDepositAccount } from "@/container/deposit/openDepositAccount/Hooks";
 import { format, parse } from "date-fns";
+import { alphanumericWithHyphenUnderscoreRegex } from "@/utils/validationRegex";
 
 export const useDisburse = () => {
   const dispatch = useDispatch();
@@ -118,9 +119,42 @@ export const useDisburse = () => {
     insuranceAmount: yup.string(),
     netDisburseAmount: yup.string(),
     transMode: yup.string().required("Transanction mode is required"),
-    refVouchNo: yup.string(),
-    bank: yup.string(),
-    savings: yup.string(),
+    refVouchNo: yup
+      .string()
+      .transform((value) => (value === "" ? null : value))
+      .nullable()
+      .when("transMode", {
+        is: "bank",
+        then: (schema) =>
+          schema
+            .required("Reference voucher number is required")
+            .test(
+              "is-valid-ref-vouch-no",
+              "Reference voucher number is invalid",
+              (value) =>
+                value != null &&
+                alphanumericWithHyphenUnderscoreRegex.test(value),
+            ),
+        otherwise: (schema) =>
+          schema.test(
+            "is-valid-ref-vouch-no",
+            "Reference voucher number is invalid",
+            (value) => {
+              if (value == null) return true;
+              return alphanumericWithHyphenUnderscoreRegex.test(value);
+            },
+          ),
+      }),
+    bank: yup.string().when("transMode", {
+      is: "bank",
+      then: (schema) => schema.required("Bank is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    savings: yup.string().when("transMode", {
+      is: "savings",
+      then: (schema) => schema.required("Savings is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
     bondNo: yup.string().nullable(),
   });
 
@@ -165,6 +199,9 @@ export const useDisburse = () => {
     miscCharge,
     insuranceAmount,
     applicationAmount,
+    bank,
+    refVouchNo,
+    savings,
   } = useWatch({ control });
 
   const handleSubmit = (values) => {
@@ -576,6 +613,9 @@ export const useDisburse = () => {
     handleCloseSuccessMessage,
     getDisburseListApiCall,
     transMode,
+    bank,
+    refVouchNo,
+    savings,
     showForm,
     handleOpenForm,
     handleBackToTable,

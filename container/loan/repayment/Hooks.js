@@ -22,6 +22,7 @@ import convertToWords from "@/utils/numberToWords";
 import { getAccountDetailsByAccountNoAPI } from "@/container/deposit/deposit/DepositApis";
 import { getSavingsAccountListAPI } from "@/container/deposit/mature/MatureApis";
 import { getSearchAccountData } from "@/container/deposit/deposit/DepositReducer";
+import { alphanumericWithHyphenUnderscoreRegex } from "@/utils/validationRegex";
 
 export const useRepayment = () => {
   const orgId = getCookieData("orgId");
@@ -135,7 +136,32 @@ export const useRepayment = () => {
     prevDueInterest: yup.string().nullable(),
     demandPrincipal: yup.string().nullable(),
     repaymentDate: yup.string().nullable(),
-    refVouchNo: yup.string().nullable(),
+    refVouchNo: yup
+      .string()
+      .transform((value) => (value === "" ? null : value))
+      .nullable()
+      .when("transMode", {
+        is: "bank",
+        then: (schema) =>
+          schema
+            .required("Reference voucher number is required")
+            .test(
+              "is-valid-ref-vouch-no",
+              "Reference voucher number is invalid",
+              (value) =>
+                value != null &&
+                alphanumericWithHyphenUnderscoreRegex.test(value),
+            ),
+        otherwise: (schema) =>
+          schema.test(
+            "is-valid-ref-vouch-no",
+            "Reference voucher number is invalid",
+            (value) => {
+              if (value == null) return true;
+              return alphanumericWithHyphenUnderscoreRegex.test(value);
+            },
+          ),
+      }),
     currentBalance: yup.string().nullable(),
     principalAmount: yup
       .string()
@@ -164,7 +190,11 @@ export const useRepayment = () => {
       ),
     totalAmountInWords: yup.string().nullable(),
     transMode: yup.string().required("Transanction mode is required"),
-    bank: yup.string(),
+    bank: yup.string().when("transMode", {
+      is: "bank",
+      then: (schema) => schema.required("Bank is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
     savingsAccountType: yup.string(),
     savingsAccountNo: yup.string(),
     savingsAccountId: yup.string(),
@@ -172,7 +202,6 @@ export const useRepayment = () => {
     savingsName: yup.string(),
     savingsBalance: yup.string(),
     savingsAccountName: yup.string(),
-    savings: yup.string(),
   });
 
   const form = useForm({
@@ -230,6 +259,8 @@ export const useRepayment = () => {
     savings,
     savingsBalance,
     savingsAccountType,
+    bank,
+    refVouchNo,
   } = useWatch({
     control,
   });
@@ -900,6 +931,8 @@ export const useRepayment = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     transMode,
+    bank,
+    refVouchNo,
     insufficientBalanceDisable,
     showLedger,
     handleShowLedger,

@@ -47,6 +47,8 @@ const NewApplicationContainer = () => {
     loanMemberProduct,
     productId,
     transMode,
+    bank,
+    refVouchNo,
     savings,
     savingsBalance,
     cashInTransactionTotal,
@@ -128,6 +130,8 @@ const NewApplicationContainer = () => {
       loanMemberProduct={loanMemberProduct}
       productId={productId}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       savings={savings}
       savingsBalance={savingsBalance}
       cashInTransactionTotal={cashInTransactionTotal}

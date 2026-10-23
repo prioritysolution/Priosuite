@@ -31,6 +31,9 @@ const DisburseContainer = () => {
     handleCloseSuccessMessage,
     getDisburseListApiCall,
     transMode,
+    bank,
+    refVouchNo,
+    savings,
     showForm,
     handleOpenForm,
     handleBackToTable,
@@ -73,6 +76,9 @@ const DisburseContainer = () => {
       showSuccessMessage={showSuccessMessage}
       handleCloseSuccessMessage={handleCloseSuccessMessage}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
+      savings={savings}
       showForm={showForm}
       handleOpenForm={handleOpenForm}
       handleBackToTable={handleBackToTable}

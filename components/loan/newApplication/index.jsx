@@ -261,8 +261,9 @@ const NewApplication = ({
   ecsAccount,
   ecsAccountData,
 
-  // transMode,
-
+  transMode,
+  bank,
+  refVouchNo,
   savings,
   savingsBalance,
 
@@ -299,7 +300,6 @@ const NewApplication = ({
   const [showBasicInfo, setShowBasicInfo] = useState(true);
 
   const CustomerType = form.getValues("CustomerType");
-  const transMode = form.watch("transMode");
 
   const productData = useSelector((s) => {
     return s?.newApplication?.loanProductData;
@@ -1765,6 +1765,7 @@ const NewApplication = ({
                           control={form.control}
                           name="refVouchNo"
                           placeholder={t("loan.enterRefVouchNo")}
+                          isRequired={transMode === "bank"}
                         />
                         {transMode === "cash" ? (
                           isActiveDenom ? (
@@ -1797,6 +1798,7 @@ const NewApplication = ({
                             optionLabelKey="Bank_Name"
                             placeholder={t("loan.selectBank")}
                             searchPlaceholder={t("loan.searchBank")}
+                            isRequired
                           />
                         ) : (
                           <>
@@ -1808,6 +1810,7 @@ const NewApplication = ({
                               optionLabelKey="Account_No"
                               placeholder={t("loan.selectSavings")}
                               searchPlaceholder={t("loan.searchSavings")}
+                              isRequired
                             />
                             <InputField
                               control={form.control}
@@ -1852,7 +1855,8 @@ const NewApplication = ({
                           Number(cashOutTransactionGrandTotal) !==
                           Number(form.getValues("applicationAmount"))) ||
                       !Number(form.getValues("applicationAmount")) ||
-                      (transMode === "bank" && !form.getValues("bank")) ||
+                      (transMode === "bank" &&
+                        (!bank || !String(refVouchNo || "").trim())) ||
                       (transMode === "savings" && !savings) ||
                       insufficientBalanceDisable
                     }

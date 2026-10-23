@@ -65,6 +65,8 @@ const Repayment = ({
   showSuccessMessage,
   handleCloseSuccessMessage,
   transMode,
+  bank,
+  refVouchNo,
   insufficientBalanceDisable,
   showLedger,
   handleShowLedger,
@@ -708,6 +710,7 @@ const Repayment = ({
                             control={form.control}
                             name="refVouchNo"
                             placeholder={t("loan.enterRefVouchNo")}
+                            isRequired={transMode === "bank"}
                           />
                           {transMode === "cash" ? (
                             isActiveDenom ? (
@@ -744,6 +747,7 @@ const Repayment = ({
                                   optionLabelKey="Bank_Name" // Specify the key for label
                                   placeholder={t("loan.selectBank")}
                                   searchPlaceholder={t("loan.searchBank")}
+                                  isRequired
                                 />
                               )}
                             />
@@ -985,7 +989,8 @@ const Repayment = ({
                               Number(cashInTransactionGrandTotal) -
                                 Number(cashOutTransactionGrandTotal) !==
                                 Number(form.getValues("totalAmount"))) ||
-                            (transMode === "bank" && !form.getValues("bank")) ||
+                            (transMode === "bank" &&
+                              (!bank || !String(refVouchNo || "").trim())) ||
                             (transMode === "savings" &&
                               (form.getValues("savingsAccountType") === "own"
                                 ? !form.getValues("savings")

@@ -34,6 +34,9 @@ const IssueMembershipContainer = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     transMode,
+    bank,
+    refVouchNo,
+    savings,
     insufficientBalanceDisable,
     resetTrigger,
     isReceiptOpen,
@@ -80,6 +83,9 @@ const IssueMembershipContainer = () => {
       showSuccessMessage={showSuccessMessage}
       handleCloseSuccessMessage={handleCloseSuccessMessage}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
+      savings={savings}
       insufficientBalanceDisable={insufficientBalanceDisable}
       resetTrigger={resetTrigger}
       isReceiptOpen={isReceiptOpen}

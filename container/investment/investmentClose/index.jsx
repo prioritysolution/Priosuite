@@ -36,6 +36,9 @@ const InvestmentCloseContainer = () => {
     fromDate,
     toDate,
     getLedgerLoading,
+    transMode,
+    bank,
+    refVouchNo,
   } = useInvestmentClose();
 
   useEffect(() => {
@@ -67,6 +70,9 @@ const InvestmentCloseContainer = () => {
       fromDate={fromDate}
       toDate={toDate}
       getLedgerLoading={getLedgerLoading}
+      transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
     />
   );
 };

@@ -61,6 +61,8 @@ const Withdrawn = ({
   photoLink,
   signatureLink,
   transMode,
+  bank,
+  refVouchNo,
   handleShowLedger,
   showLedgerDialog,
   setShowLedgerDialog,
@@ -440,7 +442,9 @@ const Withdrawn = ({
                               <InputField
                                 control={form.control}
                                 name="refVouchNo"
+                                label={t("deposit.fields.refVoucherNo")}
                                 placeholder={t("deposit.placeholders.refVoucherNo")}
+                                isRequired={transMode === "bank"}
                               />
                               {transMode === "cash" ? (
                                 isActiveDenom ? (
@@ -473,6 +477,7 @@ const Withdrawn = ({
                                   optionLabelKey="Bank_Name"
                                   placeholder={t("deposit.placeholders.selectBank")}
                                   searchPlaceholder={t("deposit.placeholders.searchBank")}
+                                  isRequired
                                 />
                               )}
                             </div>
@@ -490,7 +495,8 @@ const Withdrawn = ({
                                       form.getValues("withdrawnAmount"),
                                     )) ||
                                 (transMode === "bank" &&
-                                  !form.getValues("bank")) ||
+                                  (!bank ||
+                                    !String(refVouchNo || "").trim())) ||
                                 (transMode === "savings" &&
                                   !form.getValues("savings"))
                               }

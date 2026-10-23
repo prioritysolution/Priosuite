@@ -75,22 +75,34 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
+const locationFormValues = (item) => ({
+  stateId: storeId(item.Cust_State),
+  districtId: storeId(item.Cust_Dist),
+  blockId: storeId(item.Cust_Blk),
+  villageId: storeId(item.Cust_Vill),
+  policeStationId: storeId(item.Cust_Police),
+  postOfficeId: storeId(item.Cust_Post),
+  presentAddress: item.Cust_Pre_Add || "",
+  presentStateId: storeId(item.Cust_Pre_State),
+  presentDistrictId: storeId(item.Cust_Pre_Dist),
+  presentBlockId: storeId(item.Cust_Pre_Blk),
+  presentVillageId: storeId(item.Cusr_Pre_Vill ?? item.Cust_Pre_Vill),
+  presentPoliceStationId: storeId(item.Cust_Pre_Police),
+  presentPostOfficeId: storeId(item.Cust_Pre_Post),
+});
+
 const buildFormValues = (item, orgId, branchId) => {
   const type = item.Customer_Type?.toString();
+  const locations = locationFormValues(item);
 
   if (["2", "3"].includes(type)) {
     return {
       grp_no: item.Cust_No,
-      cust_type: item.Customer_Type,
+      cust_type: storeId(item.Customer_Type),
       grp_name: item.Full_Name,
       gerp_dob: safeDate(item.Cust_DOB),
-      grp_add: item.Cust_Add,
-      stateId: item.Cust_State,
-      districtId: item.Cust_Dist,
-      blockId: item.Cust_Blk,
-      villageId: item.Cust_Vill,
-      policeStationId: item.Cust_Police,
-      postOfficeId: item.Cust_Post,
+      grp_add: item.Cust_Add || "",
+      ...locations,
       grp_ben: item.Benef_No,
       grp_mob: item.Cust_Mob,
       branch_id: branchId,
@@ -101,15 +113,11 @@ const buildFormValues = (item, orgId, branchId) => {
 
   if (type === "4") {
     return {
+      inst_no: item.Cust_No,
       inst_name: item.Full_Name,
       inst_dob: safeDate(item.Cust_DOB),
-      inst_add: item.Cust_Add,
-      stateId: item.Cust_State,
-      districtId: item.Cust_Dist,
-      blockId: item.Cust_Blk,
-      villageId: item.Cust_Vill,
-      policeStationId: item.Cust_Police,
-      postOfficeId: item.Cust_Post,
+      inst_add: item.Cust_Add || "",
+      ...locations,
       inst_ben: item.Benef_No,
       inst_mob: item.Cust_Mob,
       branch_id: branchId,
@@ -120,30 +128,18 @@ const buildFormValues = (item, orgId, branchId) => {
 
   return {
     memberNo: item.Member_No || item.Cust_No,
-    memberType: item.Customer_Type,
+    memberType: storeId(item.Customer_Type),
     firstName: item.Cust_Fst_Name,
     middleName: item.Cust_Mid_Name,
     lastName: item.Cust_Lst_Name,
     relationName: item.Relation_Name,
-    relationType: item.Rel_Type,
+    relationType: storeId(item.Rel_Type),
     dob: safeDate(item.Cust_DOB),
-    gender: item.Cust_Gend,
-    caste: item.Cust_Caste,
-    religion: item.Cust_Relig,
-    address: item.Cust_Add,
-    stateId: item.Cust_State,
-    districtId: item.Cust_Dist,
-    blockId: item.Cust_Blk,
-    villageId: item.Cust_Vill,
-    policeStationId: item.Cust_Police,
-    postOfficeId: item.Cust_Post,
-    presentAddress: item.Cust_Pre_Add,
-    presentStateId: item.Cust_Pre_State,
-    presentDistrictId: item.Cust_Pre_Dist,
-    presentBlockId: item.Cust_Pre_Blk,
-    presentVillageId: item.Cusr_Pre_Vill,
-    presentPoliceStationId: item.Cust_Pre_Police,
-    presentPostOfficeId: item.Cust_Pre_Post,
+    gender: storeId(item.Cust_Gend),
+    caste: storeId(item.Cust_Caste),
+    religion: storeId(item.Cust_Relig),
+    address: item.Cust_Add || "",
+    ...locations,
     mobile: item.Cust_Mob,
     email: item.Cust_Mail,
     aadhaarNo: item.Cust_Aadar,
@@ -593,6 +589,13 @@ export const useKycApproval = () => {
         grp_village: data.villageId,
         grp_police: data.policeStationId,
         grp_post: data.postOfficeId,
+        grp_pres_add: data.presentAddress,
+        grp_pres_state: data.presentStateId,
+        grp_pres_dist: data.presentDistrictId,
+        grp_pres_block: data.presentBlockId,
+        grp_pres_village: data.presentVillageId,
+        grp_pres_police: data.presentPoliceStationId,
+        grp_pres_post: data.presentPostOfficeId,
         grp_ben: data.grp_ben,
         branch_id: currentBranchId,
         org_id: currentOrgId,
@@ -612,6 +615,22 @@ export const useKycApproval = () => {
         inst_village: data.villageId,
         inst_police: data.policeStationId,
         inst_post: data.postOfficeId,
+        inst_off_add: data.presentAddress,
+        inst_off_state: data.presentStateId,
+        inst_off_dist: data.presentDistrictId,
+        inst_off_block: data.presentBlockId,
+        inst_off_village: data.presentVillageId,
+        inst_off_police: data.presentPoliceStationId,
+        inst_off_post: data.presentPostOfficeId,
+        same_as_reg:
+          sameId(data.stateId, data.presentStateId) &&
+          sameId(data.districtId, data.presentDistrictId) &&
+          sameId(data.blockId, data.presentBlockId) &&
+          sameId(data.villageId, data.presentVillageId) &&
+          String(data.inst_add || "").trim() ===
+            String(data.presentAddress || "").trim()
+            ? "Y"
+            : "N",
         inst_ben: data.inst_ben,
         branch_id: currentBranchId,
         org_id: currentOrgId,

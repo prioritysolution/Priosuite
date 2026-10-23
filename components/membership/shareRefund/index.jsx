@@ -61,6 +61,7 @@ const ShareRefund = ({
   refundAmt,
   savings,
   bank,
+  refVouchNo,
   showLedger,
   handleShowLedger,
   showLedgerDialog,
@@ -340,6 +341,7 @@ const ShareRefund = ({
                                 control={form.control}
                                 name="refVouchNo"
                                 placeholder={t("membership.shareRefund.placeholders.refVouchNo")}
+                                isRequired={transMode === "bank"}
                               />
                               {transMode === "cash" ? (
                                 isActiveDenom ? (
@@ -372,6 +374,7 @@ const ShareRefund = ({
                                   optionLabelKey="Bank_Name"
                                   placeholder={t("membership.shareRefund.placeholders.bank")}
                                   searchPlaceholder={t("membership.shareRefund.placeholders.searchBank")}
+                                  isRequired
                                 />
                               ) : (
                                 <>
@@ -383,6 +386,7 @@ const ShareRefund = ({
                                     optionLabelKey="Account_No"
                                     placeholder={t("membership.shareRefund.placeholders.savings")}
                                     searchPlaceholder={t("membership.shareRefund.placeholders.searchSavings")}
+                                    isRequired
                                   />
                                   <InputField
                                     control={form.control}
@@ -405,7 +409,8 @@ const ShareRefund = ({
                                   Number(cashOutTransactionGrandTotal) -
                                     Number(cashInTransactionGrandTotal) !==
                                     Number(refundAmt)) ||
-                                (transMode === "bank" && !bank) ||
+                                (transMode === "bank" &&
+                                  (!bank || !String(refVouchNo || "").trim())) ||
                                 (transMode === "savings" && !savings)
                               }
                             >

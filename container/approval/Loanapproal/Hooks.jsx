@@ -89,15 +89,33 @@ export const useLoanapproal = () => {
       .string()
       .transform((value) => (value === "" ? null : value))
       .nullable()
-      .test(
-        "is-valid-ref-vouch-no",
-        "Reference voucher number is invalid",
-        (value) => {
-          if (value === null) return true;
-          return alphanumericWithHyphenUnderscoreRegex.test(value);
-        },
-      ),
-    bank: yup.string().nullable(),
+      .when("transMode", {
+        is: "bank",
+        then: (schema) =>
+          schema
+            .required("Reference voucher number is required")
+            .test(
+              "is-valid-ref-vouch-no",
+              "Reference voucher number is invalid",
+              (value) =>
+                value != null &&
+                alphanumericWithHyphenUnderscoreRegex.test(value),
+            ),
+        otherwise: (schema) =>
+          schema.test(
+            "is-valid-ref-vouch-no",
+            "Reference voucher number is invalid",
+            (value) => {
+              if (value == null) return true;
+              return alphanumericWithHyphenUnderscoreRegex.test(value);
+            },
+          ),
+      }),
+    bank: yup.string().when("transMode", {
+      is: "bank",
+      then: (schema) => schema.required("Bank is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
     savings: yup.string().nullable(),
     savingsName: yup.string().nullable(),
     savingsBalance: yup.string().nullable(),
@@ -120,7 +138,15 @@ export const useLoanapproal = () => {
   });
 
   const { control } = form;
-  const { transMode, savings, savingsBalance, approveDate, approvedAmount } = useWatch({ control });
+  const {
+    transMode,
+    savings,
+    savingsBalance,
+    approveDate,
+    approvedAmount,
+    bank,
+    refVouchNo,
+  } = useWatch({ control });
 
   // Reset fields when transMode changes
   useEffect(() => {

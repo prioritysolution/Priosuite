@@ -59,6 +59,7 @@ const MembershipWithdrawn = ({
   transMode,
   savings,
   bank,
+  refVouchNo,
   shareBalance,
   divBalance,
   handleShowLedger,
@@ -408,6 +409,7 @@ const MembershipWithdrawn = ({
                         label={t("membership.withdrawn.fields.refVouchNo")}
                         placeholder={t("membership.withdrawn.placeholders.refVouchNo")}
                         formItemClassName="w-fit"
+                        isRequired={transMode === "bank"}
                       />
                     </div>
                   )}
@@ -442,6 +444,7 @@ const MembershipWithdrawn = ({
                         optionLabelKey="Bank_Name"
                         placeholder={t("membership.withdrawn.placeholders.bank")}
                         searchPlaceholder={t("membership.withdrawn.placeholders.searchBank")}
+                        isRequired
                       />
                     </div>
                   ) : (
@@ -454,6 +457,7 @@ const MembershipWithdrawn = ({
                         optionLabelKey="Account_No"
                         placeholder={t("membership.withdrawn.placeholders.savings")}
                         searchPlaceholder={t("membership.withdrawn.placeholders.searchSavings")}
+                        isRequired
                       />
                       <InputField
                         control={form.control}
@@ -478,7 +482,8 @@ const MembershipWithdrawn = ({
                       Number(cashOutTransactionGrandTotal) -
                         Number(cashInTransactionGrandTotal) !==
                         Number(shareBalance || 0) + Number(divBalance || 0)) ||
-                    (transMode === "bank" && !bank) ||
+                    (transMode === "bank" &&
+                      (!bank || !String(refVouchNo || "").trim())) ||
                     (transMode === "savings" && !savings)
                   }
                 >

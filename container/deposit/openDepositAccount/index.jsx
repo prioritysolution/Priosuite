@@ -34,6 +34,8 @@ const OpenDepositAccountContainer = () => {
     ecsAccount,
     isPayoutInterest,
     transMode,
+    bank,
+    refVouchNo,
     payoutAmount,
     savings,
     savingsBalance,
@@ -124,6 +126,8 @@ const OpenDepositAccountContainer = () => {
       ecsAccount={ecsAccount}
       isPayoutInterest={isPayoutInterest}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       payoutAmount={payoutAmount}
       savings={savings}
       savingsBalance={savingsBalance}

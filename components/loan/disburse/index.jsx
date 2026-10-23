@@ -56,6 +56,9 @@ const Disburse = ({
   handleSubmit,
   successMessage,
   transMode,
+  bank,
+  refVouchNo,
+  savings,
   showForm,
   handleOpenForm,
   handleBackToTable,
@@ -468,6 +471,7 @@ const Disburse = ({
                         name="refVouchNo"
                         label={t("loan.refVouchNo")}
                         placeholder={t("loan.enterRefVouchNo")}
+                        isRequired={transMode === "bank"}
                       />
 
                       <InputField
@@ -510,6 +514,7 @@ const Disburse = ({
                           optionLabelKey="Bank_Name"
                           placeholder={t("loan.selectBank")}
                           searchPlaceholder={t("loan.searchBank")}
+                          isRequired
                         />
                       ) : (
                         <DropdownField
@@ -520,6 +525,7 @@ const Disburse = ({
                           optionLabelKey="Account_No"
                           placeholder={t("loan.selectSavings")}
                           searchPlaceholder={t("loan.searchSavings")}
+                          isRequired
                         />
                       )}
                     </div>
@@ -537,8 +543,9 @@ const Disburse = ({
                         Number(cashInTransactionGrandTotal) -
                           Number(cashOutTransactionGrandTotal) !==
                           Number(form.getValues("netDisburseAmount"))) ||
-                      (transMode === "bank" && !form.getValues("bank")) ||
-                      (transMode === "savings" && !form.getValues("savings"))
+                      (transMode === "bank" &&
+                        (!bank || !String(refVouchNo || "").trim())) ||
+                      (transMode === "savings" && !savings)
                     }
                   >
                     {postDisburseLoading ? (

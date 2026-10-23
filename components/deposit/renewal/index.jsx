@@ -37,6 +37,10 @@ const Renewal = ({
   checkDepositDurationDisable,
   checkDepositDurationMessage,
   resetTrigger,
+  transMode,
+  bank,
+  refVouchNo,
+  savings,
 }) => {
   const { t } = useTranslation();
 
@@ -351,6 +355,7 @@ const Renewal = ({
                           name="refVouchNo"
                           label={t("deposit.fields.refVoucherNo")}
                           placeholder={t("deposit.placeholders.refVoucherNo")}
+                          isRequired={transMode === "bank"}
                         />
                         <FormField
                           control={form.control}
@@ -361,7 +366,7 @@ const Renewal = ({
                               <FormControl>
                                 <RadioGroup
                                   onValueChange={field.onChange}
-                                  defaultValue={field.value}
+                                  value={field.value}
                                   className="flex flex-col sm:flex-row space-y-5 sm:space-y-0 gap-x-5"
                                 >
                                   <FormItem className="flex items-center space-x-3 space-y-0">
@@ -369,7 +374,7 @@ const Renewal = ({
                                       <RadioGroupItem value="bank" />
                                     </FormControl>
                                     <FormLabel className="font-normal">
-                                      Bank
+                                      {t("deposit.fields.bank")}
                                     </FormLabel>
                                   </FormItem>
                                   <FormItem className="flex items-center space-x-3 space-y-0">
@@ -377,7 +382,7 @@ const Renewal = ({
                                       <RadioGroupItem value="savings" />
                                     </FormControl>
                                     <FormLabel className="font-normal">
-                                      Savings
+                                      {t("deposit.fields.savings")}
                                     </FormLabel>
                                   </FormItem>
                                 </RadioGroup>
@@ -388,7 +393,7 @@ const Renewal = ({
                         />
                       </div>
                     )}
-                    {form.getValues("transMode") === "bank" ? (
+                    {transMode === "bank" ? (
                       <div className="w-full grid grid-cols-1 lg:grid-cols-2">
                         <DropdownField
                           control={form.control}
@@ -398,6 +403,7 @@ const Renewal = ({
                           optionLabelKey="Bank_Name"
                           placeholder={t("deposit.placeholders.selectBank")}
                           searchPlaceholder={t("deposit.placeholders.searchBank")}
+                          isRequired
                         />
                       </div>
                     ) : (
@@ -410,6 +416,7 @@ const Renewal = ({
                           optionLabelKey="Account_No"
                           placeholder={t("deposit.placeholders.selectSavings")}
                           searchPlaceholder={t("deposit.placeholders.searchSavings")}
+                          isRequired
                         />
                       </div>
                     )}
@@ -420,7 +427,13 @@ const Renewal = ({
                 <Button
                   type="submit"
                   className="w-full sm:w-1/5 self-end"
-                  disabled={postRenewalLoading || checkDepositDurationDisable}
+                  disabled={
+                    postRenewalLoading ||
+                    checkDepositDurationDisable ||
+                    (transMode === "bank" &&
+                      (!bank || !String(refVouchNo || "").trim())) ||
+                    (transMode === "savings" && !savings)
+                  }
                 >
                   {postRenewalLoading ? (
                     <ClipLoader

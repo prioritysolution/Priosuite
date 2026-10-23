@@ -286,22 +286,44 @@ export const useNewApplication = () => {
       ),
 
     transMode: yup.string().required("Transaction mode is required"),
-    bank: yup.string(),
-    savings: yup.string(),
+    bank: yup.string().when("transMode", {
+      is: "bank",
+      then: (schema) => schema.required("Bank is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    savings: yup.string().when("transMode", {
+      is: "savings",
+      then: (schema) => schema.required("Savings is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
     savingsName: yup.string(),
     savingsBalance: yup.string(),
     refVouchNo: yup
       .string()
-      .transform((value) => (value === "" ? null : value)) // Convert empty strings to null
-      .nullable() // Allow null values
-      .test(
-        "is-valid-ref-vouch-no",
-        "Reference voucher number is invalid",
-        (value) => {
-          if (value === null) return true; // Skip validation if value is null or empty
-          return alphanumericWithHyphenUnderscoreRegex.test(value); // Validate with regex
-        },
-      ),
+      .transform((value) => (value === "" ? null : value))
+      .nullable()
+      .when("transMode", {
+        is: "bank",
+        then: (schema) =>
+          schema
+            .required("Reference voucher number is required")
+            .test(
+              "is-valid-ref-vouch-no",
+              "Reference voucher number is invalid",
+              (value) =>
+                value != null &&
+                alphanumericWithHyphenUnderscoreRegex.test(value),
+            ),
+        otherwise: (schema) =>
+          schema.test(
+            "is-valid-ref-vouch-no",
+            "Reference voucher number is invalid",
+            (value) => {
+              if (value == null) return true;
+              return alphanumericWithHyphenUnderscoreRegex.test(value);
+            },
+          ),
+      }),
   });
 
   const form = useForm({
@@ -360,6 +382,10 @@ export const useNewApplication = () => {
       ecsAccount: "",
       transMode: "cash",
       refVouchNo: "",
+      bank: "",
+      savings: "",
+      savingsName: "",
+      savingsBalance: "",
     },
   });
 
@@ -383,6 +409,8 @@ export const useNewApplication = () => {
     transMode,
     savings,
     savingsBalance,
+    bank,
+    refVouchNo,
   } = useWatch({
     control,
     name: [
@@ -403,6 +431,8 @@ export const useNewApplication = () => {
       "transMode",
       "savings",
       "savingsBalance",
+      "bank",
+      "refVouchNo",
     ],
   });
 
@@ -2002,7 +2032,8 @@ export const useNewApplication = () => {
     productId,
 
     transMode,
-
+    bank,
+    refVouchNo,
     savings,
     savingsBalance,
 

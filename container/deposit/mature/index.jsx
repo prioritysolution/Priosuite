@@ -53,6 +53,8 @@ const MatureContainer = () => {
     showSearchAccountForm,
     disableOperationTypeForm,
     transMode,
+    bank,
+    refVouchNo,
     handleSearchAccountListByMemberNo,
     handleSearchAccountListByName,
     handleSelectClick,
@@ -136,6 +138,8 @@ const MatureContainer = () => {
       showSearchAccountForm={showSearchAccountForm}
       disableOperationTypeForm={disableOperationTypeForm}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       handleSearchAccountListByMemberNo={handleSearchAccountListByMemberNo}
       handleSearchAccountListByName={handleSearchAccountListByName}
       handleSelectClick={handleSelectClick}

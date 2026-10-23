@@ -52,6 +52,7 @@ const ShareIssue = ({
   totalAmt,
   savings,
   bank,
+  refVouchNo,
   insufficientBalanceDisable,
   showLedger,
   handleShowLedger,
@@ -359,7 +360,9 @@ const ShareIssue = ({
                               <InputField
                                 control={form.control}
                                 name="refVouchNo"
+                                label={t("membership.shareIssue.fields.refVouchNo")}
                                 placeholder={t("membership.shareIssue.placeholders.refVouchNo")}
+                                isRequired={voucherMode === "bank"}
                               />
                               {voucherMode === "cash" ? (
                                 isActiveDenom ? (
@@ -392,6 +395,7 @@ const ShareIssue = ({
                                   optionLabelKey="Bank_Name"
                                   placeholder={t("membership.shareIssue.placeholders.bank")}
                                   searchPlaceholder={t("membership.shareIssue.placeholders.searchBank")}
+                                  isRequired
                                 />
                               ) : (
                                 <>
@@ -434,7 +438,7 @@ const ShareIssue = ({
                                     Number(cashOutTransactionGrandTotal) !==
                                     Number(totalAmt)) ||
                                 (voucherMode === "bank" &&
-                                  !bank) ||
+                                  (!bank || !String(refVouchNo || "").trim())) ||
                                 (voucherMode === "savings" &&
                                   !savings)
                               }

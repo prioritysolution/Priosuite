@@ -3578,6 +3578,7 @@ const en = {
       cash: "Cash",
       bank: "Bank",
       savings: "Savings",
+      refVouchNo: "Ref. Vouch No.",
       enterRefVouchNo: "Enter ref. vouch no.",
       selectBank: "Select bank",
       searchBank: "Search bank...",

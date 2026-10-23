@@ -456,20 +456,24 @@ export const useMapInstituteMember = () => {
     form.setValue("mapId", "");
     form.setValue("withdrawnDate", null);
     form.setValue("remarks", "");
-    // form.setValue("date", null);
-    // form.setValue("member_info", []);
+    form.setValue("joinongdate", null);
 
     // Reset member data state
     setMemberData(null);
+    setShowForm(false);
+    dispatch(resetEcsAccountData());
 
     // Stay on Add New after adding a member; other resets return to existing
     if (!keepOption) setSelectedOption("existing");
 
-    // Re-enable RadioGroup after reset
-    setShowForm(false);
-
     // Trigger MemberSearchForm reset
     setResetTrigger((prev) => prev + 1);
+  };
+
+  const handleSelectedOptionChange = (val) => {
+    if (val === selectedOption) return;
+    resetForm({ keepOption: true });
+    setSelectedOption(val);
   };
 
   const handleAddMember = () => {
@@ -590,6 +594,18 @@ export const useMapInstituteMember = () => {
     // No need to fetch ECS account data since defaultsavings field is removed;
   };
 
+  const pickApiErrorMessage = (res, fallback) => {
+    const details = res?.details ?? res?.data?.details;
+    if (typeof details === "string" && details.trim()) return details;
+    if (Array.isArray(details) && details.length) {
+      return details[0]?.Message || details[0]?.message || fallback;
+    }
+    if (details && typeof details === "object") {
+      return details.Message || details.message || fallback;
+    }
+    return res?.message || res?.data?.message || fallback;
+  };
+
   const handleUpdateMember = async (memberId, updatedData) => {
     console.log("handleUpdateMember=", updatedData);
     const formatDate = (date) => {
@@ -615,8 +631,6 @@ export const useMapInstituteMember = () => {
         : null,
     };
 
-    // console.log("Updated member data:", payload);
-
     const response = await UpdateMapMemberAPI(payload);
 
     if (response.message === "Success" || response.status === "success") {
@@ -624,7 +638,7 @@ export const useMapInstituteMember = () => {
       const gropcifNo = form.getValues("gcifNo");
       getGroupDataByIdApiCall(orgId, gropcifNo);
     } else {
-      toast.error(response.message || "Failed to update member");
+      toast.error(pickApiErrorMessage(response, "Failed to update member"));
     }
 
     resetForm();
@@ -643,29 +657,12 @@ export const useMapInstituteMember = () => {
       const gropcifNo = form.getValues("gcifNo");
       getGroupDataByIdApiCall(orgId, gropcifNo);
     } else {
-      toast.error(response.message || "Failed to delete member");
+      toast.error(pickApiErrorMessage(response, "Failed to delete member"));
     }
   };
 
   const handleMapSubmit = async () => {
-    // Debug: Check all form values
-    const allValues = form.getValues();
-    console.log("All form values:", allValues);
-    console.log("Date field value:", allValues.date);
-    console.log("gCustDOB field value:", allValues.gCustDOB);
-
-    // Format date to YYYY-MM-DD
-    const formatDate = (date) => {
-      if (!date) return null;
-      const d = new Date(date);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    };
-
     const payload = {
-      // link_date: formatDate(form.getValues("date")),
       link_date: format(form.getValues("date"), "yyyy-MM-dd"),
       parr_cust_id: form.getValues("gmemberId"),
       org_id: orgId,
@@ -677,19 +674,13 @@ export const useMapInstituteMember = () => {
       })),
     };
 
-    // Call API here
-    console.log("payload=", payload);
-
     try {
       const response = await PostMapGrpInstMember(payload);
-      console.log("API response:", response);
 
       if (response.message === "Success" || response.status === "success") {
-        toast.success("Group members mapped successfully!");
-        // Set success message for SuccessMessage component
-        setSuccessMessage("Group members mapped successfully!");
+        toast.success("Institution members mapped successfully!");
+        setSuccessMessage("Institution members mapped successfully!");
         setShowSuccessMessage(true);
-        // Reset form after successful submission
         resetForm();
         setAddedMembers([]);
         setGroupData(null);
@@ -705,11 +696,18 @@ export const useMapInstituteMember = () => {
         form.setValue("gmemberId", "");
         form.setValue("member_info", []);
       } else {
-        toast.error(response.message || "Failed to map group members");
+        toast.error(
+          pickApiErrorMessage(response, "Failed to map institution members"),
+        );
       }
     } catch (error) {
       console.error("API error:", error);
-      toast.error("An error occurred while mapping group members");
+      toast.error(
+        pickApiErrorMessage(
+          error?.response?.data,
+          "An error occurred while mapping institution members",
+        ),
+      );
     }
   };
 
@@ -741,5 +739,6 @@ export const useMapInstituteMember = () => {
     handelDeleteMember,
     selectedOption,
     setSelectedOption,
+    handleSelectedOptionChange,
   };
 };

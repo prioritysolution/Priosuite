@@ -175,17 +175,35 @@ export const useShareIssue = () => {
     voucherMode: yup.string().required("Transanction mode is required"),
     refVouchNo: yup
       .string()
-      .transform((value) => (value === "" ? null : value)) // Convert empty strings to null
-      .nullable() // Allow null values
-      .test(
-        "is-valid-ref-vouch-no",
-        "Reference voucher number is invalid",
-        (value) => {
-          if (value === null) return true; // Skip validation if value is null or empty
-          return alphanumericWithHyphenUnderscoreRegex.test(value); // Validate with regex
-        },
-      ),
-    bank: yup.string(),
+      .transform((value) => (value === "" ? null : value))
+      .nullable()
+      .when("voucherMode", {
+        is: "bank",
+        then: (schema) =>
+          schema
+            .required("Reference voucher number is required")
+            .test(
+              "is-valid-ref-vouch-no",
+              "Reference voucher number is invalid",
+              (value) =>
+                value != null &&
+                alphanumericWithHyphenUnderscoreRegex.test(value),
+            ),
+        otherwise: (schema) =>
+          schema.test(
+            "is-valid-ref-vouch-no",
+            "Reference voucher number is invalid",
+            (value) => {
+              if (value == null) return true;
+              return alphanumericWithHyphenUnderscoreRegex.test(value);
+            },
+          ),
+      }),
+    bank: yup.string().when("voucherMode", {
+      is: "bank",
+      then: (schema) => schema.required("Bank is required"),
+      otherwise: (schema) => schema.nullable(),
+    }),
     savings: yup.string(),
     savingsName: yup.string(),
     savingsBalance: yup.string(),
@@ -224,6 +242,7 @@ export const useShareIssue = () => {
     savings,
     savingsBalance,
     bank,
+    refVouchNo,
   } = useWatch({
     control,
   });
@@ -588,6 +607,7 @@ export const useShareIssue = () => {
     totalAmt,
     savings,
     bank,
+    refVouchNo,
     loading,
     getMemberDataLoading,
     postShareIssueLoading,

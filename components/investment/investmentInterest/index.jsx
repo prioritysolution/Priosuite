@@ -49,6 +49,9 @@ const InvestmentInterest = ({
   currentTime,
   fromDate,
   getLedgerLoading,
+  transMode,
+  bank,
+  refVouchNo,
 }) => {
   const { t } = useTranslation();
 
@@ -140,6 +143,7 @@ const InvestmentInterest = ({
                   name="refVouchNo"
                   label={t("common.refVouchNo")}
                   placeholder={t("common.enterRefVouchNo")}
+                  isRequired={transMode === "bank"}
                 />
 
                 {/* Transaction Mode */}
@@ -181,6 +185,7 @@ const InvestmentInterest = ({
                   optionLabelKey="Bank_Name"
                   placeholder={t("investment.selectBank")}
                   searchPlaceholder={t("investment.searchBank")}
+                  isRequired={transMode === "bank"}
                 />
               </div>
 
@@ -189,7 +194,11 @@ const InvestmentInterest = ({
                 <Button
                   type="submit"
                   className="w-full sm:w-40 h-10 font-semibold"
-                  disabled={!form.getValues("bank") || loading}
+                  disabled={
+                    loading ||
+                    (transMode === "bank" &&
+                      (!bank || !String(refVouchNo || "").trim()))
+                  }
                 >
                   {loading ? (
                     <ClipLoader

@@ -26,6 +26,8 @@ const TransactionContainer = () => {
     handleCloseSuccessMessage,
     mode,
     transMode,
+    bank,
+    refVouchNo,
     getBorrowingsAccountApiCall,
     handleShowLedger,
     showLedger,
@@ -70,6 +72,8 @@ const TransactionContainer = () => {
       handleCloseSuccessMessage={handleCloseSuccessMessage}
       mode={mode}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       handleShowLedger={handleShowLedger}
       showLedger={showLedger}
       setShowLedger={setShowLedger}

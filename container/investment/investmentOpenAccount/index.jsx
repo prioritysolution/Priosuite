@@ -29,8 +29,10 @@ const InvestmentOpenAccountContainer = () => {
     getInvestmentPrincipalLedgerApiCall,
     getInvestmentInterestLedgerApiCall,
     transMode,
+    bank,
+    refVouchNo,
     handleCalculateMatureAmount,
-    getInvestmentDurationApiCall
+    getInvestmentDurationApiCall,
   } = useInvestmentOpenAccount();
 
   const { getNoteDenomApiCall } = useIssueMembership();
@@ -62,6 +64,8 @@ const InvestmentOpenAccountContainer = () => {
       showSuccessMessage={showSuccessMessage}
       handleCloseSuccessMessage={handleCloseSuccessMessage}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       handleCalculateMatureAmount={handleCalculateMatureAmount}
     />
   );

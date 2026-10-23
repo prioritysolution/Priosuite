@@ -33,6 +33,8 @@ const DepositContainer = () => {
     handleCloseSuccessMessage,
     showLedger,
     transMode,
+    bank,
+    refVouchNo,
     insufficientBalanceDisable,
     handleShowLedger,
     showLedgerDialog,
@@ -88,6 +90,8 @@ const DepositContainer = () => {
       handleCloseSuccessMessage={handleCloseSuccessMessage}
       showLedger={showLedger}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       insufficientBalanceDisable={insufficientBalanceDisable}
       handleShowLedger={handleShowLedger}
       showLedgerDialog={showLedgerDialog}

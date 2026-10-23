@@ -25,6 +25,8 @@ const InstallmentDepositContainer = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     transMode,
+    bank,
+    refVouchNo,
     handleShowLedger,
     showLedger,
     setShowLedger,
@@ -67,6 +69,8 @@ const InstallmentDepositContainer = () => {
       showSuccessMessage={showSuccessMessage}
       handleCloseSuccessMessage={handleCloseSuccessMessage}
       transMode={transMode}
+      bank={bank}
+      refVouchNo={refVouchNo}
       handleShowLedger={handleShowLedger}
       showLedger={showLedger}
       setShowLedger={setShowLedger}

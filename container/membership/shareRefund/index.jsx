@@ -35,6 +35,7 @@ const ShareRefundContainer = () => {
     refundAmt,
     savings,
     bank,
+    refVouchNo,
     showLedger,
     handleShowLedger,
     showLedgerDialog,
@@ -87,6 +88,7 @@ const ShareRefundContainer = () => {
       refundAmt={refundAmt}
       savings={savings}
       bank={bank}
+      refVouchNo={refVouchNo}
       showLedger={showLedger}
       handleShowLedger={handleShowLedger}
       showLedgerDialog={showLedgerDialog}

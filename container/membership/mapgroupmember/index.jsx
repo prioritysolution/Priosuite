@@ -35,6 +35,7 @@ const MapGroupMemberContainer = () => {
     handelDeleteMember,
     selectedOption,
     setSelectedOption,
+    handleSelectedOptionChange,
   } = useMapGroupMember();
 
   return (
@@ -65,6 +66,7 @@ const MapGroupMemberContainer = () => {
       setSuccessMessage={setSuccessMessage}
       selectedOption={selectedOption}
       setSelectedOption={setSelectedOption}
+      handleSelectedOptionChange={handleSelectedOptionChange}
       handelDeleteMember={handelDeleteMember}
     />
   );

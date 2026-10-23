@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useWatch } from "react-hook-form";
 import { formatDate } from "@/utils/formatDate";
 import {
   Dialog,
@@ -134,8 +135,9 @@ const LoanActionModal = ({
     }
   }, [selectedApplication, setApprovedAmount, setApproveDate]);
 
-  const savingsValue = form.getValues("savings");
-  const bankValue = form.getValues("bank");
+  const bankValue = useWatch({ control: form.control, name: "bank" });
+  const savingsValue = useWatch({ control: form.control, name: "savings" });
+  const refVouchNo = useWatch({ control: form.control, name: "refVouchNo" });
 
   if (!selectedApplication) return null;
 
@@ -908,7 +910,9 @@ const LoanActionModal = ({
                   <InputField
                     control={form.control}
                     name="refVouchNo"
+                    label={t("loanApproval.refVouchNo", "Ref. Vouch No.")}
                     placeholder={t("loanApproval.enterRefVouchNo")}
+                    isRequired={transMode === "bank"}
                   />
                   {transMode === "cash" ? (
                     isActiveDenom ? (
@@ -937,6 +941,7 @@ const LoanActionModal = ({
                       optionLabelKey="Bank_Name"
                       placeholder={t("loanApproval.selectBank")}
                       searchPlaceholder={t("loanApproval.searchBank")}
+                      isRequired
                     />
                   ) : (
                     <>
@@ -992,10 +997,19 @@ const LoanActionModal = ({
                     Number(deductionsGrandTotal)) ||
                 (transMode === "savings" &&
                   Number(savingsBalance) < Number(deductionsGrandTotal)) ||
-                (transMode === "bank" && !bankValue) ||
+                (transMode === "bank" &&
+                  (!bankValue || !String(refVouchNo || "").trim())) ||
                 (transMode === "savings" && !savingsValue)
               }
-              onClick={() => {
+              onClick={async () => {
+                const valid = await form.trigger([
+                  "transMode",
+                  "refVouchNo",
+                  "bank",
+                  "savings",
+                ]);
+                if (!valid) return;
+
                 const currentApproveDate = form.getValues("approveDate");
                 const currentApprovedAmount = form.getValues("approvedAmount");
                 onApproveReject(1, {

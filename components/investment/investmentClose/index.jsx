@@ -51,6 +51,9 @@ const InvestmentClose = ({
   fromDate,
   toDate,
   getLedgerLoading,
+  transMode,
+  bank,
+  refVouchNo,
 }) => {
   const { t } = useTranslation();
 
@@ -258,6 +261,7 @@ const InvestmentClose = ({
                     name="refVouchNo"
                     label={t("common.refVouchNo")}
                     placeholder={t("common.enterRefVouchNo")}
+                    isRequired={transMode === "bank"}
                   />
                   <DropdownField
                     control={form.control}
@@ -267,6 +271,7 @@ const InvestmentClose = ({
                     optionLabelKey="Bank_Name"
                     placeholder={t("investment.selectBank")}
                     searchPlaceholder={t("investment.searchBank")}
+                    isRequired={transMode === "bank"}
                   />
                 </div>
               </div>
@@ -274,7 +279,11 @@ const InvestmentClose = ({
               <Button
                 type="submit"
                 className="w-full sm:w-1/5 self-end"
-                disabled={loading || !form.getValues("bank")}
+                disabled={
+                  loading ||
+                  (transMode === "bank" &&
+                    (!bank || !String(refVouchNo || "").trim()))
+                }
               >
                 {loading ? (
                   <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />

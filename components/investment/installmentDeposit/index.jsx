@@ -45,6 +45,8 @@ const InstallmentDeposit = ({
   showSuccessMessage,
   handleCloseSuccessMessage,
   transMode,
+  bank,
+  refVouchNo,
   handleShowLedger,
   showLedger,
   setShowLedger,
@@ -194,10 +196,11 @@ const InstallmentDeposit = ({
                   name="refVouchNo"
                   label={t("common.refVouchNo")}
                   placeholder={t("common.enterRefVouchNo")}
+                  isRequired={transMode === "bank"}
                 />
 
                 {/* Bank dropdown if transMode is bank */}
-                {transMode !== "cash" && (
+                {transMode === "bank" && (
                   <DropdownField
                     control={form.control}
                     name="bank"
@@ -206,6 +209,7 @@ const InstallmentDeposit = ({
                     optionLabelKey="Bank_Name"
                     placeholder={t("investment.selectBank")}
                     searchPlaceholder={t("investment.searchBank")}
+                    isRequired
                   />
                 )}
               </div>
@@ -240,7 +244,7 @@ const InstallmentDeposit = ({
                       ? isActiveDenom &&
                         Number(cashTransactionGrandTotal) !==
                           Number(form.getValues("installmentAmount"))
-                      : !form.getValues("bank"))
+                      : !bank || !String(refVouchNo || "").trim())
                   }
                 >
                   {loading ? (

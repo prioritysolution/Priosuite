@@ -14,6 +14,7 @@ const MembershipWithdrawnContainer = () => {
   const {
     savings,
     bank,
+    refVouchNo,
     shareBalance,
     divBalance,
     loading,
@@ -88,6 +89,7 @@ const MembershipWithdrawnContainer = () => {
       transMode={transMode}
       savings={savings}
       bank={bank}
+      refVouchNo={refVouchNo}
       shareBalance={shareBalance}
       divBalance={divBalance}
       handleShowLedger={handleShowLedger}

@@ -52,6 +52,9 @@ const IssueMembership = ({
   showSuccessMessage,
   handleCloseSuccessMessage,
   transMode,
+  bank,
+  refVouchNo,
+  savings,
   insufficientBalanceDisable,
   resetTrigger,
   isReceiptOpen,
@@ -462,6 +465,7 @@ const IssueMembership = ({
                           label={t("membership.issueMembership.fields.refVouchNo")}
                           placeholder={t("membership.issueMembership.placeholders.refVouchNo")}
                           formItemClassName="col-span-1"
+                          isRequired={transMode === "bank"}
                         />
                         {transMode === "cash" ? (
                           isActiveDenom ? (
@@ -496,6 +500,7 @@ const IssueMembership = ({
                             optionLabelKey="Bank_Name"
                             placeholder={t("membership.issueMembership.placeholders.bank")}
                             searchPlaceholder={t("membership.issueMembership.placeholders.searchBank")}
+                            isRequired
                           />
                         ) : (
                           <>
@@ -507,6 +512,7 @@ const IssueMembership = ({
                               optionLabelKey="Account_No"
                               placeholder={t("membership.issueMembership.placeholders.savings")}
                               searchPlaceholder={t("membership.issueMembership.placeholders.searchSavings")}
+                              isRequired
                             />
                             <InputField
                               control={form.control}
@@ -544,8 +550,9 @@ const IssueMembership = ({
                       Number(cashInTransactionGrandTotal) -
                         Number(cashOutTransactionGrandTotal) !==
                         Number(form.getValues("totalAmt"))) ||
-                    (transMode === "bank" && !form.getValues("bank")) ||
-                    (transMode === "savings" && !form.getValues("savings"))
+                    (transMode === "bank" &&
+                      (!bank || !String(refVouchNo || "").trim())) ||
+                    (transMode === "savings" && !savings)
                   }
                 >
                   {postIssueMembershipLoading ? (
