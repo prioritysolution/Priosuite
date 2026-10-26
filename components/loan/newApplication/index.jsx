@@ -327,7 +327,7 @@ const NewApplication = ({
   useEffect(() => {
     if (ecsAccountNo && ecsAccountData && ecsAccountData.length > 0) {
       const selectedAccount = ecsAccountData.find(
-        (item) => item.Id === ecsAccountNo,
+        (item) => String(item.Id) === String(ecsAccountNo),
       );
 
       // console.log("selectedAccount=", selectedAccount);

@@ -206,7 +206,25 @@ const Login = ({
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="flex w-full flex-col gap-2.5 sm:gap-4"
                 autoComplete="off"
+                data-lpignore="true"
+                data-1p-ignore="true"
               >
+                <input
+                  type="text"
+                  name="prevent_autofill_user"
+                  autoComplete="off"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  className="hidden"
+                />
+                <input
+                  type="password"
+                  name="prevent_autofill_pass"
+                  autoComplete="new-password"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  className="hidden"
+                />
                 <DropdownFieldNew
                   control={form.control}
                   name="language"
@@ -238,7 +256,7 @@ const Login = ({
                   name="email"
                   label={t("auth.emailUsername")}
                   placeholder={t("auth.enterEmailUsername")}
-                  autoComplete="username"
+                  autoComplete="off"
                   autoFocus
                   startContent={<Mail className="h-4 w-4" />}
                 />
@@ -249,7 +267,7 @@ const Login = ({
                   label={t("auth.password")}
                   type="password"
                   placeholder={t("auth.enterPassword")}
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   startContent={<Lock className="h-4 w-4" />}
                 />
 

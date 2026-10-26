@@ -108,6 +108,7 @@ export const useInterestPayout = () => {
       otherwise: (schema) => schema.nullable(),
     }),
     savings: yup.string(),
+    savingsName: yup.string(),
   });
 
   const optionFormSchema = yup.object({
@@ -144,6 +145,7 @@ export const useInterestPayout = () => {
       refVouchNo: "",
       bank: "",
       savings: "",
+      savingsName: "",
     },
   });
 
@@ -158,8 +160,23 @@ export const useInterestPayout = () => {
     },
   });
 
+  const savingsAccountData = useSelector(
+    (state) => state?.openDepositAccount?.ecsAccountData,
+  );
+
   const { control } = form;
-  const { transMode, bank, refVouchNo } = useWatch({ control });
+  const { transMode, bank, refVouchNo, savings } = useWatch({ control });
+
+  useEffect(() => {
+    if (savings)
+      form.setValue(
+        "savingsName",
+        savingsAccountData?.find(
+          (account) => String(account?.Id) === String(savings),
+        )?.Full_Name || "",
+      );
+    else form.setValue("savingsName", "");
+  }, [savings, savingsAccountData, form]);
 
   const { postingType } = useWatch({ control: optionForm.control });
 

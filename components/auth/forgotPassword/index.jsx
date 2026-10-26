@@ -200,6 +200,7 @@ const ForgotPassword = ({
                       label={t("auth.newPassword")}
                       placeholder={t("auth.enterNewPassword")}
                       type="password"
+                      autoComplete="new-password"
                       disabled={!mailVerified}
                       isRequired
                       startContent={<Lock className="h-4 w-4" />}
@@ -211,6 +212,7 @@ const ForgotPassword = ({
                       label={t("auth.confirmPassword")}
                       placeholder={t("auth.confirmNewPassword")}
                       type="password"
+                      autoComplete="new-password"
                       disabled={!mailVerified}
                       isRequired
                       startContent={<Lock className="h-4 w-4" />}

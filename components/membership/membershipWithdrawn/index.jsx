@@ -33,6 +33,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import DropdownField from "@/common/formFields/DropdownField";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import DoubleCashDenomTable from "@/common/tables/DoubleCashDenomTable";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import getCookieData from "@/utils/getCookieData";
 
@@ -62,6 +70,12 @@ const MembershipWithdrawn = ({
   refVouchNo,
   shareBalance,
   divBalance,
+  transferMember,
+  transferList = [],
+  transferSearchLoading,
+  handleTransferMemberSearch,
+  handleAddTransfer,
+  handleRemoveTransfer,
   handleShowLedger,
   showLedger,
   setShowLedger,
@@ -104,6 +118,11 @@ const MembershipWithdrawn = ({
   const endDate = getCookieData("fin_end_date");
 
   const branchId = getCookieData("userBranchId");
+  const memberBranchId = form.watch("BranchId");
+  const isDifferentBranch =
+    memberBranchId != null &&
+    String(memberBranchId).trim() !== "" &&
+    String(memberBranchId) !== String(branchId ?? "");
 
   return (
     <div className="w-full h-full flex justify-between p-1  bg-[#fefefe] rounded-lg">
@@ -228,7 +247,11 @@ const MembershipWithdrawn = ({
                           label={t("membership.withdrawn.fields.branchName")}
                           placeholder={t("membership.withdrawn.placeholders.branchName")}
                           readOnly
-                          className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
+                          className={
+                            isDifferentBranch
+                              ? "border-red-500 bg-red-50 [&_input]:text-red-600"
+                              : ""
+                          }
                         />
                       </div>
                     )
@@ -370,6 +393,7 @@ const MembershipWithdrawn = ({
                             <FormControl>
                               <RadioGroup
                                 onValueChange={field.onChange}
+                                value={field.value}
                                 defaultValue={field.value}
                                 className="flex flex-col sm:flex-row space-y-5 sm:space-y-0 gap-x-5"
                               >
@@ -395,6 +419,14 @@ const MembershipWithdrawn = ({
                                   </FormControl>
                                   <FormLabel className="font-normal">
                                     Savings
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value="transfer" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {t("membership.withdrawn.fields.transfer")}
                                   </FormLabel>
                                 </FormItem>
                               </RadioGroup>
@@ -447,7 +479,7 @@ const MembershipWithdrawn = ({
                         isRequired
                       />
                     </div>
-                  ) : (
+                  ) : transMode === "savings" ? (
                     <div className="w-full grid lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                       <DropdownField
                         control={form.control}
@@ -467,7 +499,112 @@ const MembershipWithdrawn = ({
                         readOnly
                       />
                     </div>
-                  )}
+                  ) : transMode === "transfer" ? (
+                    <div className="w-full flex flex-col gap-3">
+                      <MemberSearchForm
+                        handleSubmit={handleTransferMemberSearch}
+                        loading={transferSearchLoading}
+                        formLabel={t("membership.withdrawn.sections.transferMember")}
+                      />
+                      {transferMember ? (
+                        <div className="w-full border border-primary rounded-lg p-3 sm:p-5 flex flex-col gap-3">
+                          <h3 className="text-center text-lg sm:text-xl font-semibold">
+                            {t("membership.withdrawn.sections.transferMember")}
+                          </h3>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
+                            <InputField
+                              control={form.control}
+                              name="transferMemberNo"
+                              label={t("membership.withdrawn.fields.memberNo")}
+                              readOnly
+                            />
+                            <InputField
+                              control={form.control}
+                              name="transferMemberName"
+                              label={t("membership.withdrawn.fields.memberName")}
+                              readOnly
+                            />
+                            <InputField
+                              control={form.control}
+                              name="transferCifNo"
+                              label={t("membership.withdrawn.fields.cifNo")}
+                              readOnly
+                            />
+                            <InputField
+                              control={form.control}
+                              name="transferShareId"
+                              label={t("membership.withdrawn.fields.shareAccount")}
+                              readOnly
+                            />
+                            <InputField
+                              control={form.control}
+                              name="transferAmount"
+                              label={t("membership.withdrawn.fields.transferAmount")}
+                              placeholder={t("membership.withdrawn.placeholders.transferAmount")}
+                              type="number"
+                              isRequired
+                            />
+                            <div className="flex flex-col gap-2">
+                              <span className="text-sm font-medium">
+                                {t("membership.withdrawn.fields.remainingAmount")}
+                              </span>
+                              <div className="h-10 rounded-md border border-input px-3 flex items-center bg-muted/40">
+                                {Number(shareBalance || 0) -
+                                  transferList.reduce(
+                                    (sum, row) => sum + Number(row.trf_amount || 0),
+                                    0,
+                                  )}
+                              </div>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            className="w-full sm:w-1/5 self-end"
+                            onClick={handleAddTransfer}
+                          >
+                            {t("membership.withdrawn.fields.add")}
+                          </Button>
+                        </div>
+                      ) : null}
+                      {transferList.length > 0 ? (
+                        <div className="w-full border border-primary rounded-lg p-3 sm:p-5 flex flex-col gap-3">
+                          <h3 className="text-center text-lg sm:text-xl font-semibold">
+                            {t("membership.withdrawn.sections.transferList")}
+                          </h3>
+                          <Table className="border border-primary">
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>{t("membership.withdrawn.fields.memberNo")}</TableHead>
+                                <TableHead>{t("membership.withdrawn.fields.memberName")}</TableHead>
+                                <TableHead>{t("membership.withdrawn.fields.shareAccount")}</TableHead>
+                                <TableHead>{t("membership.withdrawn.fields.transferAmount")}</TableHead>
+                                <TableHead>{t("membership.withdrawn.fields.remove")}</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {transferList.map((row) => (
+                                <TableRow key={row.sh_acct_id}>
+                                  <TableCell>{row.memberNo}</TableCell>
+                                  <TableCell>{row.memberName}</TableCell>
+                                  <TableCell>{row.sh_acct_id}</TableCell>
+                                  <TableCell>{row.trf_amount}</TableCell>
+                                  <TableCell>
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      onClick={() => handleRemoveTransfer(row.sh_acct_id)}
+                                    >
+                                      {t("membership.withdrawn.fields.remove")}
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </div>
               )}
 
@@ -484,7 +621,13 @@ const MembershipWithdrawn = ({
                         Number(shareBalance || 0) + Number(divBalance || 0)) ||
                     (transMode === "bank" &&
                       (!bank || !String(refVouchNo || "").trim())) ||
-                    (transMode === "savings" && !savings)
+                    (transMode === "savings" && !savings) ||
+                    (transMode === "transfer" &&
+                      (transferList.length === 0 ||
+                        transferList.reduce(
+                          (sum, row) => sum + Number(row.trf_amount || 0),
+                          0,
+                        ) > Number(shareBalance || 0)))
                   }
                 >
                   {postMembershipWithdrawnLoading ? (

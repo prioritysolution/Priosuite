@@ -75,6 +75,9 @@ export const useMembershipWithdrawn = () => {
   const [showLedger, setShowLedger] = useState(false);
   const [visibleBlock, setVisibleBlock] = useState(false);
   const [memberProduct, setMemberProduct] = useState(null);
+  const [transferMember, setTransferMember] = useState(null);
+  const [transferList, setTransferList] = useState([]);
+  const [transferSearchLoading, setTransferSearchLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
@@ -184,6 +187,11 @@ export const useMembershipWithdrawn = () => {
       otherwise: (schema) => schema.nullable(),
     }),
     savingsName: yup.string(),
+    transferAmount: yup.string().nullable(),
+    transferMemberNo: yup.string(),
+    transferMemberName: yup.string(),
+    transferCifNo: yup.string(),
+    transferShareId: yup.string(),
   });
 
   const form = useForm({
@@ -209,6 +217,11 @@ export const useMembershipWithdrawn = () => {
       bank: "",
       savings: "",
       savingsName: "",
+      transferAmount: "",
+      transferMemberNo: "",
+      transferMemberName: "",
+      transferCifNo: "",
+      transferShareId: "",
     },
   });
 
@@ -225,7 +238,145 @@ export const useMembershipWithdrawn = () => {
   } = useWatch({ control });
 
   const handleSubmit = (values) => {
+    if (values.transMode === "transfer") {
+      const total = transferList.reduce(
+        (sum, row) => sum + Number(row.trf_amount || 0),
+        0,
+      );
+      if (!transferList.length) {
+        toast.error("Add at least one transfer");
+        return;
+      }
+      if (total > Number(values.shareBalance || 0)) {
+        toast.error("Total transfer amount cannot exceed share balance");
+        return;
+      }
+    }
     postMembershipWithdrawApiCall(values);
+  };
+
+  const handleTransferMemberSearch = async (values) => {
+    const currentDate = form.getValues("date");
+    if (!currentDate) {
+      toast.error("Select transaction date first");
+      return;
+    }
+
+    setTransferSearchLoading(true);
+    try {
+      const res = await getShareIssueDataByIdAPI(
+        orgId,
+        values.memberNo,
+        format(currentDate, "yyyy-MM-dd"),
+      );
+      if (res.message === "Data Found") {
+        const member = res.details[0];
+        if (!member?.Share_Id) {
+          setTransferMember(null);
+          toast.error("Share account not found for this member");
+          return;
+        }
+        if (
+          memberProduct?.Share_Id &&
+          String(member.Share_Id) === String(memberProduct.Share_Id)
+        ) {
+          setTransferMember(null);
+          toast.error("Cannot transfer to the same member");
+          return;
+        }
+        setTransferMember(member);
+        form.setValue("transferMemberNo", member.Cust_No || "");
+        form.setValue("transferMemberName", member.Full_Name || "");
+        form.setValue("transferCifNo", member.CIF_No || "");
+        form.setValue("transferShareId", String(member.Share_Id || ""));
+        form.setValue("transferAmount", "");
+      } else {
+        setTransferMember(null);
+        form.setValue("transferMemberNo", "");
+        form.setValue("transferMemberName", "");
+        form.setValue("transferCifNo", "");
+        form.setValue("transferShareId", "");
+        toast.error(res.details || res.message);
+      }
+    } catch (error) {
+      console.error(error);
+      setTransferMember(null);
+      toast.error("Something went wrong");
+    } finally {
+      setTransferSearchLoading(false);
+    }
+  };
+
+  const handleAddTransfer = () => {
+    if (!transferMember?.Share_Id) {
+      toast.error("Search a member first");
+      return;
+    }
+
+    const rawAmount = String(form.getValues("transferAmount") ?? "").trim();
+    if (!rawAmount) {
+      form.setError("transferAmount", {
+        type: "required",
+        message: "Transfer amount is required",
+      });
+      return;
+    }
+
+    const amount = Number(rawAmount);
+    const balance = Number(shareBalance || 0);
+    if (!amount || amount <= 0) {
+      form.setError("transferAmount", {
+        type: "required",
+        message: "Enter a transfer amount greater than 0",
+      });
+      return;
+    }
+    form.clearErrors("transferAmount");
+    if (amount > balance) {
+      toast.error("Transfer amount cannot exceed share balance");
+      return;
+    }
+
+    const used = transferList.reduce(
+      (sum, row) => sum + Number(row.trf_amount || 0),
+      0,
+    );
+    if (used + amount > balance) {
+      toast.error("Total transfer amount cannot exceed share balance");
+      return;
+    }
+    if (
+      transferList.some(
+        (row) => String(row.sh_acct_id) === String(transferMember.Share_Id),
+      )
+    ) {
+      toast.error("This member is already added");
+      return;
+    }
+
+    setTransferList((prev) => [
+      ...prev,
+      {
+        sh_acct_id: transferMember.Share_Id,
+        trf_amount: amount,
+        memberNo: transferMember.Cust_No || "",
+        memberName: transferMember.Full_Name || "",
+        cifNo: transferMember.CIF_No || "",
+      },
+    ]);
+    setTransferMember(null);
+    form.setValue("transferMemberNo", "");
+    form.setValue("transferMemberName", "");
+    form.setValue("transferCifNo", "");
+    form.setValue("transferShareId", "");
+    form.setValue("transferAmount", "");
+    form.clearErrors("transferAmount");
+  };
+
+  const handleRemoveTransfer = (shareId) => {
+    setTransferList((prev) =>
+      prev.filter((row) => String(row.sh_acct_id) !== String(shareId)),
+    );
   };
 
   const handleMemberFormSubmit = (values) => {
@@ -296,6 +447,13 @@ export const useMembershipWithdrawn = () => {
       org_id: orgId,
       sb_id: item.transMode === "savings" ? item.savings || null : null,
       bank_id: item.transMode === "bank" ? item.bank || null : null,
+      share_trf_details:
+        item.transMode === "transfer"
+          ? transferList.map((row) => ({
+              sh_acct_id: row.sh_acct_id,
+              trf_amount: row.trf_amount,
+            }))
+          : [],
     };
     try {
       const res = await postMembershipWithdrawAPI(data);
@@ -308,6 +466,8 @@ export const useMembershipWithdrawn = () => {
         setInDenominators(defaultDenominators);
         setOutDenominators(defaultDenominators);
         setResetTrigger((prev) => prev + 1);
+        setTransferMember(null);
+        setTransferList([]);
       } else {
         toast.error(res.details);
         setSuccessMessage(null);
@@ -348,6 +508,8 @@ export const useMembershipWithdrawn = () => {
         form.setValue("ledgerFolio", res.details[0].Ledg_fol || "");
         getDepositEcsAccountApiCall(orgId, res.details[0].Id);
         setShowLedger(true);
+        setTransferMember(null);
+        setTransferList([]);
       } else {
         setVisibleBlock(false);
         setMemberProduct(null);
@@ -501,10 +663,11 @@ export const useMembershipWithdrawn = () => {
       form.setValue(
         "savingsName",
         savingsAccountData?.find(
-          (account) => account?.Id?.toString() === savings,
+          (account) => String(account?.Id) === String(savings),
         )?.Full_Name || "",
       );
-  }, [savings]);
+    else form.setValue("savingsName", "");
+  }, [savings, savingsAccountData, form]);
 
   const errors = form.formState.errors;
   useEffect(() => {
@@ -543,6 +706,12 @@ export const useMembershipWithdrawn = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     transMode,
+    transferMember,
+    transferList,
+    transferSearchLoading,
+    handleTransferMemberSearch,
+    handleAddTransfer,
+    handleRemoveTransfer,
     handleShowLedger,
     showLedger,
     setShowLedger,

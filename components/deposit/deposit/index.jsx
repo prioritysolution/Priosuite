@@ -97,6 +97,11 @@ const Deposit = ({
   );
 
   const branchId = getCookieData("userBranchId");
+  const memberBranchId = form.watch("BranchId");
+  const isDifferentBranch =
+    memberBranchId != null &&
+    String(memberBranchId).trim() !== "" &&
+    String(memberBranchId) !== String(branchId ?? "");
 
   console.log("productId=", form.watch("productId"));
 
@@ -318,7 +323,11 @@ const Deposit = ({
                                 label={t("deposit.fields.branchName")}
                                 placeholder={t("deposit.placeholders.branchName")}
                                 readOnly
-                                className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
+                                className={
+                                  isDifferentBranch
+                                    ? "border-red-500 bg-red-50 [&_input]:text-red-600"
+                                    : ""
+                                }
                               />
                             </div>
                             <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-5 gap-y-3 ">

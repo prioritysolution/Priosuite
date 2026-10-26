@@ -407,7 +407,7 @@ const Renewal = ({
                         />
                       </div>
                     ) : (
-                      <div className="w-full grid grid-cols-1 lg:grid-cols-2">
+                      <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-3">
                         <DropdownField
                           control={form.control}
                           name="savings"
@@ -417,6 +417,13 @@ const Renewal = ({
                           placeholder={t("deposit.placeholders.selectSavings")}
                           searchPlaceholder={t("deposit.placeholders.searchSavings")}
                           isRequired
+                        />
+                        <InputField
+                          control={form.control}
+                          name="savingsName"
+                          label={t("deposit.fields.accountHolderName")}
+                          placeholder={t("deposit.fields.accountHolderName")}
+                          readOnly
                         />
                       </div>
                     )}

@@ -327,6 +327,10 @@ export const endPoints = {
   getBankGl: (orgId, typeId) =>
     `${createApi}Org/ProcessBankAccount/GetGl?org_id=${orgId}&type_id=${typeId}`,
   addOpenBankAccount: `${createApi}Org/ProcessBankAccount/AddAccount`,
+  // get transaction account
+  GeTransAccount: (orgId, branch_id) =>
+    `${createApi}Org/ProcessBankAccount/GeTransAccount?org_id=${orgId}&branch_id=${branch_id}`,
+  // get bank account
   getBankAccount: (orgId, branch_id) =>
     `${createApi}Org/ProcessBankAccount/GetAccount?org_id=${orgId}&branch_id=${branch_id}`,
   getBankLedger: (orgId, bankId, fromDate, toDate) =>

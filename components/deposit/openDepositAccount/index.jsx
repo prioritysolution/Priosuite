@@ -357,6 +357,11 @@ const OpenDepositAccount = ({
   }, [jointHolderDetailsForCheck, memberNoForCheck, checkMemberIdMatch]);
 
   const branchId = getCookieData("userBranchId");
+  const memberBranchId = form.watch("BranchId");
+  const isDifferentBranch =
+    memberBranchId != null &&
+    String(memberBranchId).trim() !== "" &&
+    String(memberBranchId) !== String(branchId ?? "");
   const beg_date = getCookieData("beg_date");
 
   useEffect(() => {
@@ -483,7 +488,11 @@ const OpenDepositAccount = ({
                         label={t("deposit.fields.branchName")}
                         placeholder={t("deposit.placeholders.branchName")}
                         readOnly
-                        className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
+                        className={
+                          isDifferentBranch
+                            ? "border-red-500 bg-red-50 [&_input]:text-red-600"
+                            : ""
+                        }
                       />
                     </div>
                   )}

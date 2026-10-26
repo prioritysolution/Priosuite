@@ -149,6 +149,7 @@ export const useRenewal = () => {
       then: (schema) => schema.required("Savings is required"),
       otherwise: (schema) => schema.nullable(),
     }),
+    savingsName: yup.string(),
   });
 
   const form = useForm({
@@ -181,6 +182,7 @@ export const useRenewal = () => {
       transMode: "bank",
       bank: "",
       savings: "",
+      savingsName: "",
     },
   });
 
@@ -200,6 +202,21 @@ export const useRenewal = () => {
   } = useWatch({
     control,
   });
+
+  const savingsAccountData = useSelector(
+    (state) => state?.openDepositAccount?.ecsAccountData,
+  );
+
+  useEffect(() => {
+    if (savings)
+      form.setValue(
+        "savingsName",
+        savingsAccountData?.find(
+          (account) => String(account?.Id) === String(savings),
+        )?.Full_Name || "",
+      );
+    else form.setValue("savingsName", "");
+  }, [savings, savingsAccountData, form]);
 
   // Calculate newMaturityDate when duration, durationUnit, or renewalDate changes (similar to OpenDepositAccount)
   useEffect(() => {

@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import getCookieData from "@/utils/getCookieData";
+import { approvalErrorText, isApiSuccess, pickApiMessage } from "@/utils/apiMessage";
 import {
     getDepositApprovalListAPI,
     getDepositDetailsAPI,
@@ -98,18 +99,20 @@ export const useDepositApproval = () => {
         setActionLoading(true);
         try {
             const res = await postDepositApprvRejectAPI(payload);
-            if (res?.status === 200 || res?.message === "Success") {
-                // Set the success message from API details
-                const msg = res?.details || (status === 1 ? "Approved Successfully" : "Rejected Successfully");
+            if (isApiSuccess(res)) {
+                const msg = pickApiMessage(
+                    res?.details,
+                    status === 1 ? "Approved Successfully" : "Rejected Successfully",
+                );
                 setSuccessMessageText(msg);
-                setShowSuccessModal(true); // Open Success Modal
-                setOpenModal(false); // Close Action Modal
+                setShowSuccessModal(true);
+                setOpenModal(false);
             } else {
-                toast.error(res?.details || "Action Failed");
+                toast.error(approvalErrorText(res, "Action Failed"));
             }
         } catch (error) {
             console.error(error);
-            toast.error("Operation Failed");
+            toast.error(approvalErrorText(error, "Operation Failed"));
         } finally {
             setActionLoading(false);
         }

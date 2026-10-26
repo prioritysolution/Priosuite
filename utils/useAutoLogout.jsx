@@ -95,6 +95,7 @@ export default function useAutoLogout() {
 
   const SessionTimeoutModal = () => {
     const [password, setPassword] = useState("");
+    const [passwordReady, setPasswordReady] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -179,7 +180,11 @@ export default function useAutoLogout() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  autoComplete="one-time-code"
+                  autoComplete="new-password"
+                  data-lpignore="true"
+                  data-1p-ignore="true"
+                  readOnly={!passwordReady}
+                  onFocus={() => setPasswordReady(true)}
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);

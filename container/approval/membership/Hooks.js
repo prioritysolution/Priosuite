@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import getCookieData from "@/utils/getCookieData";
+import { approvalErrorText, isApiSuccess, pickApiMessage } from "@/utils/apiMessage";
 import {
     getMembershipApprovalListAPI,
     getMembershipDetailsAPI,
@@ -89,11 +90,15 @@ export const useMembershipApproval = () => {
 
         try {
             const res = await getMembershipDetailsAPI(item.Id, orgId);
-            if (res?.message === "Success" || res?.status === 200) {
-                const details = Array.isArray(res.details) && res.details.length > 0
-                    ? res.details[0]
-                    : {};
-                setSelectedApplication(prev => ({ ...prev, ...details }));
+            if (res?.message === "Success" || res?.status === 200 || res?.message === "Data Found") {
+                const raw = res.details ?? res.Data ?? {};
+                const rows = Array.isArray(raw) ? raw : [];
+                const header = Array.isArray(raw) ? raw[0] || {} : raw;
+                setSelectedApplication((prev) => ({
+                    ...prev,
+                    ...(header && typeof header === "object" ? header : {}),
+                    _detailRows: rows,
+                }));
             } else {
                 console.warn("Detail fetch warning:", res);
             }
@@ -119,17 +124,19 @@ export const useMembershipApproval = () => {
 
         try {
             const res = await postMembershipApproveRejectAPI(payload);
-            if (res?.status === 200 || res?.message === "Success") {
-                // Set the success message from API details
-                const msg = res?.details || (status === 1 ? "Approved Successfully" : "Rejected Successfully");
+            if (isApiSuccess(res)) {
+                const msg = pickApiMessage(
+                    res?.details,
+                    status === 1 ? "Approved Successfully" : "Rejected Successfully",
+                );
                 setSuccessMessageText(msg);
-                setShowSuccessModal(true); // Open Success Modal
-                setOpenModal(false); // Close Action Modal
+                setShowSuccessModal(true);
+                setOpenModal(false);
             } else {
-                toast.error(res?.details || "Process Failed");
+                toast.error(approvalErrorText(res, "Process Failed"));
             }
         } catch (err) {
-            toast.error("Critical Error");
+            toast.error(approvalErrorText(err, "Critical Error"));
             console.error(err);
         }
     };

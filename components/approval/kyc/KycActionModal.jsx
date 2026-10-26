@@ -291,8 +291,7 @@ const KycActionModal = ({
         },
         { name: "grp_doc", label: t("kycApproval.fields.regDocumentNo") },
       ];
-      config.permanentLocation = permanentLocationFields;
-      config.presentLocation = presentLocationFields;
+      config.location = permanentLocationFields;
     } else if (type === "4") {
       config.profile = [
         { name: "inst_name", label: t("kycApproval.fields.institutionName") },

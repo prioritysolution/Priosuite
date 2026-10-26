@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import getCookieData from "@/utils/getCookieData";
+import { approvalErrorText, isApiSuccess, pickApiMessage } from "@/utils/apiMessage";
 import {
   getKycApplicationListAPI,
   postKycApprovalAPI,
@@ -102,7 +103,12 @@ const buildFormValues = (item, orgId, branchId) => {
       grp_name: item.Full_Name,
       gerp_dob: safeDate(item.Cust_DOB),
       grp_add: item.Cust_Add || "",
-      ...locations,
+      stateId: storeId(item.Cust_State),
+      districtId: storeId(item.Cust_Dist),
+      blockId: storeId(item.Cust_Blk),
+      villageId: storeId(item.Cust_Vill),
+      policeStationId: storeId(item.Cust_Police),
+      postOfficeId: storeId(item.Cust_Post),
       grp_ben: item.Benef_No,
       grp_mob: item.Cust_Mob,
       branch_id: branchId,
@@ -148,17 +154,6 @@ const buildFormValues = (item, orgId, branchId) => {
     panNo: item.Cust_Pan,
     org_id: orgId,
   };
-};
-
-const pickMessage = (details, fallback) => {
-  if (typeof details === "string") return details;
-  if (Array.isArray(details) && details.length > 0) {
-    return details[0]?.Message || fallback;
-  }
-  if (details && typeof details === "object") {
-    return details.Message || fallback;
-  }
-  return fallback;
 };
 
 export const useKycApproval = () => {
@@ -589,13 +584,6 @@ export const useKycApproval = () => {
         grp_village: data.villageId,
         grp_police: data.policeStationId,
         grp_post: data.postOfficeId,
-        grp_pres_add: data.presentAddress,
-        grp_pres_state: data.presentStateId,
-        grp_pres_dist: data.presentDistrictId,
-        grp_pres_block: data.presentBlockId,
-        grp_pres_village: data.presentVillageId,
-        grp_pres_police: data.presentPoliceStationId,
-        grp_pres_post: data.presentPostOfficeId,
         grp_ben: data.grp_ben,
         branch_id: currentBranchId,
         org_id: currentOrgId,
@@ -686,16 +674,16 @@ export const useKycApproval = () => {
         res = await updateMemberProfileAPI(payload);
       }
 
-      if (res?.status === 200 || res?.message === "Success") {
-        toast.success("Profile Updated Successfully");
+      if (isApiSuccess(res)) {
+        toast.success(pickApiMessage(res?.details, "Profile Updated Successfully"));
         setIsEditMode(false);
         locationLoadedForRef.current = null;
         fetchKycList();
       } else {
-        toast.error(pickMessage(res?.details, "Update Failed"));
+        toast.error(approvalErrorText(res, "Update Failed"));
       }
     } catch (err) {
-      toast.error("Operation Failed");
+      toast.error(approvalErrorText(err, "Operation Failed"));
     }
   };
 
@@ -709,19 +697,19 @@ export const useKycApproval = () => {
     };
     try {
       const res = await postKycApprovalAPI(payload);
-      if (res?.status === 200 || res?.message === "Success") {
+      if (isApiSuccess(res)) {
         const fallback =
           status === 1 ? "Approved Successfully" : "Rejected Successfully";
-        setSuccessMessageText(pickMessage(res?.details, fallback));
+        setSuccessMessageText(pickApiMessage(res?.details, fallback));
         setShowSuccessModal(true);
         setOpenModal(false);
         setIsEditMode(false);
         locationLoadedForRef.current = null;
       } else {
-        toast.error(pickMessage(res?.details, "Process Failed"));
+        toast.error(approvalErrorText(res, "Process Failed"));
       }
     } catch (err) {
-      toast.error("Critical Error");
+      toast.error(approvalErrorText(err, "Critical Error"));
     }
   };
 

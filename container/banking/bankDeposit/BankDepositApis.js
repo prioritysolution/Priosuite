@@ -3,7 +3,8 @@ import { endPoints } from "@/utils/endPoints";
 
 export const getBankAccountAPI = async (orgId, branchId) => {
   let data = {
-    url: endPoints.getBankAccount(orgId, branchId),
+    // url: endPoints.getBankAccount(orgId, branchId),
+    url: endPoints.GeTransAccount(orgId, branchId),
   };
 
   let res = await doGetApiCall(data);

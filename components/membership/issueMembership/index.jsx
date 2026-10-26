@@ -95,6 +95,11 @@ const IssueMembership = ({
   const endDate = getCookieData("fin_end_date");
 
   const branchId = getCookieData("userBranchId");
+  const memberBranchId = form.watch("BranchId");
+  const isDifferentBranch =
+    memberBranchId != null &&
+    String(memberBranchId).trim() !== "" &&
+    String(memberBranchId) !== String(branchId ?? "");
 
   // Set Admission Date to beg_date when component loads
   useEffect(() => {
@@ -216,7 +221,11 @@ const IssueMembership = ({
                         label={t("membership.issueMembership.fields.branchName")}
                         placeholder={t("membership.issueMembership.placeholders.branchName")}
                         readOnly
-                        className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
+                        className={
+                          isDifferentBranch
+                            ? "border-red-500 bg-red-50 [&_input]:text-red-600"
+                            : ""
+                        }
                       />
                     </div>
                   )}

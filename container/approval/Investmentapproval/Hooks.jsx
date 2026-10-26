@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import getCookieData from "@/utils/getCookieData";
+import { approvalErrorText, isApiSuccess, pickApiMessage } from "@/utils/apiMessage";
 import {
   InvestmentApprovalGetListAPI,
   InvestmentApprovalGetDetailsAPI,
@@ -120,34 +121,19 @@ export const useInvestmentapproval = () => {
 
     try {
       const res = await InvestmentApprovalApprvRejectAPI(payload);
-      if (res?.status === 200 || res?.message === "Success") {
-        let msgText =
-          status === 1 ? "Approved Successfully" : "Rejected Successfully";
-
-        if (typeof res?.details === "string") {
-          msgText = res.details;
-        } else if (Array.isArray(res?.details) && res?.details.length > 0) {
-          msgText = res.details[0]?.Message || msgText;
-        } else if (res?.details && typeof res.details === "object") {
-          msgText = res.details.Message || msgText;
-        }
-
+      if (isApiSuccess(res)) {
+        const msgText = pickApiMessage(
+          res?.details,
+          status === 1 ? "Approved Successfully" : "Rejected Successfully",
+        );
         setSuccessMessageText(msgText);
         setShowSuccessModal(true);
         setOpenModal(false);
       } else {
-        let errText = "Process Failed";
-        if (typeof res?.details === "string") {
-          errText = res.details;
-        } else if (Array.isArray(res?.details) && res?.details.length > 0) {
-          errText = res.details[0]?.Message || errText;
-        } else if (res?.details && typeof res.details === "object") {
-          errText = res.details.Message || errText;
-        }
-        toast.error(errText);
+        toast.error(approvalErrorText(res, "Process Failed"));
       }
     } catch (err) {
-      toast.error("Critical Error");
+      toast.error(approvalErrorText(err, "Critical Error"));
     }
   };
 

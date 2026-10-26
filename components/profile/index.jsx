@@ -134,6 +134,7 @@ const Profile = ({
                             <FormControl>
                               <Input
                                 type="password"
+                                autoComplete="new-password"
                                 placeholder="Enter password"
                                 {...field}
                               />
@@ -152,6 +153,7 @@ const Profile = ({
                             <FormControl>
                               <Input
                                 type="password"
+                                autoComplete="new-password"
                                 placeholder="Enter confirm password"
                                 {...field}
                               />

@@ -122,6 +122,7 @@ const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
                           <FormControl>
                             <Input
                               type="password"
+                              autoComplete="new-password"
                               placeholder={t("createUser.enterPassword")}
                               {...field}
                             />
@@ -142,6 +143,7 @@ const CreateUser = ({ loading, form, handleSubmit, showForm, setShowForm }) => {
                           <FormControl>
                             <Input
                               type="password"
+                              autoComplete="new-password"
                               placeholder={t(
                                 "createUser.enterConfirmPassword"
                               )}

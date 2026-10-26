@@ -688,10 +688,11 @@ export const useIssueMembership = () => {
       form.setValue(
         "savingsName",
         savingsAccountData?.find(
-          (account) => account?.Id?.toString() === savings,
+          (account) => String(account?.Id) === String(savings),
         )?.Full_Name || "",
       );
-  }, [savings]);
+    else form.setValue("savingsName", "");
+  }, [savings, savingsAccountData, form]);
 
   useEffect(() => {
     form.setValue("savings", "");

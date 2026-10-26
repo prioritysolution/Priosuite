@@ -37,6 +37,12 @@ const MembershipWithdrawnContainer = () => {
     showSuccessMessage,
     handleCloseSuccessMessage,
     transMode,
+    transferMember,
+    transferList,
+    transferSearchLoading,
+    handleTransferMemberSearch,
+    handleAddTransfer,
+    handleRemoveTransfer,
     handleShowLedger,
     showLedger,
     setShowLedger,
@@ -92,6 +98,12 @@ const MembershipWithdrawnContainer = () => {
       refVouchNo={refVouchNo}
       shareBalance={shareBalance}
       divBalance={divBalance}
+      transferMember={transferMember}
+      transferList={transferList}
+      transferSearchLoading={transferSearchLoading}
+      handleTransferMemberSearch={handleTransferMemberSearch}
+      handleAddTransfer={handleAddTransfer}
+      handleRemoveTransfer={handleRemoveTransfer}
       handleShowLedger={handleShowLedger}
       showLedger={showLedger}
       setShowLedger={setShowLedger}

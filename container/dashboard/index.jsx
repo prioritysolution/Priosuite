@@ -16,7 +16,7 @@ const DashboardContainer = () => {
   const isMainDash = Number(getCookieData("Is_Main_Dash"));
 
 
-  // console.log("token=> ", token);
+  console.log("token=> ", token);
   
 
   // Access beg_date from Redux store

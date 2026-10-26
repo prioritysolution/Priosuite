@@ -100,6 +100,11 @@ const ShareRefund = ({
   const endDate = getCookieData("fin_end_date");
 
   const branchId = getCookieData("userBranchId");
+  const memberBranchId = form.watch("BranchId");
+  const isDifferentBranch =
+    memberBranchId != null &&
+    String(memberBranchId).trim() !== "" &&
+    String(memberBranchId) !== String(branchId ?? "");
 
   return (
     <div className="w-full h-full min-h-0 overflow-hidden flex p-1 bg-[#fefefe] rounded-lg">
@@ -214,7 +219,11 @@ const ShareRefund = ({
                               label={t("membership.shareRefund.fields.branchName")}
                               placeholder={t("membership.shareRefund.placeholders.branchName")}
                               readOnly
-                              className={`${branchId === form.getValues("BranchId") ? "" : "text-red-700"}`}
+                              className={
+                                isDifferentBranch
+                                  ? "border-red-500 bg-red-50 [&_input]:text-red-600"
+                                  : ""
+                              }
                             />
                           </div>
                         )}

@@ -356,7 +356,7 @@ const MemberSearchForm = ({
                 })}
               >
                 <Button
-                  type=""
+                  type="button"
                   className={cn(
                     "px-5 w-1/2",
                     { hidden: hideNextButton },

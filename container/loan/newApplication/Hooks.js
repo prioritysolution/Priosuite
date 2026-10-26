@@ -1878,8 +1878,9 @@ export const useNewApplication = () => {
     if (savings) {
       form.setValue(
         "savingsName",
-        ecsAccountData?.find((account) => account?.Id?.toString() === savings)
-          ?.Full_Name || "",
+        ecsAccountData?.find(
+          (account) => String(account?.Id) === String(savings),
+        )?.Full_Name || "",
       );
       dispatch(setEcsAccountNo(savings));
     } else {
