@@ -3,6 +3,7 @@
 import { useTranslation } from "react-i18next";
 
 import DropdownField from "@/common/formFields/DropdownField";
+import MemberSearchForm from "@/common/forms/MemberSearchForm";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,13 +14,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
-import TextareaField from "@/common/formFields/TextareaField";
+import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
+import getCookieData from "@/utils/getCookieData";
 
-const DepositAgent = ({ loading, handleSubmit, form }) => {
+const DepositAgent = ({
+  loading,
+  getMemberDataLoading,
+  visibleBlock,
+  resetTrigger,
+  handleSubmit,
+  handleMemberFormSubmit,
+  form,
+}) => {
   const { t } = useTranslation();
+  const branchId = getCookieData("userBranchId");
+  const memberBranchId = form.watch("BranchId");
+  const isDifferentBranch =
+    memberBranchId != null &&
+    String(memberBranchId).trim() !== "" &&
+    String(memberBranchId) !== String(branchId ?? "");
 
   const paymentTypeData = useSelector(
     (state) => state?.depositAgent?.paymentTypeData
@@ -28,7 +45,15 @@ const DepositAgent = ({ loading, handleSubmit, form }) => {
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
       <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold">{t("master.depositAgent.title")}</h3>
+        <div className="w-full">
+          <MemberSearchForm
+            handleSubmit={handleMemberFormSubmit}
+            loading={getMemberDataLoading}
+            resetTrigger={resetTrigger}
+            formLabel={t("master.depositAgent.title")}
+            showDateFix={true}
+          />
+        </div>
         <ScrollArea className="w-full h-full">
           <Form {...form}>
             <form
@@ -36,36 +61,93 @@ const DepositAgent = ({ loading, handleSubmit, form }) => {
               className="w-full h-full flex flex-col gap-5 justify-between"
               autoComplete="off"
             >
+              {visibleBlock && (
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                  <h3 className="w-full text-center text-lg sm:text-xl font-semibold">
+                    {t("membership.issueMembership.sections.basicInfoBlock")}
+                  </h3>
+                  {getMemberDataLoading ? (
+                    <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
+                      {Array.from({ length: 6 }).map((_, index) => (
+                        <div key={index} className="w-full flex flex-col gap-2.5">
+                          <Skeleton className="h-4 w-28 rounded-none bg-secondary" />
+                          <Skeleton className="h-10 w-full rounded-md bg-secondary" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
+                      <InputField
+                        control={form.control}
+                        name="memberNo"
+                        label={t("membership.issueMembership.fields.memberNo")}
+                        readOnly
+                      />
+                      <InputField
+                        control={form.control}
+                        name="cifNo"
+                        label={t("membership.issueMembership.fields.cifNo")}
+                        readOnly
+                      />
+                      <InputField
+                        control={form.control}
+                        name="memberName"
+                        label={t("membership.issueMembership.fields.memberName")}
+                        readOnly
+                      />
+                      <InputField
+                        control={form.control}
+                        name="gurdianName"
+                        label={t("membership.issueMembership.fields.gurdianName")}
+                        readOnly
+                      />
+                      <FormField
+                        control={form.control}
+                        name="address"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {t("membership.issueMembership.fields.address")}
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                {...field}
+                                className="resize-none"
+                                readOnly
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <InputField
+                        control={form.control}
+                        name="mobile"
+                        label={t("membership.issueMembership.fields.mobileNo")}
+                        readOnly
+                      />
+                      <InputField
+                        control={form.control}
+                        name="branchName"
+                        label={t("membership.issueMembership.fields.branchName")}
+                        readOnly
+                        className={
+                          isDifferentBranch
+                            ? "border-red-500 bg-red-50 [&_input]:text-red-600"
+                            : ""
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {visibleBlock && (
               <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
+                <h3 className="w-full text-center text-lg sm:text-xl font-semibold">
+                  {t("master.depositAgent.sections.agentDetails")}
+                </h3>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
-                  <InputField
-                    control={form.control}
-                    name="agentName"
-                    label={t("master.depositAgent.fields.agentName")}
-                    placeholder={t("master.depositAgent.placeholders.agentName")}
-                  />
-
-                  <TextareaField
-                    control={form.control}
-                    name="address"
-                    label={t("master.depositAgent.fields.address")}
-                    placeholder={t("master.depositAgent.placeholders.address")}
-                    className="resize-none"
-                  />
-
-                  <InputField
-                    control={form.control}
-                    name="mobile"
-                    label={t("master.depositAgent.fields.mobileNo")}
-                    placeholder={t("master.depositAgent.placeholders.mobileNo")}
-                    type="number"
-                    onInput={(e) => {
-                      if (e.target.value.length > 10) {
-                        e.target.value = e.target.value.slice(0, 10);
-                      }
-                    }}
-                  />
-
                   <InputField
                     control={form.control}
                     name="email"
@@ -117,6 +199,8 @@ const DepositAgent = ({ loading, handleSubmit, form }) => {
                   />
                 </div>
               </div>
+              )}
+              {visibleBlock && (
               <Button type="submit" className="w-full sm:w-1/5 self-end" disabled={loading}>
                 {loading ? (
                   <ClipLoader
@@ -128,6 +212,7 @@ const DepositAgent = ({ loading, handleSubmit, form }) => {
                   t("master.depositAgent.buttons.add")
                 )}
               </Button>
+              )}
             </form>
           </Form>
         </ScrollArea>

@@ -16,7 +16,8 @@ export const getMembershipDetailsAPI = async (vouchId, orgId) => {
 
 export const postMembershipApproveRejectAPI = async (data) => {
     return await doPutApiCall({
-        url: `${baseUrl}/api/Org/ProcessApproval/Transactions/ApprvReject`,
+        // url: `${baseUrl}/api/Org/ProcessApproval/Transactions/ApprvReject`,
+        url: `${baseUrl}/api/Org/ProcessApproval/Membership/ApprvReject`,
         bodyData: data,
     });
 };

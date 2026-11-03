@@ -8,15 +8,31 @@ import { useDepositAgent } from "./Hooks";
 const DepositAgentContainer = () => {
   const orgId = getCookieData("orgId");
 
-  const { form, handleSubmit, loading, getPaymentTypeDataApiCall } =
-    useDepositAgent();
+  const {
+    form,
+    handleSubmit,
+    handleMemberFormSubmit,
+    loading,
+    getMemberDataLoading,
+    visibleBlock,
+    resetTrigger,
+    getPaymentTypeDataApiCall,
+  } = useDepositAgent();
 
   useEffect(() => {
     if (orgId) getPaymentTypeDataApiCall(orgId);
   }, [orgId]);
 
   return (
-    <DepositAgent form={form} handleSubmit={handleSubmit} loading={loading} />
+    <DepositAgent
+      form={form}
+      handleSubmit={handleSubmit}
+      handleMemberFormSubmit={handleMemberFormSubmit}
+      loading={loading}
+      getMemberDataLoading={getMemberDataLoading}
+      visibleBlock={visibleBlock}
+      resetTrigger={resetTrigger}
+    />
   );
 };
 export default DepositAgentContainer;

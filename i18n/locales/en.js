@@ -425,6 +425,9 @@ const en = {
       },
       depositAgent: {
         title: "Deposit Agent",
+        sections: {
+          agentDetails: "Agent Details",
+        },
         fields: {
           agentName: "Agent Name",
           address: "Address",

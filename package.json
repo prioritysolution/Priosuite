@@ -88,6 +88,6 @@
     "postcss": "^8.5.26",
     "sharp": "^0.35.3",
     "braces": "file:vendor/braces",
-    "follow-redirects": "1.16.1"
+    "follow-redirects": "^1.16.2"
   }
 }

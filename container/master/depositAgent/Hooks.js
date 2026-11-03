@@ -8,6 +8,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import getCookieData from "@/utils/getCookieData";
 import { getPaymentTypeAPI, postDepositAgentAPI } from "./DepositAgentApis";
+import { getOpeningMemberDataByIdAPI } from "@/container/opening/membershipOpening/MembershipOpeningApis";
 import { getPaymentTypeData } from "./DepositAgentReducer";
 import {
   maxTwoDecimalPlaces,
@@ -20,11 +21,21 @@ export const useDepositAgent = () => {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
+  const [getMemberDataLoading, setGetMemberDataLoading] = useState(false);
+  const [visibleBlock, setVisibleBlock] = useState(false);
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   const orgId = getCookieData("orgId");
 
   const formSchema = yup.object({
-    agentName: yup.string().required("Member type is required"),
+    memberNo: yup.string(),
+    memberId: yup.string(),
+    cifNo: yup.string(),
+    memberName: yup.string(),
+    gurdianName: yup.string(),
+    branchName: yup.string(),
+    BranchId: yup.string(),
+    agentName: yup.string().required("Agent name is required"),
     address: yup.string().required("Address is required"),
     mobile: yup
       .string()
@@ -128,6 +139,13 @@ export const useDepositAgent = () => {
   const form = useForm({
     resolver: yupResolver(formSchema),
     defaultValues: {
+      memberNo: "",
+      memberId: "",
+      cifNo: "",
+      memberName: "",
+      gurdianName: "",
+      branchName: "",
+      BranchId: "",
       agentName: "",
       address: "",
       mobile: "",
@@ -140,8 +158,61 @@ export const useDepositAgent = () => {
     },
   });
 
+  const clearMemberFields = () => {
+    form.setValue("memberNo", "");
+    form.setValue("memberId", "");
+    form.setValue("cifNo", "");
+    form.setValue("memberName", "");
+    form.setValue("gurdianName", "");
+    form.setValue("agentName", "");
+    form.setValue("address", "");
+    form.setValue("mobile", "");
+    form.setValue("branchName", "");
+    form.setValue("BranchId", "");
+  };
+
   const handleSubmit = (values) => {
+    if (!visibleBlock) {
+      toast.error("Search a member first");
+      return;
+    }
     postDepositAgentApiCall(values);
+  };
+
+  const handleMemberFormSubmit = (values) => {
+    getMemberDataByIdApiCall(orgId, values.memberNo);
+  };
+
+  const getMemberDataByIdApiCall = async (currentOrgId, memberNo) => {
+    setGetMemberDataLoading(true);
+    try {
+      const res = await getOpeningMemberDataByIdAPI(currentOrgId, memberNo);
+      if (res.message === "Data Found") {
+        const member = res.details[0] || {};
+        setVisibleBlock(true);
+        form.setValue("memberNo", member.Cust_No || "");
+        form.setValue("memberId", member.Id ? String(member.Id) : "");
+        form.setValue("cifNo", member.CIF_No || "");
+        form.setValue("memberName", member.Full_Name || "");
+        form.setValue("agentName", member.Full_Name || "");
+        form.setValue("gurdianName", member.Relation_Name || "");
+        form.setValue("address", member.Address || "");
+        form.setValue("mobile", member.Cust_Mob || "");
+        form.setValue("branchName", member.Branch_Name || "");
+        form.setValue("BranchId", member.Branch_Id ? String(member.Branch_Id) : "");
+      } else {
+        setVisibleBlock(false);
+        clearMemberFields();
+        toast.error(res.details || res.message);
+      }
+    } catch (error) {
+      setVisibleBlock(false);
+      clearMemberFields();
+      console.error(error);
+      toast.error("Something went wrong");
+    } finally {
+      setGetMemberDataLoading(false);
+    }
   };
 
   const postDepositAgentApiCall = async (item) => {
@@ -164,6 +235,8 @@ export const useDepositAgent = () => {
       if (res.message === "Success") {
         toast.success(res.details);
         form.reset();
+        setVisibleBlock(false);
+        setResetTrigger((prev) => prev + 1);
       } else toast.error(res.message);
     } catch (error) {
       console.error(error);
@@ -191,8 +264,12 @@ export const useDepositAgent = () => {
 
   return {
     loading,
+    getMemberDataLoading,
+    visibleBlock,
+    resetTrigger,
     getPaymentTypeDataApiCall,
     handleSubmit,
+    handleMemberFormSubmit,
     form,
   };
 };
