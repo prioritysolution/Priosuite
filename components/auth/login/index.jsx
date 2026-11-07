@@ -121,82 +121,71 @@ const Login = ({
   }
 
   return (
-    <div className="relative h-full max-h-full w-full overflow-hidden bg-[#d7eefc]">
+    <div className="relative h-full min-h-dvh w-full overflow-hidden bg-[#e9f4fc]">
+      {/* Background Graphic: /loginbg.png for desktop (lg+), /bgimage.png for mobile & tablet (<lg) */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <Image
-          src="/floginpagebg.png"
-          alt=""
-          fill
-          priority
-          unoptimized
-          quality={100}
-          sizes="100vw"
-          className="select-none object-cover object-left"
-        />
-        <div className="absolute inset-0 bg-white/25 lg:hidden" />
+        {/* Mobile & Tablet Background */}
+        <div className="relative h-full w-full lg:hidden">
+          <Image
+            src="/bgimage.png"
+            alt=""
+            fill
+            priority
+            unoptimized
+            quality={100}
+            sizes="100vw"
+            className="select-none object-cover object-center"
+          />
+        </div>
+
+        {/* Desktop Background */}
+        <div className="relative hidden h-full w-full lg:block">
+          <Image
+            src="/loginbg.png"
+            alt=""
+            fill
+            priority
+            unoptimized
+            quality={100}
+            sizes="100vw"
+            className="select-none object-cover object-left"
+          />
+        </div>
+
+        {/* Soft overlay on mobile screens so text/form inputs remain crisp */}
+        <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] lg:hidden" />
       </div>
 
-      <div className="relative z-10 flex h-full max-h-full flex-col overflow-hidden lg:flex-row">
-        <section className="relative hidden h-full min-h-0 flex-1 flex-col overflow-hidden lg:flex">
-         
-         {/* left side content — matches mockup: brand, one-line headline, two-line subtitle */}
-          <div className="relative z-20 shrink-0 px-10 pt-8 xl:px-14 xl:pt-10 2xl:px-16">
-            <BrandMark />
-            <h1 className="mt-7 whitespace-nowrap text-[22px] font-extrabold tracking-tight text-[#163A5F] xl:mt-8 xl:text-[26px] 2xl:text-[28px]">
-              {t("auth.smarterBanking")}
-              <span className="mx-2.5 font-medium text-[#1B74D6]">|</span>
-              {t("auth.strongerCommunities")}
-            </h1>
-            <p className="mt-3 max-w-[460px] text-[13px] leading-[1.55] text-[#6B849E] xl:text-[14px]">
-              {t("auth.subtitle")}
-            </p>
-          </div>
+      <div className="relative z-10 flex h-full min-h-dvh w-full flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
+        {/* Left Side: Left graphics & branding already part of loginbg.png. We leave this space flexible for large screens */}
+        <div className="hidden flex-1 lg:block" />
 
-          <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-0 py-2">
-            <Image
-              src="/floginpageimg.png"
-              alt={t("auth.illustrationAlt")}
-              width={1536}
-              height={1024}
-              priority
-              unoptimized
-              className="h-auto w-[min(85%,780px)] max-h-[min(520px,55vh)] object-contain"
-            />
-          </div>
-
-          {/* Bottom feature strip — solid gradient bar, full width, pinned to bottom */}
-          <div className="relative z-20 mt-auto w-full shrink-0  px-10 py-5 xl:px-14 xl:py-6 2xl:px-16">
-            <div className="mx-auto flex w-full max-w-[720px] items-start justify-between gap-4">
-              <FeatureStripItem icon={ShieldCheck} label={t("auth.secureReliable")}  className="border-r-2 border-r-[#1B74D6]" />
-              <FeatureStripItem icon={IoIosCloudOutline} label={t("auth.scalableArchitecture")}  className="border-r-2 border-r-[#1B74D6]" />
-              <FeatureStripItem icon={Zap} label={t("auth.fasterOperations")}  className="border-r-2 border-r-[#1B74D6]" />
-              <FeatureStripItem icon={Users} label={t("auth.betterMemberService")}  />
-            </div>
-          </div>
-        </section>
-
-        {/* Right login — fixed, no scroll */}
-        <section className="flex h-full w-full shrink-0 items-center justify-center overflow-hidden p-3 sm:p-5 lg:w-[min(100%,720px)] lg:-ml-16 lg:justify-start lg:pl-2 lg:pr-8 xl:w-[780px] xl:-ml-24 xl:pl-4 xl:pr-10">
+        {/* Right Side: Login Card container matching design mockup */}
+        <section className="flex w-full flex-1 items-center justify-center p-4 sm:p-6 lg:max-w-[620px] lg:flex-initial lg:justify-center lg:p-8 xl:max-w-[680px] xl:p-12">
           <div
-            className="flex w-full max-w-[500px] flex-col rounded-2xl border border-white/80 bg-white/95 px-5 py-5 shadow-[0_18px_50px_rgba(22,58,95,0.14)] backdrop-blur-md sm:max-w-[540px] sm:rounded-[28px] sm:px-9 sm:py-7"
+            className="flex w-full max-w-[480px] flex-col rounded-3xl border border-white/90 bg-white/90 p-6 shadow-[0_20px_60px_-15px_rgba(13,95,191,0.18)] backdrop-blur-xl transition-all sm:max-w-[500px] sm:p-8 xl:max-w-[520px] xl:p-9"
             style={{ animation: "login-card-in 0.45s ease-out" }}
           >
-            <div className="mb-2 flex items-center justify-end">
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#F3F8FD] px-2 py-0.5 text-[10px] font-medium text-[#6F87A3] sm:text-[11px]">
-                <Lock className="h-3 w-3" />
+            <div className="mb-2 flex items-center justify-between">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EBF3FB] px-2.5 py-1 text-[11px] font-semibold text-[#1B74D6]">
+                <ShieldCheck className="h-3.5 w-3.5" />
                 {t("auth.secureLogin")}
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#7A93B0]">
+                <Lock className="h-3 w-3" />
+                SSL 256-bit
               </span>
             </div>
 
-            <div className="mb-3 flex justify-center sm:mb-4">
+            <div className="my-2 flex justify-center sm:my-3">
               <BrandMark compact />
             </div>
 
             <div className="mb-5 text-center">
-              <h2 className="text-[22px] font-extrabold leading-tight text-[#163A5F] sm:text-[24px]">
+              <h2 className="text-[22px] font-extrabold tracking-tight text-[#163A5F] sm:text-[24px]">
                 {t("auth.welcomeBack")}
               </h2>
-              <p className="mt-1 text-[12px] text-[#7A93B0] sm:text-[13px]">
+              <p className="mt-1 text-[12px] font-medium text-[#7A93B0] sm:text-[13px]">
                 {t("auth.signInSubtitle")}
               </p>
             </div>
@@ -204,7 +193,7 @@ const Login = ({
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleSubmit)}
-                className="flex w-full flex-col gap-2.5 sm:gap-4"
+                className="flex w-full flex-col gap-2.5 sm:gap-3.5"
                 autoComplete="off"
                 data-lpignore="true"
                 data-1p-ignore="true"
@@ -233,7 +222,7 @@ const Login = ({
                   optionValueKey="Id"
                   optionLabelKey="Option_Value"
                   disableSorting
-                  startContent={<Globe className="h-4 w-4" />}
+                  startContent={<Globe className="h-4 w-4 text-[#1B74D6]" />}
                   onChange={(value) => {
                     setAppLanguage(value || "en");
                   }}
@@ -248,7 +237,7 @@ const Login = ({
                   optionValueKey="Id"
                   optionLabelKey="Yr"
                   disabled={!financialYear || financialYear.length === 0}
-                  startContent={<CalendarDays className="h-4 w-4" />}
+                  startContent={<CalendarDays className="h-4 w-4 text-[#1B74D6]" />}
                 />
 
                 <InputField
@@ -258,7 +247,7 @@ const Login = ({
                   placeholder={t("auth.enterEmailUsername")}
                   autoComplete="off"
                   autoFocus
-                  startContent={<Mail className="h-4 w-4" />}
+                  startContent={<Mail className="h-4 w-4 text-[#1B74D6]" />}
                 />
 
                 <InputField
@@ -268,13 +257,13 @@ const Login = ({
                   type="password"
                   placeholder={t("auth.enterPassword")}
                   autoComplete="new-password"
-                  startContent={<Lock className="h-4 w-4" />}
+                  startContent={<Lock className="h-4 w-4 text-[#1B74D6]" />}
                 />
 
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="cursor-pointer mt-2 h-12 w-full rounded-xl bg-linear-to-r from-[#1B74D6] to-[#0D5FBF] text-[14px] font-semibold text-white shadow-lg shadow-blue-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:from-[#1668c2] hover:to-[#0b54ab] hover:shadow-xl active:translate-y-0 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70 sm:h-13 sm:text-[15px]"
+                  className="mt-2 h-11 w-full cursor-pointer rounded-xl bg-gradient-to-r from-[#1B74D6] to-[#0D5FBF] text-[14px] font-semibold text-white shadow-lg shadow-blue-600/25 transition-all duration-200 hover:-translate-y-0.5 hover:from-[#1668c2] hover:to-[#0b54ab] hover:shadow-xl active:translate-y-0 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70 sm:h-12 sm:text-[15px]"
                 >
                   {loading ? (
                     <ClipLoader color="#fff" size={22} speedMultiplier={0.7} />
@@ -286,10 +275,10 @@ const Login = ({
                   )}
                 </Button>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center pt-1">
                   <Link
                     href="/forgotPassword"
-                    className="text-[12px] font-medium text-[#1B74D6] transition-colors hover:text-[#0D5FBF] hover:underline sm:text-[13px]"
+                    className="text-[12px] font-semibold text-[#1B74D6] transition-colors hover:text-[#0D5FBF] hover:underline sm:text-[13px]"
                   >
                     {t("auth.forgotPasswordLink")}
                   </Link>
@@ -297,18 +286,11 @@ const Login = ({
               </form>
             </Form>
 
-            <div className="mt-5 flex items-center justify-center gap-1.5 border-t border-[#eef3f8] pt-4 text-[10px] text-[#9AADC2] sm:text-[11px]">
-              {/* <Image
-                src="/pristlogo.png"
-                alt=""
-                width={16}
-                height={16}
-                className="h-4 w-4 object-contain"
-              /> */}
+            <div className="mt-4 flex items-center justify-center gap-1.5 border-t border-[#edf2f7] pt-3 text-[11px] text-[#9AADC2]">
               <Link
                 href="https://prioritysolutions.in"
                 target="_blank"
-                className="text-[#9AADC2] hover:text-[#1B74D6]"
+                className="font-medium text-[#9AADC2] transition-colors hover:text-[#1B74D6]"
               >
                 {t("auth.poweredBy")}
               </Link>

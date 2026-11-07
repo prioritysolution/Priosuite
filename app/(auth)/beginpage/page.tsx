@@ -14,6 +14,17 @@ import { beg_date } from "@/container/auth/login/LoginReducer";
 import Link from "next/link";
 import { useLogout } from "@/container/navbar/Hooks";
 import { useTranslation } from "react-i18next";
+import {
+  CalendarDays,
+  Clock,
+  Landmark,
+  Building2,
+  Calendar,
+  Play,
+  LogOut,
+  ShieldCheck,
+  Lock,
+} from "lucide-react";
 
 const BeginPage = () => {
   const { t } = useTranslation();
@@ -131,111 +142,161 @@ const BeginPage = () => {
   }, [router]);
 
   return (
-    <div className="h-screen w-screen flex flex-col lg:flex-row overflow-hidden bg-secondary">
-      <div className="hidden lg:flex w-full lg:w-1/2 h-[30vh] sm:h-[40vh] lg:h-screen bg-white relative items-center justify-center p-4">
-        <div className="relative w-full h-full max-h-[300px] sm:max-h-[400px] lg:max-h-[768px]">
+    <div className="relative h-full min-h-dvh w-full overflow-hidden bg-[#e9f4fc]">
+      {/* Background Graphic: /loginbg.png for desktop (lg+), /bgimage.png for mobile & tablet (<lg) */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* Mobile & Tablet Background */}
+        <div className="relative h-full w-full lg:hidden">
           <Image
-            src="/lodingImg.png"
+            src="/bgimage.png"
+            alt=""
             fill
             priority
-            className="object-contain p-2 sm:p-4 lg:p-6"
-            alt={t("auth.loginImageAlt")}
+            unoptimized
+            quality={100}
+            sizes="100vw"
+            className="select-none object-cover object-center"
           />
         </div>
-      </div>
 
-      {/* Right Content Section */}
-      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center bg-secondary p-3 sm:p-4 lg:p-5 xl:p-8 h-screen overflow-hidden">
-        <div
-          className="w-full max-w-md sm:max-w-lg lg:max-w-xl xl:max-w-2xl flex flex-col items-center justify-center gap-3 lg:gap-4 border-2 border-primary rounded-xl p-4 sm:p-6 lg:p-6 overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 2.5rem)" }}
-        >
-          {/* Title */}
-          <div className="text-center w-full">
-            <h1 className="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-[600] mb-1 sm:mb-2 text-primary leading-tight">
-              {t("auth.welcomeTo")}{" "}
-              <span className={cn("text-blue-500 italic font-libre font-bold")}>
-                {t("auth.priosuite")}
-              </span>
-            </h1>
-          </div>
-
-          {/* Date & Time */}
-          <div className="w-full text-center space-y-1">
-            <div className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-bold text-gray-800 tracking-wide">
-              {formatTime(currentTime)}
-            </div>
-            <div className="text-xs sm:text-sm lg:text-sm text-gray-500">
-              {formatDate(currentTime)}
-            </div>
-          </div>
-
-          {/* Information Cards */}
-          <div className="w-full space-y-2 lg:space-y-2">
-            {/* Organisation Card */}
-            <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200 shadow-sm overflow-hidden">
-              <p className="text-xs sm:text-sm text-gray-500 mb-0.5">
-                {t("auth.organisationName")}
-              </p>
-              <p className="text-sm sm:text-base lg:text-base font-semibold text-gray-800 truncate">
-                {orgName || t("common.notAvailable")}
-              </p>
-            </div>
-
-            {/* Branch Card */}
-            <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200 shadow-sm overflow-hidden">
-              <p className="text-xs sm:text-sm text-gray-500 mb-0.5">
-                {t("auth.branchName")}
-              </p>
-              <p className="text-sm sm:text-base lg:text-base font-semibold text-gray-800 truncate">
-                {branchName || t("common.notAvailable")}
-              </p>
-            </div>
-
-            {/* Working Date Card */}
-            <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200 shadow-sm">
-              <p className="text-xs sm:text-sm text-gray-500 mb-0.5">
-                {t("auth.workingDate")}
-              </p>
-              <p className="text-sm sm:text-base lg:text-base font-semibold text-gray-800">
-                {formatDate(currentTime)}
-              </p>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
-            <button
-              onClick={handleBeginSession}
-              disabled={loading}
-              style={{ backgroundColor: "#00264d" }}
-              className="w-full text-sm sm:text-base lg:text-base py-2.5 sm:py-3 text-white font-semibold rounded-xl transition-all duration-300 ease-out disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.98]"
-            >
-              {loading ? (
-                <ClipLoader color="#ffffff" size={22} speedMultiplier={0.7} />
-              ) : (
-                t("auth.processToDayBegin")
-              )}
-            </button>
-            <button
-              onClick={postLogoutApiCall}
-              disabled={loading}
-              className="w-full text-sm sm:text-base lg:text-base py-2.5 sm:py-3 text-white font-semibold rounded-xl transition-all duration-300 ease-out disabled:opacity-50 disabled:cursor-not-allowed bg-red-600 hover:bg-red-700 active:scale-[0.98]"
-            >
-              {t("auth.logout")}
-            </button>
-          </div>
+        {/* Desktop Background */}
+        <div className="relative hidden h-full w-full lg:block">
+          <Image
+            src="/loginbg.png"
+            alt=""
+            fill
+            priority
+            unoptimized
+            quality={100}
+            sizes="100vw"
+            className="select-none object-cover object-left"
+          />
         </div>
+
+        {/* Soft overlay on mobile screens so text/form inputs remain crisp */}
+        <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] lg:hidden" />
       </div>
 
-      <footer className="absolute w-full h-[50px] bottom-0 left-0 flex items-center justify-start px-2 text-sm xl:text-white">
-        <p>
-          {t("auth.designedBy")}{" "}
-          <Link href="#" target="_blank" className="font-[500]">
-            {t("auth.generalComputer")}
-          </Link>
-        </p>
-      </footer>
+      <div className="relative z-10 flex h-full min-h-dvh w-full flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
+        {/* Left Side: Left graphics & branding already part of loginbg.png */}
+        <div className="hidden flex-1 lg:block" />
+
+        {/* Right Content Section: Welcome / Begin Day Card */}
+        <section className="flex w-full flex-1 items-center justify-center p-4 sm:p-6 lg:max-w-[620px] lg:flex-initial lg:justify-center lg:p-8 xl:max-w-[680px] xl:p-12">
+          <div
+            className="flex w-full max-w-[500px] flex-col rounded-3xl border border-white/90 bg-white/90 p-6 shadow-[0_20px_60px_-15px_rgba(13,95,191,0.18)] backdrop-blur-xl transition-all sm:max-w-[540px] sm:p-8 xl:max-w-[560px] xl:p-9"
+            style={{ animation: "login-card-in 0.45s ease-out" }}
+          >
+            {/* Header: Welcome & Subtitle */}
+            <div className="mb-4 text-center">
+              <h1 className="text-2xl font-extrabold tracking-tight text-[#163A5F] sm:text-3xl">
+                {t("auth.welcomeTo")}{" "}
+                <span className="bg-gradient-to-r from-[#1B74D6] to-[#0D5FBF] bg-clip-text text-transparent">
+                  PrioSuite
+                </span>
+              </h1>
+              <p className="mt-1 text-xs font-semibold tracking-wide text-[#7A93B0] sm:text-sm">
+                Cooperative Banking System (CBS)
+              </p>
+            </div>
+
+            {/* Date & Time pill banner */}
+            <div className="mb-5 flex flex-wrap items-center justify-center gap-2.5 rounded-xl border border-[#D5E6F7] bg-[#F0F7FD] px-4 py-2.5 text-xs font-semibold text-[#1B74D6] sm:text-sm">
+              <span className="inline-flex items-center gap-1.5 text-[#2A527A]">
+                <CalendarDays className="h-4 w-4 text-[#1B74D6]" />
+                {formatDate(currentTime)}
+              </span>
+              <span className="hidden text-[#B0C8E0] sm:inline">|</span>
+              <span className="inline-flex items-center gap-1.5 font-bold text-[#163A5F]">
+                <Clock className="h-4 w-4 text-[#1B74D6]" />
+                {formatTime(currentTime)}
+              </span>
+            </div>
+
+            {/* Info Cards */}
+            <div className="w-full space-y-3">
+              {/* Organisation Card */}
+              <div className="flex items-center gap-3.5 rounded-2xl border border-[#E2EEF8] bg-white/95 p-3.5 shadow-xs transition-all hover:border-[#1B74D6]/30 sm:p-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EDF5FD] text-[#1B74D6]">
+                  <Landmark className="h-5 w-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-medium tracking-wide text-[#7A93B0] sm:text-xs">
+                    {t("auth.organisationName")}
+                  </p>
+                  <p className="truncate text-sm font-bold text-[#163A5F] sm:text-[15px]">
+                    {orgName || t("common.notAvailable")}
+                  </p>
+                </div>
+              </div>
+
+              {/* Branch Card */}
+              <div className="flex items-center gap-3.5 rounded-2xl border border-[#E2EEF8] bg-white/95 p-3.5 shadow-xs transition-all hover:border-[#1B74D6]/30 sm:p-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EDF5FD] text-[#1B74D6]">
+                  <Building2 className="h-5 w-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-medium tracking-wide text-[#7A93B0] sm:text-xs">
+                    {t("auth.branchName")}
+                  </p>
+                  <p className="truncate text-sm font-bold text-[#163A5F] sm:text-[15px]">
+                    {branchName || t("common.notAvailable")}
+                  </p>
+                </div>
+              </div>
+
+              {/* Working Date Card */}
+              <div className="flex items-center gap-3.5 rounded-2xl border border-[#E2EEF8] bg-white/95 p-3.5 shadow-xs transition-all hover:border-[#1B74D6]/30 sm:p-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EDF5FD] text-[#1B74D6]">
+                  <Calendar className="h-5 w-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-medium tracking-wide text-[#7A93B0] sm:text-xs">
+                    {t("auth.workingDate")}
+                  </p>
+                  <p className="truncate text-sm font-bold text-[#163A5F] sm:text-[15px]">
+                    {formatDate(currentTime)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <button
+                onClick={handleBeginSession}
+                disabled={loading}
+                className="flex h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1B74D6] to-[#0D5FBF] text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all duration-200 hover:-translate-y-0.5 hover:from-[#1668c2] hover:to-[#0b54ab] hover:shadow-xl active:translate-y-0 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70 sm:text-[15px]"
+              >
+                {loading ? (
+                  <ClipLoader color="#ffffff" size={20} speedMultiplier={0.7} />
+                ) : (
+                  <>
+                    <Play className="h-4 w-4 fill-white" />
+                    <span>{t("auth.processToDayBegin")}</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={postLogoutApiCall}
+                disabled={loading}
+                className="flex h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-200 bg-white px-6 text-sm font-semibold text-red-600 shadow-xs transition-all duration-200 hover:border-red-300 hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50 sm:text-[15px]"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>{t("auth.logout")}</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <style>{`
+        @keyframes login-card-in {
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 };
