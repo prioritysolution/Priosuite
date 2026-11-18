@@ -420,7 +420,7 @@ const MapInstituteMember = ({
                 handleSubmit={handleMapGroupSubmit}
                 loading={getGroupLoading}
                 formLabel={t("membership.mapInstituteMember.title")}
-                showDateFix
+                // showDateFix
                 disableNextButton={
                   addedMembers.length > 0 && selectedOption === "new"
                 }
@@ -556,7 +556,7 @@ const MapInstituteMember = ({
                     loading={getMemberDataLoading}
                     resetTrigger={resetTrigger}
                     formLabel={t("membership.mapInstituteMember.secondaryFormLabel")}
-                    showDateFix
+                    // showDateFix
                     anableRadio="1"
                   />
 

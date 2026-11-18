@@ -119,10 +119,12 @@ const Mature = ({
   const [bonusInterest, setBonusInterest] = useState("");
   const [payoutInterest, setPayoutInterest] = useState("");
   const [isActiveDenom, setIsActiveDenom] = useState(false);
+  const [isInterestEditable, setIsInterestEditable] = useState(false);
   useEffect(() => {
     // Initialize form values or perform any setup needed
     if (window !== "undefined") {
       setIsActiveDenom(!!getCookieData("userIsActiveDenomination"));
+      setIsInterestEditable(Number(getCookieData("is_open")) === 1);
     }
   }, []);
 
@@ -153,57 +155,80 @@ const Mature = ({
             className="w-full flex items-center justify-center px-2 sm:px-10"
             autoComplete="off"
           >
-            <div className="w-full border border-primary rounded-lg p-5 py-2 gap-2">
-              <div className="w-full flex items-center justify-center gap-10">
-                {/* operation Type radio button */}
+            <div className="w-full border border-primary rounded-lg p-3 sm:p-5 flex flex-col gap-3">
+              <h3 className="w-full text-center text-lg sm:text-xl font-semibold">
+                {t("deposit.mature.operationType")}
+              </h3>
+
+              <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
                 <FormField
                   control={optionForm.control}
                   name="operationType"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full">
-                      <FormLabel>{t("deposit.mature.operationType")}</FormLabel>
+                    <FormItem className="flex-1 space-y-0">
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
                           value={field.value}
                           disabled={disableOperationTypeForm}
-                          className="flex flex-col sm:flex-row space-y-5 sm:space-y-0 gap-x-5"
+                          className="grid grid-cols-1 sm:grid-cols-2 gap-3"
                         >
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="close" />
-                            </FormControl>
-                            <FormLabel className="font-normal">{t("deposit.mature.close")}</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="mature" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {t("deposit.mature.mature")}
-                            </FormLabel>
-                          </FormItem>
+                          {[
+                            {
+                              value: "close",
+                              label: t("deposit.mature.close"),
+                            },
+                            {
+                              value: "mature",
+                              label: t("deposit.mature.mature"),
+                            },
+                          ].map((option) => {
+                            const isSelected = field.value === option.value;
+                            return (
+                              <FormItem key={option.value} className="space-y-0">
+                                <FormLabel
+                                  className={`flex items-center gap-3 rounded-md border px-4 py-3 cursor-pointer transition-colors ${
+                                    isSelected
+                                      ? "border-primary bg-primary/5 text-primary"
+                                      : "border-input bg-white hover:border-primary/40"
+                                  } ${
+                                    disableOperationTypeForm
+                                      ? "opacity-70 cursor-not-allowed"
+                                      : ""
+                                  }`}
+                                >
+                                  <FormControl>
+                                    <RadioGroupItem value={option.value} />
+                                  </FormControl>
+                                  <span className="text-sm font-medium">
+                                    {option.label}
+                                  </span>
+                                </FormLabel>
+                              </FormItem>
+                            );
+                          })}
                         </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+
+                <div className="flex sm:justify-end">
                   {disableOperationTypeForm ? (
                     <Button
                       type="button"
-                      className="w-full sm:w-24 bg-primary text-white"
+                      className="w-full sm:w-28"
                       onClick={(e) => {
                         e.preventDefault();
                         handleResetOperation();
                       }}
                     >
-                      Reset
+                      {t("deposit.buttons.reset")}
                     </Button>
                   ) : (
-                    <Button type="submit" className="w-full sm:w-24">
-                      Next
+                    <Button type="submit" className="w-full sm:w-28">
+                      {t("deposit.buttons.next")}
                     </Button>
                   )}
                 </div>
@@ -239,7 +264,7 @@ const Mature = ({
                     ? t("deposit.mature.close")
                     : t("deposit.mature.mature")
                 }
-                showDateFix={true}
+                // showDateFix={true}
                 operateProductData={operateProductData}
                 showProduct={true}
                 getLedgerLoading={getLedgerLoading}
@@ -468,7 +493,10 @@ const Mature = ({
                           type="number"
                           className="w-full"
                           containerClassName="w-full"
-                          disabled={true}
+                          disabled={!isInterestEditable}
+                          onInput={(e) => {
+                            if (Number(e.target.value) < 0) e.target.value = "0";
+                          }}
                         />
 
                         {optionForm.getValues("operationType") === "mature" ? (
@@ -479,6 +507,10 @@ const Mature = ({
                             placeholder={t("deposit.placeholders.bonusInterest")}
                             className="w-full"
                             containerClassName="w-full"
+                            type="number"
+                            onInput={(e) => {
+                              if (Number(e.target.value) < 0) e.target.value = "0";
+                            }}
                           />
                         ) : (
                           <></>
@@ -493,6 +525,9 @@ const Mature = ({
                             type="number"
                             className="w-full"
                             containerClassName="w-full"
+                            onInput={(e) => {
+                              if (Number(e.target.value) < 0) e.target.value = "0";
+                            }}
                           />
                         )}
 
@@ -1011,8 +1046,15 @@ const Mature = ({
             <Input
               placeholder={t("deposit.placeholders.bonusInterest")}
               type="number"
+              min="0"
               value={bonusInterest}
-              onChange={(e) => setBonusInterest(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setBonusInterest(Number(value) < 0 ? "0" : value);
+              }}
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
+              }}
             />
 
             <div className="w-full flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2">
@@ -1050,8 +1092,15 @@ const Mature = ({
             <Input
               placeholder={t("deposit.placeholders.interest")}
               type="number"
+              min="0"
               value={payoutInterest}
-              onChange={(e) => setPayoutInterest(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setPayoutInterest(Number(value) < 0 ? "0" : value);
+              }}
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
+              }}
             />
 
             <div className="w-full flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2">

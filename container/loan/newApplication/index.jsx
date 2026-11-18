@@ -76,8 +76,8 @@ const NewApplicationContainer = () => {
 
   const [selectedOption, setSelectedOption] = useState("project");
 
-  const prioBankClientToken = getCookieData("prioBankClientToken");
-  console.log("prioBankClientToken=", prioBankClientToken);
+  // const prioBankClientToken = getCookieData("prioBankClientToken");
+  // console.log("prioBankClientToken=", prioBankClientToken);
 
   return (
     <NewApplication

@@ -51,7 +51,7 @@ const DepositAgent = ({
             loading={getMemberDataLoading}
             resetTrigger={resetTrigger}
             formLabel={t("master.depositAgent.title")}
-            showDateFix={true}
+            // showDateFix={true}
           />
         </div>
         <ScrollArea className="w-full h-full">

@@ -380,7 +380,7 @@ const OpenDepositAccount = ({
               loading={getOpenDepositLoading}
               resetTrigger={resetTrigger}
               formLabel={t("deposit.openDepositAccount.title")}
-              showDateFix={true}
+              // showDateFix={true}
             />
           </div>
           <Form {...form}>

@@ -448,7 +448,7 @@ const MapGroupMember = ({
                 loading={getGroupLoading}
                 resetTrigger={groupResetTrigger}
                 formLabel={t("membership.mapGroupMember.title")}
-                showDateFix
+                // showDateFix
                 disableNextButton={
                   addedMembers.length > 0 && selectedOption === "new"
                 }
@@ -626,7 +626,7 @@ const MapGroupMember = ({
                     loading={getMemberDataLoading}
                     resetTrigger={resetTrigger}
                     formLabel={t("membership.mapGroupMember.title")}
-                    showDateFix
+                    // showDateFix
                     anableRadio="1"
                   />
 

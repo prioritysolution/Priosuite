@@ -119,7 +119,7 @@ const ShareRefund = ({
             showLedger={showLedger}
             handleShowLedger={handleShowLedger}
             formLabel={t("membership.shareRefund.title")}
-            showDateFix={true}
+            // showDateFix={true}
           />
         </div>
         <Form {...form}>

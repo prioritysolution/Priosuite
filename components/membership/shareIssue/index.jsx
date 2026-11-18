@@ -124,7 +124,7 @@ const ShareIssue = ({
             formLabel={t("membership.shareIssue.title")}
             showLedger={showLedger}
             handleShowLedger={handleShowLedger}
-            showDateFix={true}
+            // showDateFix={true}
           />
         </div>
         <Form {...form}>

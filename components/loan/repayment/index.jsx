@@ -138,7 +138,7 @@ const Repayment = ({
             showLedger={showLedger}
             handleShowLedger={handleShowLedger}
             formLabel={t("loan.loanRepayment")}
-            showDateFix={true}
+            // showDateFix={true}
           />
         </div>
         <Form {...form}>

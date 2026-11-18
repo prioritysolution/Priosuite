@@ -137,7 +137,7 @@ const MembershipWithdrawn = ({
             showLedger={showLedger}
             handleShowLedger={handleShowLedger}
             formLabel={t("membership.withdrawn.title")}
-            showDateFix={true}
+            // showDateFix={true}
           />
         </div>
         <ScrollArea className="w-full h-full">

@@ -83,8 +83,7 @@ const LoanAccountSearchForm = ({
 
   const beg_date = getCookieData("beg_date");
 
-  console.log("beg_date", beg_date);
-  console.log("showDateFix", showDateFix);
+  
 
   const sidebarData = useSelector((state) => state.sidebar.sidebarData);
 

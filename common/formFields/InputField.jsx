@@ -162,7 +162,7 @@ const InputField = ({
                     field.onBlur();
                   }}
                   onKeyDown={(e) => {
-                    if (type === "number" && ["e", "E", "+"].includes(e.key)) {
+                    if (type === "number" && ["e", "E", "+", "-"].includes(e.key)) {
                       e.preventDefault();
                     }
                   }}

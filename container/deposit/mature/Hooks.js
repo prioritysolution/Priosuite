@@ -116,6 +116,27 @@ export const useMature = () => {
     (state) => state?.openDepositAccount?.ecsAccountData,
   );
 
+  const nonNegativeAmountSchema = (label) =>
+    yup
+      .string()
+      .nullable()
+      .transform((value) => (value === "" || value === undefined ? null : value))
+      .test(
+        "is-valid-amount",
+        `${label} must be a valid number`,
+        (value) => value == null || !Number.isNaN(Number(value)),
+      )
+      .test(
+        "is-non-negative",
+        `${label} cannot be negative`,
+        (value) => value == null || Number(value) >= 0,
+      )
+      .test(
+        "max-two-decimals",
+        `${label} can have at most 2 decimal places`,
+        (value) => value == null || maxTwoDecimalPlaces.test(String(value)),
+      );
+
   const formSchema = yup.object({
     productId: yup.string().nullable(),
     memberNo: yup.string().nullable(),
@@ -136,10 +157,20 @@ export const useMature = () => {
       )
       .typeError("Invalid date")
       .nullable(),
-    amount: yup.string().nullable(),
-    interest: yup.string().nullable(),
-    bonusInterest: yup.string(),
-    totalAmount: yup.string(),
+    amount: nonNegativeAmountSchema("Principal amount"),
+    interest: nonNegativeAmountSchema("Interest"),
+    bonusInterest: nonNegativeAmountSchema("Bonus interest"),
+    totalAmount: yup
+      .mixed()
+      .nullable()
+      .test(
+        "is-non-negative",
+        "Total amount cannot be negative",
+        (value) =>
+          value === "" ||
+          value == null ||
+          (!Number.isNaN(Number(value)) && Number(value) >= 0),
+      ),
     Joint_1: yup.string(),
     Joint_2: yup.string(),
     transMode: yup.string().required("Transanction mode is required"),
@@ -180,7 +211,7 @@ export const useMature = () => {
     savings: yup.string(),
     savingsName: yup.string(),
     savingsBalance: yup.string(),
-    findAmount: yup.string(),
+    findAmount: nonNegativeAmountSchema("Find amount"),
   });
 
   const optionFormSchema = yup.object({
@@ -801,6 +832,11 @@ export const useMature = () => {
   };
 
   const getDepositMaturityInterestApiCall = async (value) => {
+    if (value !== "" && value != null && Number(value) < 0) {
+      toast.error("Interest cannot be negative");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -829,6 +865,11 @@ export const useMature = () => {
   };
 
   const getDepositMaturityBonusInterestApiCall = async (roi) => {
+    if (roi !== "" && roi != null && Number(roi) < 0) {
+      toast.error("Bonus interest cannot be negative");
+      return;
+    }
+
     setLoading(true);
 
     try {

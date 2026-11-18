@@ -117,7 +117,7 @@ const IssueMembership = ({
             loading={getMemberDataLoading}
             resetTrigger={resetTrigger}
             formLabel={t("membership.issueMembership.title")}
-            showDateFix={true}
+            // showDateFix={true}
           />
         </div>
         <ScrollArea className="w-full h-full px-2 sm:px-10">

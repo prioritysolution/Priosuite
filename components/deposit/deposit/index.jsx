@@ -129,7 +129,7 @@ const Deposit = ({
             resetTrigger={resetTrigger}
             allowAlphanumeric
             formLabel={t("deposit.depositTxn.title")}
-            showDateFix={true}
+            // showDateFix={true}
             operateProductData={operateProductData}
             showProduct={true}
             getLedgerLoading={getLedgerLoading}
