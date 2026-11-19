@@ -54,45 +54,47 @@ const UserRole = ({
   };
 
   return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
-      <div className=" flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold text-center">
           {t("userRole.userRole")}
         </h3>
 
-        <ScrollArea className="w-full px-2 sm:px-10 2xl:px-20">
+        <ScrollArea className="w-full h-full px-2">
           <div className="w-full">
             <Form {...form}>
               <form className="" autoComplete="off">
-                <div className="w-full flex gap-5">
-                  <div className="w-full h-fit flex flex-col justify-start p-5 border border-primary rounded-lg gap-10">
-                    <FormField
+                <div className="w-full flex flex-col lg:flex-row gap-5">
+                  <div className="w-full lg:w-1/2 h-fit flex flex-col justify-start p-3 sm:p-5 border border-primary rounded-lg gap-4">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("userRole.user")}
+                      </h4>
+                    </div>
+                    <DropdownField
                       control={form.control}
                       name="user"
-                      render={({ field }) => (
-                        <DropdownField
-                          label={t("userRole.user")}
-                          value={field.value}
-                          onChange={field.onChange}
-                          options={userListData}
-                          optionLabelKey="User_Mail" // Specify the key for label
-                          placeholder={t("userRole.selectUser")}
-                          searchPlaceholder={t("userRole.searchUser")}
-                        />
-                      )}
+                      label={t("userRole.user")}
+                      options={userListData}
+                      optionLabelKey="User_Mail"
+                      placeholder={t("userRole.selectUser")}
+                      searchPlaceholder={t("userRole.searchUser")}
+                      isRequired
                     />
                     <Button
                       type="submit"
-                      className="self-end w-1/2 "
+                      className="self-end w-full sm:w-1/2"
                       onClick={form.handleSubmit(handleSubmit)}
                     >
                       {t("common.add")}
                     </Button>
                   </div>
-                  <div className="w-full border border-primary rounded-lg p-5 flex flex-col items-start gap-1">
-                    <h3 className="font-semibold text-lg pb-5">
-                      {t("userRole.selectRole")}
-                    </h3>
+                  <div className="w-full lg:w-1/2 border border-primary rounded-lg p-3 sm:p-5 flex flex-col items-start gap-4">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("userRole.selectRole")}
+                      </h4>
+                    </div>
                     {roleAssignList.map((module) => {
                       const isParentChecked =
                         parentStates[module.Module_Id] || false;

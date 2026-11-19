@@ -2,16 +2,13 @@
 
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
+import {
+  premiumTabsList,
+  premiumTabsTrigger,
+} from "@/common/formFields/fieldStyles";
 import { ClipLoader } from "react-spinners";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -32,7 +29,6 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import PreviewModal from "./PreviewModal";
-import { Input } from "@/components/ui/input";
 import { Fragment } from "react";
 import {
   Dialog,
@@ -137,37 +133,22 @@ const AccountStatement = ({
                   onOpenChange={setDialougeOpen}
                   className=""
                 >
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="accountNo"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>{t("loan.accountNo")}</FormLabel>
-                        <FormControl>
-                          <div className="">
-                            <div className="">
-                              <div className="relative w-full">
-                                <Input
-                                  placeholder={t("loan.enterAccountNo")}
-                                  className="w-full "
-                                  type="number"
-                                  {...field}
-                                />
-                                <div className="absolute right-0 top-0 py-3 px-3">
-                                  <DialogTrigger
-                                    asChild
-                                    className="cursor-pointer text-lg"
-                                  >
-                                    <IoSearch />
-                                  </DialogTrigger>
-                                </div>
-                              </div>
-                              <FormMessage />
-                            </div>
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
+                    label={t("loan.accountNo")}
+                    placeholder={t("loan.enterAccountNo")}
+                    type="number"
+                    endContent={
+                      <DialogTrigger
+                        asChild
+                        className="cursor-pointer text-lg text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <span>
+                          <IoSearch />
+                        </span>
+                      </DialogTrigger>
+                    }
                   />
 
                   {/* <div className="w-full flex justify-start self-end gap-5">
@@ -227,17 +208,25 @@ const AccountStatement = ({
                           onValueChange={setActiveTab}
                           className="w-full flex items-center justify-center flex-col"
                         >
-                          <TabsList className="w-full sm:w-[70%]">
-                            <TabsTrigger value="memberNo" className="w-full">
+                          <TabsList
+                            className={premiumTabsList("w-full sm:w-[70%]")}
+                          >
+                            <TabsTrigger
+                              value="memberNo"
+                              className={premiumTabsTrigger()}
+                            >
                               By Member No.
                             </TabsTrigger>
-                            <TabsTrigger value="name" className="w-full">
+                            <TabsTrigger
+                              value="name"
+                              className={premiumTabsTrigger()}
+                            >
                               By Member Name
                             </TabsTrigger>
                           </TabsList>
                           <TabsContent
                             value="memberNo"
-                            className="w-full flex flex-col sm:flex-row items-end gap-2 gap-x-10 "
+                            className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4"
                           >
                             <InputField
                               control={form.control}
@@ -245,15 +234,19 @@ const AccountStatement = ({
                               label={t("loan.memberNo2")}
                               placeholder={t("loan.searchByEnterMemberNo")}
                               autoComplete="off"
+                              formItemClassName="w-full min-w-0"
                             />
                             <Button
-                              className="w-full sm:w-auto px-10"
+                              type="button"
+                              className="w-full sm:w-auto px-10 shrink-0"
                               onClick={handleSearchAccountListByMemberNo}
-                            >{t("loan.search")}</Button>
+                            >
+                              {t("loan.search")}
+                            </Button>
                           </TabsContent>
                           <TabsContent
                             value="name"
-                            className="w-full flex flex-col sm:flex-row items-end gap-2 gap-x-10 "
+                            className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4"
                           >
                             <InputField
                               control={form.control}
@@ -261,11 +254,15 @@ const AccountStatement = ({
                               label={t("loan.name")}
                               placeholder={t("loan.searchByEnterName")}
                               autoComplete="off"
+                              formItemClassName="w-full min-w-0"
                             />
                             <Button
-                              className="w-full sm:w-auto px-10"
+                              type="button"
+                              className="w-full sm:w-auto px-10 shrink-0"
                               onClick={handleSearchAccountListByName}
-                            >{t("loan.search")}</Button>
+                            >
+                              {t("loan.search")}
+                            </Button>
                           </TabsContent>
                         </Tabs>
                       </div>

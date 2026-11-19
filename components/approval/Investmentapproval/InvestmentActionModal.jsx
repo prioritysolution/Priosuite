@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { Ban, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Ban, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import Spinner from "@/common/loader/Spinner";
 import { useTranslation } from "react-i18next";
@@ -73,7 +73,10 @@ const InvestmentActionModal = ({
           }
         }}
       >
-        <DialogContent className="w-[calc(100vw-1rem)] max-w-[90vw] lg:max-w-4xl h-auto max-h-[85dvh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
+        <DialogContent
+          hideClose
+          className="w-[calc(100vw-1rem)] max-w-[90vw] lg:max-w-4xl h-auto max-h-[85dvh] flex flex-col p-0 overflow-hidden border-none shadow-2xl"
+        >
           <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-2xl font-bold text-gray-800 tracking-tight">
@@ -92,6 +95,15 @@ const InvestmentActionModal = ({
                 </span>
               </div>
             </div>
+
+            <Button
+              variant="outline"
+              className="border-gray-300 text-gray-500 hover:bg-gray-100 h-9"
+              onClick={() => setOpen(false)}
+              disabled={loading}
+            >
+              <XCircle className="w-4 h-4 mr-2" /> {t("common.buttons.close")}
+            </Button>
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto bg-gray-50/50 p-6 max-h-[60vh]">
@@ -100,7 +112,13 @@ const InvestmentActionModal = ({
                 <Spinner />
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 p-6 rounded-2xl border border-gray-200 bg-white shadow-sm">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white shadow-sm">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("investmentApproval.investmentApprovalPortal")}
+                  </h4>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
                 {type === 0 && (
                   <>
                     {renderField(
@@ -229,6 +247,7 @@ const InvestmentActionModal = ({
                     )}
                   </>
                 )}
+                </div>
               </div>
             )}
           </div>

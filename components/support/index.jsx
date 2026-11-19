@@ -106,10 +106,17 @@ const Badge = ({ value, map, dotMap }) => (
   </span>
 );
 
-const SectionCard = ({ children, className = "" }) => (
+const SectionCard = ({ title, children, className = "" }) => (
   <section
-    className={`rounded-xl border border-primary/20 bg-white p-3 shadow-sm sm:p-5 ${className}`}
+    className={`w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white ${className}`}
   >
+    {title && (
+      <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+        <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+          {title}
+        </h4>
+      </div>
+    )}
     {children}
   </section>
 );
@@ -265,39 +272,18 @@ const Support = ({
   const canPageNext = listMeta.to < listMeta.total;
 
   return (
-    <div className="flex h-full w-full justify-between rounded-lg bg-[#fefefe] p-1">
-      <div className="flex h-full w-full flex-col items-stretch gap-3 overflow-hidden rounded-lg border-[2px] border-primary p-2 sm:p-3 lg:p-5">
-        {/* Page header */}
-        <div className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-primary to-primary/80 px-4 py-3 text-white shadow-sm sm:px-5 sm:py-4">
-          <span className="rounded-lg bg-white/15 p-2">
-            <LifeBuoy className="h-6 w-6" />
-          </span>
-          <div className="min-w-0">
-            <h3 className="text-xl font-semibold leading-tight sm:text-2xl">Support</h3>
-            {projectName ? (
-              <p className="truncate text-xs text-white/80 sm:text-sm">{projectName}</p>
-            ) : (
-              <p className="text-xs text-white/80 sm:text-sm">
-                Track your tickets and talk to our team
-              </p>
-            )}
-          </div>
-        </div>
+    <div className="flex h-full w-full justify-between rounded-lg bg-[#fefefe] p-1 min-h-0">
+      <div className="flex h-full w-full flex-col items-center justify-start gap-3 overflow-hidden rounded-lg border-[2px] border-primary p-2 lg:p-5 min-h-0 flex-1">
+        <h3 className="text-2xl font-semibold text-center">Support</h3>
 
-        <ScrollArea className="h-full w-full">
-          <div className="flex flex-col gap-4 pb-2">
+        <ScrollArea className="h-full w-full min-h-0 flex-1">
+          <div className="flex flex-col gap-4 pb-2 min-w-0 max-w-full">
             {pageError ? (
               <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-center text-sm font-medium text-red-600">
                 {pageError}
               </div>
             ) : (
-              <SectionCard className="flex flex-col gap-4">
-                <div className="flex items-center justify-center gap-2">
-                  <Search className="h-5 w-5 text-primary" />
-                  <h4 className="text-center text-lg font-semibold sm:text-xl">
-                    Find Tickets
-                  </h4>
-                </div>
+              <SectionCard title="Find Tickets">
                 <Form {...filterForm}>
                   <form
                     autoComplete="off"
@@ -358,12 +344,11 @@ const Support = ({
               </SectionCard>
             )}
 
-            <SectionCard className="flex flex-col gap-4">
+            <SectionCard title="Previous Tickets">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-center sm:text-left">
-                  <h4 className="text-lg font-semibold sm:text-xl">Previous Tickets</h4>
                   {activePhone ? (
-                    <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <p className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                       <Phone className="h-3 w-3" />
                       Phone {activePhone}
                     </p>
@@ -371,7 +356,7 @@ const Support = ({
                 </div>
                 <Button
                   type="button"
-                  className="w-full shadow-sm sm:w-auto sm:min-w-[150px]"
+                  className="w-full sm:w-auto px-6 h-10 font-semibold"
                   disabled={Boolean(pageError)}
                   onClick={handleOpenDialog}
                 >
@@ -397,7 +382,7 @@ const Support = ({
                         return (
                           <div
                             key={ticket.number}
-                            className={`flex flex-col gap-3 rounded-xl border border-primary/20 bg-white p-3 shadow-sm ${
+                            className={`flex flex-col gap-3 rounded-lg border border-primary/20 bg-white p-3 shadow-sm ${
                               isUpdated ? "support-row-updated" : ""
                             }`}
                           >
@@ -419,7 +404,7 @@ const Support = ({
                                 type="button"
                                 size="sm"
                                 variant="ghost"
-                                className="h-9 w-9 shrink-0 rounded-full bg-primary/10 p-0 text-primary hover:bg-primary/20 hover:text-primary"
+                                className="h-8 w-8 shrink-0 rounded-full bg-primary/10 p-0 text-primary hover:bg-primary/20 hover:text-primary"
                                 onClick={() => handleOpenTicket(ticket)}
                                 aria-label={`View ${ticket.number}`}
                               >
@@ -458,29 +443,29 @@ const Support = ({
                   </div>
 
                   {/* Desktop table */}
-                  <div className="hidden w-full overflow-x-auto rounded-xl border border-primary/20 md:block">
+                  <div className="hidden w-full overflow-x-auto rounded-lg border border-border md:block">
                     <Table className="min-w-[760px]">
-                      <TableHeader>
-                        <TableRow className="bg-primary/5 hover:bg-primary/5">
-                          <TableHead className="text-left font-semibold text-primary">
+                      <TableHeader className="bg-background z-10">
+                        <TableRow className="bg-gray-100">
+                          <TableHead className="text-left font-semibold">
                             Ticket No
                           </TableHead>
-                          <TableHead className="text-left font-semibold text-primary">
+                          <TableHead className="text-left font-semibold">
                             Raised On
                           </TableHead>
-                          <TableHead className="text-left font-semibold text-primary">
+                          <TableHead className="text-left font-semibold">
                             Subject
                           </TableHead>
-                          <TableHead className="text-left font-semibold text-primary">
+                          <TableHead className="text-left font-semibold">
                             Priority
                           </TableHead>
-                          <TableHead className="text-left font-semibold text-primary">
+                          <TableHead className="text-left font-semibold">
                             Status
                           </TableHead>
-                          <TableHead className="text-left font-semibold text-primary">
+                          <TableHead className="text-left font-semibold">
                             Remark
                           </TableHead>
-                          <TableHead className="text-right font-semibold text-primary">
+                          <TableHead className="text-right font-semibold">
                             Action
                           </TableHead>
                         </TableRow>
@@ -490,7 +475,7 @@ const Support = ({
                           tickets.map((ticket) => (
                             <TableRow
                               key={ticket.number}
-                              className={`transition-colors hover:bg-primary/5 ${
+                              className={`transition-colors hover:bg-muted/40 ${
                                 updatedNumbers.includes(ticket.number)
                                   ? "support-row-updated"
                                   : ""

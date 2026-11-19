@@ -128,10 +128,12 @@ const IssueMembership = ({
               autoComplete="off"
             >
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("membership.issueMembership.sections.basicInfoBlock")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("membership.issueMembership.sections.basicInfoBlock")}
+                    </h4>
+                  </div>
                   {getMemberDataLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                       <div className="w-full flex flex-col gap-[10px]">
@@ -233,10 +235,12 @@ const IssueMembership = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("membership.issueMembership.sections.admissionBlock")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("membership.issueMembership.sections.admissionBlock")}
+                    </h4>
+                  </div>
                   {getMemberDataLoading ? (
                     <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-3 ">
                       {Array.from({ length: 8 }).map((_, index) => (
@@ -352,10 +356,12 @@ const IssueMembership = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("membership.issueMembership.sections.nomineeBlock")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("membership.issueMembership.sections.nomineeBlock")}
+                    </h4>
+                  </div>
                   {getMemberDataLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                       {Array.from({ length: 4 }).map((_, index) => (
@@ -407,10 +413,12 @@ const IssueMembership = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("membership.issueMembership.sections.transanctionBlock")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("membership.issueMembership.sections.transanctionBlock")}
+                    </h4>
+                  </div>
                   {getMemberDataLoading ? (
                     <div className="w-full border border-primary rounded-md p-2 sm:p-5 mb-5 flex flex-col gap-3">
                       <Skeleton className=" h-10 w-full lg:w-[500px] bg-secondary " />

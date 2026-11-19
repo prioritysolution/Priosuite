@@ -188,7 +188,7 @@ const MembershipReport = ({
             <div className="w-full flex flex-col border border-primary rounded-lg overflow-hidden">
               <div
                 className={cn(
-                  "flex items-center justify-between p-5 py-2  bg-primary/10",
+                  "flex items-center justify-between p-5 py-2 bg-[#d7e6f4]",
                   {
                     "border-b border-primary transition-all duration-300 ":
                       showReportForm,
@@ -196,10 +196,10 @@ const MembershipReport = ({
                 )}
               >
                 <div />
-                <h3 className="text-xl font-semibold ">{tEn("membership.report.title")}</h3>
+                <h3 className="text-base sm:text-lg font-bold text-[#00264d] tracking-wide">{tEn("membership.report.title")}</h3>
                 <div
                   onClick={() => setShowReportForm((prev) => !prev)}
-                  className="text-primary text-xl cursor-pointer"
+                  className="text-[#00264d] text-xl cursor-pointer hover:opacity-80 transition-opacity"
                 >
                   {showReportForm ? <FiEyeOff /> : <FiEye />}
                 </div>

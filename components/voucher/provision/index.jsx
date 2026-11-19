@@ -3,16 +3,9 @@
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
+import InputField from "@/common/formFields/InputField";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
@@ -32,99 +25,74 @@ const Provision = ({
     (state) => state?.voucherEntry?.ledgerList
   );
 
+  const provisionTypeOptions = [
+    { Id: "C", Option_Value: "Cr" },
+    { Id: "D", Option_Value: "Dr" },
+  ];
+
   return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
-      <div className=" flex border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="w-full text-center text-2xl font-semibold">
+          {t("provision.provision")}
+        </h3>
+        <ScrollArea className="w-full h-full">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              className="w-full flex flex-col gap-10 justify-between"
+              className="w-full flex flex-col gap-4 justify-between"
               autoComplete="off"
             >
-              <div className="w-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                <h3 className="w-full text-center text-xl font-semibold">
-                  {t("provision.provision")}
-                </h3>
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("provision.provision")}
+                  </h3>
+                </div>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <DatePickerField
                     control={form.control}
                     name="date"
                     label={t("common.date")}
-                    // startYear={2000}
-                    // endYear={2050}
                     disabled
+                    isRequired={true}
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="ledger"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("common.ledger")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={ledgerListData || []}
-                        optionLabelKey="Ledger_Name" // Specify the key for label
-                        placeholder={t("provision.selectLedger")}
-                        searchPlaceholder={t("provision.searchLedger")}
-                      />
-                    )}
+                    label={t("common.ledger")}
+                    options={ledgerListData || []}
+                    optionLabelKey="Ledger_Name"
+                    placeholder={t("provision.selectLedger")}
+                    searchPlaceholder={t("provision.searchLedger")}
+                    isRequired={true}
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="provisionType"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("provision.provisionType")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={[
-                          { Id: "C", Label: "Cr" },
-                          { Id: "D", Label: "Dr" },
-                        ]}
-                        optionLabelKey="Label" // Specify the key for label
-                        placeholder={t("provision.selectProvisionType")}
-                        searchPlaceholder={t("provision.searchProvisionType")}
-                      />
-                    )}
+                    label={t("provision.provisionType")}
+                    options={provisionTypeOptions}
+                    placeholder={t("provision.selectProvisionType")}
+                    searchPlaceholder={t("provision.searchProvisionType")}
+                    isRequired={true}
                   />
 
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="percent"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("provision.provisionPercent")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("provision.enterProvisionPercent")}
-                            type="number"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("provision.provisionPercent")}
+                    placeholder={t("provision.enterProvisionPercent")}
+                    type="number"
                   />
 
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("provision.provisionAmount")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("provision.enterProvisionAmount")}
-                            type="number"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("provision.provisionAmount")}
+                    placeholder={t("provision.enterProvisionAmount")}
+                    type="number"
                   />
                 </div>
               </div>

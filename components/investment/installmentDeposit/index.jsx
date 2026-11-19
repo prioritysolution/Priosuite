@@ -86,21 +86,24 @@ const InstallmentDeposit = ({
   const endDate = getCookieData("fin_end_date");
 
   return (
-    <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">
-        {t("investment.installmentDeposit")}
-      </h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold text-center">
+          {t("investment.installmentDeposit")}
+        </h3>
 
-      <ScrollArea className="w-full h-full">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="w-full flex flex-col items-center pb-6"
-            autoComplete="off"
-          >
-            <div className="w-full  bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
-              {/* Main Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-end">
+        <ScrollArea className="w-full h-full">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="w-full flex flex-col items-center pb-6"
+              autoComplete="off"
+            >
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                
+
+                {/* Main Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-3 items-end">
                 {/* Account No */}
                 <div className="flex gap-3 items-end w-full">
                   <div className="flex-1">
@@ -216,10 +219,12 @@ const InstallmentDeposit = ({
 
               {/* Denominations table for Cash transactions */}
               {transMode === "cash" && isActiveDenom && (
-                <div className="w-full flex flex-col gap-5 p-4 md:p-6 rounded-xl border border-slate-200 bg-slate-50 mt-4">
-                  <h4 className="text-sm font-semibold text-slate-700">
-                    {t("investment.denominationDetails")}
-                  </h4>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 mt-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("investment.denominationDetails")}
+                    </h4>
+                  </div>
                   <CashDenomTable
                     notes={notes}
                     denominators={denominators}
@@ -237,7 +242,7 @@ const InstallmentDeposit = ({
               <div className="w-full flex justify-end mt-4">
                 <Button
                   type="submit"
-                  className="w-full md:w-fit px-10 h-10"
+                  className="w-full sm:w-1/5 self-end"
                   disabled={
                     loading ||
                     (transMode === "cash"
@@ -283,6 +288,7 @@ const InstallmentDeposit = ({
         ledgerTableData={ledgerTableData}
         loading={getLedgerLoading}
       />
+      </div>
     </div>
   );
 };

@@ -117,20 +117,20 @@ const PassbookPrint = ({
 
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
-      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-3 lg:p-5 w-full gap-4 overflow-hidden">
-        <h3 className="text-2xl font-semibold self-start">{t("deposit.passbookPrint.title")}</h3>
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold self-center">
+          {t("deposit.passbookPrint.title")}
+        </h3>
 
         <ScrollArea className="w-full h-full">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              className="w-full"
+              className="w-full flex flex-col gap-3 pb-4"
               autoComplete="off"
             >
-              {/* Single responsive row — wraps gracefully on small screens */}
-              <div className="flex flex-wrap items-end gap-3">
-                {/* Product selection */}
-                <div className="w-full sm:w-56 shrink-0">
+              <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 items-end">
                   <DropdownField
                     control={form.control}
                     name="productId"
@@ -140,73 +140,64 @@ const PassbookPrint = ({
                     optionValueKey="Id"
                     placeholder={t("deposit.placeholders.selectProduct")}
                   />
-                </div>
 
-                {/* Account search — widest field */}
-                <div className="w-full sm:w-56 shrink-0">
                   <AccountPassbookSearchForm
                     form={form}
                     handleSelectClick={handleSelectAccount}
                     dialougeOpen={dialougeOpen}
                     setDialougeOpen={setDialougeOpen}
                   />
-                </div>
 
-                {/* Print type toggle */}
-                <FormField
-                  control={form.control}
-                  name="printType"
-                  render={({ field }) => (
-                    <FormItem className="shrink-0">
-                      <FormLabel className="text-sm font-medium text-muted-foreground">
-                        Print Type
-                      </FormLabel>
-                      <FormControl>
-                        <div className="flex gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => field.onChange("1")}
-                            className={cn(
-                              "flex items-center gap-1.5 px-3.5 h-10 rounded-lg border text-[13px] font-medium transition-all duration-150 whitespace-nowrap",
-                              field.value === "1"
-                                ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                                : "bg-muted/50 text-muted-foreground border-border/60 hover:border-border hover:bg-muted/80",
-                            )}
-                          >
-                            {t("deposit.passbookPrint.frontPage")}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => field.onChange("2")}
-                            className={cn(
-                              "flex items-center gap-1.5 px-3.5 h-10 rounded-lg border text-[13px] font-medium transition-all duration-150 whitespace-nowrap",
-                              field.value === "2"
-                                ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                                : "bg-muted/50 text-muted-foreground border-border/60 hover:border-border hover:bg-muted/80",
-                            )}
-                          >
-                            {t("deposit.passbookPrint.transactionPage")}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="printType"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="text-sm font-medium">
+                          {t("deposit.passbookPrint.printType")}
+                        </FormLabel>
+                        <FormControl>
+                          <div className="flex gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => field.onChange("1")}
+                              className={cn(
+                                "flex items-center justify-center gap-1.5 px-3.5 h-10 rounded-md border text-[13px] font-medium transition-all duration-150 whitespace-nowrap flex-1",
+                                field.value === "1"
+                                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                                  : "bg-muted/50 text-muted-foreground border-border/60 hover:border-border hover:bg-muted/80",
+                              )}
+                            >
+                              {t("deposit.passbookPrint.frontPage")}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => field.onChange("2")}
+                              className={cn(
+                                "flex items-center justify-center gap-1.5 px-3.5 h-10 rounded-md border text-[13px] font-medium transition-all duration-150 whitespace-nowrap flex-1",
+                                field.value === "2"
+                                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                                  : "bg-muted/50 text-muted-foreground border-border/60 hover:border-border hover:bg-muted/80",
+                              )}
+                            >
+                              {t("deposit.passbookPrint.transactionPage")}
+                            </button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                {/* Conditional fields — only visible for transaction page */}
-                {isTransPage && (
-                  <>
-                    <div className="w-full sm:w-40 shrink-0">
+                  {isTransPage && (
+                    <>
                       <DatePickerField
                         control={form.control}
                         name="date"
                         label={t("deposit.fields.fromDateLower")}
                         disabledDateAfter={new Date()}
                       />
-                    </div>
 
-                    <div className="w-28 shrink-0">
                       <InputField
                         control={form.control}
                         name="line"
@@ -214,31 +205,28 @@ const PassbookPrint = ({
                         placeholder={t("deposit.placeholders.memberNo")}
                         type="number"
                       />
-                    </div>
-                  </>
-                )}
-
-                {/* Submit button — pinned to the end of the row */}
-                <div className="shrink-0 w-full sm:w-auto sm:ml-auto">
-                  <Button
-                    type="submit"
-                    className="w-full sm:w-28 h-10 text-[13px] font-medium gap-2"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <ClipLoader
-                        color="currentColor"
-                        size={14}
-                        speedMultiplier={0.7}
-                      />
-                    ) : (
-                      <>
-                        Next
-                        <ArrowRight size={14} />
-                      </>
-                    )}
-                  </Button>
+                    </>
+                  )}
                 </div>
+
+                <Button
+                  type="submit"
+                  className="w-full sm:w-1/5 self-end gap-2"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ClipLoader
+                      color="#d7e6f4"
+                      size={20}
+                      speedMultiplier={0.7}
+                    />
+                  ) : (
+                    <>
+                      {t("common.next")}
+                      <ArrowRight size={14} />
+                    </>
+                  )}
+                </Button>
               </div>
             </form>
           </Form>

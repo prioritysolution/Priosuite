@@ -6,13 +6,15 @@ const BrandMark = ({
   compact = false,
   className = "",
   hideSubtitle = false,
+  animated = false,
 }) => (
   <div className={`flex items-center gap-2 sm:gap-2.5 ${className}`}>
     <Image
-      src="/pristlogo.png"
+      src={animated ? "/PrioSuite_Animated_Logo.gif" : "/pristlogo.png"}
       alt="PrioSuite"
       width={compact ? 56 : 68}
       height={compact ? 56 : 68}
+      unoptimized={animated}
       className={
         compact
           ? "h-12 w-12 object-contain sm:h-14 sm:w-14"

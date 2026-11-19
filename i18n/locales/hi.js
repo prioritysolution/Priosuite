@@ -404,6 +404,7 @@ const hi = {
       yes: "हाँ",
       no: "नहीं",
       na: "लागू नहीं",
+      view: "देखें",
     },
 
     master: {
@@ -862,6 +863,7 @@ const hi = {
         sections: {
           permanentAddress: "स्थायी पता",
           presentAddress: "वर्तमान पता",
+          kycDetails: "केवाईसी विवरण",
         },
         sameAsPermanent: "स्थायी पते के समान",
         fields: {
@@ -1726,6 +1728,11 @@ const hi = {
         signature: "हस्ताक्षर",
         uploadPhoto: "फोटो अपलोड करें",
         uploadSignature: "हस्ताक्षर अपलोड करें",
+        dropImageHere: "अपनी छवि यहाँ छोड़ें, या",
+        browse: "ब्राउज़ करें",
+        supportsFormats: "समर्थित: JPG, JPEG2000, PNG",
+        changeImage: "छवि बदलें",
+        removeImage: "हटाएँ",
       },
 
       withdrawn: {
@@ -1846,6 +1853,7 @@ const hi = {
         clearSearch: "Clear search",
         noRecordsFound: "No records found",
         noResults: "कोई परिणाम नहीं।",
+        noPreviewData: "पूर्वावलोकन डेटा उपलब्ध नहीं है",
         selectTransanctionMode: "लेनदेन मोड चुनें",
         searchAccount: "खाता खोजें",
         totalCharges: "कुल शुल्क",

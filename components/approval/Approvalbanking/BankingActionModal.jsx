@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { Ban, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Ban, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import Spinner from "@/common/loader/Spinner";
 import { useTranslation } from "react-i18next";
@@ -233,11 +233,11 @@ const BankingActionModal = ({
     }
 
     return (
-      <div className="flex flex-col gap-1.5 w-full">
-        <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+      <div className="flex flex-col gap-1 w-full">
+        <Label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
           {label}
         </Label>
-        <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-900 h-10 flex items-center overflow-hidden font-medium">
+        <div className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-md text-sm text-slate-900 h-10 flex items-center overflow-hidden font-medium shadow-none">
           {displayValue !== null &&
           displayValue !== undefined &&
           displayValue !== ""
@@ -260,7 +260,10 @@ const BankingActionModal = ({
           }
         }}
       >
-        <DialogContent className="w-[calc(100vw-1rem)] max-w-[90vw] lg:max-w-4xl h-auto max-h-[85dvh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
+        <DialogContent
+          hideClose
+          className="w-[calc(100vw-1rem)] max-w-[90vw] lg:max-w-4xl h-auto max-h-[85dvh] flex flex-col p-0 overflow-hidden border-none shadow-2xl"
+        >
           <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-2xl font-bold text-gray-800 tracking-tight">
@@ -279,30 +282,41 @@ const BankingActionModal = ({
               </div>
             </div>
 
-            {isNewAccount && (
-              <div className="flex items-center gap-3">
-                {!isEditMode ? (
-                  <Button
-                    variant="outline"
-                    className="border-primary text-primary hover:bg-primary hover:text-white transition-all h-9 mt-6 mr-5"
-                    onClick={() => setIsEditMode(true)}
-                  >
-                    {t("bankingApproval.editDetails")}
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline"
-                    className="border-red-400 mt-4 mr-3 text-red-500 hover:bg-red-50 h-9"
-                    onClick={() => {
-                      setIsEditMode(false);
-                      reset();
-                    }}
-                  >
-                    {t("bankingApproval.cancelEdit")}
-                  </Button>
-                )}
-              </div>
-            )}
+            <div className="flex items-center gap-3">
+              {isNewAccount && (
+                <>
+                  {!isEditMode ? (
+                    <Button
+                      variant="outline"
+                      className="border-primary text-primary hover:bg-primary hover:text-white transition-all h-9"
+                      onClick={() => setIsEditMode(true)}
+                    >
+                      {t("bankingApproval.editDetails")}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      className="border-red-400 text-red-500 hover:bg-red-50 h-9"
+                      onClick={() => {
+                        setIsEditMode(false);
+                        reset();
+                      }}
+                    >
+                      {t("bankingApproval.cancelEdit")}
+                    </Button>
+                  )}
+                </>
+              )}
+
+              <Button
+                variant="outline"
+                className="border-gray-300 text-gray-500 hover:bg-gray-100 h-9"
+                onClick={() => setOpen(false)}
+                disabled={loading}
+              >
+                <XCircle className="w-4 h-4 mr-2" /> {t("common.buttons.close")}
+              </Button>
+            </div>
           </DialogHeader>
 
           <ScrollArea className="flex-1 bg-gray-50/50 p-6">
@@ -311,7 +325,13 @@ const BankingActionModal = ({
                 <Spinner />
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 p-6 rounded-2xl border border-gray-200 bg-white shadow-sm">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white shadow-sm">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("bankingApproval.bankingApprovalPortal")}
+                  </h4>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
                 {isNewAccount ? (
                   <>
                     {renderField(
@@ -402,6 +422,7 @@ const BankingActionModal = ({
                     {renderField(t("bankingApproval.amount"), "amount", selectedApplication.Amount)}
                   </>
                 )}
+                </div>
               </div>
             )}
           </ScrollArea>

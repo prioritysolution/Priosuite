@@ -11,9 +11,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormField,
 } from "@/components/ui/form";
-
-import { FormField } from "@/components/ui/form";
+import { premiumFieldTrigger } from "./fieldStyles";
 
 const KYCDropdownFieldInner = ({
   label,
@@ -25,20 +25,12 @@ const KYCDropdownFieldInner = ({
   labeldisable = false,
   isRequired = false,
 }) => {
-  // Debug: Log incoming props
-
-  // Get the item key as string
   const getKey = (item) => String(item?.Id ?? item?.id ?? item?.value ?? "");
-
-  // Debug: Log first few options to see structure
-  if (options.length > 0) {
-    console.log(`First few options for ${label}:`, options.slice(0, 3));
-  }
 
   return (
     <FormItem className="w-full flex-1">
       {!labeldisable && (
-        <FormLabel>
+        <FormLabel className="text-sm font-medium text-foreground">
           {label}
           {"  "}
           {isRequired && <span className="text-red-500 ml-1">*</span>}
@@ -61,7 +53,12 @@ const KYCDropdownFieldInner = ({
         disabled={disabled}
       >
         <FormControl>
-          <SelectTrigger className="h-10 w-full">
+          <SelectTrigger
+            className={premiumFieldTrigger({
+              disabled,
+              className: "h-10 w-full justify-between",
+            })}
+          >
             <SelectValue placeholder={`Select ${label?.toLowerCase()}`} />
           </SelectTrigger>
         </FormControl>
@@ -86,7 +83,7 @@ const KYCDropdownField = (props) => {
       <FormField
         control={props.control}
         name={props.name}
-        render={({ field, fieldState }) => (
+        render={({ field }) => (
           <KYCDropdownFieldInner
             {...props}
             value={field.value}

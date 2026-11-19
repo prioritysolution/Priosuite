@@ -43,8 +43,8 @@ const DepositAgent = ({
   );
 
   return (
-    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
         <div className="w-full">
           <MemberSearchForm
             handleSubmit={handleMemberFormSubmit}
@@ -62,10 +62,12 @@ const DepositAgent = ({
               autoComplete="off"
             >
               {visibleBlock && (
-                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3">
-                  <h3 className="w-full text-center text-lg sm:text-xl font-semibold">
-                    {t("membership.issueMembership.sections.basicInfoBlock")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("membership.issueMembership.sections.basicInfoBlock")}
+                    </h4>
+                  </div>
                   {getMemberDataLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                       {Array.from({ length: 6 }).map((_, index) => (
@@ -143,11 +145,13 @@ const DepositAgent = ({
               )}
 
               {visibleBlock && (
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                <h3 className="w-full text-center text-lg sm:text-xl font-semibold">
-                  {t("master.depositAgent.sections.agentDetails")}
-                </h3>
-                <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("master.depositAgent.sections.agentDetails")}
+                    </h4>
+                  </div>
+                  <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                   <InputField
                     control={form.control}
                     name="email"

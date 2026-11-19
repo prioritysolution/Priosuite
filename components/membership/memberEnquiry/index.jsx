@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useTranslation } from "react-i18next";
@@ -22,12 +20,15 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import InputField from "@/common/formFields/InputField";
 import TextareaField from "@/common/formFields/TextareaField";
+import {
+  premiumFieldTrigger,
+  premiumTabsList,
+  premiumTabsTrigger,
+} from "@/common/formFields/fieldStyles";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -163,63 +164,50 @@ const MemberEnquiry = ({
                 />
 
                 <Dialog open={dialougeOpen} onOpenChange={setDialougeOpen}>
-                  <FormField
-                    control={form.control}
-                    name="cifNo"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col items-start justify-center sm:col-span-2 xl:col-span-1">
-                        <div className="w-full sm:w-[200px]">
-                          <FormLabel>{t("membership.memberEnquiry.fields.cifNo")}</FormLabel>
-                        </div>
-                        <FormControl>
-                          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-x-10 w-full">
-                            <div className="w-full h-full flex items-end gap-2">
-                              <div className="w-full relative">
-                                <Input
-                                  placeholder={t("membership.memberEnquiry.placeholders.cifNo")}
-                                  className="w-full"
-                                  type="number"
-                                  onInput={(e) => {
-                                    if (e.target.value.length > 10) {
-                                      e.target.value = e.target.value.slice(
-                                        0,
-                                        10,
-                                      );
-                                    }
-                                  }}
-                                  {...field}
-                                />
-                                <div className="absolute right-0 top-0 py-3 px-3">
-                                  <DialogTrigger
-                                    asChild
-                                    className="cursor-pointer text-lg"
-                                  >
-                                    <IoSearch />
-                                  </DialogTrigger>
-                                </div>
-                              </div>
-                              <Button
-                                onClick={form.handleSubmit(handleSubmit)}
-                                className="px-4 sm:px-5 shrink-0"
-                                disabled={loading}
-                              >
-                                {loading ? (
-                                  <ClipLoader
-                                    color="#d7e6f4"
-                                    size={20}
-                                    speedMultiplier={0.7}
-                                  />
-                                ) : (
-                                  t("memberSearch.next")
-                                )}
-                              </Button>
-                            </div>
-                            <FormMessage />
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 w-full sm:col-span-2 xl:col-span-1">
+                    <InputField
+                      control={form.control}
+                      name="cifNo"
+                      label={t("membership.memberEnquiry.fields.cifNo")}
+                      placeholder={t(
+                        "membership.memberEnquiry.placeholders.cifNo",
+                      )}
+                      type="number"
+                      maxLength={10}
+                      onInput={(e) => {
+                        if (e.target.value.length > 10) {
+                          e.target.value = e.target.value.slice(0, 10);
+                        }
+                      }}
+                      formItemClassName="w-full min-w-0"
+                      endContent={
+                        <DialogTrigger
+                          asChild
+                          className="cursor-pointer text-lg text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          <span>
+                            <IoSearch />
+                          </span>
+                        </DialogTrigger>
+                      }
+                    />
+                    <Button
+                      type="button"
+                      onClick={form.handleSubmit(handleSubmit)}
+                      className="px-4 sm:px-5 h-10 shrink-0"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <ClipLoader
+                          color="#d7e6f4"
+                          size={20}
+                          speedMultiplier={0.7}
+                        />
+                      ) : (
+                        t("memberSearch.next")
+                      )}
+                    </Button>
+                  </div>
 
                   <DialogContent className="w-[calc(100vw-1rem)] max-w-[825px] h-[min(90dvh,640px)] sm:h-auto sm:max-h-[85vh] p-3 sm:p-6 gap-3 overflow-hidden flex flex-col rounded-lg">
                     <DialogHeader className="shrink-0 pr-8 text-left">
@@ -280,10 +268,12 @@ const MemberEnquiry = ({
               </div>
 
               {/* {t("membership.memberEnquiry.sections.personalDetails")} Section */}
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 py-3 gap-2">
-                <h3 className="w-full text-center text-lg sm:text-xl font-semibold">
-                  {t("membership.memberEnquiry.sections.personalDetails")}
-                </h3>
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("membership.memberEnquiry.sections.personalDetails")}
+                  </h4>
+                </div>
                 {loading ? (
                   <div className="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 lg:gap-x-10 gap-y-3">
                     {Array.from({ length: 4 }).map((_, i) => (
@@ -345,13 +335,13 @@ const MemberEnquiry = ({
 
               {/* show table section */}
               {(hasMembership || hasDeposit || hasLoan) && (
-                <div className="w-full border border-primary rounded-lg p-3 sm:p-5 py-3 flex flex-col gap-3">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
                   <Tabs defaultValue={defaultTab} className="w-full">
-                    <TabsList className="w-full h-auto flex flex-wrap gap-1 bg-muted/60 p-1 rounded-lg">
+                    <TabsList className="h-auto w-fit shrink-0 flex-wrap justify-start gap-1 rounded-lg bg-muted/60 p-1">
                       {hasMembership && (
                         <TabsTrigger
                           value="membership"
-                          className="flex-1 min-w-[100px] text-xs sm:text-sm data-[state=active]:shadow-sm transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white"
+                          className="min-w-[120px] px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 data-[state=active]:bg-[#00264d] data-[state=active]:text-white data-[state=active]:shadow-sm rounded-md"
                         >
                           {t("membership.memberEnquiry.tabs.membership")}
                         </TabsTrigger>
@@ -359,7 +349,7 @@ const MemberEnquiry = ({
                       {hasDeposit && (
                         <TabsTrigger
                           value="deposit"
-                          className="flex-1 min-w-[100px] text-xs sm:text-sm data-[state=active]:shadow-sm transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white"
+                          className="min-w-[120px] px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 data-[state=active]:bg-[#00264d] data-[state=active]:text-white data-[state=active]:shadow-sm rounded-md"
                         >
                           {t("membership.memberEnquiry.tabs.deposit")}
                         </TabsTrigger>
@@ -367,7 +357,7 @@ const MemberEnquiry = ({
                       {hasLoan && (
                         <TabsTrigger
                           value="loan"
-                          className="flex-1 min-w-[100px] text-xs sm:text-sm data-[state=active]:shadow-sm transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-white"
+                          className="min-w-[120px] px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 data-[state=active]:bg-[#00264d] data-[state=active]:text-white data-[state=active]:shadow-sm rounded-md"
                         >
                           {t("membership.memberEnquiry.tabs.loan")}
                         </TabsTrigger>
@@ -452,7 +442,11 @@ const MemberEnquiry = ({
                                   value={field.value}
                                 >
                                   <FormControl>
-                                    <SelectTrigger className="w-[140px] sm:w-[160px]">
+                                    <SelectTrigger
+                                      className={premiumFieldTrigger({
+                                        className: "w-[140px] sm:w-[160px]",
+                                      })}
+                                    >
                                       <SelectValue placeholder={t("membership.memberEnquiry.placeholders.type")} />
                                     </SelectTrigger>
                                   </FormControl>
@@ -577,7 +571,11 @@ const MemberEnquiry = ({
                                   value={field.value}
                                 >
                                   <FormControl>
-                                    <SelectTrigger className="w-[140px] sm:w-[160px]">
+                                    <SelectTrigger
+                                      className={premiumFieldTrigger({
+                                        className: "w-[140px] sm:w-[160px]",
+                                      })}
+                                    >
                                       <SelectValue placeholder={t("membership.memberEnquiry.placeholders.type")} />
                                     </SelectTrigger>
                                   </FormControl>

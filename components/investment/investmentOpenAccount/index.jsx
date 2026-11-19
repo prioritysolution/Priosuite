@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
-import { Input } from "@/components/ui/input";
+import { premiumRadioGroup } from "@/common/formFields/fieldStyles";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -86,21 +86,23 @@ const InvestmentOpenAccount = ({
   );
 
   return (
-    <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">
-        {t("investment.openInvestmentAccount")}
-      </h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold text-center">
+          {t("investment.openInvestmentAccount")}
+        </h3>
 
-      <ScrollArea className="w-full h-full">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="w-full flex flex-col items-center pb-6"
-            autoComplete="off"
-          >
-            <div className="w-full  bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
-              {/* Main Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ScrollArea className="w-full h-full">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="w-full flex flex-col items-center pb-6"
+              autoComplete="off"
+            >
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+               
+                {/* Main Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-3">
                 <DropdownField
                   control={form.control}
                   name="investmentType"
@@ -218,43 +220,34 @@ const InvestmentOpenAccount = ({
                   displayValue={form.watch("matureDate") || ""}
                 />
 
-                <FormField
+                <InputField
                   control={form.control}
                   name="matureAmount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {t("investment.matureAmount")}{" "}
-                        <span className="text-red-500">*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <div className="flex items-center gap-3">
-                          <Input
-                            placeholder={t("investment.enterMatureAmount")}
-                            type="number"
-                            {...field}
-                            className="h-10"
-                          />
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div
-                                  onClick={handleCalculateMatureAmount}
-                                  className="p-2.5 text-xl bg-primary rounded-lg text-white cursor-pointer h-10 flex items-center justify-center transition-colors hover:brightness-95"
-                                >
-                                  <IoCalculator />
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{t("investment.calculateMatureAmount")}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label={t("investment.matureAmount")}
+                  placeholder={t("investment.enterMatureAmount")}
+                  type="number"
+                  isRequired
+                  endContent={
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={handleCalculateMatureAmount}
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary text-white text-lg cursor-pointer transition-colors hover:brightness-95"
+                            aria-label={t(
+                              "investment.calculateMatureAmount",
+                            )}
+                          >
+                            <IoCalculator />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{t("investment.calculateMatureAmount")}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  }
                 />
 
                 <DropdownField
@@ -281,17 +274,14 @@ const InvestmentOpenAccount = ({
               </div>
             </div>
 
-            <div className="w-full bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm mt-6">
-              <div className="border-b border-slate-100 pb-4">
-                <h4 className="text-lg font-semibold text-slate-700">
+            <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 mt-6">
+              <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
                   {t("investment.voucherDetails")}
                 </h4>
-                <p className="text-xs text-slate-500">
-                  {t("investment.voucherDetailsDescription")}
-                </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-3">
                 <InputField
                   control={form.control}
                   name="particulars"
@@ -320,7 +310,9 @@ const InvestmentOpenAccount = ({
                         <RadioGroup
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          className="flex gap-x-6 h-10 items-center border border-input rounded-lg px-3 bg-slate-50"
+                          className={premiumRadioGroup(
+                            "gap-x-6 h-10 !py-0",
+                          )}
                         >
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
@@ -349,10 +341,12 @@ const InvestmentOpenAccount = ({
               {/* Conditional Bank Dropdown or Cash Denomination Table */}
               {transMode === "cash" ? (
                 isActiveDenom && (
-                  <div className="w-full border border-slate-100 rounded-xl p-4 bg-slate-50/50 mt-2">
-                    <h5 className="text-sm font-semibold text-slate-700 mb-3">
-                      {t("investment.cashDenomination")}
-                    </h5>
+                  <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 mt-2">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h5 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("investment.cashDenomination")}
+                      </h5>
+                    </div>
                     <CashDenomTable
                       notes={notes}
                       denominators={denominators}
@@ -384,7 +378,7 @@ const InvestmentOpenAccount = ({
               <div className="flex justify-end mt-4">
                 <Button
                   type="submit"
-                  className="w-full sm:w-40 h-10 font-semibold"
+                  className="w-full sm:w-1/5 self-end"
                   disabled={
                     loading ||
                     (transMode === "cash"
@@ -415,6 +409,7 @@ const InvestmentOpenAccount = ({
         showSuccessMessage={showSuccessMessage}
         handleCloseSuccessMessage={handleCloseSuccessMessage}
       />
+      </div>
     </div>
   );
 };

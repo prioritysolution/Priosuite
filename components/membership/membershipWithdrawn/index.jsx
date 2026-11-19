@@ -150,17 +150,17 @@ const MembershipWithdrawn = ({
               autoComplete="off"
             >
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <div className="grid grid-cols-3">
-                    <div />
-                    <h3 className="w-full text-center text-xl font-semibold">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3 flex justify-between items-center">
+                    <div className="w-8" />
+                    <h4 className="text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide flex-grow">
                       {t("membership.withdrawn.sections.basicInfoBlock")}
-                    </h3>
-                    <div className=" w-full flex items-center justify-end">
+                    </h4>
+                    <div className="flex items-center justify-end">
                       <button
                         type="button"
                         onClick={() => setShowBasicInfo(!showBasicInfo)}
-                        className="text-primary hover:opacity-80 transition-opacity text-2xl"
+                        className="text-[#00264d] hover:opacity-80 transition-opacity text-2xl"
                       >
                         {showBasicInfo ? <IoEye /> : <IoEyeOff />}
                       </button>
@@ -260,10 +260,12 @@ const MembershipWithdrawn = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("membership.withdrawn.sections.nomineeBlock")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("membership.withdrawn.sections.nomineeBlock")}
+                    </h4>
+                  </div>
                   {getMemberDataLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                       {Array.from({ length: 3 }).map((_, index) => (
@@ -308,10 +310,12 @@ const MembershipWithdrawn = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("membership.withdrawn.sections.withdrawDetailsBlock")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("membership.withdrawn.sections.withdrawDetailsBlock")}
+                    </h4>
+                  </div>
                   {getMemberDataLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                       {Array.from({ length: 3 }).map((_, index) => (
@@ -370,10 +374,12 @@ const MembershipWithdrawn = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("membership.withdrawn.sections.transanctionBlock")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("membership.withdrawn.sections.transanctionBlock")}
+                    </h4>
+                  </div>
                   {getMemberDataLoading ? (
                     <div className="w-full border border-primary rounded-md p-2 sm:p-5 mb-5 flex flex-col gap-3">
                       <Skeleton className=" h-10 w-full lg:w-[500px] bg-secondary " />
@@ -507,10 +513,12 @@ const MembershipWithdrawn = ({
                         formLabel={t("membership.withdrawn.sections.transferMember")}
                       />
                       {transferMember ? (
-                        <div className="w-full border border-primary rounded-lg p-3 sm:p-5 flex flex-col gap-3">
-                          <h3 className="text-center text-lg sm:text-xl font-semibold">
-                            {t("membership.withdrawn.sections.transferMember")}
-                          </h3>
+                        <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                          <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                            <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                              {t("membership.withdrawn.sections.transferMember")}
+                            </h4>
+                          </div>
                           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                             <InputField
                               control={form.control}
@@ -567,10 +575,12 @@ const MembershipWithdrawn = ({
                         </div>
                       ) : null}
                       {transferList.length > 0 ? (
-                        <div className="w-full border border-primary rounded-lg p-3 sm:p-5 flex flex-col gap-3">
-                          <h3 className="text-center text-lg sm:text-xl font-semibold">
-                            {t("membership.withdrawn.sections.transferList")}
-                          </h3>
+                        <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                          <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                            <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                              {t("membership.withdrawn.sections.transferList")}
+                            </h4>
+                          </div>
                           <Table className="border border-primary">
                             <TableHeader>
                               <TableRow>

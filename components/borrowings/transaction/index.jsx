@@ -1,6 +1,7 @@
 "use client";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
+import RadioField from "@/common/formFields/RadioField";
 import DropdownField from "@/common/formFields/DropdownField";
 import BorrowingLedger from "@/common/ledger/borrowingsLedger/BorrowingLedger";
 import CashDenomTable from "@/common/tables/CashDenomTable";
@@ -125,43 +126,33 @@ const Transaction = ({
               className="w-full h-full flex flex-col gap-3 justify-between"
               autoComplete="off"
             >
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                {/* <h3 className="w-full text-center text-xl font-semibold">
-                  {t("borrowings.operationBlock")}
-                </h3> */}
-                <div className="w-full flex flex-col lg:flex-row gap-x-10 gap-y-3 ">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("borrowings.operationBlock", "Operation")}
+                  </h4>
+                </div>
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 lg:gap-x-10 gap-y-3 items-end">
                   <FormField
                     control={form.control}
                     name="mode"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col md:flex-row md:col-span-3 items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full mt-5 h-fit self-end">
-                        <FormLabel>{t("borrowings.selectMode")}</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 gap-x-5"
-                          >
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="disburse" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                {t("borrowings.disburse")}
-                              </FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="repayment" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                {t("borrowings.repayment")}
-                              </FormLabel>
-                            </FormItem>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                      <RadioField
+                        value={field.value}
+                        onChange={field.onChange}
+                        label={t("borrowings.selectMode")}
+                        options={[
+                          {
+                            value: "disburse",
+                            label: t("borrowings.disburse"),
+                          },
+                          {
+                            value: "repayment",
+                            label: t("borrowings.repayment"),
+                          },
+                        ]}
+                        className="mt-0"
+                      />
                     )}
                   />
 
@@ -169,32 +160,31 @@ const Transaction = ({
                     control={form.control}
                     name="account"
                     render={({ field }) => (
-                      <div className="flex items-start gap-5 w-full ">
-                        <DropdownField
-                          label={t("common.account")}
-                          value={field.value}
-                          onChange={field.onChange}
-                          options={accountData}
-                          optionLabelKey="Account_No"
-                          placeholder={t("borrowings.selectAccount")}
-                          searchPlaceholder={t("borrowings.searchAccount")}
-                          isRequired
-                        />
+                      <div className="flex items-end gap-2 w-full min-w-0">
+                        <div className="flex-1 min-w-0">
+                          <DropdownField
+                            label={t("common.account")}
+                            value={field.value}
+                            onChange={field.onChange}
+                            options={accountData}
+                            optionLabelKey="Account_No"
+                            placeholder={t("borrowings.selectAccount")}
+                            searchPlaceholder={t("borrowings.searchAccount")}
+                            isRequired
+                          />
+                        </div>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <div
+                              <Button
+                                type="button"
+                                size="icon"
                                 onClick={handleShowLedger}
-                                className={cn(
-                                  "p-2 px-5 text-2xl bg-primary rounded-md text-white cursor-pointer mt-8",
-                                  {
-                                    "bg-gray-500 cursor-not-allowed":
-                                      !form.getValues("account"),
-                                  },
-                                )}
+                                disabled={!form.getValues("account")}
+                                className="h-10 w-10 shrink-0 rounded-md"
                               >
-                                <IoPrint />
-                              </div>
+                                <IoPrint className="w-4 h-4" />
+                              </Button>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>{t("common.viewLedger")}</p>
@@ -207,15 +197,15 @@ const Transaction = ({
                 </div>
               </div>
               {/* info block */}
-
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                <div className="flex justify-between items-center w-full">
-                  <h3 className="text-xl font-semibold w-full text-center pl-6">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="flex justify-between items-center w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <div className="w-6" />
+                  <h3 className="text-base sm:text-lg font-bold text-[#00264d] tracking-wide text-center">
                     {t("borrowings.accountInfoBlock")}
                   </h3>
                   <div
                     onClick={() => setShowInfoBlock(!showInfoBlock)}
-                    className="cursor-pointer text-2xl text-primary hover:text-primary/80 transition-colors"
+                    className="cursor-pointer text-xl text-[#00264d] hover:opacity-80 transition-opacity"
                   >
                     {showInfoBlock ? <FaEye /> : <FaEyeSlash />}
                   </div>
@@ -282,12 +272,14 @@ const Transaction = ({
                 )}
               </div>
 
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                <h3 className="w-full text-center text-xl font-semibold">
-                  {mode === "disburse"
-                    ? `${t("borrowings.disburse")} ${t("borrowings.block")}`
-                    : `${t("borrowings.repayment")} ${t("borrowings.block")}`}
-                </h3>
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {mode === "disburse"
+                      ? `${t("borrowings.disburse")} ${t("borrowings.block")}`
+                      : `${t("borrowings.repayment")} ${t("borrowings.block")}`}
+                  </h3>
+                </div>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <DatePickerField
                     control={form.control}
@@ -394,7 +386,12 @@ const Transaction = ({
                 </div>
                 {mode !== "disburse" && transMode === "cash" ? (
                   isActiveDenom ? (
-                    <div className="w-full h-full flex flex-col md:col-span-2 gap-5 p-2 md:p-5 rounded-md border border-primary">
+                    <div className="w-full flex flex-col md:col-span-2 border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                      <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                        <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                          {t("common.cashDenomination") || "Cash Denomination"}
+                        </h4>
+                      </div>
                       <CashDenomTable
                         notes={notes}
                         denominators={denominators}

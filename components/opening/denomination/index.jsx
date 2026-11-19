@@ -5,7 +5,7 @@ import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import CashDenomTable from "@/common/tables/CashDenomTable";
 import { Button } from "@/components/ui/button";
-import { Form, FormField } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -39,7 +39,7 @@ const Denomination = ({
               className="w-full h-full flex flex-col gap-5 justify-between"
               autoComplete="off"
             >
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                   <DatePickerField
                     control={form.control}
@@ -48,29 +48,26 @@ const Denomination = ({
                     disabled
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="branchId"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("opening.denomination.fields.branch")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={branchData}
-                        optionLabelKey="Branch_Name"
-                        placeholder={t("opening.denomination.placeholders.branch")}
-                        searchPlaceholder={t("opening.denomination.placeholders.searchBranch"
-                        )}
-                        isRequired
-                      />
+                    label={t("opening.denomination.fields.branch")}
+                    options={branchData}
+                    optionLabelKey="Branch_Name"
+                    placeholder={t("opening.denomination.placeholders.branch")}
+                    searchPlaceholder={t(
+                      "opening.denomination.placeholders.searchBranch",
                     )}
+                    isRequired
                   />
                 </div>
 
-                <div className="w-full p-3 border border-input rounded-md">
-                  <h3 className="text-center font-semibold text-xl mb-5">
-                    {t("opening.denomination.table.title")}
-                  </h3>
+                <div className="w-full flex flex-col p-3 border border-input rounded-md gap-3">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("opening.denomination.table.title")}
+                    </h4>
+                  </div>
                   <CashDenomTable
                     notes={notes}
                     denominators={denominators}
@@ -85,16 +82,9 @@ const Denomination = ({
                 </div>
               </div>
 
-              <Button
-                type="submit"
-                className="w-full sm:w-1/5 self-end"
-              >
+              <Button type="submit" className="w-full sm:w-1/5 self-end">
                 {loading ? (
-                  <ClipLoader
-                    color="#d7e6f4"
-                    size={20}
-                    speedMultiplier={0.7}
-                  />
+                  <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
                   t("opening.denomination.buttons.add")
                 )}

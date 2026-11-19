@@ -45,33 +45,28 @@ const LoginPasswordPolicy = ({ form, handleSubmit, loading, saving }) => {
   });
 
   return (
-    <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg bg-[#f8fafc] p-1">
-      <div className="px-2 pb-3 pt-1 sm:px-3">
-        <h1 className="text-xl font-semibold text-slate-900">
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h1 className="text-2xl font-semibold text-center">
           {t("loginPasswordPolicy.title")}
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          {t("loginPasswordPolicy.subtitle")}
-        </p>
-      </div>
 
-      <ScrollArea className="h-full w-full">
-        <Form {...form}>
-          <form
-            autoComplete="off"
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col gap-4 px-2 pb-4 sm:px-3"
-          >
-            <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
-              <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-                <h2 className="text-base font-semibold text-slate-900">
-                  {t("loginPasswordPolicy.loginAttemptRules")}
-                </h2>
-                <p className="mb-4 mt-1 text-sm text-slate-500">
-                  {t("loginPasswordPolicy.loginAttemptRulesHint")}
-                </p>
+        <ScrollArea className="h-full w-full">
+          <Form {...form}>
+            <form
+              autoComplete="off"
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="flex flex-col gap-4 pb-4 w-full"
+            >
+              <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
+                <section className="flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h2 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("loginPasswordPolicy.loginAttemptRules")}
+                    </h2>
+                  </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <InputField
                     control={form.control}
                     name="max_attempts"
@@ -102,13 +97,12 @@ const LoginPasswordPolicy = ({ form, handleSubmit, loading, saving }) => {
                 </div>
               </section>
 
-              <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-                <h2 className="text-base font-semibold text-slate-900">
-                  {t("loginPasswordPolicy.passwordPolicy")}
-                </h2>
-                <p className="mb-4 mt-1 text-sm text-slate-500">
-                  {t("loginPasswordPolicy.passwordPolicyHint")}
-                </p>
+              <section className="flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h2 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("loginPasswordPolicy.passwordPolicy")}
+                  </h2>
+                </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <InputField
@@ -194,7 +188,7 @@ const LoginPasswordPolicy = ({ form, handleSubmit, loading, saving }) => {
             </div>
 
             <div className="flex justify-end">
-              <Button type="submit" disabled={loading || saving} className="gap-2">
+              <Button type="submit" disabled={loading || saving} className="w-full sm:w-1/5 self-end gap-2">
                 {saving ? (
                   <ClipLoader color="#d7e6f4" size={16} speedMultiplier={0.7} />
                 ) : (
@@ -206,6 +200,7 @@ const LoginPasswordPolicy = ({ form, handleSubmit, loading, saving }) => {
           </form>
         </Form>
       </ScrollArea>
+      </div>
 
       {loading ? (
         <div className="absolute inset-0 flex items-center justify-center bg-white/60">

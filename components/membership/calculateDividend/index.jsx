@@ -48,21 +48,23 @@ const CalculateDividend = ({
   });
 
   return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg">
-      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 w-full gap-2 sm:px-10 2xl:px-10">
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
         <h3 className="text-2xl font-semibold">{t("membership.calculateDividend.title")}</h3>
 
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="w-full flex flex-col gap-2 justify-between h-full overflow-hidden"
+            className="w-full flex flex-col gap-3 justify-between h-full overflow-hidden"
             autoComplete="off"
           >
             {/* ---------------- Account Info Block (Fixed) ---------------- */}
-            <div className="w-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2 flex-none">
-              <h3 className="w-full text-center text-xl font-semibold">
-                {t("membership.calculateDividend.sections.accountInfoBlock")}
-              </h3>
+            <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 flex-none">
+              <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                  {t("membership.calculateDividend.sections.accountInfoBlock")}
+                </h4>
+              </div>
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                 <DatePickerField
                   control={form.control}

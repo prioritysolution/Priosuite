@@ -404,6 +404,7 @@ const bn = {
       yes: "হ্যাঁ",
       no: "না",
       na: "প্রযোজ্য নয়",
+      view: "দেখুন",
     },
 
     master: {
@@ -862,6 +863,7 @@ const bn = {
         sections: {
           permanentAddress: "স্থায়ী ঠিকানা",
           presentAddress: "বর্তমান ঠিকানা",
+          kycDetails: "কেওয়াইসি বিবরণ",
         },
         sameAsPermanent: "স্থায়ী ঠিকানার মতোই",
         fields: {
@@ -1726,6 +1728,11 @@ const bn = {
         signature: "স্বাক্ষর",
         uploadPhoto: "ছবি আপলোড করুন",
         uploadSignature: "স্বাক্ষর আপলোড করুন",
+        dropImageHere: "আপনার ছবি এখানে ড্রপ করুন, অথবা",
+        browse: "ব্রাউজ করুন",
+        supportsFormats: "সমর্থিত: JPG, JPEG2000, PNG",
+        changeImage: "ছবি পরিবর্তন করুন",
+        removeImage: "সরান",
       },
 
       withdrawn: {
@@ -1847,6 +1854,7 @@ const bn = {
         clearSearch: "Clear search",
         noRecordsFound: "No records found",
         noResults: "কোনো ফলাফল নেই।",
+        noPreviewData: "প্রিভিউ ডেটা উপলব্ধ নেই",
         selectTransanctionMode: "লেনদেন মোড নির্বাচন করুন",
         searchAccount: "অ্যাকাউন্ট খুঁজুন",
         totalCharges: "মোট চার্জ",

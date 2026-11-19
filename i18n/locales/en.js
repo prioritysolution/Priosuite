@@ -404,6 +404,7 @@ const en = {
       yes: "Yes",
       no: "No",
       na: "N/A",
+      view: "View",
     },
 
     master: {
@@ -865,6 +866,7 @@ const en = {
         sections: {
           permanentAddress: "Permanent Address",
           presentAddress: "Present Address",
+          kycDetails: "KYC Details",
         },
         sameAsPermanent: "Same as Permanent Address",
         fields: {
@@ -1728,6 +1730,11 @@ const en = {
         signature: "Signature",
         uploadPhoto: "Upload photo",
         uploadSignature: "Upload signature",
+        dropImageHere: "Drop your image here, or",
+        browse: "browse",
+        supportsFormats: "Supports: JPG, JPEG2000, PNG",
+        changeImage: "Change image",
+        removeImage: "Remove",
       },
 
       withdrawn: {
@@ -1849,6 +1856,7 @@ const en = {
         clearSearch: "Clear search",
         noRecordsFound: "No records found",
         noResults: "No results.",
+        noPreviewData: "No preview data available",
         selectTransanctionMode: "Select transanction mode",
         searchAccount: "Search Account",
         totalCharges: "Total Charges",

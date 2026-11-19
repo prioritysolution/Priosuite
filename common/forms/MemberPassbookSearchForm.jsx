@@ -14,20 +14,14 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
+import InputField from "../formFields/InputField";
 import { IoSearch } from "react-icons/io5";
 import { useIssueMembership } from "@/container/membership/issueMembership/Hooks";
 import MemberSearchTable from "../tables/MemberSearchTable";
 import getCookieData from "@/utils/getCookieData";
 import { getMemberDataByName } from "@/container/membership/issueMembership/IssueMembershipReducer";
+import { premiumRadioGroup } from "../formFields/fieldStyles";
 
 const MemberPassbookSearchForm = ({
   form,
@@ -111,40 +105,29 @@ const MemberPassbookSearchForm = ({
 
   return (
     <Dialog open={dialougeOpen} onOpenChange={handleDialogueOpenChange}>
-      <FormField
+      <InputField
         control={form.control}
         name="memberNo"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-sm font-medium text-muted-foreground">
-              {t("memberSearch.cifRefNo")}
-            </FormLabel>
-            <FormControl>
-              <div className="relative w-full">
-                <Input
-                  placeholder={t("memberSearch.memberNoPlaceholder")}
-                  className="w-full pr-10 h-10 rounded-lg border-border focus-visible:ring-primary/30 transition-shadow"
-                  type="number"
-                  onInput={(e) => {
-                    if (e.target.value.length > 5) {
-                      e.target.value = e.target.value.slice(0, 5);
-                    }
-                  }}
-                  {...field}
-                />
-                <div className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors">
-                  <DialogTrigger asChild className="cursor-pointer text-lg">
-                    <span>
-                      <IoSearch />
-                    </span>
-                  </DialogTrigger>
-                </div>
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        label={t("memberSearch.cifRefNo")}
+        placeholder={t("memberSearch.memberNoPlaceholder")}
+        type="number"
+        onInput={(e) => {
+          if (e.target.value.length > 5) {
+            e.target.value = e.target.value.slice(0, 5);
+          }
+        }}
+        endContent={
+          <DialogTrigger
+            asChild
+            className="cursor-pointer text-lg text-muted-foreground hover:text-primary transition-colors"
+          >
+            <span>
+              <IoSearch />
+            </span>
+          </DialogTrigger>
+        }
       />
+
       <DialogContent className="w-[calc(100vw-1rem)] max-w-[1000px] h-[min(90dvh,640px)] sm:h-auto sm:max-h-[85vh] p-3 sm:p-6 gap-3 overflow-hidden flex flex-col rounded-lg">
         <DialogHeader className="shrink-0 pr-8 text-left">
           <DialogTitle className="text-base sm:text-lg">
@@ -156,7 +139,7 @@ const MemberPassbookSearchForm = ({
           defaultValue="1"
           value={selectedRadio}
           onValueChange={setSelectedRadio}
-          className="flex flex-wrap items-center gap-x-3 gap-y-2 shrink-0"
+          className={premiumRadioGroup()}
         >
           {RadioData.map((item, index) => (
             <div className="flex items-center gap-2 min-w-0" key={index}>
@@ -176,28 +159,18 @@ const MemberPassbookSearchForm = ({
 
         <div className="w-full min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
           <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4 shrink-0">
-            <FormField
+            <InputField
               control={form.control}
               name="dialougeMemberName"
-              render={({ field }) => (
-                <FormItem className="w-full min-w-0">
-                  <FormLabel>
-                    {RadioData.find(
-                      (item) => item.value === selectedRadio,
-                    )?.label || t("memberSearch.memberName")}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      autoComplete="off"
-                      placeholder={t("memberSearch.searchByMemberName")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={
+                RadioData.find((item) => item.value === selectedRadio)
+                  ?.label || t("memberSearch.memberName")
+              }
+              autoComplete="off"
+              placeholder={t("memberSearch.searchByMemberName")}
             />
             <Button
+              type="button"
               className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
               onClick={handleSearchMember}
             >
@@ -219,4 +192,5 @@ const MemberPassbookSearchForm = ({
     </Dialog>
   );
 };
+
 export default MemberPassbookSearchForm;

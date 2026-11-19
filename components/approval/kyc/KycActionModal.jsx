@@ -462,16 +462,16 @@ const KycActionModal = ({
       }
 
       return (
-        <div className="flex flex-col gap-1.5 min-w-0" key={name}>
-          <Label className="text-[11px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        <div className="flex flex-col gap-1 min-w-0" key={name}>
+          <Label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
             {label}
           </Label>
-          <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-900 min-h-10 flex items-center break-words font-medium">
+          <div className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-md text-sm text-slate-900 min-h-10 flex items-center break-words font-medium shadow-none">
             {displayValue !== null &&
             displayValue !== undefined &&
             displayValue !== ""
               ? displayValue
-              : t("common.notAvailable")}
+              : "N/A"}
           </div>
         </div>
       );
@@ -548,12 +548,25 @@ const KycActionModal = ({
           }
         }}
       >
-        <DialogContent className="w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] sm:max-w-[90vw] lg:max-w-7xl h-[min(96dvh,100%)] max-h-[96dvh] sm:h-[90vh] sm:max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden border-none shadow-2xl rounded-lg">
+        <DialogContent
+          hideClose
+          className="w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] sm:max-w-[90vw] lg:max-w-7xl h-[min(96dvh,100%)] max-h-[96dvh] sm:h-[90vh] sm:max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden border-none shadow-2xl rounded-lg"
+        >
           <DialogHeader className="shrink-0 border-b bg-white space-y-0 text-left p-0">
-            <div className="flex flex-col gap-2.5 w-full min-w-0 p-3 pr-10 sm:p-4 sm:pr-12 lg:p-5 lg:pr-14">
-              <DialogTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 tracking-tight leading-tight">
-                {t("kycApproval.kycApproval")}
-              </DialogTitle>
+            <div className="flex flex-col gap-2.5 w-full min-w-0 p-3 sm:p-4 lg:p-5">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 tracking-tight leading-tight">
+                  {t("kycApproval.kycApproval")}
+                </DialogTitle>
+                <Button
+                  variant="outline"
+                  className="border-gray-300 text-gray-500 hover:bg-gray-100 h-9"
+                  onClick={() => setOpen(false)}
+                  disabled={loading}
+                >
+                  <XCircle className="w-4 h-4 mr-2" /> {t("common.buttons.close")}
+                </Button>
+              </div>
 
               <div className="flex flex-col gap-2 min-w-0 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
                 <div className="min-w-0 space-y-1">
@@ -635,10 +648,12 @@ const KycActionModal = ({
                     {fieldsConfig.location &&
                       fieldsConfig.location.length > 0 && (
                         <>
-                          <div className="col-span-full border-t border-gray-100 my-1 sm:my-2 pt-3 sm:pt-4">
-                            <h4 className="text-xs sm:text-sm font-bold text-primary/80 uppercase tracking-tighter">
-                              {t("kycApproval.locationDetails")}
-                            </h4>
+                          <div className="col-span-full my-1 sm:my-2">
+                            <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                              <h4 className="w-full text-center text-xs sm:text-sm font-bold text-[#00264d] tracking-wide">
+                                {t("kycApproval.locationDetails")}
+                              </h4>
+                            </div>
                           </div>
                           {fieldsConfig.location.map((field) =>
                             renderSmartField(field),
@@ -649,10 +664,12 @@ const KycActionModal = ({
                     {fieldsConfig.permanentLocation &&
                       fieldsConfig.permanentLocation.length > 0 && (
                         <>
-                          <div className="col-span-full border-t border-gray-100 my-1 sm:my-2 pt-3 sm:pt-4">
-                            <h4 className="text-xs sm:text-sm font-bold text-primary/80 uppercase tracking-tighter">
-                              {t("kycApproval.permanentAddress")}
-                            </h4>
+                          <div className="col-span-full my-1 sm:my-2">
+                            <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                              <h4 className="w-full text-center text-xs sm:text-sm font-bold text-[#00264d] tracking-wide">
+                                {t("kycApproval.permanentAddress")}
+                              </h4>
+                            </div>
                           </div>
                           {fieldsConfig.permanentLocation.map((field) =>
                             renderSmartField(field),
@@ -663,10 +680,12 @@ const KycActionModal = ({
                     {fieldsConfig.presentLocation &&
                       fieldsConfig.presentLocation.length > 0 && (
                         <>
-                          <div className="col-span-full border-t border-gray-100 my-1 sm:my-2 pt-3 sm:pt-4">
-                            <h4 className="text-xs sm:text-sm font-bold text-primary/80 uppercase tracking-tighter">
-                              {t("kycApproval.presentAddress")}
-                            </h4>
+                          <div className="col-span-full my-1 sm:my-2">
+                            <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                              <h4 className="w-full text-center text-xs sm:text-sm font-bold text-[#00264d] tracking-wide">
+                                {t("kycApproval.presentAddress")}
+                              </h4>
+                            </div>
                           </div>
                           {fieldsConfig.presentLocation.map((field) =>
                             renderSmartField(field),
@@ -676,10 +695,12 @@ const KycActionModal = ({
 
                     {fieldsConfig.identity.length > 0 && (
                       <>
-                        <div className="col-span-full border-t border-gray-100 my-1 sm:my-2 pt-3 sm:pt-4">
-                          <h4 className="text-xs sm:text-sm font-bold text-primary/80 uppercase tracking-tighter">
-                            {t("kycApproval.identityDocuments")}
-                          </h4>
+                        <div className="col-span-full my-1 sm:my-2">
+                          <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                            <h4 className="w-full text-center text-xs sm:text-sm font-bold text-[#00264d] tracking-wide">
+                              {t("kycApproval.identityDocuments")}
+                            </h4>
+                          </div>
                         </div>
                         {fieldsConfig.identity.map((field) =>
                           renderSmartField(field),

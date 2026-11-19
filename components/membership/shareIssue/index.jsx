@@ -136,10 +136,12 @@ const ShareIssue = ({
             <div className="grid lg:grid-cols-[7fr_3fr] gap-2 lg:h-full lg:min-h-0 lg:overflow-hidden">
               {visibleBlock && (
                 <>
-                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">
-                      {t("membership.shareIssue.sections.accountDetails")}
-                    </h2>
+                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("membership.shareIssue.sections.accountDetails")}
+                      </h4>
+                    </div>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
                         {getMemberDataLoading ? (
@@ -248,10 +250,12 @@ const ShareIssue = ({
                       </div>
                     </div>
                   </div>
-                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">
-                      {t("membership.shareIssue.sections.transactionDetails")}
-                    </h2>
+                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("membership.shareIssue.sections.transactionDetails")}
+                      </h4>
+                    </div>
                     <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
                       <div className=" w-full flex flex-col gap-2">
                         {getMemberDataLoading ? (

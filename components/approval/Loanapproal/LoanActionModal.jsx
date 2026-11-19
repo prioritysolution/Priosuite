@@ -32,6 +32,7 @@ import {
   Ban,
   CheckCircle2,
   AlertTriangle,
+  XCircle,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import getCookieData from "@/utils/getCookieData";
@@ -148,10 +149,10 @@ const LoanActionModal = ({
     }
     return (
       <div className="flex flex-col gap-1 w-full">
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
           {label}
         </span>
-        <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-900 min-h-10 flex items-center font-medium">
+        <div className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-md text-sm text-slate-900 min-h-10 flex items-center font-medium shadow-none">
           {displayValue !== null &&
           displayValue !== undefined &&
           displayValue !== ""
@@ -194,6 +195,15 @@ const LoanActionModal = ({
                 </span>
               </div>
             </div>
+
+            <Button
+              variant="outline"
+              className="border-gray-300 text-gray-500 hover:bg-gray-100 h-9"
+              onClick={() => setOpen(false)}
+              disabled={loading}
+            >
+              <XCircle className="w-4 h-4 mr-2" /> {t("loanApproval.close")}
+            </Button>
           </DialogHeader>
 
           <ScrollArea className="flex-1 bg-gray-50/50 p-6 overflow-y-auto max-h-[75vh]">
@@ -204,10 +214,11 @@ const LoanActionModal = ({
             ) : (
               <div className="space-y-6">
                 {/* 1. Basic Info */}
-                <Card className="p-5 border border-gray-200 bg-white shadow-sm rounded-xl space-y-4">
-                  <div className="flex items-center gap-2 border-b pb-2 text-primary font-semibold">
-                    <Info className="h-5 w-5" />
-                    <span>{t("loanApproval.applicationInfo")}</span>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white shadow-sm">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("loanApproval.applicationInfo")}
+                    </h4>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {renderField(
@@ -241,15 +252,16 @@ const LoanActionModal = ({
                     )}
                     {renderField(t("loanApproval.loanPurpose"), selectedApplication.Loan_Purp)}
                   </div>
-                </Card>
+                </div>
 
                 {/* 2. Joint Holder Details */}
                 {(selectedApplication.JtHoldr_ID ||
                   selectedApplication.JtHoldr_ID1) && (
-                  <Card className="p-5 border border-gray-200 bg-white shadow-sm rounded-xl space-y-4">
-                    <div className="flex items-center gap-2 border-b pb-2 text-primary font-semibold">
-                      <User className="h-5 w-5" />
-                      <span>{t("loanApproval.jointHolderDetails")}</span>
+                  <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white shadow-sm">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("loanApproval.jointHolderDetails")}
+                      </h4>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {renderField(
@@ -261,14 +273,15 @@ const LoanActionModal = ({
                         selectedApplication.JtHoldr_ID1,
                       )}
                     </div>
-                  </Card>
+                  </div>
                 )}
 
                 {/* Action Buttons to View Sub-modals */}
-                <Card className="p-5 border border-gray-200 bg-white shadow-sm rounded-xl space-y-4">
-                  <div className="flex items-center gap-2 border-b pb-2 text-primary font-semibold">
-                    <Layers className="h-5 w-5" />
-                    <span>{t("loanApproval.loanBasedOn")}</span>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white shadow-sm">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("loanApproval.loanBasedOn")}
+                    </h4>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {selectedApplication.Gurantor_Details &&
@@ -336,20 +349,11 @@ const LoanActionModal = ({
                       </Button>
                     )}
                   </div>
-                </Card>
+                </div>
               </div>
             )}
           </ScrollArea>
-          <div className="p-3 sm:p-6 border-t bg-gray-50 flex justify-between items-center">
-            <Button
-              type="button"
-              onClick={() => setOpen(false)}
-              variant="outline"
-              disabled={loading}
-              className="w-full sm:w-auto"
-            >
-              {t("loanApproval.close")}
-            </Button>
+          <div className="p-3 sm:p-6 border-t bg-gray-50 flex justify-end items-center">
             <div className="flex gap-3 w-full sm:w-auto">
               <Button
                 type="button"

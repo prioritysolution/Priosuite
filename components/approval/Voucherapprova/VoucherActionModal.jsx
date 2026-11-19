@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Ban, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import { Ban, CheckCircle2, AlertTriangle, Loader2, XCircle } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -23,6 +23,11 @@ import {
 } from "@/components/ui/table";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
+import {
+  premiumFieldShell,
+  premiumFieldTrigger,
+} from "@/common/formFields/fieldStyles";
 
 const VoucherActionModal = ({
   open,
@@ -56,11 +61,16 @@ const VoucherActionModal = ({
     }
     return (
       <div className="flex flex-col gap-1.5 w-full">
-        <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          {label}
-        </Label>
-        <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-900 h-10 flex items-center overflow-hidden font-medium">
-          {displayValue !== null && displayValue !== undefined && displayValue !== ""
+        <Label className="text-sm font-medium text-foreground">{label}</Label>
+        <div
+          className={premiumFieldTrigger({
+            readOnly: true,
+            className: "overflow-hidden truncate",
+          })}
+        >
+          {displayValue !== null &&
+          displayValue !== undefined &&
+          displayValue !== ""
             ? String(displayValue)
             : "N/A"}
         </div>
@@ -68,7 +78,6 @@ const VoucherActionModal = ({
     );
   };
 
-  // Group subledger details by Ledger_Id / Ledger_Name
   const getGroupedSubledgers = () => {
     if (!selectedDetails?.subledger_details) return {};
     const grouped = {};
@@ -86,17 +95,16 @@ const VoucherActionModal = ({
 
   const groupedSubledgers = getGroupedSubledgers();
 
-  // Calculate voucher details totals
   const voucherDetails = selectedDetails?.voucher_details || [];
   const totalDebit = voucherDetails.reduce(
     (acc, curr) =>
       curr.Trans_Type === "D" ? acc + Number(curr.Amount || 0) : acc,
-    0
+    0,
   );
   const totalCredit = voucherDetails.reduce(
     (acc, curr) =>
       curr.Trans_Type === "C" ? acc + Number(curr.Amount || 0) : acc,
-    0
+    0,
   );
 
   return (
@@ -110,85 +118,134 @@ const VoucherActionModal = ({
           }
         }}
       >
-        <DialogContent className="w-[calc(100vw-1rem)] max-w-[90vw] lg:max-w-4xl h-auto max-h-[90dvh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
-          <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
-            <div className="flex flex-col gap-0.5">
-              <DialogTitle className="text-2xl font-bold text-gray-800 tracking-tight">
+        <DialogContent
+          hideClose
+          className="w-[calc(100vw-1rem)] max-w-[90vw] lg:max-w-4xl h-auto max-h-[90dvh] flex flex-col p-0 overflow-hidden rounded-xl border border-[#c8d5e6] shadow-[0_8px_30px_rgba(15,40,80,0.12)]"
+        >
+          <DialogHeader className="p-4 sm:p-5 border-b border-[#d0dae8] bg-gradient-to-b from-[#f4f7fb] to-white flex flex-row items-center justify-between space-y-0 shrink-0">
+            <div className="flex flex-col gap-1 pr-4">
+              <DialogTitle className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
                 {t("voucherApproval.voucherApproval")}
               </DialogTitle>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <span className="font-medium">
                   {t("voucherApproval.queueNoLabel")}{" "}
                   {selectedApplication.Queue_No || "N/A"}
                 </span>
-                <span className="h-4 w-px bg-gray-300" />
-                <span className="font-semibold text-primary">
+                <span className="h-4 w-px bg-[#c8d5e6]" />
+                <span className="inline-flex items-center rounded-md bg-[#00264D] px-2.5 py-0.5 text-xs font-semibold text-white">
                   {selectedApplication.Type || "N/A"}
                 </span>
               </div>
             </div>
+
+            <Button
+              variant="outline"
+              className="border-gray-300 text-gray-500 hover:bg-gray-100 h-9"
+              onClick={() => setOpen(false)}
+              disabled={loading || detailsLoading}
+            >
+              <XCircle className="w-4 h-4 mr-2" /> {t("common.buttons.close")}
+            </Button>
           </DialogHeader>
 
-          <div className="flex-1 overflow-y-auto bg-gray-50/50 p-6 space-y-6 max-h-[65vh]">
-            {/* Voucher Header Info */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-6 rounded-2xl border border-gray-200 bg-white shadow-sm">
-              {renderField(t("voucherApproval.transactionDate"), formatDate(selectedApplication.Trans_Date))}
-              {renderField(t("voucherApproval.queueNo"), selectedApplication.Queue_No)}
-              {renderField(t("voucherApproval.type"), selectedApplication.Type)}
-              {renderField(t("voucherApproval.amount"), selectedApplication.Amount)}
-              <div className="sm:col-span-2 md:col-span-3">
-                {renderField(t("voucherApproval.particulars"), selectedApplication.Particular)}
+          <div className="flex-1 overflow-y-auto bg-[#f7f9fc] p-4 sm:p-5 space-y-4 max-h-[65vh]">
+            <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white">
+              <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                  {t("voucherApproval.voucherApproval")}
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3">
+                {renderField(
+                  t("voucherApproval.transactionDate"),
+                  formatDate(selectedApplication.Trans_Date),
+                )}
+                {renderField(
+                  t("voucherApproval.queueNo"),
+                  selectedApplication.Queue_No,
+                )}
+                {renderField(
+                  t("voucherApproval.type"),
+                  selectedApplication.Type,
+                )}
+                {renderField(
+                  t("voucherApproval.amount"),
+                  selectedApplication.Amount,
+                )}
+                <div className="sm:col-span-2 md:col-span-3">
+                  {renderField(
+                    t("voucherApproval.particulars"),
+                    selectedApplication.Particular,
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Voucher Details Section */}
-            <div className="p-6 rounded-2xl border border-gray-200 bg-white shadow-sm space-y-4">
-              <h3 className="text-lg font-bold text-gray-800 border-b pb-2">
-                {t("voucherApproval.voucherDetails")}
-              </h3>
+            <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white">
+              <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                  {t("voucherApproval.voucherDetails")}
+                </h3>
+              </div>
               {detailsLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <Loader2 className="h-8 w-8 animate-spin text-[#00264D]" />
                 </div>
               ) : voucherDetails.length > 0 ? (
-                <div className="overflow-x-auto border rounded-lg">
+                <div className="overflow-x-auto border border-primary rounded-lg">
                   <Table>
-                    <TableHeader className="bg-gray-50">
-                      <TableRow>
-                        <TableHead className="w-[50px] font-semibold text-gray-700">{t("common.sl")}</TableHead>
-                        <TableHead className="font-semibold text-gray-700">{t("voucherApproval.ledgerName")}</TableHead>
-                        <TableHead className="font-semibold text-gray-700 text-right">{t("voucherApproval.debit")}</TableHead>
-                        <TableHead className="font-semibold text-gray-700 text-right">{t("voucherApproval.credit")}</TableHead>
+                    <TableHeader>
+                      <TableRow className="bg-[#eef2f7] hover:bg-[#eef2f7]">
+                        <TableHead className="w-[50px] font-semibold text-foreground">
+                          {t("common.sl")}
+                        </TableHead>
+                        <TableHead className="font-semibold text-foreground">
+                          {t("voucherApproval.ledgerName")}
+                        </TableHead>
+                        <TableHead className="font-semibold text-foreground text-right">
+                          {t("voucherApproval.debit")}
+                        </TableHead>
+                        <TableHead className="font-semibold text-foreground text-right">
+                          {t("voucherApproval.credit")}
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {voucherDetails.map((item, index) => (
-                        <TableRow key={index} className="hover:bg-gray-50/50">
-                          <TableCell className="font-medium text-gray-500">{index + 1}</TableCell>
-                          <TableCell className="font-medium text-gray-800">
+                        <TableRow
+                          key={index}
+                          className="hover:bg-[#f4f7fb]/80"
+                        >
+                          <TableCell className="font-medium text-muted-foreground">
+                            {index + 1}
+                          </TableCell>
+                          <TableCell className="font-medium">
                             {item.Ledger_Name || "N/A"}
                           </TableCell>
-                          <TableCell className="text-right text-gray-800 font-medium">
+                          <TableCell className="text-right font-medium">
                             {item.Trans_Type === "D"
                               ? Number(item.Amount || 0).toFixed(2)
                               : "-"}
                           </TableCell>
-                          <TableCell className="text-right text-gray-800 font-medium">
+                          <TableCell className="text-right font-medium">
                             {item.Trans_Type === "C"
                               ? Number(item.Amount || 0).toFixed(2)
                               : "-"}
                           </TableCell>
                         </TableRow>
                       ))}
-                      {/* Total Row */}
-                      <TableRow className="bg-gray-50/50 font-bold border-t-2">
-                        <TableCell colSpan={2} className="text-left text-gray-800">
+                      <TableRow className="bg-[#eef2f7]/70 font-bold border-t border-primary/40">
+                        <TableCell
+                          colSpan={2}
+                          className="text-left text-foreground"
+                        >
                           {t("voucherApproval.total")}
                         </TableCell>
-                        <TableCell className="text-right text-primary">
+                        <TableCell className="text-right text-[#00264D]">
                           {totalDebit.toFixed(2)}
                         </TableCell>
-                        <TableCell className="text-right text-primary">
+                        <TableCell className="text-right text-[#00264D]">
                           {totalCredit.toFixed(2)}
                         </TableCell>
                       </TableRow>
@@ -196,52 +253,70 @@ const VoucherActionModal = ({
                   </Table>
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 text-center py-4">
+                <p className="text-sm text-muted-foreground text-center py-4">
                   {t("voucherApproval.noVoucherDetails")}
                 </p>
               )}
             </div>
 
-            {/* Subledger Details Section */}
             {!detailsLoading && Object.keys(groupedSubledgers).length > 0 && (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {Object.entries(groupedSubledgers).map(([ledgerName, list]) => (
                   <div
                     key={ledgerName}
-                    className="p-6 rounded-2xl border border-gray-200 bg-white shadow-sm space-y-4"
+                    className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white"
                   >
-                    <h3 className="text-md font-bold text-gray-800 border-b pb-2">
-                      {t("voucherApproval.subledgerList", { name: ledgerName })}
-                    </h3>
-                    <div className="overflow-x-auto border rounded-lg">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("voucherApproval.subledgerList", { name: ledgerName })}
+                      </h3>
+                    </div>
+                    <div className="overflow-x-auto border border-primary rounded-lg">
                       <Table>
-                        <TableHeader className="bg-gray-50">
-                          <TableRow>
-                            <TableHead className="w-[50px] font-semibold text-gray-700">{t("common.sl")}</TableHead>
-                            <TableHead className="font-semibold text-gray-700">{t("voucherApproval.accountNo")}</TableHead>
-                            <TableHead className="font-semibold text-gray-700">{t("voucherApproval.name")}</TableHead>
-                            <TableHead className="font-semibold text-gray-700">{t("voucherApproval.type")}</TableHead>
-                            <TableHead className="font-semibold text-gray-700 text-right">{t("common.amount")}</TableHead>
-                            <TableHead className="font-semibold text-gray-700">{t("voucherApproval.remarks")}</TableHead>
+                        <TableHeader>
+                          <TableRow className="bg-[#eef2f7] hover:bg-[#eef2f7]">
+                            <TableHead className="w-[50px] font-semibold text-foreground">
+                              {t("common.sl")}
+                            </TableHead>
+                            <TableHead className="font-semibold text-foreground">
+                              {t("voucherApproval.accountNo")}
+                            </TableHead>
+                            <TableHead className="font-semibold text-foreground">
+                              {t("voucherApproval.name")}
+                            </TableHead>
+                            <TableHead className="font-semibold text-foreground">
+                              {t("voucherApproval.type")}
+                            </TableHead>
+                            <TableHead className="font-semibold text-foreground text-right">
+                              {t("common.amount")}
+                            </TableHead>
+                            <TableHead className="font-semibold text-foreground">
+                              {t("voucherApproval.remarks")}
+                            </TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {list.map((subItem, index) => (
-                            <TableRow key={index} className="hover:bg-gray-50/50">
-                              <TableCell className="font-medium text-gray-500">{index + 1}</TableCell>
-                              <TableCell className="font-medium text-gray-800">
+                            <TableRow
+                              key={index}
+                              className="hover:bg-[#f4f7fb]/80"
+                            >
+                              <TableCell className="font-medium text-muted-foreground">
+                                {index + 1}
+                              </TableCell>
+                              <TableCell className="font-medium">
                                 {subItem.CIF_No || "N/A"}
                               </TableCell>
-                              <TableCell className="text-gray-800 font-medium">
+                              <TableCell className="font-medium">
                                 {subItem.Full_Name || "N/A"}
                               </TableCell>
-                              <TableCell className="text-gray-600 font-medium">
+                              <TableCell className="text-muted-foreground font-medium">
                                 {subItem.Trans_Type || "N/A"}
                               </TableCell>
-                              <TableCell className="text-right text-gray-800 font-medium">
+                              <TableCell className="text-right font-medium">
                                 {Number(subItem.Amount || 0).toFixed(2)}
                               </TableCell>
-                              <TableCell className="text-gray-500 text-sm">
+                              <TableCell className="text-muted-foreground text-sm">
                                 {subItem.Remarks || "N/A"}
                               </TableCell>
                             </TableRow>
@@ -255,21 +330,24 @@ const VoucherActionModal = ({
             )}
           </div>
 
-          <div className="p-3 sm:p-6 border-t bg-white flex justify-end items-center shadow-[0_-4px_10px_rgba(0,0,0,0.03)]">
-            <div className="flex gap-4 w-full sm:w-auto">
+          <div className="p-4 sm:p-5 border-t border-[#d0dae8] bg-white flex justify-end items-center shrink-0">
+            <div className="flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto">
               <Button
-                className="bg-[#991B1B] hover:bg-[#7F1D1D] text-white px-8 font-bold min-w-[120px] transition-all w-full sm:w-auto"
+                type="button"
+                className="bg-[#991B1B] hover:bg-[#7F1D1D] text-white px-8 font-semibold min-w-[120px] w-full sm:w-auto"
                 onClick={() => setShowRejectModal(true)}
                 disabled={loading || detailsLoading}
               >
                 <Ban className="w-4 h-4 mr-2" /> {t("voucherApproval.reject")}
               </Button>
               <Button
-                className="bg-primary hover:bg-primary/90 text-white px-8 font-bold min-w-[120px] transition-all w-full sm:w-auto"
+                type="button"
+                className="bg-[#00264D] hover:bg-[#001a38] text-white px-8 font-semibold min-w-[120px] w-full sm:w-auto"
                 onClick={() => onApproveReject(1)}
                 disabled={loading || detailsLoading}
               >
-                <CheckCircle2 className="w-4 h-4 mr-2" /> {t("voucherApproval.approve")}
+                <CheckCircle2 className="w-4 h-4 mr-2" />{" "}
+                {t("voucherApproval.approve")}
               </Button>
             </div>
           </div>
@@ -277,15 +355,18 @@ const VoucherActionModal = ({
       </Dialog>
 
       <Dialog open={showRejectModal} onOpenChange={setShowRejectModal}>
-        <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[500px] z-[9999]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-red-600">
+        <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[500px] z-[9999] rounded-xl border border-[#c8d5e6] p-0 overflow-hidden gap-0">
+          <DialogHeader className="p-5 border-b border-[#d0dae8] bg-gradient-to-b from-[#f4f7fb] to-white">
+            <DialogTitle className="flex items-center gap-2 text-[#991B1B]">
               <AlertTriangle className="h-5 w-5" />
               {t("voucherApproval.rejectVoucher")}
             </DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <Label htmlFor="remarks" className="mb-2 block text-sm font-medium">
+          <div className="p-5 bg-[#f7f9fc]">
+            <Label
+              htmlFor="remarks"
+              className="mb-2 block text-sm font-medium text-foreground"
+            >
               {t("voucherApproval.rejectionRemarks")}{" "}
               <span className="text-red-500">*</span>
             </Label>
@@ -294,15 +375,26 @@ const VoucherActionModal = ({
               placeholder={t("voucherApproval.enterRejectionReason")}
               value={rejectRemarks}
               onChange={(e) => setRejectRemarks(e.target.value)}
-              className="min-h-[100px] focus-visible:ring-red-500"
+              className={cn(
+                premiumFieldShell({
+                  className:
+                    "min-h-[100px] px-3.5 py-2.5 text-sm font-medium resize-none focus-visible:outline-none focus-visible:ring-0",
+                }),
+              )}
             />
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowRejectModal(false)}>
+          <DialogFooter className="p-5 pt-0 bg-[#f7f9fc] gap-2 sm:gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="border-[#d0dae8] bg-white hover:bg-[#eef2f7]"
+              onClick={() => setShowRejectModal(false)}
+            >
               {t("common.cancel")}
             </Button>
             <Button
-              className="bg-red-600 hover:bg-red-700 text-white"
+              type="button"
+              className="bg-[#991B1B] hover:bg-[#7F1D1D] text-white"
               onClick={handleRejectConfirm}
             >
               {t("voucherApproval.confirmRejection")}

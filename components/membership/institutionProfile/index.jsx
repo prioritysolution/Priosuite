@@ -240,7 +240,7 @@ const InstitutionProfile = ({
               className="w-full flex flex-col gap-2 "
               autoComplete="off"
             >
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 w-full gap-5 gap-y-3 ">
+              <div className="w-fit flex flex-wrap items-center gap-3">
                 <FormField
                   control={form.control}
                   name="type"
@@ -258,31 +258,34 @@ const InstitutionProfile = ({
                           label: t("membership.institutionProfile.modes.updateExisting"),
                         },
                       ]}
-                      className="border border-default-200 rounded-md px-3 h-10 flex items-center"
+                      className="mt-0 w-fit flex-none"
                       disabled={showForm}
                     />
                   )}
                 />
 
                 {showForm ? (
-                  <div
-                    className="self-end h-10 w-32 text-white bg-primary rounded-md flex items-center justify-center cursor-pointer"
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-10 px-8"
                     onClick={(e) => {
                       e.preventDefault();
                       handleResetForm();
                     }}
                   >
                     {t("common.buttons.reset")}
-                  </div>
+                  </Button>
                 ) : (
-                  <div
-                    className="self-end h-10 w-32 text-white bg-primary rounded-md flex items-center justify-center cursor-pointer"
+                  <Button
+                    type="button"
+                    className="h-10 px-8"
                     onClick={() => {
                       handleShowForm();
                     }}
                   >
                     {t("common.next")}
-                  </div>
+                  </Button>
                 )}
               </div>
 
@@ -298,7 +301,9 @@ const InstitutionProfile = ({
               )}
 
               {showForm && (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full gap-2 gap-y-3 border border-primary rounded-md py-2 px-5">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                 
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full gap-x-10 gap-y-3">
                   <InputField
                     control={form.control}
                     name="inst_name"
@@ -344,13 +349,16 @@ const InstitutionProfile = ({
                     isRequired={true}
                   />
                 </div>
-              )}
+              </div>
+            )}
 
               {showForm && (
-                <div className="w-full border border-primary rounded-md py-3 px-5 flex flex-col gap-3">
-                  <h4 className="text-base font-semibold text-slate-800">
-                    {t("membership.institutionProfile.sections.registerAddress")}
-                  </h4>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("membership.institutionProfile.sections.registerAddress")}
+                    </h4>
+                  </div>
                   <AddressSectionFields
                     form={form}
                     names={REGISTER_NAMES}
@@ -372,30 +380,33 @@ const InstitutionProfile = ({
               )}
 
               {showForm && (
-                <div className="w-full border border-primary rounded-md py-3 px-5 flex flex-col gap-3">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <h4 className="text-base font-semibold text-slate-800">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3 flex flex-col sm:flex-row items-center justify-between gap-2 relative">
+                    <div className="hidden sm:block w-48" />
+                    <h4 className="text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide flex-1">
                       {t("membership.institutionProfile.sections.officeAddress")}
                     </h4>
-                    <FormField
-                      control={form.control}
-                      name="sameAsRegister"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center gap-2 space-y-0">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value === "Y"}
-                              onCheckedChange={(checked) =>
-                                field.onChange(checked ? "Y" : "N")
-                              }
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-medium text-slate-700 cursor-pointer">
-                            {t("membership.institutionProfile.sameAsRegister")}
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
+                    <div className="sm:w-48 flex justify-end">
+                      <FormField
+                        control={form.control}
+                        name="sameAsRegister"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value === "Y"}
+                                onCheckedChange={(checked) =>
+                                  field.onChange(checked ? "Y" : "N")
+                                }
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm font-medium text-[#00264d] cursor-pointer whitespace-nowrap">
+                              {t("membership.institutionProfile.sameAsRegister")}
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                   <AddressSectionFields
                     form={form}

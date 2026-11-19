@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CheckCircle2, Ban, AlertTriangle } from "lucide-react";
+import { CheckCircle2, Ban, AlertTriangle, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import Spinner from "@/common/loader/Spinner";
 import { useTranslation } from "react-i18next";
@@ -164,11 +164,12 @@ const MembershipActionModal = ({
   ]);
 
   const Section = ({ title, children }) => (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-      <h3 className="flex items-center gap-2 text-sm font-bold text-slate-800 mb-4">
-        <span className="h-4 w-1 rounded-full bg-primary" />
-        {title}
-      </h3>
+    <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 bg-white shadow-sm">
+      <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+        <h4 className="w-full text-center text-sm sm:text-base font-bold text-[#00264d] tracking-wide">
+          {title}
+        </h4>
+      </div>
       {children}
     </div>
   );
@@ -498,7 +499,10 @@ const MembershipActionModal = ({
           if (!val) setRejectRemarks("");
         }}
       >
-        <DialogContent className="w-[calc(100vw-1rem)] max-w-4xl h-[min(92dvh,900px)] sm:h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
+        <DialogContent
+          hideClose
+          className="w-[calc(100vw-1rem)] max-w-4xl h-[min(92dvh,900px)] sm:h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl"
+        >
           <DialogHeader className="p-4 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0">
             <div className="flex flex-col gap-2">
               <DialogTitle className="text-xl font-bold text-slate-800 tracking-tight">
@@ -521,6 +525,15 @@ const MembershipActionModal = ({
                 </span>
               </div>
             </div>
+
+            <Button
+              variant="outline"
+              className="border-gray-300 text-gray-500 hover:bg-gray-100 h-9"
+              onClick={() => setOpen(false)}
+              disabled={detailsLoading || loading}
+            >
+              <XCircle className="w-4 h-4 mr-2" /> {t("common.buttons.close")}
+            </Button>
           </DialogHeader>
 
           <ScrollArea className="flex-1 bg-[#F8FAFC]">

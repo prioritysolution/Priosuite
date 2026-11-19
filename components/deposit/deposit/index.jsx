@@ -103,7 +103,7 @@ const Deposit = ({
     String(memberBranchId).trim() !== "" &&
     String(memberBranchId) !== String(branchId ?? "");
 
-  console.log("productId=", form.watch("productId"));
+  // console.log("productId=", form.watch("productId"));
 
   return (
     <div className="w-full h-full flex justify-between p-1  bg-[#fefefe] rounded-lg">
@@ -149,10 +149,12 @@ const Deposit = ({
             <div className="grid lg:grid-cols-[7fr_3fr] gap-2 lg:h-full lg:min-h-0">
               {visibleBlock && (
                 <>
-                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">
-                      {t("deposit.sections.accountDetails")}
-                    </h2>
+                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-3 sm:p-4 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h2 className="text-base sm:text-lg text-center font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.accountDetails")}
+                      </h2>
+                    </div>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
                         {getDepositLoading ? (
@@ -355,10 +357,12 @@ const Deposit = ({
                       </div>
                     </div>
                   </div>
-                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">
-                      {t("deposit.sections.transactionDetails")}
-                    </h2>
+                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-3 sm:p-4 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h2 className="text-base sm:text-lg text-center font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.transactionDetails")}
+                      </h2>
+                    </div>
                     <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
                       <div className=" w-full flex flex-col gap-2">
                         {getDepositLoading ? (

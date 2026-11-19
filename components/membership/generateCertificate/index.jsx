@@ -282,68 +282,79 @@ const GenerateCertificate = (
   // }
 
   return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">{t("membership.generateCertificate.title")}</h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg min-h-0">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden min-h-0 flex-1">
+        <h3 className="text-2xl font-semibold">{t("membership.generateCertificate.title")}</h3>
 
-        <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20 ">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="w-full h-full flex flex-col gap-10 justify-between"
-              autoComplete="off"
-            >
-              <div className="w-full h-full flex flex-col lg:flex-row items-center lg:items-end justify-center border border-primary rounded-lg p-5 gap-5">
-                <InputField
-                  control={form.control}
-                  name="memberNo"
-                  label={t("membership.generateCertificate.fields.memberNo")}
-                  placeholder={t("membership.generateCertificate.placeholders.memberNo")}
-                  className="flex-1 w-full"
-                />
-                <div className="flex-1 w-full flex">
-                  <Button className="w-full lg:w-1/3 ">{t("common.buttons.generate")}</Button>
-                </div>
-              </div>
-            </form>
-          </Form>
-
-          <div className="w-full h-full flex flex-col lg:flex-row items-center lg:items-end justify-center border border-primary rounded-lg p-5 gap-5 mt-10">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px] text-center">
-                    {t("membership.generateCertificate.table.serialNo")}
-                  </TableHead>
-                  <TableHead className="text-center">{t("membership.generateCertificate.table.issueDate")}</TableHead>
-                  <TableHead className="text-center">{t("membership.generateCertificate.table.issueAmount")}</TableHead>
-                  <TableHead className="text-center">{t("membership.generateCertificate.table.action")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {tableData.map((data, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium text-center">
-                      {index + 1}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {data.issueDate}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {data.issueAmount}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Button
-                        onClick={() => setOpenDialog(true)}
-                        className="w-fit text-xl"
-                      >
-                        <IoPrint />
+        <ScrollArea className="w-full h-full min-h-0 flex-1">
+          <div className="w-full flex flex-col gap-5 min-w-0 max-w-full">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="w-full flex flex-col gap-4"
+                autoComplete="off"
+              >
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  
+                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 lg:gap-x-10 gap-y-3 items-end">
+                    <InputField
+                      control={form.control}
+                      name="memberNo"
+                      label={t("membership.generateCertificate.fields.memberNo")}
+                      placeholder={t("membership.generateCertificate.placeholders.memberNo")}
+                      formItemClassName="w-full min-w-0"
+                    />
+                    <div className="w-full flex items-end">
+                      <Button type="submit" className="w-full sm:w-auto px-6 h-10 font-semibold">
+                        {t("common.buttons.generate")}
                       </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </Form>
+
+            <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+              <div className="w-full overflow-x-auto rounded-md border border-border">
+                <Table>
+                  <TableHeader className="bg-muted/50">
+                    <TableRow>
+                      <TableHead className="w-[100px] text-center">
+                        {t("membership.generateCertificate.table.serialNo")}
+                      </TableHead>
+                      <TableHead className="text-center">{t("membership.generateCertificate.table.issueDate")}</TableHead>
+                      <TableHead className="text-center">{t("membership.generateCertificate.table.issueAmount")}</TableHead>
+                      <TableHead className="text-center">{t("membership.generateCertificate.table.action")}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {tableData.map((data, index) => (
+                      <TableRow key={index} className="hover:bg-muted/40 transition-colors">
+                        <TableCell className="font-medium text-center">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {data.issueDate}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {data.issueAmount}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Button
+                            type="button"
+                            size="icon"
+                            onClick={() => setOpenDialog(true)}
+                            className="rounded-md"
+                          >
+                            <IoPrint className="w-4 h-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </div>
         </ScrollArea>
       </div>

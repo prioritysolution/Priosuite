@@ -68,174 +68,176 @@ const InvestmentInterest = ({
   const endDate = getCookieData("fin_end_date");
 
   return (
-    <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">
-        {t("investment.interestPosting")}
-      </h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold text-center">
+          {t("investment.interestPosting")}
+        </h3>
 
-      <ScrollArea className="w-full h-full">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="w-full flex flex-col items-center pb-6"
-            autoComplete="off"
-          >
-            <div className="w-full  bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
-              {/* Main Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Account No */}
-                <div className="flex gap-3 items-end w-full">
-                  <div className="flex-1">
-                    <DropdownField
-                      control={form.control}
-                      name="accountNo"
-                      label={t("common.accountNo")}
-                      options={investmentAccountData}
-                      optionLabelKey="Accout_No"
-                      placeholder={t("investment.selectAccountNo")}
-                      searchPlaceholder={t("investment.searchAccountNo")}
-                    />
+        <ScrollArea className="w-full h-full">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="w-full flex flex-col items-center pb-6"
+              autoComplete="off"
+            >
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                {/* Main Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-3">
+                  {/* Account No */}
+                  <div className="flex gap-3 items-end w-full">
+                    <div className="flex-1">
+                      <DropdownField
+                        control={form.control}
+                        name="accountNo"
+                        label={t("common.accountNo")}
+                        options={investmentAccountData}
+                        optionLabelKey="Accout_No"
+                        placeholder={t("investment.selectAccountNo")}
+                        searchPlaceholder={t("investment.searchAccountNo")}
+                      />
+                    </div>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div
+                            onClick={handleShowLedger}
+                            className={cn(
+                              "p-2.5 px-4 text-xl bg-primary text-white rounded-lg cursor-pointer flex items-center justify-center h-10 mb-[2px] transition-colors hover:brightness-95",
+                              {
+                                "bg-gray-400 cursor-not-allowed hover:brightness-100":
+                                  !form.getValues("accountNo") ||
+                                  !form.getValues("interestDate"),
+                              },
+                            )}
+                          >
+                            <IoPrint />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{t("common.viewLedger")}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div
-                          onClick={handleShowLedger}
-                          className={cn(
-                            "p-2.5 px-4 text-xl bg-primary text-white rounded-lg cursor-pointer flex items-center justify-center h-10 mb-[2px] transition-colors hover:brightness-95",
-                            {
-                              "bg-gray-400 cursor-not-allowed hover:brightness-100":
-                                !form.getValues("accountNo") ||
-                                !form.getValues("interestDate"),
-                            },
-                          )}
-                        >
-                          <IoPrint />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{t("common.viewLedger")}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+
+                  {/* Interest Date */}
+                  <DatePickerField
+                    control={form.control}
+                    name="interestDate"
+                    label={t("investment.interestDate")}
+                    disabled={true}
+                  />
+
+                  {/* Interest Amount */}
+                  <InputField
+                    control={form.control}
+                    name="interestAmount"
+                    label={t("investment.interestAmount")}
+                    placeholder={t("investment.enterInterestAmount")}
+                    type="number"
+                  />
+
+                  {/* Ref Vouch No */}
+                  <InputField
+                    control={form.control}
+                    name="refVouchNo"
+                    label={t("common.refVouchNo")}
+                    placeholder={t("common.enterRefVouchNo")}
+                    isRequired={transMode === "bank"}
+                  />
+
+                  {/* Transaction Mode */}
+                  <FormField
+                    control={form.control}
+                    name="transMode"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col justify-end h-full">
+                        <FormLabel className="mb-2">
+                          {t("common.transactionMode")}
+                        </FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex gap-x-6 h-10 items-center border border-input rounded-lg px-3 bg-slate-50 w-full"
+                          >
+                            <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="bank" />
+                              </FormControl>
+                              <FormLabel className="font-normal cursor-pointer">
+                                {t("common.bank")}
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Bank */}
+                  <DropdownField
+                    control={form.control}
+                    name="bank"
+                    label={t("common.bank")}
+                    options={bankAccountData}
+                    optionLabelKey="Bank_Name"
+                    placeholder={t("investment.selectBank")}
+                    searchPlaceholder={t("investment.searchBank")}
+                    isRequired={transMode === "bank"}
+                  />
                 </div>
 
-                {/* Interest Date */}
-                <DatePickerField
-                  control={form.control}
-                  name="interestDate"
-                  label={t("investment.interestDate")}
-                  disabled={true}
-                />
-
-                {/* Interest Amount */}
-                <InputField
-                  control={form.control}
-                  name="interestAmount"
-                  label={t("investment.interestAmount")}
-                  placeholder={t("investment.enterInterestAmount")}
-                  type="number"
-                />
-
-                {/* Ref Vouch No */}
-                <InputField
-                  control={form.control}
-                  name="refVouchNo"
-                  label={t("common.refVouchNo")}
-                  placeholder={t("common.enterRefVouchNo")}
-                  isRequired={transMode === "bank"}
-                />
-
-                {/* Transaction Mode */}
-                <FormField
-                  control={form.control}
-                  name="transMode"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col justify-end h-full">
-                      <FormLabel className="mb-2">
-                        {t("common.transactionMode")}
-                      </FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex gap-x-6 h-10 items-center border border-input rounded-lg px-3 bg-slate-50 w-full"
-                        >
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="bank" />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">
-                              {t("common.bank")}
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Bank */}
-                <DropdownField
-                  control={form.control}
-                  name="bank"
-                  label={t("common.bank")}
-                  options={bankAccountData}
-                  optionLabelKey="Bank_Name"
-                  placeholder={t("investment.selectBank")}
-                  searchPlaceholder={t("investment.searchBank")}
-                  isRequired={transMode === "bank"}
-                />
+                {/* Submit Action */}
+                <div className="flex justify-end mt-4">
+                  <Button
+                    type="submit"
+                    className="w-full sm:w-1/5 self-end"
+                    disabled={
+                      loading ||
+                      (transMode === "bank" &&
+                        (!bank || !String(refVouchNo || "").trim()))
+                    }
+                  >
+                    {loading ? (
+                      <ClipLoader
+                        color="#d7e6f4"
+                        size={20}
+                        speedMultiplier={0.7}
+                      />
+                    ) : (
+                      t("common.add")
+                    )}
+                  </Button>
+                </div>
               </div>
+            </form>
+          </Form>
+        </ScrollArea>
 
-              {/* Submit Action */}
-              <div className="flex justify-end mt-4">
-                <Button
-                  type="submit"
-                  className="w-full sm:w-40 h-10 font-semibold"
-                  disabled={
-                    loading ||
-                    (transMode === "bank" &&
-                      (!bank || !String(refVouchNo || "").trim()))
-                  }
-                >
-                  {loading ? (
-                    <ClipLoader
-                      color="#d7e6f4"
-                      size={20}
-                      speedMultiplier={0.7}
-                    />
-                  ) : (
-                    t("common.add")
-                  )}
-                </Button>
-              </div>
-            </div>
-          </form>
-        </Form>
-      </ScrollArea>
+        <SuccessMessage
+          successMessage={successMessage}
+          showSuccessMessage={showSuccessMessage}
+          handleCloseSuccessMessage={handleCloseSuccessMessage}
+        />
 
-      <SuccessMessage
-        successMessage={successMessage}
-        showSuccessMessage={showSuccessMessage}
-        handleCloseSuccessMessage={handleCloseSuccessMessage}
-      />
-
-      <InvestmentLedger
-        showLedger={showLedger}
-        setShowLedger={setShowLedger}
-        fromDate={fromDate}
-        toDate={form.getValues("interestDate")}
-        userName={userName}
-        currentDate={currentDate}
-        currentTime={currentTime}
-        totalWithdrawn={totalWithdrawn}
-        totalDeposit={totalDeposit}
-        ledgerHeaderData={ledgerHeaderData}
-        ledgerTableData={ledgerTableData}
-        loading={getLedgerLoading}
-      />
+        <InvestmentLedger
+          showLedger={showLedger}
+          setShowLedger={setShowLedger}
+          fromDate={fromDate}
+          toDate={form.getValues("interestDate")}
+          userName={userName}
+          currentDate={currentDate}
+          currentTime={currentTime}
+          totalWithdrawn={totalWithdrawn}
+          totalDeposit={totalDeposit}
+          ledgerHeaderData={ledgerHeaderData}
+          ledgerTableData={ledgerTableData}
+          loading={getLedgerLoading}
+        />
+      </div>
     </div>
   );
 };

@@ -27,6 +27,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
+import TextareaField from "@/common/formFields/TextareaField";
+import { premiumFieldTrigger } from "@/common/formFields/fieldStyles";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -39,14 +41,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useIssueMembership } from "@/container/membership/issueMembership/Hooks";
 import { getMemberDataByName } from "@/container/membership/issueMembership/IssueMembershipReducer";
 import getCookieData from "@/utils/getCookieData";
 import { getYear } from "date-fns";
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
@@ -59,6 +60,8 @@ import {
   UserPlus,
   ShieldCheck,
   Trash2,
+  ImageIcon,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import DepositReceipt from "../deposit/DepositReceipt";
@@ -144,6 +147,10 @@ const OpenDepositAccount = ({
   const [signaturePreview, setSignaturePreview] = useState(null);
   const [isActiveDenom, setIsActiveDenom] = useState(false);
   const [selectedRadio, setSelectedRadio] = useState("1");
+  const [photoDragOver, setPhotoDragOver] = useState(false);
+  const [signatureDragOver, setSignatureDragOver] = useState(false);
+  const photoInputRef = useRef(null);
+  const signatureInputRef = useRef(null);
 
   useEffect(() => {
     // Initialize form values or perform any setup needed
@@ -265,18 +272,30 @@ const OpenDepositAccount = ({
     dispatch(getMemberDataByName([]));
   }, [jointMemberDialougeOpen, form, dispatch]);
 
-  const handlePhotoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result);
-      };
+  const isSupportedImageFile = (file) => {
+    if (!file) return false;
+    const type = String(file.type || "").toLowerCase();
+    const name = String(file.name || "").toLowerCase();
+    return (
+      type.startsWith("image/") ||
+      /\.(jpe?g|png|jp2|j2k)$/i.test(name)
+    );
+  };
 
-      console.log("file=", file);
-
-      reader.readAsDataURL(file);
+  const setPreviewFromFile = (file, setPreview) => {
+    if (!file || !isSupportedImageFile(file)) {
+      toast.error(t("deposit.uploadSpecimen.supportsFormats"));
+      return false;
     }
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result);
+    reader.readAsDataURL(file);
+    return true;
+  };
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) setPreviewFromFile(file, setPhotoPreview);
   };
 
   useEffect(() => {
@@ -287,14 +306,34 @@ const OpenDepositAccount = ({
   }, [memberNoForCheck]);
 
   const handleSignatureChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSignaturePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+    const file = event.target.files?.[0];
+    if (file) setPreviewFromFile(file, setSignaturePreview);
+  };
+
+  const handleSpecimenDrop = (event, type, onChange) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (type === "photo") setPhotoDragOver(false);
+    else setSignatureDragOver(false);
+
+    const file = event.dataTransfer?.files?.[0];
+    if (!file) return;
+    const ok = setPreviewFromFile(
+      file,
+      type === "photo" ? setPhotoPreview : setSignaturePreview,
+    );
+    if (ok) onChange(file);
+  };
+
+  const clearSpecimenFile = (type, onChange) => {
+    if (type === "photo") {
+      setPhotoPreview(null);
+      if (photoInputRef.current) photoInputRef.current.value = "";
+    } else {
+      setSignaturePreview(null);
+      if (signatureInputRef.current) signatureInputRef.current.value = "";
     }
+    onChange("");
   };
 
   console.log("form.getValues accountType=", form.getValues("accountType"));
@@ -393,10 +432,12 @@ const OpenDepositAccount = ({
               autoComplete="off"
             >
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("deposit.sections.basicInfo")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("deposit.sections.basicInfo")}
+                    </h3>
+                  </div>
                   {getOpenDepositLoading ? (
                     <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-3 ">
                       <div className="w-full flex flex-col gap-[10px]">
@@ -455,23 +496,12 @@ const OpenDepositAccount = ({
                         readOnly
                       />
 
-                      <FormField
+                      <TextareaField
                         control={form.control}
                         name="address"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("deposit.sections.address")}</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder={t("deposit.placeholders.address")}
-                                {...field}
-                                className="resize-none"
-                                readOnly
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        label={t("deposit.sections.address")}
+                        placeholder={t("deposit.placeholders.address")}
+                        readOnly
                       />
 
                       <InputField
@@ -500,10 +530,12 @@ const OpenDepositAccount = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("deposit.sections.kycDetails")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("deposit.sections.kycDetails")}
+                    </h3>
+                  </div>
                   {getOpenDepositLoading ? (
                     <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-3 ">
                       {Array.from({ length: 3 }).map((_, index) => (
@@ -547,10 +579,12 @@ const OpenDepositAccount = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("deposit.sections.accountInfo")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("deposit.sections.accountInfo")}
+                    </h3>
+                  </div>
                   {getOpenDepositLoading ? (
                     <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-3 ">
                       {Array.from({ length: 8 }).map((_, index) => (
@@ -634,50 +668,25 @@ const OpenDepositAccount = ({
                         disabled={!allowProcessDeposit}
                       />
 
-                      <FormField
+                      <InputField
                         control={form.control}
                         name="openingAmount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              {productData.find(
-                                (item) => item.Id === Number(depositProduct),
-                              )?.Deposit_Type &&
-                              productData.find(
-                                (item) => item.Id === Number(depositProduct),
-                              )?.Deposit_Type === 4
-                                ? "Installment"
-                                : "Opening"}{" "}
-                              Amount
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={`Enter ${
-                                  productData.find(
-                                    (item) =>
-                                      item.Id === Number(depositProduct),
-                                  )?.Deposit_Type &&
-                                  productData.find(
-                                    (item) =>
-                                      item.Id === Number(depositProduct),
-                                  )?.Deposit_Type === 4
-                                    ? "Installment"
-                                    : "Opening"
-                                } amount`}
-                                disabled={
-                                  !depositProduct || !allowProcessDeposit
-                                }
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                            {checkDepositAmountMessage && (
-                              <p className="text-destructive text-sm">
-                                {checkDepositAmountMessage}
-                              </p>
-                            )}
-                          </FormItem>
-                        )}
+                        label={`${
+                          productData.find(
+                            (item) => item.Id === Number(depositProduct),
+                          )?.Deposit_Type === 4
+                            ? "Installment"
+                            : "Opening"
+                        } Amount`}
+                        placeholder={`Enter ${
+                          productData.find(
+                            (item) => item.Id === Number(depositProduct),
+                          )?.Deposit_Type === 4
+                            ? "Installment"
+                            : "Opening"
+                        } amount`}
+                        disabled={!depositProduct || !allowProcessDeposit}
+                        hint={checkDepositAmountMessage || undefined}
                       />
 
                       {/* Account Type 2 - Term Deposit */}
@@ -990,25 +999,19 @@ const OpenDepositAccount = ({
 
                           <div className="w-full min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
                             <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4 shrink-0">
-                              <FormField
+                              <InputField
                                 control={form.control}
                                 name="dialougeMemberName"
-                                render={({ field }) => (
-                                  <FormItem className="w-full min-w-0">
-                                    <FormLabel>{t("deposit.fields.memberName")}</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        autoComplete="off"
-                                        placeholder={t("memberSearch.searchByMemberName")}
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
+                                label={t("deposit.fields.memberName")}
+                                autoComplete="off"
+                                placeholder={t(
+                                  "memberSearch.searchByMemberName",
                                 )}
+                                formItemClassName="w-full min-w-0"
                               />
 
                               <Button
+                                type="button"
                                 className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                                 onClick={handleSearchMember}
                               >
@@ -1233,10 +1236,12 @@ const OpenDepositAccount = ({
 
                 {/* Nominee Block */}
                 {visibleBlock && (
-                  <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h3 className="w-full text-center text-xl font-semibold">
-                      {t("deposit.sections.nomineeDetails")}
-                    </h3>
+                  <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.nomineeDetails")}
+                      </h3>
+                    </div>
 
                     {getOpenDepositLoading ? (
                       <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
@@ -1281,7 +1286,7 @@ const OpenDepositAccount = ({
                             name="nomineeAge"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="flex items-center gap-2 text-sm font-semibold">
+                                <FormLabel className="flex items-center gap-2 text-sm font-medium">
                                   Age
                                 </FormLabel>
                                 <FormControl>
@@ -1289,11 +1294,10 @@ const OpenDepositAccount = ({
                                     placeholder={t("deposit.placeholders.age")}
                                     type="text"
                                     maxLength={2}
-                                    className="h-10 transition-all focus:ring-2 focus:ring-primary/20"
+                                    className={premiumFieldTrigger()}
                                     {...field}
                                     onChange={(e) => {
                                       const value = e.target.value;
-                                      // Only allow whole numbers and limit to 2 digits
                                       if (
                                         value === "" ||
                                         (/^\d{1,2}$/.test(value) &&
@@ -1312,7 +1316,6 @@ const OpenDepositAccount = ({
                             control={form.control}
                             name="nomineePercentage"
                             render={({ field }) => {
-                              // Calculate total percentage including current input
                               const currentNominees =
                                 form.getValues("nomineeDetails") || [];
                               const totalUsedPercentage =
@@ -1332,7 +1335,7 @@ const OpenDepositAccount = ({
 
                               return (
                                 <FormItem>
-                                  <FormLabel className="flex items-center gap-2 text-sm font-semibold">
+                                  <FormLabel className="flex items-center gap-2 text-sm font-medium">
                                     Nominee (%)
                                     {remainingPercentage < 100 && (
                                       <span className="text-xs text-muted-foreground">
@@ -1342,33 +1345,30 @@ const OpenDepositAccount = ({
                                   </FormLabel>
                                   <FormControl>
                                     <Input
-                                      placeholder={t("deposit.placeholders.percentage")}
+                                      placeholder={t(
+                                        "deposit.placeholders.percentage",
+                                      )}
                                       type="number"
                                       min="1"
                                       max="100"
-                                      className={`h-10 transition-all focus:ring-2 focus:ring-primary/20 ${
-                                        totalWithCurrent > 100
-                                          ? "border-red-500 focus:ring-red-200"
-                                          : ""
-                                      }`}
+                                      className={premiumFieldTrigger({
+                                        hasError: totalWithCurrent > 100,
+                                      })}
                                       {...field}
                                       onChange={(e) => {
                                         const value = e.target.value;
 
-                                        // Allow empty value
                                         if (value === "") {
                                           field.onChange(value);
                                           return;
                                         }
 
-                                        // Allow decimal numbers with up to 2 decimal places
                                         if (!/^\d+(\.\d{0,2})?$/.test(value)) {
                                           return;
                                         }
 
                                         const numValue = Number(value);
 
-                                        // Allow any value up to 100, but we'll show error if it exceeds remaining
                                         if (numValue >= 1 && numValue <= 100) {
                                           field.onChange(value);
                                         }
@@ -1501,53 +1501,151 @@ const OpenDepositAccount = ({
                     )}
                   </div>
                 )}
-
+                  {/* Specimen Signature and Photo */}
                 {visibleBlock && (
-                  <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h3 className="w-full text-center text-xl font-semibold">
-                      {t("deposit.sections.specimen")}
-                    </h3>
+                  <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.specimen")}
+                      </h3>
+                    </div>
                     {getOpenDepositLoading ? (
-                      <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:gap-20 gap-x-10 gap-y-3 ">
-                        <div className="w-full flex flex-col gap-2 items-center">
-                          <Skeleton className="w-[80px] h-5 self-start rounded-none bg-secondary" />
-                          <Skeleton className="w-[200px] h-[200px] rounded-none bg-secondary" />
-                          <Skeleton className="h-10 w-full rounded-md bg-secondary" />
-                        </div>
-                        <div className="w-full flex flex-col gap-2 items-center">
-                          <Skeleton className="w-[80px] h-5 self-start rounded-none bg-secondary" />
-                          <Skeleton className="w-[200px] h-[200px] rounded-none bg-secondary" />
-                          <Skeleton className="h-10 w-full rounded-md bg-secondary" />
-                        </div>
+                      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
+                        {[0, 1].map((idx) => (
+                          <div
+                            key={idx}
+                            className="w-full flex flex-col gap-2"
+                          >
+                            <Skeleton className="h-5 w-24 rounded-none bg-secondary" />
+                            <Skeleton className="w-full h-40 sm:h-48 rounded-xl bg-secondary" />
+                          </div>
+                        ))}
                       </div>
                     ) : (
-                      <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:gap-20 gap-x-10 gap-y-3 ">
+                      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
                         <FormField
                           control={form.control}
                           name="photo"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t("deposit.common.photo")}</FormLabel>
-                              <div className="w-[200px] h-[200px] border border-primary mx-auto relative">
-                                {photoPreview && (
-                                  <Image
-                                    src={photoPreview}
-                                    alt="Photo Preview"
-                                    fill
-                                  />
-                                )}
-                              </div>
+                            <FormItem className="w-full space-y-2">
+                              <FormLabel className="text-sm font-semibold">
+                                {t("deposit.common.photo")}
+                              </FormLabel>
                               <FormControl>
-                                <Input
-                                  placeholder={t("deposit.uploadSpecimen.uploadPhoto")}
-                                  type="file"
-                                  accept="image/*"
-                                  className=""
-                                  onChange={(e) => {
-                                    handlePhotoChange(e);
-                                    field.onChange(e.target.files[0]);
+                                <div
+                                  role="button"
+                                  tabIndex={0}
+                                  onClick={() => photoInputRef.current?.click()}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                      e.preventDefault();
+                                      photoInputRef.current?.click();
+                                    }
                                   }}
-                                />
+                                  onDragEnter={(e) => {
+                                    e.preventDefault();
+                                    setPhotoDragOver(true);
+                                  }}
+                                  onDragOver={(e) => {
+                                    e.preventDefault();
+                                    setPhotoDragOver(true);
+                                  }}
+                                  onDragLeave={(e) => {
+                                    e.preventDefault();
+                                    setPhotoDragOver(false);
+                                  }}
+                                  onDrop={(e) =>
+                                    handleSpecimenDrop(e, "photo", field.onChange)
+                                  }
+                                  className={`relative w-full min-h-[160px] sm:min-h-[200px] rounded-xl border-2 bg-white px-4 py-5 sm:py-6 flex flex-col items-center justify-center gap-2 sm:gap-3 text-center transition-colors cursor-pointer ${
+                                    photoPreview ? "border-solid border-primary/25" : "border-dashed"
+                                  } ${
+                                    photoDragOver
+                                      ? "border-primary bg-primary/5"
+                                      : photoPreview
+                                        ? "hover:border-primary/50"
+                                        : "border-slate-300 hover:border-primary/60"
+                                  }`}
+                                >
+                                  {photoPreview ? (
+                                    <div className="w-full flex flex-col items-center gap-3">
+                                      <div className="relative w-full max-w-[220px] aspect-square rounded-lg overflow-hidden border border-primary/20 bg-muted/20 group">
+                                        <Image
+                                          src={photoPreview}
+                                          alt="Photo Preview"
+                                          fill
+                                          className="object-contain"
+                                          unoptimized
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors" />
+                                        <button
+                                          type="button"
+                                          aria-label={t("deposit.uploadSpecimen.removeImage")}
+                                          className="absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-destructive shadow-sm border border-slate-200 hover:bg-destructive hover:text-white transition-colors"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            clearSpecimenFile("photo", field.onChange);
+                                          }}
+                                        >
+                                          <Trash2 className="h-3.5 w-3.5" />
+                                        </button>
+                                      </div>
+                                      <div className="flex flex-wrap items-center justify-center gap-2">
+                                        <Button
+                                          type="button"
+                                          variant="outline"
+                                          size="sm"
+                                          className="h-9 gap-1.5 border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            photoInputRef.current?.click();
+                                          }}
+                                        >
+                                          <RefreshCw className="h-3.5 w-3.5" />
+                                          {t("deposit.uploadSpecimen.changeImage")}
+                                        </Button>
+                                        <Button
+                                          type="button"
+                                          variant="outline"
+                                          size="sm"
+                                          className="h-9 gap-1.5 border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            clearSpecimenFile("photo", field.onChange);
+                                          }}
+                                        >
+                                          <Trash2 className="h-3.5 w-3.5" />
+                                          {t("deposit.uploadSpecimen.removeImage")}
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-sm">
+                                        <ImageIcon className="h-6 w-6 sm:h-7 sm:w-7" />
+                                      </div>
+                                      <p className="text-sm sm:text-base text-slate-700">
+                                        {t("deposit.uploadSpecimen.dropImageHere")}{" "}
+                                        <span className="font-semibold text-sky-600">
+                                          {t("deposit.uploadSpecimen.browse")}
+                                        </span>
+                                      </p>
+                                      <p className="text-xs sm:text-sm text-slate-400">
+                                        {t("deposit.uploadSpecimen.supportsFormats")}
+                                      </p>
+                                    </>
+                                  )}
+                                  <Input
+                                    ref={photoInputRef}
+                                    type="file"
+                                    accept=".jpg,.jpeg,.png,.jp2,image/jpeg,image/png,image/jp2"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                      handlePhotoChange(e);
+                                      field.onChange(e.target.files?.[0] || "");
+                                    }}
+                                  />
+                                </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -1558,31 +1656,139 @@ const OpenDepositAccount = ({
                           control={form.control}
                           name="signature"
                           render={({ field }) => (
-                            <FormItem className="h-full flex flex-col justify-between">
-                              <div>
-                                <FormLabel>{t("deposit.common.signature")}</FormLabel>
-                                <div className="w-[200px] h-[50px] border border-primary mx-auto relative">
-                                  {signaturePreview && (
-                                    <Image
-                                      src={signaturePreview}
-                                      alt="Signature Preview"
-                                      className=""
-                                      fill
-                                    />
-                                  )}
-                                </div>
-                              </div>
+                            <FormItem className="w-full space-y-2">
+                              <FormLabel className="text-sm font-semibold">
+                                {t("deposit.common.signature")}
+                              </FormLabel>
                               <FormControl>
-                                <Input
-                                  placeholder={t("deposit.uploadSpecimen.uploadSignature")}
-                                  type="file"
-                                  accept="image/*"
-                                  className=""
-                                  onChange={(e) => {
-                                    handleSignatureChange(e);
-                                    field.onChange(e.target.files[0]);
+                                <div
+                                  role="button"
+                                  tabIndex={0}
+                                  onClick={() =>
+                                    signatureInputRef.current?.click()
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                      e.preventDefault();
+                                      signatureInputRef.current?.click();
+                                    }
                                   }}
-                                />
+                                  onDragEnter={(e) => {
+                                    e.preventDefault();
+                                    setSignatureDragOver(true);
+                                  }}
+                                  onDragOver={(e) => {
+                                    e.preventDefault();
+                                    setSignatureDragOver(true);
+                                  }}
+                                  onDragLeave={(e) => {
+                                    e.preventDefault();
+                                    setSignatureDragOver(false);
+                                  }}
+                                  onDrop={(e) =>
+                                    handleSpecimenDrop(
+                                      e,
+                                      "signature",
+                                      field.onChange,
+                                    )
+                                  }
+                                  className={`relative w-full min-h-[160px] sm:min-h-[200px] rounded-xl border-2 bg-white px-4 py-5 sm:py-6 flex flex-col items-center justify-center gap-2 sm:gap-3 text-center transition-colors cursor-pointer ${
+                                    signaturePreview
+                                      ? "border-solid border-primary/25"
+                                      : "border-dashed"
+                                  } ${
+                                    signatureDragOver
+                                      ? "border-primary bg-primary/5"
+                                      : signaturePreview
+                                        ? "hover:border-primary/50"
+                                        : "border-slate-300 hover:border-primary/60"
+                                  }`}
+                                >
+                                  {signaturePreview ? (
+                                    <div className="w-full flex flex-col items-center gap-3">
+                                      <div className="relative w-full max-w-[280px] aspect-[3/1] rounded-lg overflow-hidden border border-primary/20 bg-muted/20 group">
+                                        <Image
+                                          src={signaturePreview}
+                                          alt="Signature Preview"
+                                          fill
+                                          className="object-contain"
+                                          unoptimized
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors" />
+                                        <button
+                                          type="button"
+                                          aria-label={t("deposit.uploadSpecimen.removeImage")}
+                                          className="absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-destructive shadow-sm border border-slate-200 hover:bg-destructive hover:text-white transition-colors"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            clearSpecimenFile(
+                                              "signature",
+                                              field.onChange,
+                                            );
+                                          }}
+                                        >
+                                          <Trash2 className="h-3.5 w-3.5" />
+                                        </button>
+                                      </div>
+                                      <div className="flex flex-wrap items-center justify-center gap-2">
+                                        <Button
+                                          type="button"
+                                          variant="outline"
+                                          size="sm"
+                                          className="h-9 gap-1.5 border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            signatureInputRef.current?.click();
+                                          }}
+                                        >
+                                          <RefreshCw className="h-3.5 w-3.5" />
+                                          {t("deposit.uploadSpecimen.changeImage")}
+                                        </Button>
+                                        <Button
+                                          type="button"
+                                          variant="outline"
+                                          size="sm"
+                                          className="h-9 gap-1.5 border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            clearSpecimenFile(
+                                              "signature",
+                                              field.onChange,
+                                            );
+                                          }}
+                                        >
+                                          <Trash2 className="h-3.5 w-3.5" />
+                                          {t("deposit.uploadSpecimen.removeImage")}
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-sm">
+                                        <ImageIcon className="h-6 w-6 sm:h-7 sm:w-7" />
+                                      </div>
+                                      <p className="text-sm sm:text-base text-slate-700">
+                                        {t("deposit.uploadSpecimen.dropImageHere")}{" "}
+                                        <span className="font-semibold text-sky-600">
+                                          {t("deposit.uploadSpecimen.browse")}
+                                        </span>
+                                      </p>
+                                      <p className="text-xs sm:text-sm text-slate-400">
+                                        {t("deposit.uploadSpecimen.supportsFormats")}
+                                      </p>
+                                    </>
+                                  )}
+                                  <Input
+                                    ref={signatureInputRef}
+                                    type="file"
+                                    accept=".jpg,.jpeg,.png,.jp2,image/jpeg,image/png,image/jp2"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                      handleSignatureChange(e);
+                                      field.onChange(e.target.files?.[0] || "");
+                                    }}
+                                  />
+                                </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -1594,10 +1800,12 @@ const OpenDepositAccount = ({
                 )}
                 {/* ── Transaction block ── */}
                 {visibleBlock && (
-                  <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:px-5 gap-2">
-                    <h3 className="w-full text-center text-xl font-semibold">
-                      {t("deposit.sections.transaction")}
-                    </h3>
+                  <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.transaction")}
+                      </h3>
+                    </div>
                     {getOpenDepositLoading ? (
                       <div className="w-full flex flex-col gap-3">
                         <Skeleton className=" h-10 w-full lg:w-[400px] bg-secondary " />

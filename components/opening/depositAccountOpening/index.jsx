@@ -151,16 +151,16 @@ const DepositAccountOpening = ({
             >
               {/* info block */}
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <div className="w-full flex justify-between items-center">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3 flex justify-between items-center">
                     <div className="w-5" />
-                    <h3 className="text-xl font-semibold text-center flex-grow">
+                    <h4 className="text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide flex-grow">
                       {t("opening.depositAccountOpening.basicInfo.title")}
-                    </h3>
+                    </h4>
                     <button
                       type="button"
                       onClick={() => setShowBasicInfo(!showBasicInfo)}
-                      className="text-primary hover:opacity-80 transition-opacity"
+                      className="text-[#00264d] hover:opacity-80 transition-opacity"
                     >
                       {showBasicInfo ? (
                         <Eye className="w-5 h-5" />
@@ -227,10 +227,12 @@ const DepositAccountOpening = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("opening.depositAccountOpening.kyc.title")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("opening.depositAccountOpening.kyc.title")}
+                    </h4>
+                  </div>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
@@ -261,10 +263,12 @@ const DepositAccountOpening = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("opening.depositAccountOpening.account.title")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("opening.depositAccountOpening.account.title")}
+                    </h4>
+                  </div>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <DropdownField
                       control={form.control}
@@ -703,10 +707,12 @@ const DepositAccountOpening = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("opening.depositAccountOpening.nominee.title")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("opening.depositAccountOpening.nominee.title")}
+                    </h4>
+                  </div>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
@@ -749,10 +755,12 @@ const DepositAccountOpening = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("opening.depositAccountOpening.opening.title")}
-                  </h3>
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("opening.depositAccountOpening.opening.title")}
+                    </h4>
+                  </div>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}

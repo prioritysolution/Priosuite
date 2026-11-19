@@ -16,12 +16,38 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { format, parse } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
 import { useRef } from "react";
 import { IoPrint } from "react-icons/io5";
 import { ClipLoader } from "react-spinners";
 import { useReactToPrint } from "react-to-print";
 import LoanLedgerPreview from "./LoanLedgerPreview";
+
+const formatDateSafe = (dateVal, formatStr = "dd-MM-yyyy") => {
+  if (!dateVal) return "";
+  try {
+    const parsedDate = new Date(dateVal);
+    if (isNaN(parsedDate.getTime())) return "";
+    return format(parsedDate, formatStr);
+  } catch (error) {
+    return "";
+  }
+};
+
+const money = (value) => {
+  if (value === null || value === undefined || value === "") return "";
+  const amount = Number(value);
+  if (Number.isNaN(amount)) return String(value);
+  return amount.toFixed(2);
+};
+
+const InfoItem = ({ label, value, className = "" }) => (
+  <div className={`min-w-0 flex gap-1 text-sm ${className}`}>
+    <p className="font-semibold shrink-0 text-slate-700">{label}</p>
+    <p className="break-words text-slate-900">{value || "—"}</p>
+  </div>
+);
 
 const LoanLedger = ({
   showLedger,
@@ -42,9 +68,7 @@ const LoanLedger = ({
 
   const handleGeneratePDF = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `LoanLedger-${fromDate && format(fromDate, "dd-MM-yyyy")}-${
-      toDate && format(toDate, "dd-MM-yyyy")
-    }`,
+    documentTitle: `LoanLedger-${formatDateSafe(fromDate)}-${formatDateSafe(toDate)}`,
     pageStyle: `
       @page {
         size: A4 portrait;
@@ -58,184 +82,174 @@ const LoanLedger = ({
     `,
   });
 
+  const rows = Array.isArray(ledgerTableData) ? ledgerTableData : [];
+
   return (
     <Dialog open={showLedger} onOpenChange={setShowLedger}>
-      <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px] flex flex-col h-[min(92dvh,760px)] overflow-hidden p-3 sm:p-5 gap-3">
-        <DialogHeader className={`mt-5`}>
-          <DialogTitle className={`w-fit text-center`}>
-            Loan Ledger From
-            <span className="">
-              {" "}
-              {fromDate && format(fromDate, "dd-MM-yyyy")}
-            </span>{" "}
-            to{" "}
-            <span className="">{toDate && format(toDate, "dd-MM-yyyy")}</span>
+      <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-5xl flex flex-col h-[min(92dvh,820px)] overflow-hidden p-3 sm:p-5 gap-3">
+        <DialogHeader className="shrink-0 pr-8">
+          <DialogTitle className="text-center text-base sm:text-lg leading-snug">
+            Loan Ledger From {formatDateSafe(fromDate)} to{" "}
+            {formatDateSafe(toDate)}
           </DialogTitle>
         </DialogHeader>
 
         {loading ? (
-          <div className="h-full w-full flex items-center justify-center ">
+          <div className="flex-1 w-full flex items-center justify-center min-h-[200px]">
             <ClipLoader color="#00264d" size={50} speedMultiplier={0.7} />
           </div>
         ) : (
-          <ScrollArea className="w-full min-h-0 flex-1 rounded-md border">
-            <div className="py-3 px-3 w-full flex flex-col gap-4">
-              <div className="w-full border border-dashed border-primary bg-secondary grid grid-cols-3 gap-2 p-5 text-sm text-start">
-                <div className="col-span-3 flex justify-around items-start w-full gap-1">
-                  <div className="w-full flex gap-1">
-                    <p className="font-semibold text-nowrap">Member Name : </p>
-                    <p>{ledgerHeaderData?.Full_Name || ""}</p>
-                  </div>
-                  <div className="w-full flex gap-1 items-start justify-start">
-                    <p className="font-semibold text-nowrap">
-                      Guardian Name :{" "}
-                    </p>
-                    <p>{ledgerHeaderData?.Relation_Name || ""}</p>
-                  </div>
-                </div>
-                <div className="w-full flex gap-1 col-span-3">
-                  <p className="font-semibold text-nowrap">Address : </p>
-                  <p>{ledgerHeaderData?.Address || ""}</p>
-                </div>
-                <div className="w-full flex gap-1">
-                  <p className="font-semibold text-nowrap">Product Name : </p>
-                  <p>{ledgerHeaderData?.Product_Name || ""}</p>
-                </div>
-                <div className="w-full flex gap-1">
-                  <p className="font-semibold text-nowrap">Account No. : </p>
-                  <p>{ledgerHeaderData?.Account_No || ""}</p>
-                </div>
-                <div className="w-full flex gap-1">
-                  <p className="font-semibold text-nowrap">Ref. Ac. No. : </p>
-                  <p>{ledgerHeaderData?.Ref_Ac_No || ""}</p>
-                </div>
-                <div className="w-full flex gap-1">
-                  <p className="font-semibold text-nowrap">
-                    Disbursement Amount :{" "}
-                  </p>
-                  <p>{ledgerHeaderData?.Disb_Amt || ""}</p>
-                </div>
-                <div className="w-full flex gap-1">
-                  <p className="font-semibold text-nowrap">
-                    Disbursement Date :{" "}
-                  </p>
-                  <p>
-                    {ledgerHeaderData?.Disb_Date
-                      ? format(ledgerHeaderData?.Disb_Date, "dd-MM-yyyy")
-                      : ""}
-                  </p>
-                </div>
-                <div className="w-full flex gap-1">
-                  <p className="font-semibold text-nowrap">Repay Within : </p>
-                  <p>
-                    {ledgerHeaderData?.Repay_Within
-                      ? format(ledgerHeaderData?.Repay_Within, "dd-MM-yyyy")
-                      : ""}
-                  </p>
-                </div>
-                <div className="w-full flex gap-1">
-                  <p className="font-semibold text-nowrap">ROI : </p>
-                  <p>{ledgerHeaderData?.Roi || ""}</p>
-                </div>
-                <div className="w-full flex gap-1">
-                  <p className="font-semibold text-nowrap">Repay Mode : </p>
-                  <p>{ledgerHeaderData?.Repay_Mode || ""}</p>
-                </div>
+          <ScrollArea className="w-full min-h-0 flex-1 rounded-lg border border-primary/20">
+            <div className="py-3 px-3 sm:px-4 w-full flex flex-col gap-4">
+              <div className="w-full border border-primary/30 bg-secondary rounded-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2 p-3 sm:p-4">
+                <InfoItem
+                  label="Member Name :"
+                  value={ledgerHeaderData?.Full_Name}
+                />
+                <InfoItem
+                  label="Guardian Name :"
+                  value={ledgerHeaderData?.Relation_Name}
+                />
+                <InfoItem
+                  label="Product Name :"
+                  value={ledgerHeaderData?.Product_Name}
+                />
+                <InfoItem
+                  label="Address :"
+                  value={ledgerHeaderData?.Address}
+                  className="sm:col-span-2 lg:col-span-3"
+                />
+                <InfoItem
+                  label="Account No. :"
+                  value={ledgerHeaderData?.Account_No}
+                />
+                <InfoItem
+                  label="Ref. Ac. No. :"
+                  value={ledgerHeaderData?.Ref_Ac_No}
+                />
+                <InfoItem
+                  label="Disbursement Amount :"
+                  value={money(ledgerHeaderData?.Disb_Amt)}
+                />
+                <InfoItem
+                  label="Disbursement Date :"
+                  value={formatDateSafe(ledgerHeaderData?.Disb_Date)}
+                />
+                <InfoItem
+                  label="Repay Within :"
+                  value={formatDateSafe(ledgerHeaderData?.Repay_Within)}
+                />
+                <InfoItem label="ROI :" value={ledgerHeaderData?.Roi} />
+                <InfoItem
+                  label="Repay Mode :"
+                  value={ledgerHeaderData?.Repay_Mode}
+                />
               </div>
 
-              <div className="w-full overflow-x-auto">
-                  <Table className="border border-primary min-w-[760px]">
-                    <TableCaption>
-                      <div className="w-full flex items-center justify-between text-xs px-2">
-                        <p>Generated By : {userName}</p>
-                        <p>
-                          This is computer generated report and does not require
-                          signature.
-                        </p>
-                        <p>
-                          Generated On : {currentDate} {currentTime}
-                        </p>
-                      </div>
-                    </TableCaption>
-                    <TableHeader>
-                      <TableRow className="bg-primary text-white hover:bg-primary">
-                        <TableHead className=" text-white text-center w-10">
-                          Serial No
-                        </TableHead>
-                        <TableHead className=" text-white  border-l border-white w-[120px]">
-                          Date
-                        </TableHead>
-                        <TableHead className=" text-white border-l border-white w-fit text-center">
-                          Particulars
-                        </TableHead>
-                        <TableHead className=" text-white border-l border-white text-center">
-                          Disburse
-                        </TableHead>
-                        <TableHead className=" text-white border-l border-white text-center">
-                          Principal Refund
-                        </TableHead>
-                        <TableHead className=" text-white border-l border-white text-center">
-                          Interest Refund
-                        </TableHead>
-                        <TableHead className="text-white border-l border-white text-center">
-                          Balance
-                        </TableHead>
-                        <TableHead className="text-white border-l border-white text-center">
-                          Due Interest
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {ledgerTableData &&
-                        ledgerTableData.map((data, index) => (
-                          <TableRow key={index}>
-                            <TableCell className="font-medium border border-secondary text-center">
-                              {index + 1}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data.Trans_Date &&
-                                format(data.Trans_Date, "dd-MM-yyyy")}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data?.Particular}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data?.Disb_Amt}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data?.Prn_Ref}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data?.Intt_Ref}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data?.Balance}
-                            </TableCell>
-                            <TableCell className="border border-secondary">
-                              {data?.Due_Intt}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                    <TableFooter>
+              <div className="w-full overflow-x-auto rounded-lg border border-primary">
+                <Table className="min-w-[720px]">
+                  <TableHeader>
+                    <TableRow className="bg-primary text-white hover:bg-primary">
+                      <TableHead className="text-white text-center w-12 px-2">
+                        Serial No
+                      </TableHead>
+                      <TableHead className="text-white border-l border-white/30 w-[110px] px-2">
+                        Date
+                      </TableHead>
+                      <TableHead className="text-white border-l border-white/30 text-center px-2">
+                        Particulars
+                      </TableHead>
+                      <TableHead className="text-white border-l border-white/30 text-center px-2">
+                        Disburse
+                      </TableHead>
+                      <TableHead className="text-white border-l border-white/30 text-center px-2">
+                        Principal Refund
+                      </TableHead>
+                      <TableHead className="text-white border-l border-white/30 text-center px-2">
+                        Interest Refund
+                      </TableHead>
+                      <TableHead className="text-white border-l border-white/30 text-center px-2">
+                        Balance
+                      </TableHead>
+                      <TableHead className="text-white border-l border-white/30 text-center px-2">
+                        Due Interest
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={3}>Grand Total</TableCell>
-                        <TableCell className="">
-                          {totalDisburse && totalDisburse.toFixed(2)}
+                        <TableCell
+                          colSpan={8}
+                          className="h-24 text-center text-muted-foreground"
+                        >
+                          No ledger transactions found.
                         </TableCell>
-                        <TableCell className="">
-                          {totalPrincipalRefund &&
-                            totalPrincipalRefund.toFixed(2)}
-                        </TableCell>
-                        <TableCell className="">
-                          {totalInterestRefund &&
-                            totalInterestRefund.toFixed(2)}
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
                       </TableRow>
-                    </TableFooter>
-                  </Table>
+                    ) : (
+                      rows.map((data, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="font-medium border border-secondary text-center px-2">
+                            {index + 1}
+                          </TableCell>
+                          <TableCell className="border border-secondary whitespace-nowrap px-2">
+                            {formatDateSafe(data?.Trans_Date)}
+                          </TableCell>
+                          <TableCell className="border border-secondary px-2">
+                            {data?.Particular || ""}
+                          </TableCell>
+                          <TableCell className="border border-secondary text-right px-2">
+                            {money(data?.Disb_Amt)}
+                          </TableCell>
+                          <TableCell className="border border-secondary text-right px-2">
+                            {money(data?.Prn_Ref)}
+                          </TableCell>
+                          <TableCell className="border border-secondary text-right px-2">
+                            {money(data?.Intt_Ref)}
+                          </TableCell>
+                          <TableCell className="border border-secondary text-right px-2">
+                            {money(data?.Balance)}
+                          </TableCell>
+                          <TableCell className="border border-secondary text-right px-2">
+                            {money(data?.Due_Intt)}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell
+                        colSpan={3}
+                        className="font-semibold px-2 border border-secondary"
+                      >
+                        Grand Total
+                      </TableCell>
+                      <TableCell className="text-right font-semibold px-2 border border-secondary">
+                        {money(totalDisburse)}
+                      </TableCell>
+                      <TableCell className="text-right font-semibold px-2 border border-secondary">
+                        {money(totalPrincipalRefund)}
+                      </TableCell>
+                      <TableCell className="text-right font-semibold px-2 border border-secondary">
+                        {money(totalInterestRefund)}
+                      </TableCell>
+                      <TableCell className="border border-secondary" />
+                      <TableCell className="border border-secondary" />
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              </div>
+
+              <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-[11px] sm:text-xs text-muted-foreground px-1">
+                <p className="shrink-0">Generated By : {userName || "—"}</p>
+                <p className="text-center italic">
+                  This is computer generated report and does not require
+                  signature.
+                </p>
+                <p className="shrink-0 sm:text-right">
+                  Generated On : {currentDate} {currentTime}
+                </p>
               </div>
             </div>
             <ScrollBar orientation="horizontal" />
@@ -255,49 +269,20 @@ const LoanLedger = ({
           />
         </div>
 
-        <DialogFooter className={`w-full`}>
-          <div className="w-full flex items-center justify-end gap-5">
-            <div
-              onClick={handleGeneratePDF}
-              className="p-2 rounded-full flex items-center justify-center text-center bg-primary text-white cursor-pointer text-3xl"
-            >
-              <IoPrint />
-            </div>
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="p-2 rounded-full flex items-center justify-center text-center bg-primary text-white cursor-pointer text-3xl">
-                  <IoShareSocial />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[200px]">
-                <DropdownMenuLabel className="text-lg">
-                  Share via
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer pl-5 py-2">
-                  <p className="flex items-center gap-2 px-3">
-                    <IoMail className="text-xl text-primary" /> Mail
-                  </p>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer pl-5 py-2">
-                  <p className="flex items-center gap-2 px-3">
-                    <FaWhatsapp className="text-xl text-primary" /> Whatsapp
-                  </p>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer pl-5 py-2"
-                  onClick={handleGeneratePDF}
-                >
-                  <p className="flex items-center gap-2 px-3">
-                    <FaDownload className="text-xl text-primary" /> Download
-                  </p>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
-          </div>
+        <DialogFooter className="w-full shrink-0 sm:justify-end">
+          <Button
+            type="button"
+            onClick={handleGeneratePDF}
+            disabled={loading || rows.length === 0}
+            className="w-full sm:w-auto gap-2"
+          >
+            <IoPrint className="text-lg" />
+            Print
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
+
 export default LoanLedger;

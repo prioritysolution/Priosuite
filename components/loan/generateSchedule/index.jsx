@@ -55,7 +55,11 @@ const GenerateSchedule = ({
 
           {(personalData || (tableData && tableData.length > 0)) && (
             <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:p-5 gap-5">
-              <h3 className="w-full text-center text-xl font-semibold">{t("loan.loanRepaymentSchedule")}</h3>
+              <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                  {t("loan.loanRepaymentSchedule")}
+                </h3>
+              </div>
               {personalData && (
                 <div className="w-full flex flex-col gap-3 bg-[#D7E6F4] p-3 border border-black border-dashed">
                   <div className="w-full grid grid-cols-3 gap-5">

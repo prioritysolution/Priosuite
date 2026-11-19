@@ -569,8 +569,9 @@ const Navbar = ({
 
         {/* <button
           type="button"
-          className="hidden sm:flex p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-150 ease-out flex-shrink-0"
-          aria-label="Call"
+          onClick={() => router.push("/support")}
+          className="p-1.5 sm:p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 active:scale-90 transition-all duration-150 ease-out flex-shrink-0"
+          aria-label="Contact Support"
         >
           <MdCall className="text-xl" />
         </button> */}

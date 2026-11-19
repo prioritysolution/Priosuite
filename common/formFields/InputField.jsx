@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { premiumFieldShell } from "./fieldStyles";
 
 const limitToTwoDecimals = (value) => {
   if (value == null) return "";
@@ -93,27 +94,23 @@ const InputField = ({
 
             <FormControl>
               <div
-                className={cn(
-                  // ✅ Single unified background + border on the wrapper only
-                  "flex items-center w-full rounded-md border bg-background h-10",
-                  "transition-all duration-150",
-                  "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-0 focus-within:border-ring",
-                  hasError
-                    ? "border-destructive focus-within:ring-destructive/30"
-                    : "border-input",
-                  disabled && "cursor-not-allowed bg-muted/80",
-                  // ✅ Only add gap when there's start/end content
-                  startContent || endContent ? "gap-2" : "",
-                  className,
-                )}
+                className={premiumFieldShell({
+                  hasError,
+                  disabled,
+                  readOnly,
+                  className: cn(
+                    "flex items-center w-full h-10",
+                    startContent || endContent || isPassword ? "gap-2" : "",
+                    className,
+                  ),
+                })}
               >
                 {startContent && (
-                  <div className="shrink-0 text-muted-foreground pl-3">
+                  <div className="shrink-0 text-muted-foreground pl-3.5">
                     {startContent}
                   </div>
                 )}
 
-                {/* ✅ KEY FIX: Input is fully transparent — no border, no bg, no shadow, no ring */}
                 <Input
                   value={displayValue !== undefined ? displayValue : isBlurUpdate ? localValue : field.value || ""}
                   type={inputType}
@@ -126,21 +123,21 @@ const InputField = ({
                   autoComplete={autoComplete}
                   autoFocus={autoFocus}
                   className={cn(
-                    // ✅ Full width when no start/end content, flex-1 when there is content
-                    startContent || endContent ? "flex-1 min-w-0" : "w-full",
+                    startContent || endContent || isPassword
+                      ? "flex-1 min-w-0"
+                      : "w-full",
                     "h-full p-0",
-                    // ✅ Apply padding directly to input based on content presence
-                    !startContent && "pl-3",
-                    !endContent && "pr-3",
-                    // Remove ALL default Input styles that cause the two-tone look
+                    !startContent && "pl-3.5",
+                    !endContent && !isPassword && "pr-3.5",
                     "border-0 border-none",
                     "bg-transparent",
                     "shadow-none",
                     "outline-none",
                     "ring-0 ring-offset-0",
                     "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
-                    "text-sm text-foreground placeholder:text-muted-foreground",
+                    "text-sm font-medium text-foreground placeholder:text-muted-foreground/70 placeholder:font-normal",
                     "disabled:cursor-not-allowed disabled:opacity-100",
+                    readOnly && "cursor-not-allowed opacity-100",
                   )}
                   onChange={(e) => {
                     let value = e.target.value;
@@ -178,7 +175,7 @@ const InputField = ({
                 />
 
                 {endContent && (
-                  <div className="shrink-0 text-muted-foreground pr-3">
+                  <div className="shrink-0 text-muted-foreground pr-3.5">
                     {endContent}
                   </div>
                 )}
@@ -187,7 +184,7 @@ const InputField = ({
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="cursor-pointer shrink-0 text-muted-foreground hover:text-foreground transition-colors px-1"
+                    className="cursor-pointer shrink-0 text-muted-foreground hover:text-foreground transition-colors pr-3.5"
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>

@@ -15,6 +15,7 @@ import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Spinner } from "@/components/ui/spinner";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { premiumFieldTrigger } from "./fieldStyles";
 
 const getOptionValue = (item, optionLabelKey, optionValueKey) => {
   if (!item || typeof item !== "object") return "";
@@ -221,10 +222,12 @@ const DropdownFieldInner = ({
                 placeholder={
                   searchPlaceholder || `Select ${label?.toLowerCase()}`
                 }
-                className={cn(
-                  "flex h-10 w-full min-w-0 rounded-md border border-input bg-background pl-3 pr-10 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 truncate",
-                  errorMessage && "border-destructive focus:ring-destructive",
-                )}
+                className={premiumFieldTrigger({
+                  hasError: !!errorMessage,
+                  disabled: disabled || loading,
+                  readOnly,
+                  className: "pl-3.5 pr-10 py-2 truncate font-medium",
+                })}
               />
             </FormControl>
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">

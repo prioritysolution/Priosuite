@@ -23,18 +23,23 @@ const DemandMaster = ({ loading }) => {
   );
 
   return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">{t("master.demandMaster.title")}</h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold">{t("master.demandMaster.title")}</h3>
 
-        <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20">
+        <ScrollArea className="w-full h-full">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              className="w-full h-full flex flex-col gap-10 justify-between items-center"
+              className="w-full h-full flex flex-col gap-5 justify-between items-center"
               autoComplete="off"
             >
-              <div className="w-full xl:w-1/2 h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
+              <div className="w-full xl:w-1/2 flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("master.demandMaster.title")}
+                  </h4>
+                </div>
                 <DropdownField
                   control={form.control}
                   name="loanProduct"
@@ -58,11 +63,6 @@ const DemandMaster = ({ loading }) => {
                 <Button
                   type="submit"
                   className="w-full"
-                  // disabled={
-                  //   Number(cashInTransactionGrandTotal) -
-                  //     Number(cashOutTransactionGrandTotal) !==
-                  //   Number(form.getValues("openingAmount"))
-                  // }
                 >
                   {t("master.demandMaster.buttons.add")}
                 </Button>

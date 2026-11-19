@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { premiumFieldTrigger, premiumFieldShell } from "./fieldStyles";
 
 const DropdownFieldNew = ({
   control,
@@ -213,18 +214,14 @@ const DropdownFieldNew = ({
                     </span>
                   )}
                   <SelectTrigger
-                    className={cn(
-                      "font-normal text-[15px] w-full",
-                      "border-[1.5px] rounded-md h-auto py-2.5 px-4",
-                      "transition-all duration-150",
-                      "focus-visible:ring-4",
-                      startContent && "pl-9",
-                      hasError
-                        ? "border-destructive focus-visible:ring-destructive/15"
-                        : "border-border focus-visible:border-ring focus-visible:ring-ring/18",
-                      disabled &&
-                        "bg-slate-50 cursor-not-allowed border-slate-300 text-slate-900",
-                    )}
+                    className={premiumFieldTrigger({
+                      hasError,
+                      disabled: disabled || loading,
+                      className: cn(
+                        "w-full h-auto py-2.5 px-4 text-[15px]",
+                        startContent && "pl-9",
+                      ),
+                    })}
                   >
                     <SelectValue
                       placeholder={
@@ -249,12 +246,10 @@ const DropdownFieldNew = ({
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                           placeholder="Search..."
-                          className={cn(
-                            "pl-8 h-9 text-[14px]",
-                            "border-[1.5px] rounded-lg",
-                            "focus-visible:ring-3 focus-visible:ring-ring/18",
-                            "focus-visible:border-ring",
-                          )}
+                          className={premiumFieldShell({
+                            className:
+                              "pl-8 h-9 text-[14px] focus-visible:outline-none focus-visible:ring-0",
+                          })}
                         />
                       </div>
                     </div>

@@ -52,10 +52,10 @@ const LoaderVisual = ({ fullScreen = false, className }) => (
 
     <div className="relative z-10 flex w-full max-w-[min(100%,22rem)] flex-col items-center justify-center gap-4 px-4 sm:max-w-md sm:gap-6 sm:px-6">
       <div className="flex w-full justify-center sm:hidden">
-        <BrandMark compact />
+        <BrandMark compact animated />
       </div>
       <div className="hidden w-full justify-center sm:flex">
-        <BrandMark />
+        <BrandMark animated />
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">

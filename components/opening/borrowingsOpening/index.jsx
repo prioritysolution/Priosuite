@@ -5,7 +5,7 @@ import DropdownField from "@/common/formFields/DropdownField";
 import getCookieData from "@/utils/getCookieData";
 import InputField from "@/common/formFields/InputField";
 import { Button } from "@/components/ui/button";
-import { Form, FormField } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getYear } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -52,60 +52,55 @@ const BorrowingsOpening = ({
               className="w-full h-full flex flex-col gap-5 justify-between"
               autoComplete="off"
             >
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                   <InputField
                     control={form.control}
                     name="productName"
                     label={t("opening.borrowingsOpening.fields.productName")}
-                    placeholder={t("opening.borrowingsOpening.placeholders.productName",
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.productName",
                     )}
                     isRequired
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="productType"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("opening.borrowingsOpening.fields.productType")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={productTypeData}
-                        optionLabelKey="Option_Value"
-                        placeholder={t("opening.borrowingsOpening.placeholders.productType",
-                        )}
-                        searchPlaceholder={t("opening.borrowingsOpening.placeholders.searchProductType",
-                        )}
-                        isRequired
-                      />
+                    label={t("opening.borrowingsOpening.fields.productType")}
+                    options={productTypeData}
+                    optionLabelKey="Option_Value"
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.productType",
                     )}
+                    searchPlaceholder={t(
+                      "opening.borrowingsOpening.placeholders.searchProductType",
+                    )}
+                    isRequired
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="repaymentMode"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("opening.borrowingsOpening.fields.repaymentMode")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={repayModeData}
-                        optionLabelKey="Option_Value"
-                        placeholder={t("opening.borrowingsOpening.placeholders.repaymentMode",
-                        )}
-                        searchPlaceholder={t("opening.borrowingsOpening.placeholders.searchRepaymentMode",
-                        )}
-                        isRequired
-                      />
+                    label={t("opening.borrowingsOpening.fields.repaymentMode")}
+                    options={repayModeData}
+                    optionLabelKey="Option_Value"
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.repaymentMode",
                     )}
+                    searchPlaceholder={t(
+                      "opening.borrowingsOpening.placeholders.searchRepaymentMode",
+                    )}
+                    isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="bankName"
                     label={t("opening.borrowingsOpening.fields.bankName")}
-                    placeholder={t("opening.borrowingsOpening.placeholders.bankName")}
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.bankName",
+                    )}
                     isRequired
                   />
 
@@ -113,7 +108,9 @@ const BorrowingsOpening = ({
                     control={form.control}
                     name="accountNo"
                     label={t("opening.borrowingsOpening.fields.accountNo")}
-                    placeholder={t("opening.borrowingsOpening.placeholders.accountNo")}
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.accountNo",
+                    )}
                     type="number"
                     // maxLength={15}
                     isRequired
@@ -135,7 +132,9 @@ const BorrowingsOpening = ({
                     control={form.control}
                     name="amount"
                     label={t("opening.borrowingsOpening.fields.amount")}
-                    placeholder={t("opening.borrowingsOpening.placeholders.amount")}
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.amount",
+                    )}
                     type="number"
                     isRequired
                   />
@@ -144,7 +143,8 @@ const BorrowingsOpening = ({
                     control={form.control}
                     name="rateOfInterest"
                     label={t("opening.borrowingsOpening.fields.rateOfInterest")}
-                    placeholder={t("opening.borrowingsOpening.placeholders.rateOfInterest",
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.rateOfInterest",
                     )}
                     type="number"
                     isRequired
@@ -154,7 +154,8 @@ const BorrowingsOpening = ({
                     control={form.control}
                     name="overdueRate"
                     label={t("opening.borrowingsOpening.fields.overdueRate")}
-                    placeholder={t("opening.borrowingsOpening.placeholders.overdueRate",
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.overdueRate",
                     )}
                     type="number"
                     isRequired
@@ -164,7 +165,9 @@ const BorrowingsOpening = ({
                     control={form.control}
                     name="duration"
                     label={t("opening.borrowingsOpening.fields.duration")}
-                    placeholder={t("opening.borrowingsOpening.placeholders.duration")}
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.duration",
+                    )}
                     type="number"
                     isRequired
                   />
@@ -173,53 +176,52 @@ const BorrowingsOpening = ({
                     control={form.control}
                     name="dueDate"
                     label={t("opening.borrowingsOpening.fields.dueDate")}
-                    placeholder={t("opening.borrowingsOpening.placeholders.dueDate")}
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.dueDate",
+                    )}
                     readOnly
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="principalLedger"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("opening.borrowingsOpening.fields.principalLedger")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={principalLedgerData}
-                        optionLabelKey="Ledger_Name"
-                        placeholder={t("opening.borrowingsOpening.placeholders.principalLedger",
-                        )}
-                        searchPlaceholder={t("opening.borrowingsOpening.placeholders.searchPrincipalLedger",
-                        )}
-                        isRequired
-                      />
+                    label={t(
+                      "opening.borrowingsOpening.fields.principalLedger",
                     )}
+                    options={principalLedgerData}
+                    optionLabelKey="Ledger_Name"
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.principalLedger",
+                    )}
+                    searchPlaceholder={t(
+                      "opening.borrowingsOpening.placeholders.searchPrincipalLedger",
+                    )}
+                    isRequired
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="interestLedger"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("opening.borrowingsOpening.fields.interestLedger")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={interestLedgerData}
-                        optionLabelKey="Ledger_Name"
-                        placeholder={t("opening.borrowingsOpening.placeholders.interestLedger",
-                        )}
-                        searchPlaceholder={t("opening.borrowingsOpening.placeholders.searchInterestLedger",
-                        )}
-                        isRequired
-                      />
+                    label={t("opening.borrowingsOpening.fields.interestLedger")}
+                    options={interestLedgerData}
+                    optionLabelKey="Ledger_Name"
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.interestLedger",
                     )}
+                    searchPlaceholder={t(
+                      "opening.borrowingsOpening.placeholders.searchInterestLedger",
+                    )}
+                    isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="outstandingBalance"
-                    label={t("opening.borrowingsOpening.fields.outstandingBalance")}
-                    placeholder={t("opening.borrowingsOpening.placeholders.outstandingBalance",
+                    label={t(
+                      "opening.borrowingsOpening.fields.outstandingBalance",
+                    )}
+                    placeholder={t(
+                      "opening.borrowingsOpening.placeholders.outstandingBalance",
                     )}
                     type="number"
                     isRequired
@@ -233,11 +235,7 @@ const BorrowingsOpening = ({
                 disabled={loading}
               >
                 {loading ? (
-                  <ClipLoader
-                    color="#d7e6f4"
-                    size={20}
-                    speedMultiplier={0.7}
-                  />
+                  <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
                   t("opening.borrowingsOpening.buttons.add")
                 )}

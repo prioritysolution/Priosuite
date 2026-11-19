@@ -23,13 +23,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { IoPrint, IoSearch } from "react-icons/io5";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoanAccountSearchTable from "../tables/LoanAccountSearchTable";
 import { useRepayment } from "@/container/loan/repayment/Hooks";
 import { format, getYear } from "date-fns";
 import { DatePickerField } from "../formFields/DatePickerField";
+import InputField from "../formFields/InputField";
+import {
+  premiumTabsList,
+  premiumTabsTrigger,
+} from "../formFields/fieldStyles";
 import { getLoanAccountSearchData } from "@/container/loan/repayment/RepaymentReducer";
 import { cn } from "@/lib/utils";
 import {
@@ -266,44 +270,25 @@ const LoanAccountSearchForm = ({
                 )}
               </div>
 
-              <FormField
-                control={form.control}
-                name="accountNo"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>{t("forms.accountNo")}</FormLabel>
-
-                    <FormControl>
-                      <div className="">
-                        <div className="">
-                          <div className="relative w-full">
-                            <Input
-                              placeholder={t("forms.enterAccountNo")}
-                              className="w-full "
-                              type="number"
-                              // onInput={(e) => {
-                              //   if (e.target.value.length > 5) {
-                              //     e.target.value = e.target.value.slice(0, 5);
-                              //   }
-                              // }}
-                              {...field}
-                            />
-                            <div className="absolute right-0 top-0 py-3 px-3">
-                              <DialogTrigger
-                                asChild
-                                className="cursor-pointer text-lg"
-                              >
-                                <IoSearch />
-                              </DialogTrigger>
-                            </div>
-                          </div>
-                          <FormMessage />
-                        </div>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              <div className="w-full">
+                <InputField
+                  control={form.control}
+                  name="accountNo"
+                  label={t("forms.accountNo")}
+                  placeholder={t("forms.enterAccountNo")}
+                  type="number"
+                  endContent={
+                    <DialogTrigger
+                      asChild
+                      className="cursor-pointer text-lg text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <span>
+                        <IoSearch />
+                      </span>
+                    </DialogTrigger>
+                  }
+                />
+              </div>
 
               <div className="w-full flex justify-start self-end gap-5">
                 <Button
@@ -363,26 +348,16 @@ const LoanAccountSearchForm = ({
                     onValueChange={setActiveTab}
                     className="w-full flex items-center justify-center flex-col"
                   >
-                    <TabsList className="w-full sm:w-[70%]">
+                    <TabsList className={premiumTabsList("w-full sm:w-[70%]")}>
                       <TabsTrigger
                         value="memberNo"
-                        className="w-full"
-                        style={{
-                          backgroundColor:
-                            activeTab === "memberNo" ? "#2563eb" : "",
-                          color: activeTab === "memberNo" ? "#ffffff" : "",
-                        }}
+                        className={premiumTabsTrigger(activeTab === "memberNo")}
                       >
                         {t("forms.byMemberNo")}
                       </TabsTrigger>
                       <TabsTrigger
                         value="name"
-                        className="w-full"
-                        style={{
-                          backgroundColor:
-                            activeTab === "name" ? "#2563eb" : "",
-                          color: activeTab === "name" ? "#ffffff" : "",
-                        }}
+                        className={premiumTabsTrigger(activeTab === "name")}
                       >
                         {t("forms.byMemberName")}
                       </TabsTrigger>
@@ -391,24 +366,16 @@ const LoanAccountSearchForm = ({
                       value="memberNo"
                       className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4"
                     >
-                      <FormField
+                      <InputField
                         control={form.control}
                         name="dialougeMemberNo"
-                        render={({ field }) => (
-                          <FormItem className="w-full min-w-0">
-                            <FormLabel>{t("forms.memberNo")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                autoComplete="off"
-                                placeholder={t("forms.searchByMemberNo")}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        label={t("forms.memberNo")}
+                        autoComplete="off"
+                        placeholder={t("forms.searchByMemberNo")}
+                        formItemClassName="w-full min-w-0"
                       />
                       <Button
+                        type="button"
                         className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                         onClick={handleSearchAccountListByMemberNo}
                       >
@@ -419,24 +386,16 @@ const LoanAccountSearchForm = ({
                       value="name"
                       className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4"
                     >
-                      <FormField
+                      <InputField
                         control={form.control}
                         name="dialougeMemberName"
-                        render={({ field }) => (
-                          <FormItem className="w-full min-w-0">
-                            <FormLabel>{t("forms.name")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                autoComplete="off"
-                                placeholder={t("forms.searchByName")}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        label={t("forms.name")}
+                        autoComplete="off"
+                        placeholder={t("forms.searchByName")}
+                        formItemClassName="w-full min-w-0"
                       />
                       <Button
+                        type="button"
                         className="w-full sm:w-auto px-6 sm:px-10 shrink-0"
                         onClick={handleSearchAccountListByName}
                       >

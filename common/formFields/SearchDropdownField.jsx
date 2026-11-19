@@ -1,9 +1,8 @@
 "use client";
 
 import {
-  FormField,
-  FormItem,
   FormControl,
+  FormItem,
   FormMessage,
   FormLabel,
 } from "@/components/ui/form";
@@ -17,6 +16,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
+import { premiumFieldTrigger, premiumFieldShell } from "./fieldStyles";
 
 const SearchDropdownField = ({
   label,
@@ -24,24 +24,21 @@ const SearchDropdownField = ({
   className,
   optionLabelKey = "Label",
   loading,
-  loadMore, // Prop for loading more data from the parent
+  loadMore,
   handleSearch,
   input,
   setInput,
   value,
   onChange,
   disabled,
-  readOnly = false, // Added readonly prop
+  readOnly = false,
   isRequired = false,
 }) => {
   const handleScroll = () => {
     const listbox = document.querySelector(".auto-listbox");
     if (listbox) {
       const { scrollTop, scrollHeight, clientHeight } = listbox;
-
-      // Check if the user is close to the bottom of the list
       if (scrollTop + clientHeight >= scrollHeight - 50 && !loading) {
-        // console.log("Triggering loadMore");
         loadMore();
       }
     }
@@ -50,7 +47,7 @@ const SearchDropdownField = ({
   useEffect(() => {
     const delaySearch = setTimeout(() => {
       handleSearch();
-    }, 500); // Delay search by 500ms
+    }, 500);
     return () => clearTimeout(delaySearch);
   }, [input]);
 
@@ -67,9 +64,15 @@ const SearchDropdownField = ({
           <Select
             value={value ? String(value) : ""}
             onValueChange={onChange}
-            disabled={disabled || loading}
+            disabled={disabled || loading || readOnly}
           >
-            <SelectTrigger className={cn("w-full", className)}>
+            <SelectTrigger
+              className={premiumFieldTrigger({
+                disabled: disabled || loading || readOnly,
+                readOnly,
+                className: cn("w-full justify-between", className),
+              })}
+            >
               <SelectValue placeholder={`Select ${label?.toLowerCase()}`} />
               {loading && <Spinner size="sm" className="ml-2" />}
             </SelectTrigger>
@@ -80,7 +83,10 @@ const SearchDropdownField = ({
                   placeholder={`Search ${label?.toLowerCase()}...`}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={premiumFieldShell({
+                    className:
+                      "w-full h-9 px-3 text-sm focus:outline-none",
+                  })}
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>

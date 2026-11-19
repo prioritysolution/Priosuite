@@ -34,6 +34,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ImageIcon, ZoomIn } from "lucide-react";
 
 const Withdrawn = ({
   loading,
@@ -91,7 +92,15 @@ const Withdrawn = ({
     String(memberBranchId).trim() !== "" &&
     String(memberBranchId) !== String(branchId ?? "");
 
+  const hasSpecimenImage = (url) => {
+    if (!url || typeof url !== "string") return false;
+    const trimmed = url.trim();
+    if (!trimmed) return false;
+    return !/no-img\.png/i.test(trimmed);
+  };
+
   const handleOpenImageDialog = (type, url) => {
+    if (!hasSpecimenImage(url)) return;
     setOpenImageDialog(true);
     setActiveImage(type);
     setActiveImageURL(url);
@@ -155,10 +164,12 @@ const Withdrawn = ({
             <div className="grid lg:grid-cols-[7fr_3fr] gap-2 lg:h-full lg:min-h-0">
               {visibleBlock && (
                 <>
-                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">
-                      {t("deposit.sections.accountDetails")}
-                    </h2>
+                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-3 sm:p-4 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h2 className="text-base sm:text-lg text-center font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.accountDetails")}
+                      </h2>
+                    </div>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
                         {getWithdrawnLoading ? (
@@ -288,54 +299,121 @@ const Withdrawn = ({
                                 }
                               />
                             </div>
-                            <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
-                              <div className="flex flex-col h-full items-center gap-2 text-center font-semibold">
-                                <h2 className=" font-semibold">{t("deposit.withdrawn.profile")}</h2>
-                                <div
-                                  onClick={() =>
-                                    handleOpenImageDialog("photo", photoLink)
-                                  }
-                                  className=" w-full aspect-square  border border-primary mx-auto relative flex items-center justify-center"
-                                >
-                                  {getSpecimenLoading ? (
-                                    <ClipLoader
-                                      color="#00264d"
-                                      size={50}
-                                      speedMultiplier={0.7}
-                                    />
-                                  ) : (
-                                    <Image
-                                      fill
-                                      alt="Photo"
-                                      src={photoLink || ""}
-                                    />
-                                  )}
+                            {/* Specimen Signature and Photo */}
+                            <div className="w-full flex flex-col gap-3 border border-primary/20 rounded-lg p-3 sm:p-4 bg-slate-50/60">
+                              <h3 className="w-full text-center text-base sm:text-lg font-semibold">
+                                {t("deposit.sections.specimen")}
+                              </h3>
+                              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
+                                <div className="w-full flex flex-col gap-2">
+                                  <p className="text-sm font-semibold text-slate-700">
+                                    {t("deposit.withdrawn.profile")}
+                                  </p>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleOpenImageDialog("photo", photoLink)
+                                    }
+                                    disabled={
+                                      getSpecimenLoading ||
+                                      !hasSpecimenImage(photoLink)
+                                    }
+                                    className={`group relative w-full max-w-[280px] mx-auto aspect-square rounded-xl border-2 border-dashed overflow-hidden bg-white flex items-center justify-center transition-colors ${
+                                      hasSpecimenImage(photoLink)
+                                        ? "border-primary/30 cursor-zoom-in hover:border-primary"
+                                        : "border-slate-300 cursor-default"
+                                    }`}
+                                  >
+                                    {getSpecimenLoading ? (
+                                      <ClipLoader
+                                        color="#00264d"
+                                        size={40}
+                                        speedMultiplier={0.7}
+                                      />
+                                    ) : hasSpecimenImage(photoLink) ? (
+                                      <>
+                                        <Image
+                                          fill
+                                          alt="Photo"
+                                          src={photoLink}
+                                          className="object-contain p-2"
+                                          unoptimized
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center">
+                                          <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium text-primary shadow-sm">
+                                            <ZoomIn className="h-3.5 w-3.5" />
+                                            {t("common.view")}
+                                          </span>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <div className="flex flex-col items-center gap-2 text-muted-foreground px-3 text-center">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-sm">
+                                          <ImageIcon className="h-6 w-6" />
+                                        </div>
+                                        <span className="text-xs sm:text-sm">
+                                          {t("deposit.common.noPreviewData")}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </button>
                                 </div>
-                              </div>
-                              <div className="flex flex-col h-full items-center gap-2 text-center font-semibold">
-                                <h2 className=" font-semibold">{t("deposit.common.signature")}</h2>
-                                <div
-                                  onClick={() =>
-                                    handleOpenImageDialog(
-                                      "signature",
-                                      signatureLink,
-                                    )
-                                  }
-                                  className="w-full aspect-[4/1]  border border-primary mx-auto relative flex items-center justify-center"
-                                >
-                                  {getSpecimenLoading ? (
-                                    <ClipLoader
-                                      color="#00264d"
-                                      size={50}
-                                      speedMultiplier={0.7}
-                                    />
-                                  ) : (
-                                    <Image
-                                      fill
-                                      alt="Signature"
-                                      src={signatureLink || ""}
-                                    />
-                                  )}
+
+                                <div className="w-full flex flex-col gap-2">
+                                  <p className="text-sm font-semibold text-slate-700">
+                                    {t("deposit.common.signature")}
+                                  </p>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleOpenImageDialog(
+                                        "signature",
+                                        signatureLink,
+                                      )
+                                    }
+                                    disabled={
+                                      getSpecimenLoading ||
+                                      !hasSpecimenImage(signatureLink)
+                                    }
+                                    className={`group relative w-full max-w-[320px] mx-auto aspect-[3/1] rounded-xl border-2 border-dashed overflow-hidden bg-white flex items-center justify-center transition-colors ${
+                                      hasSpecimenImage(signatureLink)
+                                        ? "border-primary/30 cursor-zoom-in hover:border-primary"
+                                        : "border-slate-300 cursor-default"
+                                    }`}
+                                  >
+                                    {getSpecimenLoading ? (
+                                      <ClipLoader
+                                        color="#00264d"
+                                        size={40}
+                                        speedMultiplier={0.7}
+                                      />
+                                    ) : hasSpecimenImage(signatureLink) ? (
+                                      <>
+                                        <Image
+                                          fill
+                                          alt="Signature"
+                                          src={signatureLink}
+                                          className="object-contain p-2"
+                                          unoptimized
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center">
+                                          <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium text-primary shadow-sm">
+                                            <ZoomIn className="h-3.5 w-3.5" />
+                                            {t("common.view")}
+                                          </span>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <div className="flex flex-col items-center gap-2 text-muted-foreground px-3 text-center">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-sm">
+                                          <ImageIcon className="h-6 w-6" />
+                                        </div>
+                                        <span className="text-xs sm:text-sm">
+                                          {t("deposit.common.noPreviewData")}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -364,10 +442,12 @@ const Withdrawn = ({
                       </div>
                     </div>
                   </div>
-                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">
-                      {t("deposit.withdrawn.withdrawnDetails")}
-                    </h2>
+                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-3 sm:p-4 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h2 className="text-base sm:text-lg text-center font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.withdrawn.withdrawnDetails")}
+                      </h2>
+                    </div>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
                         {getWithdrawnLoading ? (
@@ -533,15 +613,33 @@ const Withdrawn = ({
       </div>
       <Dialog open={openImageDialog} onOpenChange={setOpenImageDialog}>
         <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px]">
-          <DialogHeader className={`w-full flex items-center justify-center`}>
-            <DialogTitle className="capitalize">{activeImage}</DialogTitle>
+          <DialogHeader className="w-full flex items-center justify-center">
+            <DialogTitle className="capitalize">
+              {activeImage === "photo"
+                ? t("deposit.withdrawn.profile")
+                : t("deposit.common.signature")}
+            </DialogTitle>
           </DialogHeader>
           <div
-            className={`w-full max-w-[400px] border relative mx-auto ${
-              activeImage === "photo" ? "h-[400px]" : "h-[100px]"
+            className={`w-full max-w-[480px] relative mx-auto rounded-xl border border-primary/20 overflow-hidden bg-muted/20 ${
+              activeImage === "photo"
+                ? "aspect-square max-h-[70vh]"
+                : "aspect-[3/1] max-h-[30vh]"
             }`}
           >
-            <Image fill alt={activeImage} src={activeImageURL || ""} />
+            {hasSpecimenImage(activeImageURL) ? (
+              <Image
+                fill
+                alt={activeImage}
+                src={activeImageURL}
+                className="object-contain p-2"
+                unoptimized
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+                {t("deposit.common.noPreviewData")}
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

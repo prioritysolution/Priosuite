@@ -5,16 +5,8 @@ import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import InvestmentLedger from "@/common/ledger/investmentLedger/InvestmentLedger";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
@@ -123,10 +115,12 @@ const InvestmentRenewal = ({
                 </div>
               </div>
 
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                <h3 className="w-full text-center text-xl font-semibold">
-                  {t("investment.basicInfoBlock")}
-                </h3>
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("investment.basicInfoBlock")}
+                  </h3>
+                </div>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <InputField
                     control={form.control}
@@ -178,10 +172,12 @@ const InvestmentRenewal = ({
                 </div>
               </div>
 
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                <h3 className="w-full text-center text-xl font-semibold">
-                  {t("investment.renewalInfoBlock")}
-                </h3>
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("investment.renewalInfoBlock")}
+                  </h3>
+                </div>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <DatePickerField
                     control={form.control}
@@ -263,46 +259,34 @@ const InvestmentRenewal = ({
                     displayValue={form.watch("matureDate") || ""}
                   />
 
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="matureAmount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {t("investment.matureAmount")}
-                          <span className="text-red-500 ml-1">*</span>
-                        </FormLabel>
-                        <FormControl>
-                          <div className="flex items-center gap-3">
-                            <Input
-                              placeholder={t("investment.enterMatureAmount")}
-                              type="number"
-                              name={field.name}
-                              ref={field.ref}
-                              onBlur={field.onBlur}
-                              value={field.value ?? ""}
-                              onChange={(e) => field.onChange(e.target.value)}
-                            />
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div
-                                    onClick={handleCalculateMatureAmount}
-                                    className="p-2 text-2xl bg-primary rounded-md text-white cursor-pointer"
-                                  >
-                                    <IoCalculator />
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>{t("investment.calculateMatureAmount")}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("investment.matureAmount")}
+                    placeholder={t("investment.enterMatureAmount")}
+                    type="number"
+                    isRequired
+                    endContent={
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              type="button"
+                              onClick={handleCalculateMatureAmount}
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary text-white text-lg cursor-pointer transition-colors hover:brightness-95"
+                              aria-label={t(
+                                "investment.calculateMatureAmount",
+                              )}
+                            >
+                              <IoCalculator />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{t("investment.calculateMatureAmount")}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    }
                   />
                 </div>
               </div>

@@ -4,6 +4,7 @@ import * as React from "react";
 import { Clock, X } from "lucide-react";
 import { useController } from "react-hook-form";
 import { cn } from "@/lib/utils";
+import { premiumFieldTrigger } from "./fieldStyles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -282,12 +283,11 @@ export function TimePickerField({
                 disabled={disabled}
                 inputMode="numeric"
                 autoComplete="off"
-                className={cn(
-                  "h-10 w-full pr-20 sm:h-11",
-                  error && "border-destructive focus-visible:ring-destructive/50",
-                  disabled && "cursor-not-allowed bg-slate-50",
-                  className,
-                )}
+                className={premiumFieldTrigger({
+                  hasError: !!error,
+                  disabled,
+                  className: cn("h-10 w-full pr-20", className),
+                })}
               />
               <div className="absolute right-3 top-1/2 z-20 flex -translate-y-1/2 items-center gap-1.5">
                 {allowClear && time && !disabled ? (
@@ -322,13 +322,15 @@ export function TimePickerField({
               type="button"
               variant="outline"
               disabled={disabled}
-              className={cn(
-                "relative h-10 w-full min-w-0 justify-between px-3 text-left font-normal sm:h-11",
-                !time && "text-muted-foreground",
-                error && "border-destructive focus-visible:ring-destructive/50",
-                disabled && "cursor-not-allowed bg-slate-50",
-                className,
-              )}
+              className={premiumFieldTrigger({
+                hasError: !!error,
+                disabled,
+                className: cn(
+                  "relative h-10 w-full min-w-0 justify-between px-3.5 text-left",
+                  !time && "text-muted-foreground font-normal",
+                  className,
+                ),
+              })}
             >
               <span className="truncate text-sm">
                 {format12Hour(time) || placeholder}

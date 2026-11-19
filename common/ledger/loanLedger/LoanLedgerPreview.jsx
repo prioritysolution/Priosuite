@@ -46,8 +46,8 @@ const chunkPages = (rows = []) => {
   return pages;
 };
 
-const Detail = ({ label, value, wide = false }) => (
-  <div className={`min-w-0 flex gap-1 ${wide ? "col-span-3" : ""}`}>
+const Detail = ({ label, value, className = "" }) => (
+  <div className={`min-w-0 flex gap-1 ${className}`}>
     <p className="font-semibold shrink-0">{label}</p>
     <p className="break-words">{value || ""}</p>
   </div>
@@ -121,23 +121,56 @@ const LoanLedgerPreview = ({
             </div>
 
             {isFirst ? (
-              <div className="shrink-0 mt-1 mb-1 border border-black px-2 py-1 grid grid-cols-3 gap-x-3 gap-y-0.5 text-[11px] text-left leading-4">
-                <Detail label="Member Name :" value={ledgerHeaderData?.Full_Name} />
-                <Detail label="Guardian Name :" value={ledgerHeaderData?.Relation_Name} />
-                <Detail label="Product Name :" value={ledgerHeaderData?.Product_Name} />
-                <Detail wide label="Address :" value={ledgerHeaderData?.Address} />
-                <Detail label="Account No. :" value={ledgerHeaderData?.Account_No} />
-                <Detail label="Ref. Ac. No. :" value={ledgerHeaderData?.Ref_Ac_No} />
-                <Detail label="Disbursement Amount :" value={money(ledgerHeaderData?.Disb_Amt)} />
-                <Detail label="Disbursement Date :" value={formatDateSafe(ledgerHeaderData?.Disb_Date)} />
-                <Detail label="Repay Within :" value={formatDateSafe(ledgerHeaderData?.Repay_Within)} />
+              <div className="shrink-0 mt-1 mb-1 border border-black px-2 py-1.5 grid grid-cols-3 gap-x-3 gap-y-1 text-[11px] text-left leading-4">
+                <Detail
+                  label="Member Name :"
+                  value={ledgerHeaderData?.Full_Name}
+                />
+                <Detail
+                  label="Guardian Name :"
+                  value={ledgerHeaderData?.Relation_Name}
+                />
+                <Detail
+                  label="Product Name :"
+                  value={ledgerHeaderData?.Product_Name}
+                />
+                <Detail
+                  label="Address :"
+                  value={ledgerHeaderData?.Address}
+                  className="col-span-3"
+                />
+                <Detail
+                  label="Account No. :"
+                  value={ledgerHeaderData?.Account_No}
+                />
+                <Detail
+                  label="Ref. Ac. No. :"
+                  value={ledgerHeaderData?.Ref_Ac_No}
+                />
+                <Detail
+                  label="Disbursement Amount :"
+                  value={money(ledgerHeaderData?.Disb_Amt)}
+                />
+                <Detail
+                  label="Disbursement Date :"
+                  value={formatDateSafe(ledgerHeaderData?.Disb_Date)}
+                />
+                <Detail
+                  label="Repay Within :"
+                  value={formatDateSafe(ledgerHeaderData?.Repay_Within)}
+                />
                 <Detail label="ROI :" value={ledgerHeaderData?.Roi} />
-                <Detail label="Repay Mode :" value={ledgerHeaderData?.Repay_Mode} />
+                <Detail
+                  label="Repay Mode :"
+                  value={ledgerHeaderData?.Repay_Mode}
+                />
               </div>
             ) : (
               <p className="shrink-0 text-left text-[11px] font-semibold py-1">
                 {ledgerHeaderData?.Full_Name || ""}{" "}
-                {ledgerHeaderData?.Account_No ? `· A/c ${ledgerHeaderData.Account_No}` : ""}
+                {ledgerHeaderData?.Account_No
+                  ? `· A/c ${ledgerHeaderData.Account_No}`
+                  : ""}
               </p>
             )}
 
@@ -145,37 +178,83 @@ const LoanLedgerPreview = ({
               <Table className="w-full border-collapse border border-black text-[11px]">
                 <TableHeader>
                   <TableRow className="h-[8mm] border-black">
-                    <TableHead className="text-black p-0 border-black text-center w-[28px]">SL. NO.</TableHead>
-                    <TableHead className="text-black p-0 border-l border-black text-center w-[68px]">DATE</TableHead>
-                    <TableHead className="text-black p-0 pl-1 border-l border-black text-left">PARTICULAR</TableHead>
-                    <TableHead className="text-black p-0 border-l border-black text-center w-[64px]">DISBURSE</TableHead>
-                    <TableHead className="text-black p-0 border-l border-black text-center w-[68px]">PRN. REFUND</TableHead>
-                    <TableHead className="text-black p-0 border-l border-black text-center w-[68px]">INTT. REFUND</TableHead>
-                    <TableHead className="text-black p-0 border-l border-black text-center w-[70px]">BALANCE</TableHead>
-                    <TableHead className="text-black p-0 border-l border-black text-center w-[58px]">DUE INTT.</TableHead>
+                    <TableHead className="text-black p-0 border-black text-center w-[28px]">
+                      SL. NO.
+                    </TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[68px]">
+                      DATE
+                    </TableHead>
+                    <TableHead className="text-black p-0 pl-1 border-l border-black text-left">
+                      PARTICULAR
+                    </TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[64px]">
+                      DISBURSE
+                    </TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[68px]">
+                      PRN. REFUND
+                    </TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[68px]">
+                      INTT. REFUND
+                    </TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[70px]">
+                      BALANCE
+                    </TableHead>
+                    <TableHead className="text-black p-0 border-l border-black text-center w-[58px]">
+                      DUE INTT.
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody className="[&_td]:h-[7.2mm]">
                   {pageRows.map((row, index) => (
-                    <TableRow key={`${pageIndex}-${index}`} className="h-[7.2mm] bg-white">
-                      <TableCell className="border border-black p-0 text-center">{serial++}</TableCell>
-                      <TableCell className="border border-black p-0 text-center whitespace-nowrap">{formatDateSafe(row?.Trans_Date)}</TableCell>
-                      <TableCell className="border border-black p-0 pl-1 pr-1 text-left break-words">{row?.Particular || ""}</TableCell>
-                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Disb_Amt)}</TableCell>
-                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Prn_Ref)}</TableCell>
-                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Intt_Ref)}</TableCell>
-                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Balance)}</TableCell>
-                      <TableCell className="border border-black p-0 pr-1 text-right">{money(row?.Due_Intt)}</TableCell>
+                    <TableRow
+                      key={`${pageIndex}-${index}`}
+                      className="h-[7.2mm] bg-white"
+                    >
+                      <TableCell className="border border-black p-0 text-center">
+                        {serial++}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 text-center whitespace-nowrap">
+                        {formatDateSafe(row?.Trans_Date)}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 pl-1 pr-1 text-left break-words">
+                        {row?.Particular || ""}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">
+                        {money(row?.Disb_Amt)}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">
+                        {money(row?.Prn_Ref)}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">
+                        {money(row?.Intt_Ref)}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">
+                        {money(row?.Balance)}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right">
+                        {money(row?.Due_Intt)}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
                 {isLast && (
                   <TableFooter>
                     <TableRow className="h-[7.2mm] bg-white">
-                      <TableCell colSpan={3} className="border border-black p-0 pl-1 text-left font-semibold">Total</TableCell>
-                      <TableCell className="border border-black p-0 pr-1 text-right font-semibold">{money(totalDisburse)}</TableCell>
-                      <TableCell className="border border-black p-0 pr-1 text-right font-semibold">{money(totalPrincipalRefund)}</TableCell>
-                      <TableCell className="border border-black p-0 pr-1 text-right font-semibold">{money(totalInterestRefund)}</TableCell>
+                      <TableCell
+                        colSpan={3}
+                        className="border border-black p-0 pl-1 text-left font-semibold"
+                      >
+                        Total
+                      </TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right font-semibold">
+                        {money(totalDisburse)}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right font-semibold">
+                        {money(totalPrincipalRefund)}
+                      </TableCell>
+                      <TableCell className="border border-black p-0 pr-1 text-right font-semibold">
+                        {money(totalInterestRefund)}
+                      </TableCell>
                       <TableCell className="border border-black p-0" />
                       <TableCell className="border border-black p-0" />
                     </TableRow>
@@ -191,7 +270,9 @@ const LoanLedgerPreview = ({
               </p>
               <p className="whitespace-nowrap">
                 Generated On: {currentDate} {currentTime}
-                <span className="ml-3">Page {pageIndex + 1} of {pages.length}</span>
+                <span className="ml-3">
+                  Page {pageIndex + 1} of {pages.length}
+                </span>
               </p>
             </div>
           </div>

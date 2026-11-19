@@ -36,22 +36,22 @@ const InvestmentOpening = ({
 }) => {
   const { t } = useTranslation();
   const investmentTypeData = useSelector(
-    (state) => state.investmentOpenAccount.investmentTypeData
+    (state) => state.investmentOpenAccount.investmentTypeData,
   );
 
   const accountTypeData = useSelector(
-    (state) => state.investmentOpenAccount.investmentAccountTypeData
+    (state) => state.investmentOpenAccount.investmentAccountTypeData,
   );
 
   const interestTypeData = useSelector(
-    (state) => state.investmentOpenAccount.investmentInterestTypeData
+    (state) => state.investmentOpenAccount.investmentInterestTypeData,
   );
 
   const principalLedgerData = useSelector(
-    (state) => state.investmentOpenAccount.investmentPrincipalLedgerData
+    (state) => state.investmentOpenAccount.investmentPrincipalLedgerData,
   );
   const interestLedgerData = useSelector(
-    (state) => state.investmentOpenAccount.investmentInterestLedgerData
+    (state) => state.investmentOpenAccount.investmentInterestLedgerData,
   );
 
   const durationTypeData = useSelector(
@@ -72,7 +72,7 @@ const InvestmentOpening = ({
               className="w-full h-full flex flex-col gap-5 justify-between"
               autoComplete="off"
             >
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                   <DropdownField
                     control={form.control}
@@ -80,9 +80,11 @@ const InvestmentOpening = ({
                     label={t("opening.investmentOpening.fields.investmentType")}
                     options={investmentTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder={t("opening.investmentOpening.placeholders.investmentType"
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.investmentType",
                     )}
-                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchInvestmentType"
+                    searchPlaceholder={t(
+                      "opening.investmentOpening.placeholders.searchInvestmentType",
                     )}
                     isRequired
                   />
@@ -92,9 +94,11 @@ const InvestmentOpening = ({
                     label={t("opening.investmentOpening.fields.accountType")}
                     options={accountTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder={t("opening.investmentOpening.placeholders.accountType"
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.accountType",
                     )}
-                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchAccountType"
+                    searchPlaceholder={t(
+                      "opening.investmentOpening.placeholders.searchAccountType",
                     )}
                     isRequired
                   />
@@ -103,7 +107,9 @@ const InvestmentOpening = ({
                     control={form.control}
                     name="bankName"
                     label={t("opening.investmentOpening.fields.bankName")}
-                    placeholder={t("opening.investmentOpening.placeholders.bankName")}
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.bankName",
+                    )}
                     isRequired
                   />
 
@@ -111,7 +117,9 @@ const InvestmentOpening = ({
                     control={form.control}
                     name="accountNo"
                     label={t("opening.investmentOpening.fields.accountNo")}
-                    placeholder={t("opening.investmentOpening.placeholders.accountNo")}
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.accountNo",
+                    )}
                     type="number"
                     // maxLength={15}
                     isRequired
@@ -129,7 +137,9 @@ const InvestmentOpening = ({
                     control={form.control}
                     name="amount"
                     label={t("opening.investmentOpening.fields.amount")}
-                    placeholder={t("opening.investmentOpening.placeholders.amount")}
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.amount",
+                    )}
                     type="number"
                     isRequired
                   />
@@ -138,7 +148,8 @@ const InvestmentOpening = ({
                     control={form.control}
                     name="rateOfInterest"
                     label={t("opening.investmentOpening.fields.rateOfInterest")}
-                    placeholder={t("opening.investmentOpening.placeholders.rateOfInterest"
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.rateOfInterest",
                     )}
                     type="number"
                     isRequired
@@ -150,9 +161,11 @@ const InvestmentOpening = ({
                     label={t("opening.investmentOpening.fields.interestType")}
                     options={interestTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder={t("opening.investmentOpening.placeholders.interestType"
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.interestType",
                     )}
-                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchInterestType"
+                    searchPlaceholder={t(
+                      "opening.investmentOpening.placeholders.searchInterestType",
                     )}
                     isRequired
                   />
@@ -161,7 +174,9 @@ const InvestmentOpening = ({
                     control={form.control}
                     name="duration"
                     label={t("opening.investmentOpening.fields.duration")}
-                    placeholder={t("opening.investmentOpening.placeholders.duration")}
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.duration",
+                    )}
                     type="number"
                     isRequired
                   />
@@ -172,9 +187,11 @@ const InvestmentOpening = ({
                     label={t("opening.investmentOpening.fields.durationType")}
                     options={durationTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder={t("opening.investmentOpening.placeholders.durationType"
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.durationType",
                     )}
-                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchDurationType"
+                    searchPlaceholder={t(
+                      "opening.investmentOpening.placeholders.searchDurationType",
                     )}
                     isRequired
                   />
@@ -183,7 +200,8 @@ const InvestmentOpening = ({
                     control={form.control}
                     name="matureDate"
                     label={t("opening.investmentOpening.fields.matureDate")}
-                    placeholder={t("opening.investmentOpening.placeholders.matureDate"
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.matureDate",
                     )}
                     readOnly
                     isRequired
@@ -195,7 +213,8 @@ const InvestmentOpening = ({
                       control={form.control}
                       name="matureAmount"
                       label={t("opening.investmentOpening.fields.matureAmount")}
-                      placeholder={t("opening.investmentOpening.placeholders.matureAmount"
+                      placeholder={t(
+                        "opening.investmentOpening.placeholders.matureAmount",
                       )}
                       type="number"
                       endContent={
@@ -211,7 +230,8 @@ const InvestmentOpening = ({
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>
-                                {t("opening.investmentOpening.tooltips.calculateMatureAmount"
+                                {t(
+                                  "opening.investmentOpening.tooltips.calculateMatureAmount",
                                 )}
                               </p>
                             </TooltipContent>
@@ -225,12 +245,16 @@ const InvestmentOpening = ({
                   <DropdownField
                     control={form.control}
                     name="principalLedger"
-                    label={t("opening.investmentOpening.fields.principalLedger")}
+                    label={t(
+                      "opening.investmentOpening.fields.principalLedger",
+                    )}
                     options={principalLedgerData}
                     optionLabelKey="Ledger_Name"
-                    placeholder={t("opening.investmentOpening.placeholders.principalLedger"
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.principalLedger",
                     )}
-                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchPrincipalLedger"
+                    searchPlaceholder={t(
+                      "opening.investmentOpening.placeholders.searchPrincipalLedger",
                     )}
                     isRequired
                   />
@@ -241,9 +265,11 @@ const InvestmentOpening = ({
                     label={t("opening.investmentOpening.fields.interestLedger")}
                     options={interestLedgerData}
                     optionLabelKey="Ledger_Name"
-                    placeholder={t("opening.investmentOpening.placeholders.interestLedger"
+                    placeholder={t(
+                      "opening.investmentOpening.placeholders.interestLedger",
                     )}
-                    searchPlaceholder={t("opening.investmentOpening.placeholders.searchInterestLedger"
+                    searchPlaceholder={t(
+                      "opening.investmentOpening.placeholders.searchInterestLedger",
                     )}
                     isRequired
                   />
@@ -256,11 +282,7 @@ const InvestmentOpening = ({
                 disabled={loading}
               >
                 {loading ? (
-                  <ClipLoader
-                    color="#d7e6f4"
-                    size={20}
-                    speedMultiplier={0.7}
-                  />
+                  <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
                   t("opening.investmentOpening.buttons.add")
                 )}

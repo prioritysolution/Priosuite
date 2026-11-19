@@ -184,8 +184,12 @@ const Disburse = ({
                   </div>
                 </div>
 
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">{t("loan.applicationBlock")}</h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("loan.applicationBlock")}
+                    </h3>
+                  </div>
                   <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 xl:gap-x-10 gap-y-3 ">
                     <InputField
                       control={form.control}
@@ -285,8 +289,12 @@ const Disburse = ({
                   </div>
                 </div>
 
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-3 gap-3">
-                  <h3 className="w-full text-center text-xl font-semibold">{t("loan.disburseBlock")}</h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("loan.disburseBlock")}
+                    </h3>
+                  </div>
                   <div className="w-full overflow-x-auto rounded-lg border border-gray-300 bg-white">
                     <Table className="min-w-[600px] w-full text-sm border-collapse">
                       <TableHeader className="bg-gray-50">
@@ -418,8 +426,12 @@ const Disburse = ({
                   </div>
                 </div>
 
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 py-2 sm:px-5 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">{t("loan.transanctionBlock")}</h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("loan.transanctionBlock")}
+                    </h3>
+                  </div>
                   <div className="w-full flex flex-col gap-2">
                     <FormField
                       control={form.control}

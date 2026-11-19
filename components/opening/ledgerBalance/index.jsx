@@ -49,7 +49,7 @@ const LedgerBalance = ({
               className="w-full h-full flex flex-col gap-5 justify-between"
               autoComplete="off"
             >
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
                 <div className="w-full min-w-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 lg:gap-x-10 gap-y-3">
                   <DropdownField
                     control={form.control}
@@ -58,7 +58,8 @@ const LedgerBalance = ({
                     options={branchData}
                     optionLabelKey="Branch_Name"
                     placeholder={t("opening.ledgerBalance.placeholders.branch")}
-                    searchPlaceholder={t("opening.ledgerBalance.placeholders.searchBranch",
+                    searchPlaceholder={t(
+                      "opening.ledgerBalance.placeholders.searchBranch",
                     )}
                     isRequired
                   />
@@ -69,9 +70,11 @@ const LedgerBalance = ({
                     label={t("opening.ledgerBalance.fields.accountCategory")}
                     options={acctTypeData}
                     optionLabelKey="Cat_Name"
-                    placeholder={t("opening.ledgerBalance.placeholders.accountCategory",
+                    placeholder={t(
+                      "opening.ledgerBalance.placeholders.accountCategory",
                     )}
-                    searchPlaceholder={t("opening.ledgerBalance.placeholders.searchAccountCategory",
+                    searchPlaceholder={t(
+                      "opening.ledgerBalance.placeholders.searchAccountCategory",
                     )}
                     isRequired
                   />
@@ -82,8 +85,11 @@ const LedgerBalance = ({
                     label={t("opening.ledgerBalance.fields.mainHead")}
                     options={mainHeadData}
                     optionLabelKey="Head_Name"
-                    placeholder={t("opening.ledgerBalance.placeholders.mainHead")}
-                    searchPlaceholder={t("opening.ledgerBalance.placeholders.searchMainHead",
+                    placeholder={t(
+                      "opening.ledgerBalance.placeholders.mainHead",
+                    )}
+                    searchPlaceholder={t(
+                      "opening.ledgerBalance.placeholders.searchMainHead",
                     )}
                     disabled={!acctType}
                     isRequired
@@ -97,8 +103,11 @@ const LedgerBalance = ({
                     optionLabelKey="Sub_Head"
                     optionValueKey="Id"
                     loading={getSubHeadLoading}
-                    placeholder={t("opening.ledgerBalance.placeholders.subHead")}
-                    searchPlaceholder={t("opening.ledgerBalance.placeholders.searchSubHead",
+                    placeholder={t(
+                      "opening.ledgerBalance.placeholders.subHead",
+                    )}
+                    searchPlaceholder={t(
+                      "opening.ledgerBalance.placeholders.searchSubHead",
                     )}
                     disabled={!mainHead}
                     isRequired
@@ -112,7 +121,8 @@ const LedgerBalance = ({
                     optionLabelKey="Ledger_Name"
                     loading={getLedgerLoading}
                     placeholder={t("opening.ledgerBalance.placeholders.ledger")}
-                    searchPlaceholder={t("opening.ledgerBalance.placeholders.searchLedger",
+                    searchPlaceholder={t(
+                      "opening.ledgerBalance.placeholders.searchLedger",
                     )}
                     disabled={!subHead}
                     isRequired
@@ -122,7 +132,8 @@ const LedgerBalance = ({
                     control={form.control}
                     name="openingBalance"
                     label={t("opening.ledgerBalance.fields.openingBalance")}
-                    placeholder={t("opening.ledgerBalance.placeholders.openingBalance",
+                    placeholder={t(
+                      "opening.ledgerBalance.placeholders.openingBalance",
                     )}
                     type="number"
                     isRequired
@@ -136,11 +147,7 @@ const LedgerBalance = ({
                 disabled={loading}
               >
                 {loading ? (
-                  <ClipLoader
-                    color="#d7e6f4"
-                    size={20}
-                    speedMultiplier={0.7}
-                  />
+                  <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
                   t("opening.ledgerBalance.buttons.add")
                 )}

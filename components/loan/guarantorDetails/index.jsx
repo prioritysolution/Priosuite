@@ -2,14 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import { ClipLoader } from "react-spinners";
@@ -28,7 +21,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { IoSearch } from "react-icons/io5";
 import MemberSearchTable from "@/common/tables/MemberSearchTable";
 import { useSelector } from "react-redux";
@@ -91,8 +83,8 @@ const GuarantorDetails = ({
   }, null);
 
   return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden px-2 sm:px-10 2xl:px-10">
+    <div className="w-full h-full flex justify-between  bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col items-center border-primary rounded-lg border-2 p-2 sm:p-3 w-full gap-3 overflow-hidden">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
@@ -135,40 +127,28 @@ const GuarantorDetails = ({
                 />
 
                 <Dialog open={dialougeOpen} onOpenChange={setDialougeOpen}>
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="memberNo"
-                    render={({ field }) => (
-                      <FormItem className=" flex flex-col items-start justify-center">
-                        <FormLabel>{t("loan.memberNo2")}</FormLabel>
-                        <FormControl>
-                          <div className="flex flex-col lg:flex-row items-center gap-x-10 gap-2 w-full">
-                            <div className=" w-full relative ">
-                              <Input
-                                placeholder={t("loan.enterMemberNo")}
-                                className="w-full"
-                                type="number"
-                                onInput={(e) => {
-                                  if (e.target.value.length > 5) {
-                                    e.target.value = e.target.value.slice(0, 5);
-                                  }
-                                }}
-                                {...field}
-                              />
-                              <div className="absolute right-0 top-0 py-3 px-3">
-                                <DialogTrigger
-                                  asChild
-                                  className="cursor-pointer text-lg"
-                                >
-                                  <IoSearch />
-                                </DialogTrigger>
-                              </div>
-                            </div>
-                            <FormMessage />
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
+                    label={t("loan.memberNo2")}
+                    placeholder={t("loan.enterMemberNo")}
+                    type="number"
+                    maxLength={5}
+                    onInput={(e) => {
+                      if (e.target.value.length > 5) {
+                        e.target.value = e.target.value.slice(0, 5);
+                      }
+                    }}
+                    endContent={
+                      <DialogTrigger
+                        asChild
+                        className="cursor-pointer text-lg text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <span>
+                          <IoSearch />
+                        </span>
+                      </DialogTrigger>
+                    }
                   />
 
                   <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px] max-h-[min(90dvh,600px)] overflow-y-auto">
@@ -176,18 +156,22 @@ const GuarantorDetails = ({
                       <DialogTitle>{t("loan.searchMembers")}</DialogTitle>
                     </DialogHeader>
                     <div className="w-full ">
-                      <div className="w-full flex flex-col sm:flex-row items-end gap-2 gap-x-10 ">
+                      <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4">
                         <InputField
                           control={form.control}
                           name="dialougeMemberName"
                           label={t("loan.memberName")}
                           placeholder={t("loan.searchByEnterMemberName")}
                           autoComplete="off"
+                          formItemClassName="w-full min-w-0"
                         />
-                        <div
-                          className="w-full sm:w-auto px-10 py-2 text-white bg-primary rounded-md cursor-pointer text-center"
+                        <Button
+                          type="button"
+                          className="w-full sm:w-auto px-10 shrink-0"
                           onClick={handleSearchMember}
-                        >{t("loan.search")}</div>
+                        >
+                          {t("loan.search")}
+                        </Button>
                       </div>
                       <div className="w-full ">
                         <MemberSearchTable

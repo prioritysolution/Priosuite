@@ -22,12 +22,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { IoPrint, IoSearch } from "react-icons/io5";
 import { useIssueMembership } from "@/container/membership/issueMembership/Hooks";
 import MemberSearchTable from "../tables/MemberSearchTable";
 import { ClipLoader } from "react-spinners";
 import { DatePickerField } from "../formFields/DatePickerField";
+import InputField from "../formFields/InputField";
+import { premiumRadioGroup } from "../formFields/fieldStyles";
 import { cn } from "@/lib/utils";
 import getCookieData from "@/utils/getCookieData";
 import { getMemberDataByName } from "@/container/membership/issueMembership/IssueMembershipReducer";
@@ -310,45 +311,30 @@ const MemberSearchForm = ({
                 </div>
               )}
 
-              <FormField
-                control={form.control}
-                name="memberNo"
-                render={({ field }) => (
-                  <FormItem className={cn("w-full", { "": !showDate })}>
-                    <FormLabel>{t("memberSearch.cifRefNo")}</FormLabel>
-                    <FormControl>
-                      <div className="flex flex-col lg:flex-row items-center gap-x-10 gap-2 w-full">
-                        <div className=" w-full h-full">
-                          <div className=" w-full relative ">
-                            <Input
-                              placeholder={t(
-                                "memberSearch.memberNoPlaceholder",
-                              )}
-                              className="w-full"
-                              type="number"
-                              onInput={(e) => {
-                                if (e.target.value.length > 10) {
-                                  e.target.value = e.target.value.slice(0, 10);
-                                }
-                              }}
-                              {...field}
-                            />
-                            <div className="absolute right-0 top-0 py-3 px-3">
-                              <DialogTrigger
-                                asChild
-                                className="cursor-pointer text-lg"
-                              >
-                                <IoSearch />
-                              </DialogTrigger>
-                            </div>
-                          </div>
-                          <FormMessage />
-                        </div>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              <div className={cn("w-full", { "": !showDate })}>
+                <InputField
+                  control={form.control}
+                  name="memberNo"
+                  label={t("memberSearch.cifRefNo")}
+                  placeholder={t("memberSearch.memberNoPlaceholder")}
+                  type="number"
+                  onInput={(e) => {
+                    if (e.target.value.length > 10) {
+                      e.target.value = e.target.value.slice(0, 10);
+                    }
+                  }}
+                  endContent={
+                    <DialogTrigger
+                      asChild
+                      className="cursor-pointer text-lg text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <span>
+                        <IoSearch />
+                      </span>
+                    </DialogTrigger>
+                  }
+                />
+              </div>
 
               <div
                 className={cn("w-full flex justify-start self-end gap-5 ", {
@@ -406,7 +392,7 @@ const MemberSearchForm = ({
                 defaultValue="1"
                 value={selectedRadio}
                 onValueChange={setSelectedRadio}
-                className="flex flex-wrap items-center gap-x-3 gap-y-2 shrink-0"
+                className={premiumRadioGroup("shrink-0")}
               >
                 {RadioData.map((item, index) => (
                   <div className="flex items-center gap-2 min-w-0" key={index}>
@@ -429,26 +415,16 @@ const MemberSearchForm = ({
 
               <div className="w-full min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
                 <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4 shrink-0">
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="dialougeMemberName"
-                    render={({ field }) => (
-                      <FormItem className="w-full min-w-0">
-                        <FormLabel>
-                          {RadioData.find(
-                            (item) => item.value === selectedRadio,
-                          )?.label || t("memberSearch.memberName")}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            autoComplete="off"
-                            placeholder={t("memberSearch.searchByMemberName")}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={
+                      RadioData.find((item) => item.value === selectedRadio)
+                        ?.label || t("memberSearch.memberName")
+                    }
+                    autoComplete="off"
+                    placeholder={t("memberSearch.searchByMemberName")}
+                    formItemClassName="w-full min-w-0"
                   />
                   <Button
                     type="button"

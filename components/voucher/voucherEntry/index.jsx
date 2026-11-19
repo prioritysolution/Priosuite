@@ -14,15 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -116,6 +108,17 @@ const VoucherEntry = ({
 
   console.log("subLedgerListData=", subLedgerListData);
 
+  const voucherTypeOptions = [
+    { Id: "R", Option_Value: t("voucher.receipt") },
+    { Id: "P", Option_Value: t("voucher.payment") },
+    { Id: "J", Option_Value: t("voucher.journal") },
+  ];
+
+  const drCrOptions = [
+    { Id: "D", Option_Value: t("voucher.debit") },
+    { Id: "C", Option_Value: t("voucher.credit") },
+  ];
+
   useEffect(() => {
     if (window !== undefined)
       setIsOpeningActive(
@@ -125,18 +128,23 @@ const VoucherEntry = ({
 
   return (
     <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
-      <div className=" flex flex-col border-primary rounded-lg border-[2px] p-2 w-full gap-2 overflow-hidden">
-        <h3 className="w-full text-center text-xl font-semibold">
+      <div className=" flex flex-col border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="w-full text-center text-2xl font-semibold">
           {t("voucher.voucherEntry")}
         </h3>
         <ScrollArea className="w-full h-full">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              className="w-full flex flex-col gap-2 justify-between"
+              className="w-full flex flex-col gap-4 justify-between"
               autoComplete="off"
             >
-              <div className="w-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("voucher.voucherEntry")}
+                  </h3>
+                </div>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <div className="flex items-center gap-2 w-full">
                     <DatePickerField
@@ -156,81 +164,31 @@ const VoucherEntry = ({
                     )}
                   </div>
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="voucherType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {t("voucher.voucherType")}{" "}
-                          <span className="text-red-500 ml-1">*</span>
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          disabled={tableData && tableData.length > 0}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={t("voucher.selectVoucherType")}
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value={`R`}>
-                              {t("voucher.receipt")}
-                            </SelectItem>
-                            <SelectItem value={`P`}>
-                              {t("voucher.payment")}
-                            </SelectItem>
-                            <SelectItem value={`J`}>
-                              {t("voucher.journal")}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("voucher.voucherType")}
+                    placeholder={t("voucher.selectVoucherType")}
+                    options={voucherTypeOptions}
+                    isRequired={true}
+                    disabled={tableData && tableData.length > 0}
                   />
 
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="manVoucherNo"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("voucher.manualVoucherNo")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("voucher.enterManualVoucherNo")}
-                            readOnly={tableData && tableData.length > 0}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("voucher.manualVoucherNo")}
+                    placeholder={t("voucher.enterManualVoucherNo")}
+                    readOnly={tableData && tableData.length > 0}
                   />
 
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="narration"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {t("voucher.narration")}{" "}
-                          <span className="text-red-500 ml-1">*</span>
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("voucher.enterNarration")}
-                            readOnly={tableData && tableData.length > 0}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("voucher.narration")}
+                    placeholder={t("voucher.enterNarration")}
+                    isRequired={true}
+                    readOnly={tableData && tableData.length > 0}
                   />
 
                   <InputField
@@ -256,43 +214,6 @@ const VoucherEntry = ({
                     displayValue={glData?.Ledger_Name || ""}
                   />
 
-                  {/* <FormField
-                    control={form.control}
-                    name="subHead"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("voucher.subHead")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={subHeadData}
-                        optionLabelKey="Head_Name"
-                        optionValueKey="Id"
-                        placeholder={t("voucher.selectSubHead")}
-                        searchPlaceholder={t("voucher.searchSubHead")}
-                        fixedDropdownWidth
-                        isRequired={true}
-                      />
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="gl"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("common.gl")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={ledgerListData}
-                        optionLabelKey="Ledger_Name" // Specify the key for label
-                        placeholder={t("voucher.selectGl")}
-                        searchPlaceholder={t("voucher.searchGl")}
-                        fixedDropdownWidth
-                        isRequired={true}
-                      />
-                    )}
-                  /> */}
-
                   <FormField
                     control={form.control}
                     name="subLedger"
@@ -317,107 +238,44 @@ const VoucherEntry = ({
                     )}
                   />
 
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {t("common.amount")}{" "}
-                          <span className="text-red-500 ml-1">*</span>
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("common.enterAmount")}
-                            type="number"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("common.amount")}
+                    placeholder={t("common.enterAmount")}
+                    type="number"
+                    isRequired={true}
                   />
 
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="ledgerNarration"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {t("voucher.subLedgerNarration")}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("voucher.enterLedgerNarration")}
-                            readOnly={
-                              !form.getValues("gl") ||
-                              !(subLedgerListData?.length > 0)
-                            }
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("voucher.subLedgerNarration")}
+                    placeholder={t("voucher.enterLedgerNarration")}
+                    readOnly={
+                      !form.getValues("gl") ||
+                      !(subLedgerListData?.length > 0)
+                    }
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="drCr"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {t("voucher.drCr")}{" "}
-                          <span className="text-red-500 ml-1">*</span>
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          disabled={voucherType === "R" || voucherType === "P"}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={t("voucher.selectDrCr")}
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value={`D`}>
-                              {t("voucher.debit")}
-                            </SelectItem>
-                            <SelectItem value={`C`}>
-                              {t("voucher.credit")}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("voucher.drCr")}
+                    placeholder={t("voucher.selectDrCr")}
+                    options={drCrOptions}
+                    isRequired={true}
+                    disabled={voucherType === "R" || voucherType === "P"}
                   />
 
                   {subLedgerBalance > 0 && (
-                    <FormField
+                    <InputField
                       control={form.control}
                       name="subLedgerBalance"
-                      render={({ field }) => (
-                        <FormItem
-                          className={`${subLedgerBalance <= 0 && "hidden"}`}
-                        >
-                          <FormLabel>
-                            {t("voucher.subLedgerBalance")}
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder={t("voucher.enterSubLedgerBalance")}
-                              type="number"
-                              readOnly
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      label={t("voucher.subLedgerBalance")}
+                      placeholder={t("voucher.enterSubLedgerBalance")}
+                      type="number"
+                      readOnly={true}
                     />
                   )}
                 </div>
@@ -519,10 +377,12 @@ const VoucherEntry = ({
               )}
 
               {!(!voucherType || voucherType === "J") && isActiveDenom && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("voucher.denominationBlock")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("voucher.denominationBlock")}
+                    </h3>
+                  </div>
                   <div className="w-full lg:w-1/2 flex flex-col lg:flex-row gap-10">
                     <DoubleCashDenomTable
                       notes={notes}

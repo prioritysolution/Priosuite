@@ -8,6 +8,7 @@ import DropdownField from "@/common/formFields/DropdownField";
 import RadioField from "@/common/formFields/RadioField";
 import InputField from "@/common/formFields/InputField";
 import TextareaField from "@/common/formFields/TextareaField";
+import { premiumFieldTrigger } from "@/common/formFields/fieldStyles";
 import MemberSearchForm from "@/common/forms/MemberSearchForm";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -30,7 +31,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import getCookieData from "@/utils/getCookieData";
 import { format } from "date-fns";
@@ -196,20 +196,20 @@ const DeleteBtn = ({ onClick }) => (
 
 const SectionCard = ({ title, children, headerAction, className = "" }) => (
   <div
-    className={`w-full flex flex-col border border-primary rounded-xl p-1 sm:p-2 gap-2 ${className}`}
+    className={`w-full flex flex-col border border-primary rounded-xl p-2 sm:p-4 gap-3 ${className}`}
   >
     {title && (
-      <div className="w-full flex items-center justify-between">
-        <div className="w-10 h-10 hidden sm:block shrink-0" />
-        <h3 className="flex-1 text-center text-base sm:text-lg font-semibold text-foreground">
+      <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3 flex items-center justify-between">
+        <div className="w-8 h-8 hidden sm:block shrink-0" />
+        <h3 className="flex-1 text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
           {title}
         </h3>
         {headerAction ? (
-          <div className="shrink-0 flex items-center justify-end w-10 h-10">
+          <div className="shrink-0 flex items-center justify-end">
             {headerAction}
           </div>
         ) : (
-          <div className="w-10 h-10 hidden sm:block shrink-0" />
+          <div className="w-8 h-8 hidden sm:block shrink-0" />
         )}
       </div>
     )}
@@ -838,12 +838,11 @@ const NewApplication = ({
     applactioamount: (
       <Input
         type="number"
-        className="border border-primary-50 shadow-sm"
+        className={premiumFieldTrigger({ className: "h-9 min-w-[7rem]" })}
         defaultValue={m.Application_Amount || ""}
         onChange={(e) => {
           let value = e.target.value;
 
-          // Allow empty value and backspace
           if (value === "") {
             const members = form.getValues("member_info") || [];
             members[i] = { ...members[i], Application_Amount: "" };
@@ -851,33 +850,29 @@ const NewApplication = ({
             return;
           }
 
-          // Check decimal places and prevent more than 2
           if (value.includes(".")) {
             const parts = value.split(".");
             if (parts[1] && parts[1].length > 2) {
-              // Prevent typing more than 2 decimal places
               value = parts[0] + "." + parts[1].substring(0, 2);
               e.target.value = value;
             }
           }
 
-          // Update form value
           const members = form.getValues("member_info") || [];
           members[i] = { ...members[i], Application_Amount: e.target.value };
           form.setValue("member_info", members);
         }}
         onKeyDown={(e) => {
-          // Prevent typing more than 2 decimal places
           const value = e.target.value;
           if (value.includes(".")) {
             const parts = value.split(".");
             if (parts[1] && parts[1].length >= 2) {
-              // Prevent typing more digits after 2 decimal places
               if (e.key >= "0" && e.key <= "9") {
                 e.preventDefault();
               }
             }
           }
+          if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
         }}
         placeholder="0.00"
         min="0"
@@ -1089,66 +1084,36 @@ const NewApplication = ({
                         { name: "CustType", label: t("loan.customerType") },
                         { name: "shareBalance", label: t("loan.shareBalance") },
                       ].map(({ name, label }) => (
-                        <FormField
+                        <InputField
                           key={name}
                           control={form.control}
                           name={name}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{label}</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder={`Enter ${label.toLowerCase()}`}
-                                  {...field}
-                                  readOnly
-                                  className="h-9"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
+                          label={label}
+                          placeholder={`Enter ${label.toLowerCase()}`}
+                          readOnly
                         />
                       ))}
 
-                      <FormField
+                      <TextareaField
                         control={form.control}
                         name="address"
-                        render={({ field }) => (
-                          <FormItem className="sm:col-span-2 xl:col-span-1">
-                            <FormLabel>{t("loan.address")}</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder={t("loan.enterAddress")}
-                                {...field}
-                                readOnly
-                                className="resize-none"
-                                rows={2}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
+                        label={t("loan.address")}
+                        placeholder={t("loan.enterAddress")}
+                        readOnly
+                        rows={2}
+                        formItemClassName="sm:col-span-2 xl:col-span-1"
                       />
 
-                      <FormField
+                      <InputField
                         control={form.control}
                         name="branchName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("loan.branchName")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                readOnly
-                                className={cn(
-                                  "h-9",
-                                  branchId === form.getValues("BranchId")
-                                    ? "bg-muted/40"
-                                    : "bg-red-50 border-red-300 text-red-600",
-                                )}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
+                        label={t("loan.branchName")}
+                        readOnly
+                        className={
+                          branchId === form.getValues("BranchId")
+                            ? ""
+                            : "border-red-500 bg-red-50 [&_input]:text-red-600"
+                        }
                       />
                     </div>
                   )}
@@ -1183,25 +1148,12 @@ const NewApplication = ({
                       )}
                     /> */}
 
-                    <FormField
+                    <InputField
                       control={form.control}
                       name="applicationNo"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            Case No.{" "}
-                            <span className="text-red-500 ml-1">*</span>
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder={t("loan.enterApplicationNo")}
-                              {...field}
-                              className="h-9"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      label="Case No."
+                      placeholder={t("loan.enterApplicationNo")}
+                      isRequired
                     />
 
                     <FormField
@@ -1292,46 +1244,21 @@ const NewApplication = ({
                       isRequired
                     />
 
-                    <FormField
+                    <InputField
                       control={form.control}
                       name="rateOfInterest"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            Rate Of Interest{" "}
-                            <span className="text-red-500 ml-1">*</span>
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              readOnly
-                              {...field}
-                              className="h-9 bg-muted/40"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
+                      label="Rate Of Interest"
+                      readOnly
+                      isRequired
                     />
 
-                    <FormField
+                    <InputField
                       control={form.control}
                       name="duration"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            Duration{" "}
-                            <span className="text-red-500 ml-1">*</span>
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder={t("loan.enterDuration")}
-                              readOnly={!loanEligible}
-                              {...field}
-                              className="h-9"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      label="Duration"
+                      placeholder={t("loan.enterDuration")}
+                      readOnly={!loanEligible}
+                      isRequired
                     />
 
                     <FormField
@@ -1382,21 +1309,11 @@ const NewApplication = ({
                     />
 
                     {showEmi && (
-                      <FormField
+                      <InputField
                         control={form.control}
                         name="emiAmount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("loan.eMIAmount")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                readOnly
-                                {...field}
-                                className="h-9 bg-muted/40"
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
+                        label={t("loan.eMIAmount")}
+                        readOnly
                       />
                     )}
 
@@ -1486,23 +1403,13 @@ const NewApplication = ({
 
                     <div className="w-full min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 shrink-0">
-                        <FormField
+                        <InputField
                           control={form.control}
                           name="dialougeMemberName"
-                          render={({ field }) => (
-                            <FormItem className="flex-1 min-w-0">
-                              <FormLabel>{t("loan.memberName")}</FormLabel>
-                              <FormControl>
-                                <Input
-                                  autoComplete="off"
-                                  placeholder={t("loan.searchByMemberName")}
-                                  {...field}
-                                  className="h-9"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
+                          label={t("loan.memberName")}
+                          placeholder={t("loan.searchByMemberName")}
+                          autoComplete="off"
+                          formItemClassName="flex-1 min-w-0"
                         />
                         <Button
                           type="button"
@@ -1711,8 +1618,12 @@ const NewApplication = ({
 
               {/* ── Transaction block ── */}
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:px-5 gap-2 my-4 sm:my-5">
-                  <h3 className="w-full text-center text-lg sm:text-xl font-semibold">{t("loan.transanctionBlock")}</h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3 my-4 sm:my-5">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("loan.transanctionBlock")}
+                    </h3>
+                  </div>
                   {loading ? (
                     <div className="w-full flex flex-col gap-3">
                       <Skeleton className=" h-10 w-full lg:w-[400px] bg-secondary " />
@@ -2304,37 +2215,19 @@ const NewApplication = ({
                   {/* Max Allow / Max Loan Amount */}
                   {form.getValues("securityType") === "I" && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-                      <FormField
+                      <InputField
                         control={form.control}
                         name="maxAllow"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("loan.maxAllow")}</FormLabel>
-                            <Input
-                              placeholder={t("loan.enterMaxAllow")}
-                              {...field}
-                              readOnly={disableSecurityType}
-                              className="h-9"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        label={t("loan.maxAllow")}
+                        placeholder={t("loan.enterMaxAllow")}
+                        readOnly={disableSecurityType}
                       />
-                      <FormField
+                      <InputField
                         control={form.control}
                         name="maxLoanAmount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("loan.maxLoanAmount")}</FormLabel>
-                            <Input
-                              placeholder={t("loan.maxLoanAmount2")}
-                              {...field}
-                              readOnly
-                              className="h-9 bg-muted/40"
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        label={t("loan.maxLoanAmount")}
+                        placeholder={t("loan.maxLoanAmount2")}
+                        readOnly
                       />
                     </div>
                   )}
@@ -2358,45 +2251,23 @@ const NewApplication = ({
                         label: t("loan.guardianName"),
                       },
                     ].map(({ name, label }) => (
-                      <FormField
+                      <InputField
                         key={name}
                         control={form.control}
                         name={name}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{label}</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={`Enter ${label.toLowerCase()}`}
-                                {...field}
-                                readOnly
-                                className="h-9"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        label={label}
+                        placeholder={`Enter ${label.toLowerCase()}`}
+                        readOnly
                       />
                     ))}
 
-                    <FormField
+                    <TextareaField
                       control={form.control}
                       name="guaranteeAddress"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("loan.memberAddress")}</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder={t("loan.enterMemberAddress")}
-                              {...field}
-                              readOnly
-                              className="resize-none"
-                              rows={2}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      label={t("loan.memberAddress")}
+                      placeholder={t("loan.enterMemberAddress")}
+                      readOnly
+                      rows={2}
                     />
 
                     <button
@@ -2426,323 +2297,75 @@ const NewApplication = ({
               {/* ── 7. Project Details ── */}
               {securityOption === "PROJECT" && (
                 <div className="space-y-4">
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="projectName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("loan.projectName")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("loan.enterProjectName")}
-                            {...field}
-                            className="h-9"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("loan.projectName")}
+                    placeholder={t("loan.enterProjectName")}
                   />
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 mb-4 mt-2">
-                    <FormField
+                    <InputField
                       control={form.control}
                       name="projectcost"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("loan.projectCost")}</FormLabel>
-                          <FormControl>
-                            <Input
-                              type={"number"}
-                              placeholder={t("loan.enterProjectCost")}
-                              {...field}
-                              className="h-9"
-                              onChange={(e) => {
-                                let value = e.target.value;
-
-                                if (value === "") {
-                                  field.onChange("");
-                                  return;
-                                }
-
-                                if (value.includes(".")) {
-                                  const parts = value.split(".");
-                                  if (parts[1] && parts[1].length > 2) {
-                                    value =
-                                      parts[0] + "." + parts[1].substring(0, 2);
-                                    e.target.value = value;
-                                  }
-                                }
-
-                                field.onChange(e.target.value);
-                              }}
-                              onKeyDown={(e) => {
-                                const value = e.target.value;
-                                if (value.includes(".")) {
-                                  const parts = value.split(".");
-                                  if (parts[1] && parts[1].length >= 2) {
-                                    if (e.key >= "0" && e.key <= "9") {
-                                      e.preventDefault();
-                                    }
-                                  }
-                                }
-                              }}
-                              step="0.01"
-                              min="0"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      label={t("loan.projectCost")}
+                      placeholder={t("loan.enterProjectCost")}
+                      type="number"
                     />
 
-                    <FormField
+                    <InputField
                       control={form.control}
                       name="projectowncont"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("loan.ownContribution")}</FormLabel>
-                          <FormControl>
-                            <Input
-                              type={"number"}
-                              placeholder={t("loan.enterProjectOwnContribution")}
-                              {...field}
-                              className="h-9"
-                              onChange={(e) => {
-                                let value = e.target.value;
-
-                                if (value === "") {
-                                  field.onChange("");
-                                  return;
-                                }
-
-                                if (value.includes(".")) {
-                                  const parts = value.split(".");
-                                  if (parts[1] && parts[1].length > 2) {
-                                    value =
-                                      parts[0] + "." + parts[1].substring(0, 2);
-                                    e.target.value = value;
-                                  }
-                                }
-
-                                field.onChange(e.target.value);
-                              }}
-                              onKeyDown={(e) => {
-                                const value = e.target.value;
-                                if (value.includes(".")) {
-                                  const parts = value.split(".");
-                                  if (parts[1] && parts[1].length >= 2) {
-                                    if (e.key >= "0" && e.key <= "9") {
-                                      e.preventDefault();
-                                    }
-                                  }
-                                }
-                              }}
-                              step="0.01"
-                              min="0"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      label={t("loan.ownContribution")}
+                      placeholder={t("loan.enterProjectOwnContribution")}
+                      type="number"
                     />
                   </div>
 
-                  <div className="border border-black rounded-lg p-2 my-2">
-                    <Label className="flex justify-center items-center mb-2">
+                  <div className="border border-primary rounded-lg p-3 sm:p-4 my-2">
+                    <Label className="flex justify-center items-center mb-3 font-semibold">
                       Project Location
                     </Label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 mb-2">
-                      <FormField
+                      <InputField
                         control={form.control}
                         name="projectmouza"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("loan.mouza")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={t("loan.enterProjectMouza")}
-                                {...field}
-                                className="h-9"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        label={t("loan.mouza")}
+                        placeholder={t("loan.enterProjectMouza")}
                       />
 
-                      <FormField
+                      <InputField
                         control={form.control}
                         name="projectplotno"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("loan.plotNo")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={t("loan.enterProjectPlotNo")}
-                                {...field}
-                                className="h-9"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        label={t("loan.plotNo")}
+                        placeholder={t("loan.enterProjectPlotNo")}
                       />
                     </div>
                   </div>
 
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="projectland"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("loan.landOfferedAsSecurityInAcre")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("loan.enterProjectLandOfferedAsSecurityInAcre")}
-                            {...field}
-                            className="h-9"
-                            type={"number"}
-                            onChange={(e) => {
-                              let value = e.target.value;
-
-                              if (value === "") {
-                                field.onChange("");
-                                return;
-                              }
-
-                              if (value.includes(".")) {
-                                const parts = value.split(".");
-                                if (parts[1] && parts[1].length > 2) {
-                                  value =
-                                    parts[0] + "." + parts[1].substring(0, 2);
-                                  e.target.value = value;
-                                }
-                              }
-
-                              field.onChange(e.target.value);
-                            }}
-                            onKeyDown={(e) => {
-                              const value = e.target.value;
-                              if (value.includes(".")) {
-                                const parts = value.split(".");
-                                if (parts[1] && parts[1].length >= 2) {
-                                  if (e.key >= "0" && e.key <= "9") {
-                                    e.preventDefault();
-                                  }
-                                }
-                              }
-                            }}
-                            step="0.01"
-                            min="0"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("loan.landOfferedAsSecurityInAcre")}
+                    placeholder={t("loan.enterProjectLandOfferedAsSecurityInAcre")}
+                    type="number"
                   />
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 mt-2">
-                    <FormField
+                    <InputField
                       control={form.control}
                       name="projecthypothicated"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("loan.hypothicatedValue")}</FormLabel>
-                          <FormControl>
-                            <Input
-                              type={"number"}
-                              placeholder={t("loan.enterProjectHypothicatedValue")}
-                              {...field}
-                              className="h-9"
-                              onChange={(e) => {
-                                let value = e.target.value;
-
-                                if (value === "") {
-                                  field.onChange("");
-                                  return;
-                                }
-
-                                if (value.includes(".")) {
-                                  const parts = value.split(".");
-                                  if (parts[1] && parts[1].length > 2) {
-                                    value =
-                                      parts[0] + "." + parts[1].substring(0, 2);
-                                    e.target.value = value;
-                                  }
-                                }
-
-                                field.onChange(e.target.value);
-                              }}
-                              onKeyDown={(e) => {
-                                const value = e.target.value;
-                                if (value.includes(".")) {
-                                  const parts = value.split(".");
-                                  if (parts[1] && parts[1].length >= 2) {
-                                    if (e.key >= "0" && e.key <= "9") {
-                                      e.preventDefault();
-                                    }
-                                  }
-                                }
-                              }}
-                              step="0.01"
-                              min="0"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      label={t("loan.hypothicatedValue")}
+                      placeholder={t("loan.enterProjectHypothicatedValue")}
+                      type="number"
                     />
 
-                    <FormField
+                    <InputField
                       control={form.control}
                       name="projectincome"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("loan.incomeGenerated")}</FormLabel>
-                          <FormControl>
-                            <Input
-                              type={"number"}
-                              placeholder={t("loan.enterProjectIncomeGenerated")}
-                              {...field}
-                              className="h-9"
-                              onChange={(e) => {
-                                let value = e.target.value;
-
-                                if (value === "") {
-                                  field.onChange("");
-                                  return;
-                                }
-
-                                if (value.includes(".")) {
-                                  const parts = value.split(".");
-                                  if (parts[1] && parts[1].length > 2) {
-                                    value =
-                                      parts[0] + "." + parts[1].substring(0, 2);
-                                    e.target.value = value;
-                                  }
-                                }
-
-                                field.onChange(e.target.value);
-                              }}
-                              onKeyDown={(e) => {
-                                const value = e.target.value;
-                                if (value.includes(".")) {
-                                  const parts = value.split(".");
-                                  if (parts[1] && parts[1].length >= 2) {
-                                    if (e.key >= "0" && e.key <= "9") {
-                                      e.preventDefault();
-                                    }
-                                  }
-                                }
-                              }}
-                              step="0.01"
-                              min="0"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      label={t("loan.incomeGenerated")}
+                      placeholder={t("loan.enterProjectIncomeGenerated")}
+                      type="number"
                     />
                   </div>
                 </div>

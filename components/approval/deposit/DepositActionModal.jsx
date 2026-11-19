@@ -110,11 +110,11 @@ const DepositActionModal = ({
     }
 
     return (
-      <div className={cn("flex flex-col gap-1.5", fullWidth && "col-span-full")}>
-        <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+      <div className={cn("flex flex-col gap-1", fullWidth && "col-span-full")}>
+        <Label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
           {label}
         </Label>
-        <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-900 h-10 flex items-center overflow-hidden font-medium whitespace-nowrap shadow-sm">
+        <div className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-md text-sm text-slate-900 h-10 flex items-center overflow-hidden font-medium whitespace-nowrap shadow-none">
           {displayValue}
         </div>
       </div>
@@ -122,11 +122,12 @@ const DepositActionModal = ({
   };
 
   const SectionHeader = ({ title }) => (
-    <div className="col-span-full pb-2 border-b border-gray-100 mt-4 mb-2 flex items-center gap-2">
-      <div className="h-4 w-1 bg-primary rounded-full"></div>
-      <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
-        {title}
-      </h4>
+    <div className="col-span-full mt-4 mb-2">
+      <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+        <h4 className="w-full text-center text-sm sm:text-base font-bold text-[#00264d] tracking-wide">
+          {title}
+        </h4>
+      </div>
     </div>
   );
 
@@ -146,7 +147,10 @@ const DepositActionModal = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="w-[calc(100vw-1rem)] max-w-[95vw] lg:max-w-7xl h-[min(92dvh,900px)] sm:h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl bg-[#F8FAFC]">
+        <DialogContent
+          hideClose
+          className="w-[calc(100vw-1rem)] max-w-[95vw] lg:max-w-7xl h-[min(92dvh,900px)] sm:h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl bg-[#F8FAFC]"
+        >
           <DialogHeader className="p-3 sm:p-6 border-b bg-white flex flex-row items-center justify-between space-y-0 sticky top-0 z-50">
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">

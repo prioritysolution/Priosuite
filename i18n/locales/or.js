@@ -404,6 +404,7 @@ const or = {
       yes: "ହଁ",
       no: "ନା",
       na: "ପ୍ରଯୁଜ୍ୟ ନୁହେଁ",
+      view: "ଦେଖନ୍ତୁ",
     },
 
     master: {
@@ -862,6 +863,7 @@ const or = {
         sections: {
           permanentAddress: "ସ୍ଥାୟୀ ଠିକଣା",
           presentAddress: "ବର୍ତ୍ତମାନ ଠିକଣା",
+          kycDetails: "କେୱାଇସି ବିବରଣୀ",
         },
         sameAsPermanent: "ସ୍ଥାୟୀ ଠିକଣା ସହିତ ସମାନ",
         fields: {
@@ -1726,6 +1728,11 @@ const or = {
         signature: "ହସ୍ତାକ୍ଷର",
         uploadPhoto: "ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ",
         uploadSignature: "ହସ୍ତାକ୍ଷର ଅପଲୋଡ୍ କରନ୍ତୁ",
+        dropImageHere: "ଆପଣଙ୍କ ଚିତ୍ର ଏଠାରେ ଛାଡନ୍ତୁ, କିମ୍ବା",
+        browse: "ବ୍ରାଉଜ୍ କରନ୍ତୁ",
+        supportsFormats: "ସମର୍ଥିତ: JPG, JPEG2000, PNG",
+        changeImage: "ଚିତ୍ର ବଦଳାନ୍ତୁ",
+        removeImage: "ହଟାନ୍ତୁ",
       },
 
       withdrawn: {
@@ -1848,6 +1855,7 @@ const or = {
         clearSearch: "Clear search",
         noRecordsFound: "No records found",
         noResults: "କୌଣସି ଫଳାଫଳ ନାହିଁ।",
+        noPreviewData: "ପ୍ରିଭିଉ ଡାଟା ଉପଲବ୍ଧ ନାହିଁ",
         selectTransanctionMode: "ଟ୍ରାଞ୍ଜାକ୍ସନ୍ ମୋଡ୍ ବାଛନ୍ତୁ",
         searchAccount: "ଖାତା ଖୋଜନ୍ତୁ",
         totalCharges: "ମୋଟ ଚାର୍ଜ",

@@ -87,109 +87,116 @@ const PassbookPrint = ({
     ?.slice(skipDataLength);
 
   return (
-    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
-      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold pb-2">{t("membership.passbookPrint.title")}</h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg min-h-0">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden min-h-0 flex-1">
+        <h3 className="text-2xl font-semibold">{t("membership.passbookPrint.title")}</h3>
 
-        <ScrollArea className="w-full h-full px-1">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="w-full h-full flex flex-col gap-6 justify-between"
-              autoComplete="off"
-            >
-              <div className="w-full flex flex-wrap items-end gap-5">
-                <div className="w-full sm:w-72">
-                  <MemberPassbookSearchForm
-                    form={form}
-                    handleSelectClick={handleSelectMember}
-                    dialougeOpen={dialougeOpen}
-                    setDialougeOpen={setDialougeOpen}
-                  />
-                </div>
+        <ScrollArea className="w-full h-full min-h-0 flex-1">
+          <div className="w-full flex flex-col gap-4 min-w-0 max-w-full">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="w-full flex flex-col gap-4"
+                autoComplete="off"
+              >
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                 
 
-                <div className="w-full sm:w-auto">
-                  <FormField
-                    control={form.control}
-                    name="printType"
-                    render={({ field }) => (
-                      <RadioField
-                        onChange={field.onChange}
-                        value={field.value}
-                        options={[
-                          {
-                            value: "1",
-                            label: t("membership.passbookPrint.frontPage"),
-                          },
-                          {
-                            value: "2",
-                            label: t("membership.passbookPrint.transactionPage"),
-                          },
-                        ]}
-                        className="border border-default-200 rounded-md px-3 h-10 flex items-center"
-                      />
-                    )}
-                  />
-                </div>
-
-                {form.watch().printType === "2" && (
-                  <>
-                    <div className="w-full sm:w-64">
-                      <DatePickerField
-                        control={form.control}
-                        name="date"
-                        label={t("membership.passbookPrint.fields.date")}
+                  <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-6 lg:gap-x-10 gap-y-3 items-end">
+                    <div className="w-full min-w-0">
+                      <MemberPassbookSearchForm
+                        form={form}
+                        handleSelectClick={handleSelectMember}
+                        dialougeOpen={dialougeOpen}
+                        setDialougeOpen={setDialougeOpen}
                       />
                     </div>
 
-                    <div className="w-full sm:w-32">
-                      <InputField
+                    <div className="w-full min-w-0">
+                      <FormField
                         control={form.control}
-                        name="line"
-                        label={t("membership.passbookPrint.fields.line")}
-                        placeholder={t("membership.passbookPrint.placeholders.line")}
-                        type="number"
+                        name="printType"
+                        render={({ field }) => (
+                          <RadioField
+                            onChange={field.onChange}
+                            value={field.value}
+                            label={t("deposit.passbookPrint.printType", "Print Type")}
+                            options={[
+                              {
+                                value: "1",
+                                label: t("membership.passbookPrint.frontPage"),
+                              },
+                              {
+                                value: "2",
+                                label: t("membership.passbookPrint.transactionPage"),
+                              },
+                            ]}
+                            className="mt-0"
+                          />
+                        )}
                       />
                     </div>
-                  </>
-                )}
 
-                <div className="flex flex-wrap gap-3 w-full sm:w-auto ml-auto justify-end">
-                  <Button type="submit" className="w-full sm:w-32 h-10">
-                    {loading ? (
-                      <ClipLoader
-                        color="#d7e6f4"
-                        size={20}
-                        speedMultiplier={0.7}
-                      />
-                    ) : (
-                      t("common.buttons.next", "Next")
+                    {form.watch().printType === "2" && (
+                      <>
+                        <div className="w-full min-w-0">
+                          <DatePickerField
+                            control={form.control}
+                            name="date"
+                            label={t("membership.passbookPrint.fields.date")}
+                          />
+                        </div>
+
+                        <div className="w-full min-w-0">
+                          <InputField
+                            control={form.control}
+                            name="line"
+                            label={t("membership.passbookPrint.fields.line")}
+                            placeholder={t("membership.passbookPrint.placeholders.line")}
+                            type="number"
+                          />
+                        </div>
+                      </>
                     )}
-                  </Button>
-                  <div
-                    className={cn(
-                      "w-full sm:w-32 h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
-                      {
-                        "pointer-events-none opacity-50":
-                          !pageData || pageData?.length < 1,
-                      },
-                    )}
-                    onClick={() => {
-                      if (pageData) {
-                        if (showPage === "FIRST") generateFirstPagePDF();
-                        else if (showPage === "TRANS") {
-                          generateTransPagePDF();
-                          handleUpdateTrans(
-                            transPrintData[transPrintData?.length - 1].length,
-                          );
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-end gap-3 pt-2 border-t border-border/60">
+                    <Button
+                      type="submit"
+                      className="w-full sm:w-auto px-6 h-10 font-semibold"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <ClipLoader
+                          color="#d7e6f4"
+                          size={20}
+                          speedMultiplier={0.7}
+                        />
+                      ) : (
+                        t("common.buttons.next", "Next")
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full sm:w-auto px-6 h-10 font-semibold"
+                      disabled={!pageData || pageData?.length < 1}
+                      onClick={() => {
+                        if (pageData) {
+                          if (showPage === "FIRST") generateFirstPagePDF();
+                          else if (showPage === "TRANS") {
+                            generateTransPagePDF();
+                            handleUpdateTrans(
+                              transPrintData[transPrintData?.length - 1].length,
+                            );
+                          }
                         }
-                      }
-                    }}
-                  >
-                    {t("common.buttons.print")}
+                      }}
+                    >
+                      {t("common.buttons.print")}
+                    </Button>
                   </div>
                 </div>
-              </div>
 
               {showPage === "FIRST" && pageData?.length > 0 ? (
                 <div
@@ -351,6 +358,7 @@ const PassbookPrint = ({
               )}
             </form>
           </Form>
+          </div>
         </ScrollArea>
       </div>
       <Dialog open={showPrintSuccess} onOpenChange={setShowPrintSuccess}>

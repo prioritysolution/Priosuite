@@ -87,10 +87,12 @@ const Renewal = ({
               autoComplete="off"
             >
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("deposit.sections.basicInfo")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("deposit.sections.basicInfo")}
+                    </h3>
+                  </div>
                   {getRenewalLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                       {Array.from({ length: 10 }).map((_, index) => (
@@ -193,10 +195,12 @@ const Renewal = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("deposit.sections.renewalInfo")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("deposit.sections.renewalInfo")}
+                    </h3>
+                  </div>
                   {getRenewalLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                       <Skeleton className="w-full h-28 bg-secondary rounded-md" />
@@ -320,10 +324,12 @@ const Renewal = ({
 
               {visibleBlock &&
                 form.getValues("renewalType") === "principal" && (
-                  <div className="w-full h-full flex flex-col border border-primary rounded-lg p-2 sm:p-5 gap-5">
-                    <h3 className="w-full text-center text-xl font-semibold">
-                      {t("deposit.sections.transaction")}
-                    </h3>
+                  <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.transaction")}
+                      </h3>
+                    </div>
                     {getRenewalLoading ? (
                       <div className="w-full border border-primary rounded-md p-5 mb-5 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                         {Array.from({ length: 2 }).map((_, index) => (

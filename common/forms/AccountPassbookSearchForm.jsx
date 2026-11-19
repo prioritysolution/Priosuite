@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import InputField from "../formFields/InputField";
+import {
+  premiumTabsList,
+  premiumTabsTrigger,
+} from "../formFields/fieldStyles";
 import { IoSearch } from "react-icons/io5";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDeposit } from "@/container/deposit/deposit/Hooks";
@@ -88,8 +92,6 @@ const AccountPassbookSearchForm = ({
   }, [currentAccountPage]);
 
   const FormTag = showButton ? "form" : "div";
-
-  console.log("accountNo=", form.getValues("accountNo"));
 
   return (
     <Form {...form}>
@@ -179,25 +181,16 @@ const AccountPassbookSearchForm = ({
                   onValueChange={setActiveTab}
                   className="w-full flex items-center justify-center flex-col"
                 >
-                  <TabsList className="w-full sm:w-[70%]">
+                  <TabsList className={premiumTabsList("w-full sm:w-[70%]")}>
                     <TabsTrigger
                       value="memberNo"
-                      className="w-full"
-                      style={{
-                        backgroundColor:
-                          activeTab === "memberNo" ? "#2563eb" : "",
-                        color: activeTab === "memberNo" ? "#ffffff" : "",
-                      }}
+                      className={premiumTabsTrigger(activeTab === "memberNo")}
                     >
                       {t("forms.byMemberNo")}
                     </TabsTrigger>
                     <TabsTrigger
                       value="name"
-                      className="w-full"
-                      style={{
-                        backgroundColor: activeTab === "name" ? "#2563eb" : "",
-                        color: activeTab === "name" ? "#ffffff" : "",
-                      }}
+                      className={premiumTabsTrigger(activeTab === "name")}
                     >
                       {t("forms.byName")}
                     </TabsTrigger>

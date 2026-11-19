@@ -12,6 +12,7 @@ import {
 } from "date-fns";
 import { Calendar as CalendarIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { premiumFieldTrigger } from "./fieldStyles";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -217,27 +218,24 @@ function DatePickerControl({
   const isFieldLocked = !!(disabled || onPopover);
 
   const fieldTriggerClassName = cn(
-    "w-full justify-between text-left font-normal h-11 px-3 relative transition-all duration-150 cursor-pointer",
-    "bg-white border-slate-200 text-slate-800 shadow-none",
-    "focus-visible:border-[#00264D] focus-visible:ring-2 focus-visible:ring-[#00264D]/20",
-    fieldState.error &&
-      "border-destructive focus-visible:ring-destructive/20",
-    isFieldLocked
-      ? "cursor-not-allowed bg-slate-50 text-slate-800 hover:bg-slate-50 hover:text-slate-800"
-      : "hover:bg-slate-50 hover:text-slate-900",
-    "disabled:!opacity-100 disabled:text-slate-800",
-    !date && !isFieldLocked && "text-muted-foreground",
+    premiumFieldTrigger({
+      hasError: !!fieldState.error,
+      disabled: isFieldLocked,
+      readOnly: isFieldLocked,
+      className:
+        "h-10 justify-between px-3.5 relative cursor-pointer disabled:!opacity-100",
+    }),
+    !date && !isFieldLocked && "text-muted-foreground font-normal",
     className,
   );
 
   const fieldInputClassName = cn(
-    "w-full pr-20 h-11 transition-all duration-150",
-    "bg-white border-slate-200 text-slate-800 placeholder:text-slate-400",
-    "focus-visible:border-[#00264D] focus-visible:ring-2 focus-visible:ring-[#00264D]/20",
-    fieldState.error &&
-      "border-destructive focus-visible:ring-destructive/20",
-    isFieldLocked && "cursor-not-allowed bg-slate-50 text-slate-800",
-    "disabled:!opacity-100 disabled:text-slate-800 disabled:bg-slate-50",
+    premiumFieldTrigger({
+      hasError: !!fieldState.error,
+      disabled: isFieldLocked,
+      readOnly: isFieldLocked,
+      className: "h-10 pr-20 disabled:!opacity-100",
+    }),
     className,
   );
 

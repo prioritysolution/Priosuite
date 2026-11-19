@@ -31,47 +31,49 @@ const SubLedger = ({
   const headListData = useSelector((state) => state?.subLedger?.headData);
 
   return (
-    <div className="w-full h-full flex justify-between p-5 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col lg:flex-row items-center lg:items-start justify-center border-primary rounded-lg border-[2px] p-5 w-full gap-5 xl:gap-20 overflow-hidden">
-        <div className="h-full w-full min-h-0 text-center flex flex-col items-center gap-5 overflow-y-auto">
-          <h2 className="text-lg sm:text-2xl font-semibold">{t("master.subLedger.title")}</h2>
-          <div className="w-full flex items-center justify-end">
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <div className="w-full min-h-0 flex flex-col items-center gap-3 overflow-y-auto">
+          <div className="shrink-0 w-full flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
+            <h2 className="text-lg sm:text-2xl font-semibold text-center sm:text-left">
+              {t("master.subLedger.title")}
+            </h2>
             <Button
-              className="px-10 py-6 text-lg"
+              className="px-8 py-5 text-base self-end sm:self-auto"
               onClick={() => setOpenDialouge(true)}
             >
               {t("master.subLedger.addNew")}
             </Button>
-            <Modal
-              isOpen={openDialouge}
-              onOpenChange={setOpenDialouge}
-              size="md"
-              scrollBehavior="inside"
-              placement="center"
-              backdrop="opaque"
-              isDismissable={false}
-              radius="sm"
-              // isKeyboardDismissDisabled
-            >
-              <ModalContent>
-                <ModalHeader>
-                  {editData ? t("common.buttons.edit") + " " : t("common.buttons.add") + " "}
-                  {t("master.subLedger.title")}
-                </ModalHeader>
-                <ModalBody>
-                  <SubLedgerForm
-                    postLoading={postLoading}
-                    updateLoading={updateLoading}
-                    form={form}
-                    handleSubmit={handleSubmit}
-                    editData={editData}
-                    headListData={headListData}
-                  />
-                </ModalBody>
-              </ModalContent>
-            </Modal>
           </div>
-          <div className=" w-[300px] sm:w-full h-full min-h-0 sm:overflow-y-auto">
+          <Modal
+            isOpen={openDialouge}
+            onOpenChange={setOpenDialouge}
+            size="md"
+            scrollBehavior="inside"
+            placement="center"
+            backdrop="opaque"
+            isDismissable={false}
+            radius="sm"
+            // isKeyboardDismissDisabled
+          >
+            <ModalContent>
+              <ModalHeader>
+                {editData ? t("common.buttons.edit") + " " : t("common.buttons.add") + " "}
+                {t("master.subLedger.title")}
+              </ModalHeader>
+              <ModalBody>
+                <SubLedgerForm
+                  postLoading={postLoading}
+                  updateLoading={updateLoading}
+                  form={form}
+                  handleSubmit={handleSubmit}
+                  editData={editData}
+                  headListData={headListData}
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          <div className="w-full h-full min-h-0 overflow-y-auto">
             <SubLedgerTable
               data={subLedgerListData || []}
               handleEditData={handleEditData}

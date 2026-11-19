@@ -1,4 +1,5 @@
 "use client";
+
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
@@ -24,7 +25,6 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import getCookieData from "@/utils/getCookieData";
-import { getYear } from "date-fns";
 import { useEffect, useState } from "react";
 import { IoPrint } from "react-icons/io5";
 import { useSelector } from "react-redux";
@@ -64,7 +64,6 @@ const CloseAccount = ({
   const [isActiveDenom, setIsActiveDenom] = useState(false);
 
   useEffect(() => {
-    // Initialize form values or perform any setup needed
     if (window !== "undefined") {
       setIsActiveDenom(!!getCookieData("userIsActiveDenomination"));
     }
@@ -74,226 +73,210 @@ const CloseAccount = ({
     (state) => state?.bankDeposit?.bankAccountData,
   );
 
-  console.log("bankAccountData=", bankAccountData);
-
-  const startDate = getCookieData("fin_start_date");
-
-  const endDate = getCookieData("fin_end_date");
+  const availableBalance = form.watch("availableBalance");
+  const canUseCash =
+    !(
+      !Number.isInteger(parseFloat(availableBalance)) &&
+      !String(availableBalance || "").endsWith(".00")
+    );
 
   return (
-    <div className="w-full h-full flex flex-col bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-semibold text-center">
-        {t("bank.closeAccount")}
-      </h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold self-center">
+          {t("bank.closeAccount")}
+        </h3>
 
-      <ScrollArea className="w-full h-full">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="w-full flex flex-col items-center pb-6"
-            autoComplete="off"
-          >
-            <div className="w-full bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
-              {/* Main Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Bank Account */}
-                <FormField
-                  control={form.control}
-                  name="bankAccount"
-                  render={({ field }) => (
-                    <div className="flex gap-3 items-end w-full">
-                      <div className="flex-1">
-                        <DropdownField
-                          label={t("bank.bankAccount")}
-                          value={field.value}
-                          onChange={field.onChange}
-                          options={bankAccountData}
-                          optionLabelKey="Bank_Name"
-                          placeholder={t("bank.selectBankAccount")}
-                          searchPlaceholder={t("bank.searchBankAccount")}
-                          isRequired
-                        />
-                      </div>
+        <ScrollArea className="w-full h-full">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="w-full flex flex-col gap-3 pb-4"
+              autoComplete="off"
+            >
+              <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h2 className="text-base sm:text-lg text-center font-bold text-[#00264d] tracking-wide">
+                    {t("deposit.sections.accountDetails")}
+                  </h2>
+                </div>
 
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div
-                              onClick={handleShowLedger}
-                              className={cn(
-                                "p-2.5 px-4 text-xl bg-primary text-white rounded-lg cursor-pointer flex items-center justify-center h-10 mb-[2px] transition-colors hover:brightness-95",
-                                {
-                                  "bg-gray-400 cursor-not-allowed hover:brightness-100":
-                                    !form.getValues("bankAccount") ||
-                                    !form.getValues("closingDate"),
-                                },
-                              )}
-                            >
-                              <IoPrint />
-                            </div>
-                          </TooltipTrigger>
-
-                          <TooltipContent>
-                            <p>{t("bank.viewLedger")}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  )}
-                />
-
-                {/* Closing Date */}
-                <DatePickerField
-                  control={form.control}
-                  name="closingDate"
-                  label={t("bank.closingDate")}
-                  isRequired
-                  disabled
-                />
-
-                {/* Available Balance */}
-                <InputField
-                  control={form.control}
-                  name="availableBalance"
-                  label={t("bank.availableBalance")}
-                  placeholder={t("bank.enterAvailableBalance")}
-                  readOnly
-                />
-
-                {/* Closing Amount */}
-                <InputField
-                  control={form.control}
-                  name="closingAmount"
-                  label={t("bank.closingAmount")}
-                  placeholder={t("bank.enterClosingAmount")}
-                  type="number"
-                  isRequired
-                />
-
-                {/* Ref Vouch No */}
-                <InputField
-                  control={form.control}
-                  name="refVouchNo"
-                  label={t("bank.refVouchNo")}
-                  placeholder={t("bank.enterRefVouchNo")}
-                  isRequired={transMode === "bank"}
-                />
-
-                {/* Transaction Mode */}
-                <FormField
-                  control={form.control}
-                  name="transMode"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col justify-end h-full">
-                      <FormLabel className="mb-2">
-                        {t("bank.transactionMode")}
-                      </FormLabel>
-
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex gap-x-6 h-10 items-center border border-input rounded-lg px-3 bg-slate-50"
-                        >
-                          {!(
-                            !Number.isInteger(
-                              parseFloat(form.getValues("availableBalance")),
-                            ) &&
-                            !form
-                              .getValues("availableBalance")
-                              .endsWith(".00")
-                          ) && (
-                            <FormItem className="flex items-center space-x-2 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="cash" />
-                              </FormControl>
-
-                              <FormLabel className="font-normal cursor-pointer">
-                                {t("common.cash")}
-                              </FormLabel>
-                            </FormItem>
-                          )}
-
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="bank" />
-                            </FormControl>
-
-                            <FormLabel className="font-normal cursor-pointer">
-                              {t("common.bank")}
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              {/* Conditional Bank Dropdown or Cash Denomination Table */}
-              {!(
-                !Number.isInteger(
-                  parseFloat(form.getValues("availableBalance")),
-                ) && !form.getValues("availableBalance").endsWith(".00")
-              ) && transMode === "cash" ? (
-                isActiveDenom && (
-                  <div className="w-full border border-slate-100 rounded-xl p-4 bg-slate-50/50 mt-2">
-                    <h5 className="text-sm font-semibold text-slate-700 mb-3">
-                      {t("bank.cashDenomination")}
-                    </h5>
-
-                    <CashDenomTable
-                      notes={notes}
-                      denominators={denominators}
-                      totalAmount={cashTransactionTotal}
-                      cashTransactionGrandTotal={cashTransactionGrandTotal}
-                      handleDenominatorChange={handleDenominatorChange}
-                      amountTobePaid={Number(
-                        form.getValues("closingAmount"),
-                      )}
-                      outTable={false}
-                      tableType="out"
-                    />
-                  </div>
-                )
-              ) : (
-                <div className="w-full md:w-1/3">
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                   <FormField
                     control={form.control}
-                    name="bank"
+                    name="bankAccount"
                     render={({ field }) => (
-                      <DropdownField
-                        label={t("common.bank")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={
-                          bankAccountData && bankAccountData.length > 0
-                            ? bankAccountData.filter(
-                                (item) =>
-                                  item.Id.toString() !==
-                                  form.getValues("bankAccount"),
-                              )
-                            : []
-                        }
-                        disabled={!form.getValues("bankAccount")}
-                        optionLabelKey="Bank_Name"
-                        placeholder={t("bank.selectBank")}
-                        searchPlaceholder={t("bank.searchBank")}
-                        isRequired
-                      />
+                      <div className="flex gap-3 items-end w-full">
+                        <div className="flex-1 min-w-0">
+                          <DropdownField
+                            label={t("bank.bankAccount")}
+                            value={field.value}
+                            onChange={field.onChange}
+                            options={bankAccountData}
+                            optionLabelKey="Bank_Name"
+                            placeholder={t("bank.selectBankAccount")}
+                            searchPlaceholder={t("bank.searchBankAccount")}
+                            isRequired
+                          />
+                        </div>
+
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                onClick={handleShowLedger}
+                                className={cn(
+                                  "p-2.5 px-4 text-xl bg-primary text-white rounded-md cursor-pointer flex items-center justify-center h-10 shrink-0 transition-colors hover:brightness-95",
+                                  {
+                                    "bg-gray-400 cursor-not-allowed hover:brightness-100":
+                                      !form.getValues("bankAccount") ||
+                                      !form.getValues("closingDate"),
+                                  },
+                                )}
+                              >
+                                <IoPrint />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{t("bank.viewLedger")}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    )}
+                  />
+
+                  <DatePickerField
+                    control={form.control}
+                    name="closingDate"
+                    label={t("bank.closingDate")}
+                    isRequired
+                    disabled
+                  />
+
+                  <InputField
+                    control={form.control}
+                    name="availableBalance"
+                    label={t("bank.availableBalance")}
+                    placeholder={t("bank.enterAvailableBalance")}
+                    readOnly
+                  />
+
+                  <InputField
+                    control={form.control}
+                    name="closingAmount"
+                    label={t("bank.closingAmount")}
+                    placeholder={t("bank.enterClosingAmount")}
+                    type="number"
+                    isRequired
+                  />
+
+                  <InputField
+                    control={form.control}
+                    name="refVouchNo"
+                    label={t("bank.refVouchNo")}
+                    placeholder={t("bank.enterRefVouchNo")}
+                    isRequired={transMode === "bank"}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="transMode"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col justify-end h-full">
+                        <FormLabel className="mb-2">
+                          {t("bank.transactionMode")}
+                        </FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            className="flex gap-x-6 h-10 items-center border border-input rounded-md px-3"
+                          >
+                            {canUseCash && (
+                              <FormItem className="flex items-center space-x-2 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem value="cash" />
+                                </FormControl>
+                                <FormLabel className="font-normal cursor-pointer">
+                                  {t("common.cash")}
+                                </FormLabel>
+                              </FormItem>
+                            )}
+                            <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="bank" />
+                              </FormControl>
+                              <FormLabel className="font-normal cursor-pointer">
+                                {t("common.bank")}
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
                   />
                 </div>
-              )}
 
-              {/* Submit Action */}
-              <div className="flex justify-end mt-4">
+                {canUseCash && transMode === "cash" ? (
+                  isActiveDenom && (
+                    <>
+                      <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3 mt-2">
+                        <h2 className="text-base sm:text-lg text-center font-bold text-[#00264d] tracking-wide">
+                          {t("bank.cashDenomination")}
+                        </h2>
+                      </div>
+                      <CashDenomTable
+                        notes={notes}
+                        denominators={denominators}
+                        totalAmount={cashTransactionTotal}
+                        cashTransactionGrandTotal={cashTransactionGrandTotal}
+                        handleDenominatorChange={handleDenominatorChange}
+                        amountTobePaid={Number(
+                          form.getValues("closingAmount"),
+                        )}
+                        outTable={false}
+                        tableType="out"
+                      />
+                    </>
+                  )
+                ) : (
+                  <div className="w-full lg:w-1/2 xl:w-1/3">
+                    <FormField
+                      control={form.control}
+                      name="bank"
+                      render={({ field }) => (
+                        <DropdownField
+                          label={t("common.bank")}
+                          value={field.value}
+                          onChange={field.onChange}
+                          options={
+                            bankAccountData && bankAccountData.length > 0
+                              ? bankAccountData.filter(
+                                  (item) =>
+                                    item.Id.toString() !==
+                                    form.getValues("bankAccount"),
+                                )
+                              : []
+                          }
+                          disabled={!form.getValues("bankAccount")}
+                          optionLabelKey="Bank_Name"
+                          placeholder={t("bank.selectBank")}
+                          searchPlaceholder={t("bank.searchBank")}
+                          isRequired
+                        />
+                      )}
+                    />
+                  </div>
+                )}
+
                 <Button
                   type="submit"
-                  className="w-full sm:w-40 h-10 font-semibold"
+                  className="w-full sm:w-1/5 self-end"
                   disabled={
+                    loading ||
                     (transMode === "cash" &&
                       isActiveDenom &&
                       Number(cashTransactionGrandTotal) !==
@@ -315,31 +298,31 @@ const CloseAccount = ({
                   )}
                 </Button>
               </div>
-            </div>
-          </form>
-        </Form>
-      </ScrollArea>
+            </form>
+          </Form>
+        </ScrollArea>
 
-      <BankLedger
-        showLedger={showLedger}
-        setShowLedger={setShowLedger}
-        fromDate={fromDate}
-        toDate={form.getValues("closingDate")}
-        userName={userName}
-        currentDate={currentDate}
-        currentTime={currentTime}
-        totalWithdrawn={totalWithdrawn}
-        totalDeposit={totalDeposit}
-        ledgerHeaderData={ledgerHeaderData}
-        ledgerTableData={ledgerTableData}
-        loading={getBankLoading}
-      />
+        <BankLedger
+          showLedger={showLedger}
+          setShowLedger={setShowLedger}
+          fromDate={fromDate}
+          toDate={form.getValues("closingDate")}
+          userName={userName}
+          currentDate={currentDate}
+          currentTime={currentTime}
+          totalWithdrawn={totalWithdrawn}
+          totalDeposit={totalDeposit}
+          ledgerHeaderData={ledgerHeaderData}
+          ledgerTableData={ledgerTableData}
+          loading={getBankLoading}
+        />
 
-      <SuccessMessage
-        successMessage={successMessage}
-        showSuccessMessage={showSuccessMessage}
-        handleCloseSuccessMessage={handleCloseSuccessMessage}
-      />
+        <SuccessMessage
+          successMessage={successMessage}
+          showSuccessMessage={showSuccessMessage}
+          handleCloseSuccessMessage={handleCloseSuccessMessage}
+        />
+      </div>
     </div>
   );
 };

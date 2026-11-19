@@ -5,14 +5,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import MemberSearchForm from "@/common/forms/MemberSearchForm";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   FormControl,
   FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
   Form,
 } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
@@ -70,17 +65,17 @@ import TextareaField from "../../../common/formFields/TextareaField";
 
 const SectionCard = ({ title, icon: Icon, children, className = "" }) => (
   <div
-    className={`w-full bg-white border border-primary/20 rounded-xl shadow-sm overflow-hidden ${className}`}
+    className={`w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4 ${className}`}
   >
     {title && (
-      <div className="flex items-center gap-2 px-4 py-3 bg-primary/5 border-b border-primary/10">
-        {Icon && <Icon className="w-4 h-4 text-primary shrink-0" />}
-        <h3 className="text-xs font-bold text-primary uppercase tracking-wider truncate">
+      <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3 flex items-center justify-center gap-2">
+        {Icon && <Icon className="w-4 h-4 text-[#00264d] shrink-0" />}
+        <h4 className="text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
           {title}
-        </h3>
+        </h4>
       </div>
     )}
-    <div className="p-4 sm:p-5">{children}</div>
+    <div className="w-full">{children}</div>
   </div>
 );
 
@@ -437,10 +432,10 @@ const MapGroupMember = ({
   }));
 
   return (
-    <div className="w-full h-full min-w-0">
-      <div className="w-full h-full flex flex-col border-2 border-primary rounded-xl overflow-hidden bg-white  min-w-0">
-        <ScrollArea className="w-full h-full">
-          <div className="p-3 sm:p-4 lg:p-5 flex flex-col gap-4 min-w-0 max-w-full">
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg min-h-0">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden min-h-0 flex-1">
+        <ScrollArea className="w-full h-full min-h-0 flex-1">
+          <div className="w-full flex flex-col gap-4 min-w-0 max-w-full">
             <FormProvider {...form}>
               {/* 1 ── Group search */}
               <MemberSearchForm
@@ -928,17 +923,14 @@ const MapGroupMember = ({
                 />
               </div>
 
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  Address
-                </span>
-                <Textarea
-                  value={form.getValues("maddress") || ""}
-                  readOnly
-                  rows={2}
-                  className="resize-none bg-muted/40 border-border text-sm"
-                />
-              </div>
+              <TextareaField
+                control={form.control}
+                name="maddress"
+                label={t("membership.mapGroupMember.fields.address")}
+                readOnly
+                rows={2}
+                className="resize-none"
+              />
 
               {/* Editable dropdowns */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-border">
@@ -1023,25 +1015,12 @@ const MapGroupMember = ({
                   )}
                   className="h-9"
                 />
-                <FormField
+                <InputField
                   control={form.control}
                   name="remarks"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        Remarks
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder={t(
-                            "membership.mapGroupMember.placeholders.remarks",
-                          )}
-                          className="h-9 text-sm"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  label={t("membership.mapGroupMember.fields.remarks")}
+                  placeholder={t(
+                    "membership.mapGroupMember.placeholders.remarks",
                   )}
                 />
               </div>

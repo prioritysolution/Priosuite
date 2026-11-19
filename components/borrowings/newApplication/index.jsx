@@ -55,25 +55,27 @@ const NewApplication = ({
   const beg_date = getCookieData("beg_date");
 
   return (
-    <div className="w-full h-full flex flex-col  bg-white rounded-xl border border-black p-5 gap-5 overflow-hidden">
-      <h3 className="text-2xl font-bold tracking-tight text-gray-800 text-center">
-        {t("borrowings.borrowingsNewApplication")}
-      </h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold text-center">
+          {t("borrowings.borrowingsNewApplication")}
+        </h3>
 
-      <ScrollArea className="w-full h-full px-2">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="w-full flex flex-col gap-6 justify-start items-center"
-            autoComplete="off"
-          >
-            <div className="w-full flex flex-col gap-8 bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-sm">
+        <ScrollArea className="w-full h-full px-2">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="w-full flex flex-col gap-4 justify-start items-center"
+              autoComplete="off"
+            >
               {/* Basic Details Section */}
-              <div className="flex flex-col gap-4">
-                <h4 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                  {t("borrowings.basicDetails")}
-                </h4>
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("borrowings.basicDetails")}
+                  </h4>
+                </div>
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-3">
                   <InputField
                     control={form.control}
                     name="productName"
@@ -262,11 +264,13 @@ const NewApplication = ({
               </div>
 
               {/* Voucher Details Section */}
-              <div className="flex flex-col gap-4 mt-2">
-                <h4 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                  {t("common.voucherDetails")}
-                </h4>
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("common.voucherDetails")}
+                  </h4>
+                </div>
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-3">
                   <DatePickerField
                     control={form.control}
                     name="voucherDate"
@@ -288,30 +292,22 @@ const NewApplication = ({
                     label={t("common.refVouchNo")}
                     placeholder={t("common.enterRefVouchNo")}
                   />
-                </div>
-                <div className="w-full grid grid-cols-1 lg:grid-cols-2 mt-2">
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="bank"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("common.bank")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={bankAccountData}
-                        optionLabelKey="Bank_Name"
-                        placeholder={t("borrowings.selectBank")}
-                        searchPlaceholder={t("borrowings.searchBank")}
-                        isRequired
-                      />
-                    )}
+                    label={t("common.bank")}
+                    options={bankAccountData}
+                    optionLabelKey="Bank_Name"
+                    placeholder={t("borrowings.selectBank")}
+                    searchPlaceholder={t("borrowings.searchBank")}
+                    isRequired
                   />
                 </div>
               </div>
 
               <Button
                 type="submit"
-                className="w-full md:w-1/3 self-end"
+                className="w-full sm:w-1/5 self-end"
                 disabled={loading}
               >
                 {loading ? (
@@ -320,10 +316,10 @@ const NewApplication = ({
                   t("common.add")
                 )}
               </Button>
-            </div>
-          </form>
-        </Form>
-      </ScrollArea>
+            </form>
+          </Form>
+        </ScrollArea>
+      </div>
 
       <SuccessMessage
         successMessage={successMessage}

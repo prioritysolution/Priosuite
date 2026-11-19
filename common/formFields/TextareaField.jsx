@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { premiumFieldShell } from "./fieldStyles";
 
 const TextareaField = ({
   control,
@@ -21,6 +22,7 @@ const TextareaField = ({
   rows = 3,
   maxLength,
   isRequired = false,
+  formItemClassName,
 }) => {
   return (
     <FormField
@@ -30,7 +32,7 @@ const TextareaField = ({
         const hasError = !!fieldState?.error;
 
         return (
-          <FormItem className={cn("w-full min-w-0")}>
+          <FormItem className={cn("w-full min-w-0", formItemClassName)}>
             {label && (
               <FormLabel className="text-sm font-medium text-foreground">
                 {label}
@@ -46,14 +48,17 @@ const TextareaField = ({
                 readOnly={readOnly}
                 rows={rows}
                 maxLength={maxLength}
-                className={cn(
-                  "w-full resize-none transition-colors duration-200",
-                  hasError
-                    ? "border-destructive focus-visible:ring-destructive/30"
-                    : "border-input",
-                  disabled && "cursor-not-allowed bg-muted/80",
-                  className,
-                )}
+                className={premiumFieldShell({
+                  hasError,
+                  disabled,
+                  readOnly,
+                  className: cn(
+                    "w-full min-h-[80px] resize-none px-3.5 py-2.5 text-sm font-medium",
+                    "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+                    "placeholder:text-muted-foreground/70 placeholder:font-normal",
+                    className,
+                  ),
+                })}
                 {...field}
               />
             </FormControl>

@@ -120,10 +120,12 @@ const InvestmentClose = ({
                 </div>
               </div>
 
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3">
-                <h3 className="w-full text-center text-xl font-semibold">
-                  {t("investment.basicInfoBlock")}
-                </h3>
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("investment.basicInfoBlock")}
+                  </h3>
+                </div>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <InputField
                     control={form.control}
@@ -167,10 +169,12 @@ const InvestmentClose = ({
                 </div>
               </div>
 
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3">
-                <h3 className="w-full text-center text-xl font-semibold">
-                  {t("investment.closingInfoBlock")}
-                </h3>
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                  <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                    {t("investment.closingInfoBlock")}
+                  </h3>
+                </div>
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                   <DatePickerField
                     control={form.control}

@@ -54,28 +54,31 @@ const ApprovalbankingComponents = ({
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-800">
-          {t("bankingApproval.bankingApproval")}
-        </h2>
-        <div className="relative w-full sm:w-auto flex items-center">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-          <Input
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              paginate(1);
-            }}
-            className="w-full sm:w-64 pl-10 bg-white border-gray-300 focus:border-primary"
-            placeholder={t("bankingApproval.searchPlaceholder")}
-          />
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <div className="relative w-full flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="hidden sm:block w-64" />
+          <h2 className="text-2xl font-semibold text-center sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+            {t("bankingApproval.bankingApproval")}
+          </h2>
+          <div className="relative w-full sm:w-auto flex items-center">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <Input
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                paginate(1);
+              }}
+              className="w-full sm:w-64 pl-10 bg-white border-gray-300 focus:border-primary"
+              placeholder={t("bankingApproval.searchPlaceholder")}
+            />
+          </div>
         </div>
-      </div>
 
-      <Card className="rounded-lg shadow-sm border border-gray-200 overflow-hidden bg-white">
-        <div className="overflow-x-auto custom-scrollbar">
-          <Table>
+        <div className="w-full flex-1 min-h-0 flex flex-col border border-primary rounded-lg overflow-hidden bg-white">
+          
+          <div className="overflow-x-auto custom-scrollbar flex-1">
+            <Table>
             <TableHeader className="bg-background z-10">
               <TableRow className="bg-gray-100">
                 <TableHead className="w-[50px]  font-semibold">
@@ -216,7 +219,7 @@ const ApprovalbankingComponents = ({
             </div>
           </div>
         )}
-      </Card>
+      </div>
 
       {openModal && (
         <BankingActionModal
@@ -239,6 +242,7 @@ const ApprovalbankingComponents = ({
         successMessage={successMessageText}
         handleCloseSuccessMessage={handleCloseSuccessMessage}
       />
+      </div>
     </div>
   );
 };

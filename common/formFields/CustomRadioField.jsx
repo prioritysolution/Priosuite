@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
+import { premiumFieldShell } from "./fieldStyles";
 
 const CustomRadioField = ({
     value,
@@ -57,13 +58,17 @@ const CustomRadioField = ({
                                     key={option.value}
                                     htmlFor={option.value}
                                     className={cn(
-                                        "flex items-center gap-2.5 px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg border select-none transition-colors text-xs sm:text-sm w-full sm:w-auto max-w-xs",
+                                        premiumFieldShell({
+                                          disabled: isOptionDisabled,
+                                          className:
+                                            "flex items-center gap-2.5 px-3 py-2.5 sm:px-4 sm:py-2.5 select-none text-xs sm:text-sm w-full sm:w-auto max-w-xs",
+                                        }),
                                         isOptionDisabled
-                                            ? "opacity-50 cursor-not-allowed bg-muted"
+                                            ? "opacity-50 cursor-not-allowed"
                                             : "cursor-pointer",
                                         value === option.value && !isOptionDisabled
-                                            ? "border-primary bg-primary/5 text-primary font-semibold"
-                                            : "border-border bg-muted/20 text-muted-foreground hover:border-primary/30",
+                                            ? "border-primary from-primary/5 to-white text-primary font-semibold"
+                                            : "text-muted-foreground",
                                     )}
                                     onClick={(e) => {
                                         if (isOptionDisabled || readOnly) {

@@ -371,8 +371,8 @@ export const useOpenDepositAccount = () => {
         return true;
       }),
     nomineeDetails: yup.array(),
-    photo: yup.mixed(),
-    signature: yup.mixed(),
+    photo: yup.mixed().nullable(),
+    signature: yup.mixed().nullable(),
     transMode: yup.string().required("Transaction mode is required"),
     bank: yup.string().when("transMode", {
       is: "bank",

@@ -93,10 +93,12 @@ const UploadSpecimen = ({
               autoComplete="off"
             >
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("deposit.sections.basicInfo")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("deposit.sections.basicInfo")}
+                    </h3>
+                  </div>
                   {getUploadSpecimenLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                       {Array.from({ length: 10 }).map((_, index) => (
@@ -145,10 +147,12 @@ const UploadSpecimen = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("deposit.uploadSpecimen.previousSpecimen")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("deposit.uploadSpecimen.previousSpecimen")}
+                    </h3>
+                  </div>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-3 items-start justify-center ">
                     <div className="flex flex-col items-center gap-2 text-center font-semibold">
                       <h3>{t("deposit.common.photo")}</h3>
@@ -189,10 +193,12 @@ const UploadSpecimen = ({
               )}
 
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("deposit.uploadSpecimen.newSpecimen")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("deposit.uploadSpecimen.newSpecimen")}
+                    </h3>
+                  </div>
                   {getUploadSpecimenLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:gap-20 gap-x-10 gap-y-3 ">
                       <div className="w-full flex flex-col gap-2 items-center">

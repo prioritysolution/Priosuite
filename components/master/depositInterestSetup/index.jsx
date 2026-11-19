@@ -45,9 +45,11 @@ const DepositInterestSetup = ({
   );
 
   return (
-    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold">{t("master.depositInterestSetup.title")}</h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold">
+          {t("master.depositInterestSetup.title")}
+        </h3>
         <ScrollArea className="w-full h-full">
           <div className="w-full h-full flex flex-col gap-5 py-5">
             <Form {...form}>
@@ -56,16 +58,22 @@ const DepositInterestSetup = ({
                 className="w-full h-full"
                 autoComplete="off"
               >
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                     <DropdownField
                       control={form.control}
                       name="productId"
-                      label={t("master.depositInterestSetup.fields.productName")}
+                      label={t(
+                        "master.depositInterestSetup.fields.productName",
+                      )}
                       options={depositInterestProductData}
                       optionLabelKey="Prd_SH_Name"
-                      placeholder={t("master.depositInterestSetup.placeholders.productName")}
-                      searchPlaceholder={t("master.depositInterestSetup.placeholders.searchProductName")}
+                      placeholder={t(
+                        "master.depositInterestSetup.placeholders.productName",
+                      )}
+                      searchPlaceholder={t(
+                        "master.depositInterestSetup.placeholders.searchProductName",
+                      )}
                     />
 
                     <DatePickerField
@@ -79,38 +87,58 @@ const DepositInterestSetup = ({
                     <InputField
                       control={form.control}
                       name="minimumDuration"
-                      label={t("master.depositInterestSetup.fields.minimumDuration")}
-                      placeholder={t("master.depositInterestSetup.placeholders.minimumDuration")}
+                      label={t(
+                        "master.depositInterestSetup.fields.minimumDuration",
+                      )}
+                      placeholder={t(
+                        "master.depositInterestSetup.placeholders.minimumDuration",
+                      )}
                       type="number"
                     />
 
                     <InputField
                       control={form.control}
                       name="maximumDuration"
-                      label={t("master.depositInterestSetup.fields.maximumDuration")}
-                      placeholder={t("master.depositInterestSetup.placeholders.maximumDuration")}
+                      label={t(
+                        "master.depositInterestSetup.fields.maximumDuration",
+                      )}
+                      placeholder={t(
+                        "master.depositInterestSetup.placeholders.maximumDuration",
+                      )}
                       type="number"
                     />
 
                     <DropdownField
                       control={form.control}
                       name="durationUnit"
-                      label={t("master.depositInterestSetup.fields.durationUnit")}
+                      label={t(
+                        "master.depositInterestSetup.fields.durationUnit",
+                      )}
                       options={durationUnitData}
                       optionLabelKey="Option_Value"
-                      placeholder={t("master.depositInterestSetup.placeholders.durationUnit")}
-                      searchPlaceholder={t("master.depositInterestSetup.placeholders.searchDurationUnit")}
+                      placeholder={t(
+                        "master.depositInterestSetup.placeholders.durationUnit",
+                      )}
+                      searchPlaceholder={t(
+                        "master.depositInterestSetup.placeholders.searchDurationUnit",
+                      )}
                     />
 
                     <InputField
                       control={form.control}
                       name="rateOfInterest"
-                      label={t("master.depositInterestSetup.fields.rateOfInterest")}
-                      placeholder={t("master.depositInterestSetup.placeholders.rateOfInterest")}
+                      label={t(
+                        "master.depositInterestSetup.fields.rateOfInterest",
+                      )}
+                      placeholder={t(
+                        "master.depositInterestSetup.placeholders.rateOfInterest",
+                      )}
                       type="number"
                     />
                   </div>
-                  <Button type="submit" className="w-full sm:w-1/5 self-end">{t("master.depositInterestSetup.buttons.add")}</Button>
+                  <Button type="submit" className="w-full sm:w-1/5 self-end">
+                    {t("master.depositInterestSetup.buttons.add")}
+                  </Button>
                 </div>
               </form>
             </Form>
@@ -128,7 +156,9 @@ const DepositInterestSetup = ({
                       <TableHead className="text-center">
                         {t("master.depositInterestSetup.table.productName")}
                       </TableHead>
-                      <TableHead className="text-center">{t("master.depositInterestSetup.table.effectFrom")}</TableHead>
+                      <TableHead className="text-center">
+                        {t("master.depositInterestSetup.table.effectFrom")}
+                      </TableHead>
                       <TableHead className="text-center">
                         {t("master.depositInterestSetup.table.rateOfInterest")}
                       </TableHead>

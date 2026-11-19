@@ -148,47 +148,47 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
   );
 
   return (
-    <div className="w-full h-full   bg-muted/30 rounded-xl">
-      <div className="flex flex-col h-full rounded-xl border border-primary/30 bg-background shadow-sm overflow-hidden">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-border bg-background">
-          <h3 className="text-lg font-semibold tracking-tight text-foreground">
-            {t("master.passbookSettings.title")}
-          </h3>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {t("master.passbookSettings.subtitle")}
-          </p>
-        </div>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold">{t("master.passbookSettings.title")}</h3>
 
         {/* Scrollable body */}
-        <ScrollArea className="flex-1 min-h-0">
-          <div className="px-4 sm:px-6 lg:px-10 py-6 flex justify-center">
+        <ScrollArea className="w-full h-full">
+          <div className="w-full h-full py-2">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleSubmit)}
                 autoComplete="off"
-                className="w-full  flex flex-col gap-7"
+                className="w-full flex flex-col gap-5 justify-between"
               >
                 {/* Module */}
-                <div className="md:w-1/2 w-full">
-                  <SectionLabel>{t("master.passbookSettings.sections.module")}</SectionLabel>
-                  <DropdownField
-                    control={form.control}
-                    name="moduleId"
-                    label={t("master.passbookSettings.fields.module")}
-                    options={moduleData}
-                    optionLabelKey="Module_Name"
-                    placeholder={t("master.passbookSettings.placeholders.module")}
-                    searchPlaceholder={t("master.passbookSettings.placeholders.searchModule")}
-                  />
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("master.passbookSettings.sections.module")}
+                    </h4>
+                  </div>
+                  <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
+                    <DropdownField
+                      control={form.control}
+                      name="moduleId"
+                      label={t("master.passbookSettings.fields.module")}
+                      options={moduleData}
+                      optionLabelKey="Module_Name"
+                      placeholder={t("master.passbookSettings.placeholders.module")}
+                      searchPlaceholder={t("master.passbookSettings.placeholders.searchModule")}
+                    />
+                  </div>
                 </div>
 
-                <Divider />
-
                 {/* Page Size */}
-                <div>
-                  <SectionLabel>{t("master.passbookSettings.sections.pageSize")}</SectionLabel>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("master.passbookSettings.sections.pageSize")}
+                    </h4>
+                  </div>
+                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                       control={form.control}
                       name="pageHeight"
@@ -206,12 +206,14 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
                   </div>
                 </div>
 
-                <Divider />
-
                 {/* Line Configuration */}
-                <div>
-                  <SectionLabel>{t("master.passbookSettings.sections.lineConfiguration")}</SectionLabel>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("master.passbookSettings.sections.lineConfiguration")}
+                    </h4>
+                  </div>
+                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                       control={form.control}
                       name="firstPageTop"
@@ -243,12 +245,14 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
                   </div>
                 </div>
 
-                <Divider />
-
                 {/* Pagination */}
-                <div>
-                  <SectionLabel>{t("master.passbookSettings.sections.pagination")}</SectionLabel>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h4 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("master.passbookSettings.sections.pagination")}
+                    </h4>
+                  </div>
+                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                       control={form.control}
                       name="nextPageGap"
@@ -260,23 +264,21 @@ const PassbookSettings = ({ loading, form, handleSubmit }) => {
                 </div>
 
                 {/* Submit */}
-                <div className="pt-2 pb-4 flex justify-end">
-                  <Button
-                    type="submit"
-                    className="h-10 px-8 font-medium"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <ClipLoader
-                        color="#d7e6f4"
-                        size={18}
-                        speedMultiplier={0.7}
-                      />
-                    ) : (
-                      t("master.passbookSettings.buttons.save")
-                    )}
-                  </Button>
-                </div>
+                <Button
+                  type="submit"
+                  className="w-full sm:w-1/5 self-end"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ClipLoader
+                      color="#d7e6f4"
+                      size={20}
+                      speedMultiplier={0.7}
+                    />
+                  ) : (
+                    t("master.passbookSettings.buttons.save")
+                  )}
+                </Button>
               </form>
             </Form>
           </div>

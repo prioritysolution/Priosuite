@@ -1,12 +1,14 @@
 "use client";
 
-
 import { useTranslation } from "react-i18next";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
-import RadioField from "@/common/formFields/RadioField";
 import LoanAccountPassbookSearchForm from "@/common/forms/LoanAccountPassbookSearchForm";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -16,12 +18,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import InputField from "@/common/formFields/InputField";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
+import { ClipLoader } from "react-spinners";
+import {
+  ArrowRight,
+  Printer,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
+import PassbookPrintPreviewDialog from "./PassbookPrintPreviewDialog";
 
 const PassbookPrint = ({
   loading,
@@ -41,7 +49,19 @@ const PassbookPrint = ({
   const firstPageRef = useRef(null);
   const transPageRef = useRef(null);
 
+  const [mounted, setMounted] = useState(false);
   const [showPrintSuccess, setShowPrintSuccess] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (showPage === "FIRST" || showPage === "TRANS") {
+      setPreviewOpen(true);
+    }
+  }, [showPage]);
 
   const generateFirstPagePDF = useReactToPrint({
     contentRef: firstPageRef,
@@ -50,21 +70,24 @@ const PassbookPrint = ({
 
   const generateTransPagePDF = useReactToPrint({
     contentRef: transPageRef,
-    documentTitle: "Tansaction Page",
-    onAfterPrint: () => setShowPrintSuccess(true),
+    documentTitle: "Transaction Page",
+    onAfterPrint: () => {
+      setShowPrintSuccess(true);
+      setPreviewOpen(false);
+    },
   });
 
-  // handleUpdateTrans(transPrintData[transPrintData?.length - 1].length),
+  if (!mounted) return null;
+
   const totalLinesPerPage =
     (pageParameter?.Line_No_Fst_Page || 0) +
     (pageParameter?.Line_No_Scnd_Page || 0);
-  const blankLinesCount = Math.max(Number(showLine) - 1, 0); // Convert gap into pixels
+  const blankLinesCount = Math.max(Number(showLine) - 1, 0);
 
   const skipDataLength =
     blankLinesCount >= totalLinesPerPage
       ? Math.floor(blankLinesCount / totalLinesPerPage)
       : 0;
-  // const lineGapPx = pageParameter?.Mid_Gap * 16;
 
   const emptyRows = Array.from({ length: blankLinesCount }, () => ({
     Id: null,
@@ -74,9 +97,13 @@ const PassbookPrint = ({
     Withdrwan: null,
     Particular: null,
     Trans_Date: null,
+    Disburse: null,
+    Principal_paid: null,
+    Intt_Refund: null,
+    Due_Intt: null,
   }));
 
-  const totalPageData = [...emptyRows, ...pageData];
+  const totalPageData = pageData ? [...emptyRows, ...pageData] : emptyRows;
 
   const transPrintData = totalPageData
     ?.reduce((acc, _, i) => {
@@ -86,288 +113,193 @@ const PassbookPrint = ({
     }, [])
     ?.slice(skipDataLength);
 
-  return (
-    <div className="w-full h-full flex justify-between p-2 lg:p-5 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-5 overflow-hidden">
-        <h3 className="text-2xl font-semibold ">{t("loan.passbookPrint")}</h3>
+  const printType = form.watch("printType");
+  const isTransPage = printType === "2";
 
-        <ScrollArea className="w-full h-full px-2 sm:px-10 2xl:px-20 ">
-          <div className="w-full mb-10">
-            <LoanAccountPassbookSearchForm
-              form={form}
-              handleSelectClick={handleSelectAccount}
-              dialougeOpen={dialougeOpen}
-              setDialougeOpen={setDialougeOpen}
-            />
-          </div>
+  return (
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold self-center">
+          {t("loan.passbookPrint")}
+        </h3>
+
+        <ScrollArea className="w-full h-full">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              className="w-full h-full flex flex-col gap-10 justify-between"
+              className="w-full flex flex-col gap-3 pb-4"
               autoComplete="off"
             >
-              <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 border border-primary rounded-lg p-5 gap-5">
-                <FormField
-                  control={form.control}
-                  name="printType"
-                  render={({ field }) => (
-                    <RadioField
-                      onChange={field.onChange}
-                      value={field.value}
-                      options={[
-                        {
-                          value: "1",
-                          label: t("loan.frontPage"),
-                        },
-                        {
-                          value: "2",
-                          label: t("loan.transactionPage"),
-                        },
-                      ]}
-                      className="border border-default-200 rounded-md px-3 h-10 flex items-center self-end"
-                    />
-                  )}
-                />
+              <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
+                {/* <h2 className="text-lg sm:text-xl text-center font-semibold">
+                  {t("deposit.sections.accountDetails")}
+                </h2> */}
 
-                {form.watch().printType === "2" ? (
-                  <>
-                    <DatePickerField
-                      control={form.control}
-                      name="date"
-                      label={t("loan.date")}
-                    />
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 items-end">
+                  <LoanAccountPassbookSearchForm
+                    form={form}
+                    handleSelectClick={handleSelectAccount}
+                    dialougeOpen={dialougeOpen}
+                    setDialougeOpen={setDialougeOpen}
+                  />
 
-                    <InputField
-                      control={form.control}
-                      name="line"
-                      label={t("loan.line")}
-                      placeholder={t("loan.enterLine")}
-                      type="number"
-                    />
-                  </>
-                ) : (
-                  <></>
-                )}
-                <div className="flex gap-5">
-                  <Button type="submit" className="w-32 self-end">{t("loan.next")}</Button>
-                  <div
-                    className={cn(
-                      "w-32 h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 self-end cursor-pointer",
-                      {
-                        "pointer-events-none opacity-50":
-                          !pageData || pageData?.length < 1,
-                      }
-                    )}
-                    onClick={() => {
-                      if (pageData) {
-                        if (showPage === "FIRST") generateFirstPagePDF();
-                        else if (showPage === "TRANS") {
-                          generateTransPagePDF();
-                        }
-                      }
-                    }}
-                  >
-                    Print
-                  </div>
-                </div>
-              </div>
-
-              {showPage === "FIRST" && pageData?.length > 0 ? (
-                <div className="w-full h-full flex justify-center border border-primary rounded-lg p-5 gap-5 text-[11px] leading-[16px]">
-                  <div
-                    style={{
-                      width: `${pageParameter?.Page_Width}mm`,
-                      height: `${pageParameter?.Page_Height}mm`,
-                    }}
-                    className=" p-2 flex flex-col"
-                    ref={firstPageRef}
-                  >
-                    <div
-                      style={{
-                        height: `calc(${pageParameter?.Fst_Page_Top}*16px)`,
-                      }}
-                      className="w-full rew"
-                    />
-                    {pageData?.map((value, i) => (
-                      <>
-                        <p
-                          className={cn(
-                            "",
-                            {
-                              "text-center font-semibold": i <= 2,
-                            },
-                            {
-                              "grid grid-cols-[2fr_4fr]":
-                                value && value.includes(":"),
-                            }
-                          )}
-                          key={i}
-                        >
-                          <span
-                            className={cn("font-semibold text-nowrap", {
-                              "flex justify-between": i > 2,
-                            })}
-                          >
-                            {value.split(":")[0]}
-                            {!!value.includes(":") && (
-                              <span className="font-bold">:</span>
-                            )}{" "}
-                          </span>
-                          <span className="pl-2">
-                            {value?.split(":")[1]?.replace(/,/g, ", ")}
-                          </span>
-                        </p>
-                        {i === 2 ? <div className="w-full h-[16px]" /> : <></>}
-                      </>
-                    ))}
-                    <div className="w-full h-[32px]" />
-                    <div className="w-[200px] h-[30px] self-end border-t-2 border-black text-center flex items-center justify-center font-semibold">
-                      <span>{t("loan.print.manager")}</span>
-                    </div>
-                  </div>
-                </div>
-              ) : showPage === "TRANS" && pageData?.length > 0 ? (
-                <div className="w-full h-full flex justify-center border border-primary rounded-lg p-5 gap-5 text-[11px] leading-[16px]">
-                  <div
-                    style={{
-                      width: `${pageParameter?.Page_Width}mm`,
-                    }}
-                    className="h-full"
-                    ref={transPageRef}
-                  >
-                    {transPrintData.map((printData, index) => (
-                      <div
-                        style={{
-                          height: `${pageParameter?.Page_Height}mm`,
-                        }}
-                        className={cn(" p-2 flex flex-col w-full")}
-                        key={index}
-                      >
-                        <div
-                          className={cn(
-                            "w-full grid grid-cols-[1fr_2fr_3fr_2fr_2fr_2fr_2fr]",
-                            {
-                              "opacity-0":
-                                index == 0 &&
-                                0 <
-                                  blankLinesCount -
-                                    skipDataLength * totalLinesPerPage,
-                            }
-                          )}
-                        >
-                          <p className="border-x-2 border-black font-medium text-center">
-                            Sl.
-                          </p>
-                          <p className="border-r-2 border-black font-medium text-center">{t("loan.date")}</p>
-                          <p className="border-r-2 border-black font-medium text-center">{t("loan.particulars")}</p>
-                          <p className="border-r-2 border-black font-medium text-center">{t("loan.principal")}</p>
-                          <p className="border-r-2 border-black font-medium text-center">{t("loan.interest")}</p>
-                          <p className="border-r-2 border-black font-medium text-center">{t("loan.balance")}</p>
-                          <p className="border-r-2 border-black font-medium text-center">{t("loan.dueIntt")}</p>
-                        </div>
-                        {printData.map((data, i) => (
-                          <div key={`table-${i}`} className="flex flex-col">
-                            <div
+                  <FormField
+                    control={form.control}
+                    name="printType"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="text-sm font-medium">
+                          {t("deposit.passbookPrint.printType")}
+                        </FormLabel>
+                        <FormControl>
+                          <div className="flex gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => field.onChange("1")}
                               className={cn(
-                                "w-full grid grid-cols-[1fr_2fr_3fr_2fr_2fr_2fr_2fr]",
-                                {
-                                  "opacity-0":
-                                    index == 0 &&
-                                    i <
-                                      blankLinesCount -
-                                        skipDataLength * totalLinesPerPage,
-                                }
+                                "flex items-center justify-center gap-1.5 px-3.5 h-10 rounded-md border text-[13px] font-medium transition-all duration-150 whitespace-nowrap flex-1",
+                                field.value === "1"
+                                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                                  : "bg-muted/50 text-muted-foreground border-border/60 hover:border-border hover:bg-muted/80",
                               )}
                             >
-                              <p className="border-x-2 border-black font-medium text-center">
-                                {i + 1}
-                              </p>
-                              <p className="border-r-2 border-black font-medium text-center">
-                                {data?.Trans_Date
-                                  ? format(data?.Trans_Date, "dd-MM-yyyy")
-                                  : ""}
-                              </p>
-                              <p className="border-r-2 border-black font-medium text-center">
-                                {data?.Particular === null
-                                  ? ""
-                                  : data?.Particular}
-                              </p>
-                              <p className="border-r-2 border-black font-medium text-center">
-                                {data?.Disburse > 0
-                                  ? data?.Disburse.toFixed(2)
-                                  : data?.Principal_paid.toFixed(2)}
-                              </p>
-                              <p className="border-r-2 border-black font-medium text-center">
-                                {data?.Disburse > 0
-                                  ? ""
-                                  : data?.Intt_Refund.toFixed(2)}
-                              </p>
-                              <p className="border-r-2 border-black font-medium text-center">
-                                {/* {data?.Balance === null
-                                  ? ""
-                                  : data?.Balance.toFixed(2)} */}
-                                10000000.00
-                              </p>
-                              <p className="border-r-2 border-black font-medium text-center">
-                                {data?.Due_Intt === null
-                                  ? ""
-                                  : data?.Balance.toFixed(2)}
-                              </p>
-                            </div>
-                            <div
-                              className={cn("w-full hidden", {
-                                block:
-                                  i === pageParameter?.Line_No_Fst_Page - 1,
-                              })}
-                              style={{
-                                height: `calc(${pageParameter?.Mid_Gap}*16px)`,
-                              }}
-                            />
+                              {t("loan.frontPage")}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => field.onChange("2")}
+                              className={cn(
+                                "flex items-center justify-center gap-1.5 px-3.5 h-10 rounded-md border text-[13px] font-medium transition-all duration-150 whitespace-nowrap flex-1",
+                                field.value === "2"
+                                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                                  : "bg-muted/50 text-muted-foreground border-border/60 hover:border-border hover:bg-muted/80",
+                              )}
+                            >
+                              {t("loan.transactionPage")}
+                            </button>
                           </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {isTransPage && (
+                    <>
+                      <DatePickerField
+                        control={form.control}
+                        name="date"
+                        label={t("loan.date")}
+                        disabledDateAfter={new Date()}
+                      />
+
+                      <InputField
+                        control={form.control}
+                        name="line"
+                        label={t("loan.line")}
+                        placeholder={t("loan.enterLine")}
+                        type="number"
+                      />
+                    </>
+                  )}
                 </div>
-              ) : (
-                <></>
-              )}
+
+                <Button
+                  type="submit"
+                  className="w-full sm:w-1/5 self-end gap-2"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ClipLoader
+                      color="#d7e6f4"
+                      size={20}
+                      speedMultiplier={0.7}
+                    />
+                  ) : (
+                    <>
+                      {t("loan.next")}
+                      <ArrowRight size={14} />
+                    </>
+                  )}
+                </Button>
+              </div>
             </form>
           </Form>
         </ScrollArea>
       </div>
+
+      <PassbookPrintPreviewDialog
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+        showPage={showPage}
+        pageData={pageData}
+        pageParameter={pageParameter}
+        firstPageRef={firstPageRef}
+        transPageRef={transPageRef}
+        generateFirstPagePDF={generateFirstPagePDF}
+        generateTransPagePDF={generateTransPagePDF}
+        transPrintData={transPrintData}
+        blankLinesCount={blankLinesCount}
+        skipDataLength={skipDataLength}
+        totalLinesPerPage={totalLinesPerPage}
+        showLine={showLine}
+      />
+
       <Dialog open={showPrintSuccess}>
         <DialogContent
-          className="w-[calc(100vw-1rem)] sm:max-w-[425px]"
+          className="w-[calc(100vw-1rem)] sm:max-w-[400px] p-0 gap-0 overflow-hidden rounded-xl"
           hideClose
           onPointerDownOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
-          <div className="text-center text-2xl font-medium">
-            <p>{t("loan.didYouPrintSuccessfully")}</p>
+          <div className="flex flex-col items-center gap-3 px-6 pt-7 pb-5 text-center">
+            <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
+              <Printer size={22} className="text-green-600" />
+            </div>
+            <div>
+              <DialogTitle className="text-[16px] font-semibold text-foreground">
+                Confirm print
+              </DialogTitle>
+              <p className="text-[13px] text-muted-foreground mt-1.5 leading-relaxed">
+                {t("loan.didYouPrintSuccessfully")} Confirm to mark the
+                transactions as printed.
+              </p>
+            </div>
           </div>
-          <DialogFooter>
+
+          <div className="mx-6 mb-5 flex items-start gap-2.5 bg-amber-50 border border-amber-100 rounded-lg px-3.5 py-3">
+            <AlertCircle size={14} className="text-amber-500 mt-0.5 shrink-0" />
+            <p className="text-[12px] text-amber-700 leading-relaxed">
+              Clicking <strong>Yes</strong> will update the transaction records.
+              This action cannot be undone.
+            </p>
+          </div>
+
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2 px-6 pb-6">
             <Button
+              variant="outline"
               onClick={() => setShowPrintSuccess(false)}
-              className="bg-secondary text-black w-full sm:w-32"
+              className="flex-1 h-9 text-[13px] border-border/60 hover:bg-muted/60"
             >
-              No
+              No, retry
             </Button>
             <Button
               onClick={() => {
                 setShowPrintSuccess(false);
                 handleUpdateTrans(
-                  transPrintData[transPrintData?.length - 1].length
+                  transPrintData?.[transPrintData.length - 1]?.length || 0,
                 );
               }}
-              className="w-full sm:w-32"
+              className="flex-1 h-9 text-[13px] gap-1.5"
             >
-              Yes
+              <CheckCircle2 size={14} />
+              Yes, confirm
             </Button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
   );
 };
+
 export default PassbookPrint;

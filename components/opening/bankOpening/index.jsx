@@ -4,7 +4,7 @@ import DropdownField from "@/common/formFields/DropdownField";
 import getCookieData from "@/utils/getCookieData";
 import InputField from "@/common/formFields/InputField";
 import { Button } from "@/components/ui/button";
-import { Form, FormField } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getYear } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ import { ClipLoader } from "react-spinners";
 const BankOpening = ({ loading, form, handleSubmit }) => {
   const { t } = useTranslation();
   const accountTypeData = useSelector(
-    (state) => state?.openBankAccount?.bankAccountTypeData
+    (state) => state?.openBankAccount?.bankAccountTypeData,
   );
 
   const bankGlData = useSelector((state) => state?.openBankAccount?.bankGlData);
@@ -35,7 +35,7 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
               className="w-full h-full flex flex-col gap-5 justify-between"
               autoComplete="off"
             >
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                   <DatePickerField
                     control={form.control}
@@ -43,7 +43,7 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                     label={t("opening.bankOpening.fields.openingDate")}
                     endYear={getYear(new Date(startDate))}
                     disabledDateAfter={new Date(startDate).setDate(
-                      new Date(startDate).getDate() - 1
+                      new Date(startDate).getDate() - 1,
                     )}
                     isBackDate={true}
                     isRequired
@@ -61,7 +61,9 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                     control={form.control}
                     name="bankBranch"
                     label={t("opening.bankOpening.fields.bankBranch")}
-                    placeholder={t("opening.bankOpening.placeholders.bankBranch")}
+                    placeholder={t(
+                      "opening.bankOpening.placeholders.bankBranch",
+                    )}
                     isRequired
                   />
 
@@ -77,66 +79,61 @@ const BankOpening = ({ loading, form, handleSubmit }) => {
                     control={form.control}
                     name="accountNo"
                     label={t("opening.bankOpening.fields.accountNo")}
-                    placeholder={t("opening.bankOpening.placeholders.accountNo")}
+                    placeholder={t(
+                      "opening.bankOpening.placeholders.accountNo",
+                    )}
                     type="number"
-                    // maxLength={15}
                     isRequired
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="accountType"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("opening.bankOpening.fields.accountType")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={accountTypeData}
-                        optionLabelKey="Option_Value"
-                        placeholder={t("opening.bankOpening.placeholders.accountType")}
-                        searchPlaceholder={t("opening.bankOpening.placeholders.searchAccountType"
-                        )}
-                        isRequired
-                      />
+                    label={t("opening.bankOpening.fields.accountType")}
+                    options={accountTypeData}
+                    optionLabelKey="Option_Value"
+                    placeholder={t(
+                      "opening.bankOpening.placeholders.accountType",
                     )}
+                    searchPlaceholder={t(
+                      "opening.bankOpening.placeholders.searchAccountType",
+                    )}
+                    isRequired
                   />
 
-                  <FormField
+                  <DropdownField
                     control={form.control}
                     name="bankGl"
-                    render={({ field }) => (
-                      <DropdownField
-                        label={t("opening.bankOpening.fields.bankGl")}
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={bankGlData}
-                        optionLabelKey="Ledger_Name"
-                        placeholder={t("opening.bankOpening.placeholders.bankGl")}
-                        searchPlaceholder={t("opening.bankOpening.placeholders.searchBankGl"
-                        )}
-                        isRequired
-                      />
+                    label={t("opening.bankOpening.fields.bankGl")}
+                    options={bankGlData}
+                    optionLabelKey="Ledger_Name"
+                    placeholder={t("opening.bankOpening.placeholders.bankGl")}
+                    searchPlaceholder={t(
+                      "opening.bankOpening.placeholders.searchBankGl",
                     )}
+                    isRequired
                   />
 
                   <InputField
                     control={form.control}
                     name="openingBalance"
                     label={t("opening.bankOpening.fields.openingBalance")}
-                    placeholder={t("opening.bankOpening.placeholders.openingBalance")}
+                    placeholder={t(
+                      "opening.bankOpening.placeholders.openingBalance",
+                    )}
                     type="number"
                     isRequired
                   />
                 </div>
               </div>
 
-              <Button type="submit" className="w-full sm:w-1/5 self-end" disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full sm:w-1/5 self-end"
+                disabled={loading}
+              >
                 {loading ? (
-                  <ClipLoader
-                    color="#d7e6f4"
-                    size={20}
-                    speedMultiplier={0.7}
-                  />
+                  <ClipLoader color="#d7e6f4" size={20} speedMultiplier={0.7} />
                 ) : (
                   t("opening.bankOpening.buttons.add")
                 )}

@@ -24,9 +24,11 @@ const ShareProduct = ({ loading, form, handleSubmit }) => {
   );
 
   return (
-    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg ">
-      <div className=" h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
-        <h3 className="text-2xl font-semibold">{t("master.shareProduct.title")}</h3>
+    <div className="w-full h-full flex justify-between p-1 bg-[#fefefe] rounded-lg">
+      <div className="h-full flex flex-col justify-start items-center border-primary rounded-lg border-[2px] p-2 lg:p-5 w-full gap-3 overflow-hidden">
+        <h3 className="text-2xl font-semibold">
+          {t("master.shareProduct.title")}
+        </h3>
         <div className="w-full h-full">
           <Form {...form}>
             <form
@@ -34,7 +36,7 @@ const ShareProduct = ({ loading, form, handleSubmit }) => {
               className="w-full h-full flex flex-col gap-5 justify-between"
               autoComplete="off"
             >
-              <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 gap-5">
+              <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3">
                   <DropdownField
                     control={form.control}
@@ -42,15 +44,21 @@ const ShareProduct = ({ loading, form, handleSubmit }) => {
                     label={t("master.shareProduct.fields.memberType")}
                     options={memberTypeData}
                     optionLabelKey="Option_Value"
-                    placeholder={t("master.shareProduct.placeholders.memberType")}
-                    searchPlaceholder={t("master.shareProduct.placeholders.searchMemberType")}
+                    placeholder={t(
+                      "master.shareProduct.placeholders.memberType",
+                    )}
+                    searchPlaceholder={t(
+                      "master.shareProduct.placeholders.searchMemberType",
+                    )}
                   />
 
                   <InputField
                     control={form.control}
                     name="admissionFees"
                     label={t("master.shareProduct.fields.admissionFees")}
-                    placeholder={t("master.shareProduct.placeholders.admissionFees")}
+                    placeholder={t(
+                      "master.shareProduct.placeholders.admissionFees",
+                    )}
                     type="number"
                   />
 
@@ -58,7 +66,9 @@ const ShareProduct = ({ loading, form, handleSubmit }) => {
                     control={form.control}
                     name="ratePerShare"
                     label={t("master.shareProduct.fields.ratePerShare")}
-                    placeholder={t("master.shareProduct.placeholders.ratePerShare")}
+                    placeholder={t(
+                      "master.shareProduct.placeholders.ratePerShare",
+                    )}
                     type="number"
                   />
                 </div>

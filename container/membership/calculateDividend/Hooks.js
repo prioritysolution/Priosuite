@@ -33,7 +33,7 @@ export const useCalculateDividend = () => {
     fromDate: yup
       .date()
       .transform((value, originalValue) =>
-        originalValue === "" ? null : value
+        originalValue === "" ? null : value,
       )
       .typeError("Invalid date")
       .required("From date is required")
@@ -47,7 +47,7 @@ export const useCalculateDividend = () => {
     uptoDate: yup
       .date()
       .transform((value, originalValue) =>
-        originalValue === "" ? null : value
+        originalValue === "" ? null : value,
       )
       .typeError("Invalid date")
       .required("Upto date is required")
@@ -66,17 +66,17 @@ export const useCalculateDividend = () => {
       .test(
         "is-integer",
         "No. of share must be an integer",
-        (value) => value !== null && maxTwoDecimalPlaces.test(value) // Use regex for integer validation
+        (value) => value !== null && maxTwoDecimalPlaces.test(value), // Use regex for integer validation
       )
       .test(
         "is-greater-than-zero",
         "No. of share must be greater than 0",
-        (value) => value !== null && parseInt(value, 10) > 0 // Ensure value is greater than 0
+        (value) => value !== null && parseInt(value, 10) > 0, // Ensure value is greater than 0
       ),
     postingDate: yup
       .date()
       .transform((value, originalValue) =>
-        originalValue === "" ? null : value
+        originalValue === "" ? null : value,
       )
       .typeError("Invalid date")
       .required("Posting date is required"),
@@ -104,7 +104,7 @@ export const useCalculateDividend = () => {
         orgId,
         format(form.getValues("fromDate"), "yyyy-MM-dd"),
         format(form.getValues("uptoDate"), "yyyy-MM-dd"),
-        form.getValues("dividendRate")
+        form.getValues("dividendRate"),
       );
     else toast.error("Please add from date upto date and rate");
   };
@@ -138,7 +138,7 @@ export const useCalculateDividend = () => {
         form.reset();
         setTableData([]);
       } else {
-        toast.error(res.details);
+        toast.error(res.message);
         setSuccessMessage(null);
       }
     } catch (error) {
@@ -159,7 +159,7 @@ export const useCalculateDividend = () => {
         // form.setValue("fromDate", res.details);
       } else {
         // form.setValue("fromDate", new Date(startDate));
-        toast.error(res.details);
+        toast.error(res.message);
       }
     } catch (error) {
       toast.error("Something went wrong");
@@ -174,7 +174,7 @@ export const useCalculateDividend = () => {
     orgId,
     fromDate,
     toDate,
-    dividendRate
+    dividendRate,
   ) => {
     setLoading(true);
     try {
@@ -182,7 +182,7 @@ export const useCalculateDividend = () => {
         orgId,
         fromDate,
         toDate,
-        dividendRate
+        dividendRate,
       );
 
       if (res.message === "Data Found") {
@@ -190,7 +190,7 @@ export const useCalculateDividend = () => {
       } else {
         setTableData([]);
       }
-      console.log(res);
+      // console.log(res);
     } catch (error) {
       toast.error("Something went wrong");
       setTableData([]);

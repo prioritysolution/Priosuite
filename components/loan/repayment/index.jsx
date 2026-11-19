@@ -5,6 +5,12 @@ import { useTranslation } from "react-i18next";
 import SuccessMessage from "@/common/dialog/SuccessMessage";
 import DropdownField from "@/common/formFields/DropdownField";
 import InputField from "@/common/formFields/InputField";
+import TextareaField from "@/common/formFields/TextareaField";
+import {
+  premiumRadioGroup,
+  premiumTabsList,
+  premiumTabsTrigger,
+} from "@/common/formFields/fieldStyles";
 import LoanAccountSearchForm from "@/common/forms/LoanAccountSearchForm";
 import LoanLedger from "@/common/ledger/loanLedger/LoanLedger";
 import { Button } from "@/components/ui/button";
@@ -16,9 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
 import { IoSearch } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import CollectionReceipt from "./CollectionReceipt";
@@ -150,473 +154,206 @@ const Repayment = ({
             <div className="grid lg:grid-cols-[7fr_3fr] gap-2 lg:h-full lg:min-h-0">
               {visibleBlock && (
                 <>
-                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">{t("loan.accountDetails")}</h2>
+                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-3 sm:p-4 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h2 className="text-base sm:text-lg text-center font-bold text-[#00264d] tracking-wide">
+                        {t("loan.accountDetails")}
+                      </h2>
+                    </div>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className=" w-full flex flex-col gap-2">
                         <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-5 gap-y-3 ">
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="accountNo"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.accountNo")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterAccountNo")}
-                                    {...field}
-                                    readOnly
-                                  />
-                                </FormControl>
-                                {<FormMessage />}
-                              </FormItem>
-                            )}
+                            label={t("loan.accountNo")}
+                            placeholder={t("loan.enterAccountNo")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="memberName"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.memberName")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterMemberName")}
-                                    {...field}
-                                    readOnly
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.memberName")}
+                            placeholder={t("loan.enterMemberName")}
+                            readOnly
                           />
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="gurdianName"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.gurdianName")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterGurdianName")}
-                                    {...field}
-                                    readOnly
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.gurdianName")}
+                            placeholder={t("loan.enterGurdianName")}
+                            readOnly
                           />
-
-                          <FormField
+                          <TextareaField
                             control={form.control}
                             name="address"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.address")}</FormLabel>
-                                <FormControl>
-                                  <Textarea
-                                    placeholder={t("loan.enterAddress")}
-                                    {...field}
-                                    className="resize-none"
-                                    readOnly
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.address")}
+                            placeholder={t("loan.enterAddress")}
+                            readOnly
+                            rows={3}
+                            className="resize-none"
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="mobile"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.mobileNo")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterMobileNo")}
-                                    {...field}
-                                    readOnly
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.mobileNo")}
+                            placeholder={t("loan.enterMobileNo")}
+                            readOnly
                           />
-
-                          {/* <div
-                            onClick={handleGetGuarantorSecurity}
-                            className="bg-primary text-white w-full h-10 rounded-md flex items-center justify-center text-center lg: mt-8 text-sm cursor-pointer"
-                          >
-                            View Guarantor / Security Details
-                          </div> */}
                         </div>
                         <div className="w-full grid grid-cols-1  lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-3 ">
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="accountType"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.accountType")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterAccountType")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.accountType")}
+                            placeholder={t("loan.enterAccountType")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="disburseDate"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.disburseDate")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterDisburseDate")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.disburseDate")}
+                            placeholder={t("loan.enterDisburseDate")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="disburseAmount"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.disburseAmount")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterDisburseAmount")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.disburseAmount")}
+                            placeholder={t("loan.enterDisburseAmount")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="roi"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.rateOfInterest")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterRateOfInterest")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.rateOfInterest")}
+                            placeholder={t("loan.enterRateOfInterest")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="finalRepayDate"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.finalRepayDate")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterFinalRepayDate")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.finalRepayDate")}
+                            placeholder={t("loan.enterFinalRepayDate")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="repayMode"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.repayMode")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterRepayMode")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.repayMode")}
+                            placeholder={t("loan.enterRepayMode")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="installmentAmount"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.installmentAmount")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterInstallmentAmount")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.installmentAmount")}
+                            placeholder={t("loan.enterInstallmentAmount")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="lastRepayDate"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.lastRepayDate")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterLastRepayDate")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.lastRepayDate")}
+                            placeholder={t("loan.enterLastRepayDate")}
+                            readOnly
                           />
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="lastRepayPrincipal"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.lastRepayPrincipal")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterLastRepayPrincipal")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.lastRepayPrincipal")}
+                            placeholder={t("loan.enterLastRepayPrincipal")}
+                            readOnly
                           />
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="LastRepayInterest"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.lastRepayInterest")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterLastRepayInterest")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.lastRepayInterest")}
+                            placeholder={t("loan.enterLastRepayInterest")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="currentBalance"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.outstandingBalance")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterOutstandingBalance")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.outstandingBalance")}
+                            placeholder={t("loan.enterOutstandingBalance")}
+                            readOnly
                           />
                         </div>
                         <div className="w-full grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-3 ">
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="currentDays"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.currentDays")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterCurrentDays")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.currentDays")}
+                            placeholder={t("loan.enterCurrentDays")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="overdueDays"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.overdueDays")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterOverdueDays")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.overdueDays")}
+                            placeholder={t("loan.enterOverdueDays")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="currentAmount"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.currentAmount")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterCurrentAmount")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.currentAmount")}
+                            placeholder={t("loan.enterCurrentAmount")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="overdueAmount"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.overdueAmount")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterOverdueAmount")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.overdueAmount")}
+                            placeholder={t("loan.enterOverdueAmount")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="currentInterest"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.currentInterest")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterCurrentInterest")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.currentInterest")}
+                            placeholder={t("loan.enterCurrentInterest")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="overdueInterest"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.overdueInterest")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterOverdueInterest")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.overdueInterest")}
+                            placeholder={t("loan.enterOverdueInterest")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="prevDueInterest"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.previousDueInterest")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterPreviousDueInterest")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.previousDueInterest")}
+                            placeholder={t("loan.enterPreviousDueInterest")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="totalInterest"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.totalInterest")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterTotalInterest")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.totalInterest")}
+                            placeholder={t("loan.enterTotalInterest")}
+                            readOnly
                           />
-
-                          <FormField
+                          <InputField
                             control={form.control}
                             name="demandPrincipal"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("loan.demandPrincipal")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("loan.enterDemandPrincipal")}
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            label={t("loan.demandPrincipal")}
+                            placeholder={t("loan.enterDemandPrincipal")}
+                            readOnly
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h2 className="text-lg text-center font-semibold">{t("loan.transactionDetails")}</h2>
+                  <div className="w-full flex flex-col flex-1 min-h-0 border border-primary rounded-lg p-3 sm:p-4 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h2 className="text-base sm:text-lg text-center font-bold text-[#00264d] tracking-wide">
+                        {t("loan.transactionDetails")}
+                      </h2>
+                    </div>
                     <div className="flex-1 min-h-0 overflow-y-auto">
                       <div className="w-full flex flex-col gap-5">
                         <div className="w-full flex flex-col gap-3">
@@ -651,22 +388,13 @@ const Repayment = ({
                             formItemClassName="grid grid-cols-[3fr_7fr] items-center gap-2 space-y-0"
                           />
 
-                          <FormField
+                          <TextareaField
                             control={form.control}
                             name="totalAmountInWords"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Textarea
-                                    placeholder={t("loan.totalAmountInWords")}
-                                    className="text-red-500 text-base resize-none"
-                                    readOnly
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            placeholder={t("loan.totalAmountInWords")}
+                            readOnly
+                            rows={2}
+                            className="text-red-500 text-base resize-none"
                           />
                         </div>
                         <div className="w-full  flex flex-col gap-3">
@@ -674,12 +402,14 @@ const Repayment = ({
                             control={form.control}
                             name="transMode"
                             render={({ field }) => (
-                              <FormItem className="flex  border border-input rounded-md pl-3 py-3 w-full">
+                              <FormItem className="flex w-full">
                                 <FormControl>
                                   <RadioGroup
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
-                                    className="flex flex-col sm:flex-row space-y-5 sm:space-y-0 gap-x-2 w-full"
+                                    className={premiumRadioGroup(
+                                      "flex-col sm:flex-row gap-x-2 gap-y-3 w-full",
+                                    )}
                                   >
                                     <FormItem className="flex items-center space-x-3 space-y-0">
                                       <FormControl>
@@ -757,13 +487,15 @@ const Repayment = ({
                                 control={form.control}
                                 name="savingsAccountType"
                                 render={({ field }) => (
-                                  <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full">
+                                  <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5 w-full">
                                     <FormLabel>{t("loan.accountType")}</FormLabel>
                                     <FormControl>
                                       <RadioGroup
                                         onValueChange={field.onChange}
                                         value={field.value}
-                                        className="flex flex-col sm:flex-row space-y-5 sm:space-y-0 gap-x-5"
+                                        className={premiumRadioGroup(
+                                          "flex-col sm:flex-row gap-x-5 gap-y-3",
+                                        )}
                                       >
                                         <FormItem className="flex items-center space-x-3 space-y-0">
                                           <FormControl>
@@ -790,29 +522,34 @@ const Repayment = ({
                                   open={dialougeOpen}
                                   onOpenChange={setDialougeOpen}
                                 >
-                                  <div className="flex flex-col sm:flex-row items-end gap-5">
-                                    <InputField
-                                      control={form.control}
-                                      name="savingsAccountNo"
-                                      label={t("loan.accountNo")}
-                                      placeholder={t("loan.enterAccountNo")}
-                                      type="number"
-                                      readOnly
-                                      endContent={
-                                        <DialogTrigger
-                                          asChild
-                                          className="cursor-pointer text-lg"
-                                        >
-                                          <IoSearch />
-                                        </DialogTrigger>
-                                      }
-                                    />
-                                    <div
+                                  <div className="flex flex-col sm:flex-row items-end gap-3 sm:gap-5 w-full">
+                                    <div className="w-full">
+                                      <InputField
+                                        control={form.control}
+                                        name="savingsAccountNo"
+                                        label={t("loan.accountNo")}
+                                        placeholder={t("loan.enterAccountNo")}
+                                        type="number"
+                                        readOnly
+                                        endContent={
+                                          <DialogTrigger
+                                            asChild
+                                            className="cursor-pointer text-lg text-muted-foreground hover:text-primary transition-colors"
+                                          >
+                                            <span>
+                                              <IoSearch />
+                                            </span>
+                                          </DialogTrigger>
+                                        }
+                                      />
+                                    </div>
+                                    <Button
+                                      type="button"
                                       onClick={handleFetchData}
-                                      className="px-5 py-2 bg-primary rounded-md text-white font-medium text-nowrap cursor-pointer"
+                                      className="w-full sm:w-auto px-5 h-10 font-medium text-nowrap"
                                     >
                                       Fetch Details
-                                    </div>
+                                    </Button>
                                   </div>
 
                                   <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px]">
@@ -824,62 +561,76 @@ const Repayment = ({
                                     <div className="w-full overflow-y-scroll">
                                       <div className="w-full ">
                                         <Tabs
-                                          defaultValue="account"
+                                          defaultValue="memberNo"
                                           value={activeTab}
                                           onValueChange={setActiveTab}
                                           className="w-full flex items-center justify-center flex-col"
                                         >
-                                          <TabsList className="w-full sm:w-[70%]">
+                                          <TabsList
+                                            className={premiumTabsList(
+                                              "w-full sm:w-[70%]",
+                                            )}
+                                          >
                                             <TabsTrigger
                                               value="memberNo"
-                                              className="w-full"
+                                              className={premiumTabsTrigger()}
                                             >
                                               By Member No.
                                             </TabsTrigger>
                                             <TabsTrigger
                                               value="name"
-                                              className="w-full"
+                                              className={premiumTabsTrigger()}
                                             >
                                               By Name
                                             </TabsTrigger>
                                           </TabsList>
                                           <TabsContent
                                             value="memberNo"
-                                            className="w-full flex flex-col sm:flex-row items-end gap-2 gap-x-10 "
+                                            className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4"
                                           >
                                             <InputField
                                               control={form.control}
                                               name="dialougeMemberNo"
                                               label={t("loan.memberNo2")}
                                               autoComplete="off"
-                                              placeholder={t("loan.searchByEnterMemberNo")}
-                                              formItemClassName="w-full"
+                                              placeholder={t(
+                                                "loan.searchByEnterMemberNo",
+                                              )}
+                                              formItemClassName="w-full min-w-0"
                                             />
                                             <Button
-                                              className="w-full sm:w-auto px-10"
+                                              type="button"
+                                              className="w-full sm:w-auto px-10 shrink-0"
                                               onClick={
                                                 handleSearchAccountListByMemberNo
                                               }
-                                            >{t("loan.search")}</Button>
+                                            >
+                                              {t("loan.search")}
+                                            </Button>
                                           </TabsContent>
                                           <TabsContent
                                             value="name"
-                                            className="w-full flex flex-col sm:flex-row items-end gap-2 gap-x-10 "
+                                            className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4"
                                           >
                                             <InputField
                                               control={form.control}
                                               name="dialougeAccountName"
                                               label={t("loan.name")}
                                               autoComplete="off"
-                                              placeholder={t("loan.searchByEnterName")}
-                                              formItemClassName="w-full"
+                                              placeholder={t(
+                                                "loan.searchByEnterName",
+                                              )}
+                                              formItemClassName="w-full min-w-0"
                                             />
                                             <Button
-                                              className="w-full sm:w-auto px-10"
+                                              type="button"
+                                              className="w-full sm:w-auto px-10 shrink-0"
                                               onClick={
                                                 handleSearchAccountListByName
                                               }
-                                            >{t("loan.search")}</Button>
+                                            >
+                                              {t("loan.search")}
+                                            </Button>
                                           </TabsContent>
                                         </Tabs>
                                       </div>

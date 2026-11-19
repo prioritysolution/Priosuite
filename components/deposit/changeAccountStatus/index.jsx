@@ -58,10 +58,12 @@ const ChangeAccountStatus = ({
               autoComplete="off"
             >
               {visibleBlock && (
-                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                  <h3 className="w-full text-center text-xl font-semibold">
-                    {t("deposit.sections.accountDetails")}
-                  </h3>
+                <div className="w-full h-full flex flex-col border border-primary rounded-lg p-3 sm:p-4 gap-3">
+                  <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                    <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                      {t("deposit.sections.accountDetails")}
+                    </h3>
+                  </div>
                   {getDepositLoading ? (
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-5 gap-y-3 ">
                       {Array.from({ length: 13 }).map((_, index) => (

@@ -38,6 +38,11 @@ import DoubleCashDenomTable from "@/common/tables/DoubleCashDenomTable";
 import getCookieData from "@/utils/getCookieData";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  premiumFieldTrigger,
+  premiumTabsList,
+  premiumTabsTrigger,
+} from "@/common/formFields/fieldStyles";
 
 const Mature = ({
   loading,
@@ -156,9 +161,11 @@ const Mature = ({
             autoComplete="off"
           >
             <div className="w-full border border-primary rounded-lg p-3 sm:p-5 flex flex-col gap-3">
-              <h3 className="w-full text-center text-lg sm:text-xl font-semibold">
-                {t("deposit.mature.operationType")}
-              </h3>
+              <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                  {t("deposit.mature.operationType")}
+                </h3>
+              </div>
 
               <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
                 <FormField
@@ -277,10 +284,12 @@ const Mature = ({
                 autoComplete="off"
               >
                 {visibleBlock && (
-                  <div className="w-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h3 className="w-full text-center text-xl font-semibold">
-                      {t("deposit.sections.basicInfo")}
-                    </h3>
+                  <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.basicInfo")}
+                      </h3>
+                    </div>
                     {getMatureLoading ? (
                       <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                         {Array.from({
@@ -447,10 +456,12 @@ const Mature = ({
                 )}
 
                 {visibleBlock && (
-                  <div className="w-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h3 className="w-full text-center text-xl font-semibold">
-                      {t("deposit.sections.closeInfo")}
-                    </h3>
+                  <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.closeInfo")}
+                      </h3>
+                    </div>
                     {getMatureLoading ? (
                       <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-3 ">
                         {Array.from({
@@ -565,10 +576,12 @@ const Mature = ({
                 )}
 
                 {visibleBlock && (
-                  <div className="w-full flex flex-col border border-primary rounded-lg p-5 py-2 gap-2">
-                    <h3 className="w-full text-center text-xl font-semibold">
-                      {t("deposit.sections.transaction")}
-                    </h3>
+                  <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-3">
+                    <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
+                      <h3 className="w-full text-center text-base sm:text-lg font-bold text-[#00264d] tracking-wide">
+                        {t("deposit.sections.transaction")}
+                      </h3>
+                    </div>
                     {getMatureLoading ? (
                       <div className="w-full border border-primary rounded-md p-2 sm:p-5 mb-5 flex flex-col gap-3">
                         <Skeleton className=" h-10 w-full lg:w-[500px] bg-secondary " />
@@ -712,52 +725,37 @@ const Mature = ({
                                   open={dialougeOpen}
                                   onOpenChange={setDialougeOpen}
                                 >
-                                  <FormField
-                                    control={form.control}
-                                    name="savingsAccountNo"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>{t("deposit.fields.accountNo")}</FormLabel>
-
-                                        <FormControl>
-                                          <div className="flex flex-col sm:flex-row items-end gap-5">
-                                            <div className="w-full">
-                                              <div className="relative w-full">
-                                                <Input
-                                                  placeholder={t("deposit.placeholders.accountNo")}
-                                                  className="w-full "
-                                                  type="number"
-                                                  // onInput={(e) => {
-                                                  //   if (e.target.value.length > 5) {
-                                                  //     e.target.value = e.target.value.slice(0, 5);
-                                                  //   }
-                                                  // }}
-                                                  readOnly
-                                                  {...field}
-                                                />
-
-                                                <div className="absolute right-0 top-0 py-3 px-3">
-                                                  <DialogTrigger
-                                                    asChild
-                                                    className="cursor-pointer text-lg"
-                                                  >
-                                                    <IoSearch />
-                                                  </DialogTrigger>
-                                                </div>
-                                              </div>
-                                              <FormMessage />
-                                            </div>
-                                            <div
-                                              onClick={handleFetchData}
-                                              className="px-5 py-2 bg-primary rounded-md text-white font-medium text-nowrap"
-                                            >
-                                              Fetch Details
-                                            </div>
-                                          </div>
-                                        </FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
+                                  <div className="flex flex-col sm:flex-row items-end gap-3 sm:gap-5 w-full">
+                                    <div className="w-full">
+                                      <InputField
+                                        control={form.control}
+                                        name="savingsAccountNo"
+                                        label={t("deposit.fields.accountNo")}
+                                        placeholder={t(
+                                          "deposit.placeholders.accountNo",
+                                        )}
+                                        type="number"
+                                        readOnly
+                                        endContent={
+                                          <DialogTrigger
+                                            asChild
+                                            className="cursor-pointer text-lg text-muted-foreground hover:text-primary transition-colors"
+                                          >
+                                            <span>
+                                              <IoSearch />
+                                            </span>
+                                          </DialogTrigger>
+                                        }
+                                      />
+                                    </div>
+                                    <Button
+                                      type="button"
+                                      onClick={handleFetchData}
+                                      className="w-full sm:w-auto px-5 h-10 font-medium text-nowrap"
+                                    >
+                                      Fetch Details
+                                    </Button>
+                                  </div>
 
                                   <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-[825px]">
                                     <DialogHeader
@@ -773,45 +771,43 @@ const Mature = ({
                                           onValueChange={setActiveTab}
                                           className="w-full flex items-center justify-center flex-col"
                                         >
-                                          <TabsList className="w-full sm:w-[70%]">
+                                          <TabsList
+                                            className={premiumTabsList(
+                                              "w-full sm:w-[70%]",
+                                            )}
+                                          >
                                             <TabsTrigger
                                               value="memberNo"
-                                              className="w-full"
+                                              className={premiumTabsTrigger()}
                                             >
                                               By Member No.
                                             </TabsTrigger>
                                             <TabsTrigger
                                               value="name"
-                                              className="w-full"
+                                              className={premiumTabsTrigger()}
                                             >
                                               By Name
                                             </TabsTrigger>
                                           </TabsList>
                                           <TabsContent
                                             value="memberNo"
-                                            className="w-full flex flex-col sm:flex-row items-end gap-2 gap-x-10 "
+                                            className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4"
                                           >
-                                            <FormField
+                                            <InputField
                                               control={form.control}
                                               name="dialougeMemberNo"
-                                              render={({ field }) => (
-                                                <FormItem className="w-full">
-                                                  <FormLabel>
-                                                    Member No.
-                                                  </FormLabel>
-                                                  <FormControl>
-                                                    <Input
-                                                      autoComplete="off"
-                                                      placeholder={t("deposit.placeholders.searchByMemberNo")}
-                                                      {...field}
-                                                    />
-                                                  </FormControl>
-                                                  <FormMessage />
-                                                </FormItem>
+                                              label={t(
+                                                "deposit.fields.memberNo",
                                               )}
+                                              autoComplete="off"
+                                              placeholder={t(
+                                                "deposit.placeholders.searchByMemberNo",
+                                              )}
+                                              formItemClassName="w-full min-w-0"
                                             />
                                             <Button
-                                              className="w-full sm:w-auto px-10"
+                                              type="button"
+                                              className="w-full sm:w-auto px-10 shrink-0"
                                               onClick={
                                                 handleSearchAccountListByMemberNo
                                               }
@@ -821,27 +817,21 @@ const Mature = ({
                                           </TabsContent>
                                           <TabsContent
                                             value="name"
-                                            className="w-full flex flex-col sm:flex-row items-end gap-2 gap-x-10 "
+                                            className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-x-4"
                                           >
-                                            <FormField
+                                            <InputField
                                               control={form.control}
                                               name="dialougeAccountName"
-                                              render={({ field }) => (
-                                                <FormItem className="w-full">
-                                                  <FormLabel>{t("deposit.common.name")}</FormLabel>
-                                                  <FormControl>
-                                                    <Input
-                                                      autoComplete="off"
-                                                      placeholder={t("deposit.placeholders.searchByName")}
-                                                      {...field}
-                                                    />
-                                                  </FormControl>
-                                                  <FormMessage />
-                                                </FormItem>
+                                              label={t("deposit.common.name")}
+                                              autoComplete="off"
+                                              placeholder={t(
+                                                "deposit.placeholders.searchByName",
                                               )}
+                                              formItemClassName="w-full min-w-0"
                                             />
                                             <Button
-                                              className="w-full sm:w-auto px-10"
+                                              type="button"
+                                              className="w-full sm:w-auto px-10 shrink-0"
                                               onClick={
                                                 handleSearchAccountListByName
                                               }
@@ -1055,6 +1045,7 @@ const Mature = ({
               onKeyDown={(e) => {
                 if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
               }}
+              className={premiumFieldTrigger()}
             />
 
             <div className="w-full flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2">
@@ -1101,6 +1092,7 @@ const Mature = ({
               onKeyDown={(e) => {
                 if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
               }}
+              className={premiumFieldTrigger()}
             />
 
             <div className="w-full flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2">

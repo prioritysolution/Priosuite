@@ -8,11 +8,7 @@ export const metadata = {
 };
 
 const MapGroupMember = () => {
-  return (
-    <div>
-      <MapGroupMemberContainer />
-    </div>
-  );
+  return <MapGroupMemberContainer />;
 };
 
 export default MapGroupMember;
