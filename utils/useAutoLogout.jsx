@@ -1,21 +1,27 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import * as RadixDialog from "@radix-ui/react-dialog";
 import getCookieData from "@/utils/getCookieData";
 import { useLogout } from "@/container/navbar/Hooks";
 import { doPostApiCall } from "@/utils/apiConfig";
 import { endPoints } from "@/utils/endPoints";
 import toast from "react-hot-toast";
+import { Lock, Eye, EyeOff, Clock, LogOut, ShieldAlert } from "lucide-react";
 
-
-const INACTIVITY_LIMIT = 10 * 60 * 1000; // 10 minutes
-const DIALOG_TIMEOUT = 15 * 60 * 1000; // 15 minutes
+const INACTIVITY_LIMIT = 10 * 60 * 1000; // 10 minutes of inactivity before warning
+const DIALOG_TIMEOUT_SECONDS = 5 * 60; // 5 minutes countdown in warning dialog
 
 export default function useAutoLogout() {
   const { postLogoutApiCall } = useLogout();
   const [showModal, setShowModal] = useState(false);
   const inactivityTimer = useRef(null);
-  const modalTimer = useRef(null);
+  const showModalRef = useRef(false);
+
+  // Keep ref in sync to access in event listeners without re-subscribing
+  useEffect(() => {
+    showModalRef.current = showModal;
+  }, [showModal]);
 
   const logout = useCallback(() => {
     setShowModal(false);
@@ -30,23 +36,8 @@ export default function useAutoLogout() {
   }, []);
 
   useEffect(() => {
-    if (showModal) {
-      if (modalTimer.current) clearTimeout(modalTimer.current);
-      modalTimer.current = setTimeout(() => {
-        logout();
-      }, DIALOG_TIMEOUT);
-    } else {
-      if (modalTimer.current) {
-        clearTimeout(modalTimer.current);
-        modalTimer.current = null;
-      }
-    }
-    return () => {
-      if (modalTimer.current) clearTimeout(modalTimer.current);
-    };
-  }, [showModal, logout]);
-
-  useEffect(() => {
+    // Capture phase event listeners ensure user activity is tracked across all elements,
+    // even when another modal or portal is open.
     const events = [
       "mousemove",
       "keydown",
@@ -54,24 +45,27 @@ export default function useAutoLogout() {
       "mousedown",
       "touchstart",
       "scroll",
+      "wheel",
     ];
 
     const resetAndTrack = () => {
-      if (getCookieData("prioBankClientToken") && !showModal) {
+      if (getCookieData("prioBankClientToken") && !showModalRef.current) {
         resetTimer();
       }
     };
 
-    events.forEach((event) => window.addEventListener(event, resetAndTrack));
+    events.forEach((event) =>
+      window.addEventListener(event, resetAndTrack, { capture: true, passive: true }),
+    );
     resetTimer();
 
     return () => {
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
       events.forEach((event) =>
-        window.removeEventListener(event, resetAndTrack),
+        window.removeEventListener(event, resetAndTrack, { capture: true }),
       );
     };
-  }, [resetTimer, showModal]);
+  }, [resetTimer]);
 
   const verifyPassword = async (password) => {
     try {
@@ -95,20 +89,77 @@ export default function useAutoLogout() {
 
   const SessionTimeoutModal = () => {
     const [password, setPassword] = useState("");
-    const [passwordReady, setPasswordReady] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [currentTime, setCurrentTime] = useState(new Date());
+    const [secondsLeft, setSecondsLeft] = useState(DIALOG_TIMEOUT_SECONDS);
+    const [mounted, setMounted] = useState(false);
+    const inputRef = useRef(null);
 
     useEffect(() => {
-      const id = setInterval(() => setCurrentTime(new Date()), 1000);
-      return () => clearInterval(id);
+      setMounted(true);
     }, []);
+
+    // Countdown timer while warning modal is open
+    useEffect(() => {
+      if (!showModal) {
+        setSecondsLeft(DIALOG_TIMEOUT_SECONDS);
+        return;
+      }
+
+      setSecondsLeft(DIALOG_TIMEOUT_SECONDS);
+      const interval = setInterval(() => {
+        setSecondsLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            logout();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      // Robust focus restoration: ensures the password input receives focus
+      // even when an underlying dialog's focus trap tries to reclaim it.
+      const focusTimer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(focusTimer);
+      };
+    }, [showModal]);
+
+    // Safety guard: While the session timeout modal is open, prevent any other
+    // background element from stealing focus away from this critical dialog.
+    useEffect(() => {
+      if (!showModal) return;
+
+      const handleFocusIn = (e) => {
+        const dialogEl = document.getElementById("session-timeout-dialog");
+        if (dialogEl && !dialogEl.contains(e.target)) {
+          e.stopImmediatePropagation();
+          inputRef.current?.focus();
+        }
+      };
+
+      // Ensure body pointer events remain enabled while this modal is active
+      const originalPointerEvents = document.body.style.pointerEvents;
+      document.body.style.pointerEvents = "auto";
+
+      document.addEventListener("focusin", handleFocusIn, { capture: true });
+
+      return () => {
+        document.removeEventListener("focusin", handleFocusIn, { capture: true });
+        document.body.style.pointerEvents = originalPointerEvents;
+      };
+    }, [showModal]);
 
     const handleStayLoggedInWithPassword = async () => {
       if (!password.trim()) {
-        setError("Please enter your password.");
+        setError("Please enter your password to continue.");
+        inputRef.current?.focus();
         return;
       }
 
@@ -120,153 +171,160 @@ export default function useAutoLogout() {
         if (valid) {
           toast.success("Session extended. Welcome back!");
           setPassword("");
+          setError("");
           setShowModal(false);
           resetTimer();
         } else {
-          setError("Incorrect password. Please try again.");
+          setError("Incorrect password. Please verify and try again.");
+          inputRef.current?.focus();
         }
       } catch {
-        setError("Something went wrong. Please try again.");
+        setError("Unable to verify password. Please try again.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (!showModal) return null;
+    if (!showModal || !mounted) return null;
+
+    const minutes = Math.floor(secondsLeft / 60);
+    const seconds = secondsLeft % 60;
+    const formattedCountdown = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] p-4">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-xl w-full max-w-md p-6 sm:p-8">
-          <div className="flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mb-5">
-              <svg
-                className="w-6 h-6 text-amber-600"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
-            </div>
+      <RadixDialog.Root open={showModal} onOpenChange={() => {}}>
+        <RadixDialog.Portal>
+          <RadixDialog.Overlay
+            className="fixed inset-0 z-[9999999] bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-200"
+            style={{ pointerEvents: "auto" }}
+          />
+          <RadixDialog.Content
+            id="session-timeout-dialog"
+            onPointerDownOutside={(e) => e.preventDefault()}
+            onInteractOutside={(e) => e.preventDefault()}
+            onEscapeKeyDown={(e) => e.preventDefault()}
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[99999999] w-[calc(100vw-2rem)] max-w-md bg-white rounded-2xl border border-slate-200/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] overflow-hidden animate-in zoom-in-95 duration-200 focus:outline-none"
+            style={{ pointerEvents: "auto" }}
+          >
+            {/* Subtle decorative top accent bar */}
+            <div className="h-1.5 w-full bg-gradient-to-r from-amber-500 via-primary to-amber-500" />
 
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
-              Session Timeout
-            </h3>
-            <p className="text-xs text-gray-400 mb-3 tabular-nums">
-              {currentTime.toLocaleDateString(undefined, {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-              })}{" "}
-              ·{" "}
-              {currentTime.toLocaleTimeString(undefined, {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              })}
-            </p>
-
-            <p className="text-sm text-gray-500 leading-relaxed mb-5">
-              Your session is about to expire due to inactivity. Enter your
-              password to stay logged in.
-            </p>
-
-            <div className="w-full mb-1 text-left">
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
-                  data-lpignore="true"
-                  data-1p-ignore="true"
-                  readOnly={!passwordReady}
-                  onFocus={() => setPasswordReady(true)}
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setError("");
-                  }}
-                  onKeyDown={(e) =>
-                    e.key === "Enter" &&
-                    !isLoading &&
-                    handleStayLoggedInWithPassword()
-                  }
-                  placeholder="Enter your password"
-                  disabled={isLoading}
-                  autoFocus
-                  className={`w-full px-3 py-2.5 pr-10 text-sm rounded-lg border text-black bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors disabled:opacity-50 ${
-                    error ? "border-red-400 bg-red-50" : "border-gray-200"
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                  tabIndex={-1}
-                >
-                  {showPassword ? (
-                    <svg
-                      className="cursor-pointer w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="cursor-pointer w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  )}
-                </button>
+            <div className="p-6 sm:p-8 flex flex-col items-center text-center">
+              {/* Shield Alert Icon */}
+              <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center mb-4 text-amber-600 shadow-sm">
+                <ShieldAlert className="w-8 h-8" />
               </div>
 
-              <p
-                className={`mt-1.5 text-xs transition-all ${
-                  error ? "text-red-500 opacity-100" : "opacity-0"
-                }`}
-              >
-                {error || ""}
-              </p>
-            </div>
+              <RadixDialog.Title className="text-xl font-bold text-slate-900 tracking-tight">
+                Session Timeout Warning
+              </RadixDialog.Title>
 
-            <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
-              <button
-                onClick={handleStayLoggedInWithPassword}
-                disabled={isLoading}
-                className="cursor-pointer flex-1 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              {/* Countdown Pill */}
+              <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100/80 text-amber-800 border border-amber-200">
+                <Clock className="w-3.5 h-3.5" />
+                <span>
+                  Auto logout in{" "}
+                  <span className="font-bold tabular-nums">{formattedCountdown}</span>
+                </span>
+              </div>
+
+              <RadixDialog.Description className="mt-3 text-sm text-slate-600 leading-relaxed max-w-sm">
+                Your session is about to expire due to inactivity. Enter your
+                password to extend your session safely.
+              </RadixDialog.Description>
+
+              {/* Password Form */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!isLoading) handleStayLoggedInWithPassword();
+                }}
+                className="w-full mt-6 text-left"
+                autoComplete="off"
               >
-                {isLoading ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Verifying…
-                  </>
-                ) : (
-                  "Stay logged in"
+                <label
+                  htmlFor="session-timeout-password-input"
+                  className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+                >
+                  Password <span className="text-red-500">*</span>
+                </label>
+
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                    <Lock className="w-4 h-4" />
+                  </div>
+                  <input
+                    ref={inputRef}
+                    id="session-timeout-password-input"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (error) setError("");
+                    }}
+                    placeholder="Enter your login password"
+                    disabled={isLoading}
+                    autoComplete="current-password"
+                    className={`w-full pl-9 pr-10 py-2.5 text-sm rounded-lg border bg-slate-50/50 text-slate-900 placeholder:text-slate-400 transition-all focus:outline-none focus:ring-2 focus:bg-white disabled:opacity-50 ${
+                      error
+                        ? "border-red-400 focus:ring-red-400/30 focus:border-red-500 bg-red-50/30"
+                        : "border-slate-300 focus:ring-primary/20 focus:border-primary"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    tabIndex={-1}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded transition-colors"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+
+                {error && (
+                  <p className="mt-1.5 text-xs font-medium text-red-600 flex items-center gap-1">
+                    <span>•</span>
+                    <span>{error}</span>
+                  </p>
                 )}
-              </button>
-              <button
-                onClick={logout}
-                className="cursor-pointer flex-1 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 active:scale-95 rounded-lg transition-all"
-              >
-                Log out
-              </button>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 w-full mt-6">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex-1 py-2.5 px-4 text-sm font-semibold text-white bg-primary hover:bg-primary/90 active:scale-[0.98] rounded-lg shadow-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Verifying…</span>
+                      </>
+                    ) : (
+                      "Stay Logged In"
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={logout}
+                    disabled={isLoading}
+                    className="flex-1 py-2.5 px-4 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 active:scale-[0.98] rounded-lg transition-all flex items-center justify-center gap-2 border border-slate-200/80 cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4 text-slate-500" />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              </form>
             </div>
-          </div>
-        </div>
-      </div>
+          </RadixDialog.Content>
+        </RadixDialog.Portal>
+      </RadixDialog.Root>
     );
   };
 

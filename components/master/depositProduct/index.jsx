@@ -24,6 +24,7 @@ const DepositProduct = ({
   handleSubmit,
   editData,
   handleEditData,
+  getDepositTypeApiCall,
   currentPage,
   setCurrentPage,
   lastPage,
@@ -66,7 +67,7 @@ const DepositProduct = ({
       </div>
 
       {openDialouge ? (
-        <Dialog open={openDialouge} >
+        <Dialog open={openDialouge} onOpenChange={setOpenDialouge}>
           <DialogContent
             hideClose
             className="!flex !flex-col gap-0 w-[calc(100vw-1rem)] max-w-5xl h-[min(92dvh,860px)] max-h-[92dvh] !overflow-hidden rounded-2xl border-0 p-0 shadow-[0_20px_50px_rgba(22,58,95,0.18)]"
@@ -89,6 +90,7 @@ const DepositProduct = ({
                 form={form}
                 handleSubmit={handleSubmit}
                 editData={editData}
+                getDepositTypeApiCall={getDepositTypeApiCall}
                 onCancel={() => setOpenDialouge(false)}
               />
             </div>

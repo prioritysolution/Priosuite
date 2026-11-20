@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +21,8 @@ import {
 } from "lucide-react";
 import { DatePickerField } from "@/common/formFields/DatePickerField";
 import KYCDropdownField from "@/common/formFields/KYCDropdownField";
-import { Form, FormField } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormControl, FormLabel } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useWatch } from "react-hook-form";
@@ -55,6 +56,9 @@ const KycActionModal = ({
     name: "presentDistrictId",
   });
   const watchedPresentBlockId = useWatch({ control, name: "presentBlockId" });
+
+  const sameAsPermanentWatched = useWatch({ control, name: "sameAsPermanent" });
+  const isSameAsPermanent = sameAsPermanentWatched === "Y";
 
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectRemarks, setRejectRemarks] = useState("");
@@ -121,6 +125,64 @@ const KycActionModal = ({
     return changedFields.length > 0;
   };
 
+  const type = selectedApplication?.Customer_Type?.toString();
+
+  // Watch permanent / register address fields so changes automatically sync when checkbox is checked
+  const watchedAddress = useWatch({ control, name: "address" });
+  const watchedInstAdd = useWatch({ control, name: "inst_add" });
+  const watchedGrpAdd = useWatch({ control, name: "grp_add" });
+  const watchedVillageId = useWatch({ control, name: "villageId" });
+  const watchedPoliceStationId = useWatch({ control, name: "policeStationId" });
+  const watchedPostOfficeId = useWatch({ control, name: "postOfficeId" });
+
+  useEffect(() => {
+    if (!isEditMode || !isSameAsPermanent) return;
+
+    const sourceAddress =
+      type === "4" ? watchedInstAdd : ["2", "3"].includes(type) ? watchedGrpAdd : watchedAddress;
+
+    form.setValue("presentAddress", sourceAddress || "", { shouldDirty: true });
+    form.setValue("presentStateId", watchedStateId || null, { shouldDirty: true });
+    form.setValue("presentDistrictId", watchedDistrictId || null, { shouldDirty: true });
+    form.setValue("presentBlockId", watchedBlockId || null, { shouldDirty: true });
+    form.setValue("presentVillageId", watchedVillageId || null, { shouldDirty: true });
+    form.setValue("presentPoliceStationId", watchedPoliceStationId || null, { shouldDirty: true });
+    form.setValue("presentPostOfficeId", watchedPostOfficeId || null, { shouldDirty: true });
+  }, [
+    isEditMode,
+    isSameAsPermanent,
+    type,
+    watchedAddress,
+    watchedInstAdd,
+    watchedGrpAdd,
+    watchedStateId,
+    watchedDistrictId,
+    watchedBlockId,
+    watchedVillageId,
+    watchedPoliceStationId,
+    watchedPostOfficeId,
+    form,
+  ]);
+
+  const handleSameAddressToggle = (checked) => {
+    const isChecked = Boolean(checked);
+    form.setValue("sameAsPermanent", isChecked ? "Y" : "N", { shouldDirty: true });
+
+    if (isChecked) {
+      const addressSourceField =
+        type === "4" ? "inst_add" : ["2", "3"].includes(type) ? "grp_add" : "address";
+      const values = form.getValues();
+
+      form.setValue("presentAddress", values[addressSourceField] || "", { shouldDirty: true });
+      form.setValue("presentStateId", values.stateId || null, { shouldDirty: true });
+      form.setValue("presentDistrictId", values.districtId || null, { shouldDirty: true });
+      form.setValue("presentBlockId", values.blockId || null, { shouldDirty: true });
+      form.setValue("presentVillageId", values.villageId || null, { shouldDirty: true });
+      form.setValue("presentPoliceStationId", values.policeStationId || null, { shouldDirty: true });
+      form.setValue("presentPostOfficeId", values.postOfficeId || null, { shouldDirty: true });
+    }
+  };
+
   const handleUpdateProfileClick = () => {
     if (loading) return;
     setOriginalValues(getValues());
@@ -134,8 +196,6 @@ const KycActionModal = ({
     }
     onUpdate(data);
   };
-
-  const type = selectedApplication?.Customer_Type?.toString();
 
   const getFieldsConfig = () => {
     const config = {
@@ -206,6 +266,7 @@ const KycActionModal = ({
         name: "presentAddress",
         label: t("kycApproval.fields.address"),
         fieldType: "text",
+        isDisabled: isSameAsPermanent,
       },
       {
         name: "presentStateId",
@@ -213,46 +274,47 @@ const KycActionModal = ({
         type: "dropdown",
         optionsList: masterDataLists.states,
         labelKey: "State_Name",
+        isDisabled: isSameAsPermanent,
       },
       {
         name: "presentDistrictId",
         label: t("kycApproval.fields.district"),
         type: "dropdown",
-        optionsList: masterDataLists.presentDistricts,
+        optionsList: isSameAsPermanent ? masterDataLists.districts : masterDataLists.presentDistricts,
         labelKey: "Dist_Name",
-        isDisabled: !watchedPresentStateId,
+        isDisabled: isSameAsPermanent || !watchedPresentStateId,
       },
       {
         name: "presentBlockId",
         label: t("kycApproval.fields.block"),
         type: "dropdown",
-        optionsList: masterDataLists.presentBlocks,
+        optionsList: isSameAsPermanent ? masterDataLists.blocks : masterDataLists.presentBlocks,
         labelKey: "Block_Name",
-        isDisabled: !watchedPresentDistrictId,
+        isDisabled: isSameAsPermanent || !watchedPresentDistrictId,
       },
       {
         name: "presentPoliceStationId",
         label: t("kycApproval.fields.policeStation"),
         type: "dropdown",
-        optionsList: masterDataLists.presentPoliceStations,
+        optionsList: isSameAsPermanent ? masterDataLists.policeStations : masterDataLists.presentPoliceStations,
         labelKey: "STation_Name",
-        isDisabled: !watchedPresentDistrictId,
+        isDisabled: isSameAsPermanent || !watchedPresentDistrictId,
       },
       {
         name: "presentPostOfficeId",
         label: t("kycApproval.fields.postOffice"),
         type: "dropdown",
-        optionsList: masterDataLists.presentPostOffices,
+        optionsList: isSameAsPermanent ? masterDataLists.postOffices : masterDataLists.presentPostOffices,
         labelKey: "Post_Off_Name",
-        isDisabled: !watchedPresentDistrictId,
+        isDisabled: isSameAsPermanent || !watchedPresentDistrictId,
       },
       {
         name: "presentVillageId",
         label: t("kycApproval.fields.villageWardNo"),
         type: "dropdown",
-        optionsList: masterDataLists.presentVillages,
+        optionsList: isSameAsPermanent ? masterDataLists.villages : masterDataLists.presentVillages,
         labelKey: "Vill_Name",
-        isDisabled: !watchedPresentBlockId,
+        isDisabled: isSameAsPermanent || !watchedPresentBlockId,
       },
     ];
 
@@ -661,13 +723,16 @@ const KycActionModal = ({
                         </>
                       )}
 
+                    {/*permanent address , register address */}
                     {fieldsConfig.permanentLocation &&
                       fieldsConfig.permanentLocation.length > 0 && (
                         <>
                           <div className="col-span-full my-1 sm:my-2">
                             <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
                               <h4 className="w-full text-center text-xs sm:text-sm font-bold text-[#00264d] tracking-wide">
-                                {t("kycApproval.permanentAddress")}
+                                {type === "4"
+                                  ? t("kycApproval.registerAddress", "Register Address")
+                                  : t("kycApproval.permanentAddress", "Permanent Address")}
                               </h4>
                             </div>
                           </div>
@@ -677,14 +742,43 @@ const KycActionModal = ({
                         </>
                       )}
 
+                    {/*officer,present address */}
                     {fieldsConfig.presentLocation &&
                       fieldsConfig.presentLocation.length > 0 && (
                         <>
                           <div className="col-span-full my-1 sm:my-2">
-                            <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
-                              <h4 className="w-full text-center text-xs sm:text-sm font-bold text-[#00264d] tracking-wide">
-                                {t("kycApproval.presentAddress")}
+                            <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3 flex flex-col sm:flex-row items-center justify-between gap-2 relative">
+                              <div className="hidden sm:block w-48" />
+                              <h4 className="text-center text-xs sm:text-sm font-bold text-[#00264d] tracking-wide flex-1">
+                                {type === "4"
+                                  ? t("kycApproval.officeAddress", "Office Address")
+                                  : t("kycApproval.presentAddress", "Present Address")}
                               </h4>
+                              {isEditMode ? (
+                                <div className="sm:w-48 flex justify-end">
+                                  <FormField
+                                    control={control}
+                                    name="sameAsPermanent"
+                                    render={({ field }) => (
+                                      <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                                        <FormControl>
+                                          <Checkbox
+                                            checked={field.value === "Y"}
+                                            onCheckedChange={handleSameAddressToggle}
+                                          />
+                                        </FormControl>
+                                        <FormLabel className="text-xs font-semibold text-[#00264d] cursor-pointer whitespace-nowrap">
+                                          {type === "4"
+                                            ? t("kycApproval.sameAsRegister", "Same as Register Address")
+                                            : t("kycApproval.sameAsPermanent", "Same as Permanent Address")}
+                                        </FormLabel>
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                              ) : (
+                                <div className="hidden sm:block w-48" />
+                              )}
                             </div>
                           </div>
                           {fieldsConfig.presentLocation.map((field) =>

@@ -48,10 +48,36 @@ export const getDepositDurationUnitAPI = async (orgId) => {
   return res;
 };
 
-export const getDepositProductMemberTypeAPI = async (orgId) => {
-  // Same source used by Share Product / Issue Membership
+export const getDepositTypeAPI = async (orgId, prdType) => {
   let data = {
-    url: endPoints.getMemberTypeData(orgId),
+    url: endPoints.getDepositTypeByPrdType(orgId, prdType),
+  };
+
+  let res = await doGetApiCall(data);
+  return res;
+};
+
+export const getDepositProductMemberTypeAPI = async (orgId) => {
+  let data = {
+    url: endPoints.getDepositMemberType(orgId),
+  };
+
+  let res = await doGetApiCall(data);
+  return res;
+};
+
+export const getDepositInterestTypeAPI = async (orgId) => {
+  let data = {
+    url: endPoints.getDepositInttType(orgId),
+  };
+
+  let res = await doGetApiCall(data);
+  return res;
+};
+
+export const getDepositChargeTypeAPI = async (orgId) => {
+  let data = {
+    url: endPoints.getDepositChargeType(orgId),
   };
 
   let res = await doGetApiCall(data);
@@ -62,6 +88,15 @@ export const getDepositProductLedgerAPI = async (orgId) => {
   // Same source used by Account Ledger report
   let data = {
     url: endPoints.getAccountLedgerDataReport(orgId),
+  };
+
+  let res = await doGetApiCall(data);
+  return res;
+};
+
+export const getDepositProductPayoutModeAPI = async (orgId) => {
+  let data = {
+    url: endPoints.getPayoutModeData(orgId),
   };
 
   let res = await doGetApiCall(data);

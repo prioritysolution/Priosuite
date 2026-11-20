@@ -76,21 +76,36 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-const locationFormValues = (item) => ({
-  stateId: storeId(item.Cust_State),
-  districtId: storeId(item.Cust_Dist),
-  blockId: storeId(item.Cust_Blk),
-  villageId: storeId(item.Cust_Vill),
-  policeStationId: storeId(item.Cust_Police),
-  postOfficeId: storeId(item.Cust_Post),
-  presentAddress: item.Cust_Pre_Add || "",
-  presentStateId: storeId(item.Cust_Pre_State),
-  presentDistrictId: storeId(item.Cust_Pre_Dist),
-  presentBlockId: storeId(item.Cust_Pre_Blk),
-  presentVillageId: storeId(item.Cusr_Pre_Vill ?? item.Cust_Pre_Vill),
-  presentPoliceStationId: storeId(item.Cust_Pre_Police),
-  presentPostOfficeId: storeId(item.Cust_Pre_Post),
-});
+const locationFormValues = (item) => {
+  const isSameAddress =
+    item.Same_As_Per === "Y" ||
+    item.same_as_per === "Y" ||
+    item.Same_As_Reg === "Y" ||
+    item.same_as_reg === "Y" ||
+    (sameId(item.Cust_State, item.Cust_Pre_State) &&
+      sameId(item.Cust_Dist, item.Cust_Pre_Dist) &&
+      sameId(item.Cust_Blk, item.Cust_Pre_Blk) &&
+      sameId(item.Cust_Vill, item.Cusr_Pre_Vill ?? item.Cust_Pre_Vill) &&
+      String(item.Cust_Add || "").trim() !== "" &&
+      String(item.Cust_Add || "").trim() === String(item.Cust_Pre_Add || "").trim());
+
+  return {
+    stateId: storeId(item.Cust_State),
+    districtId: storeId(item.Cust_Dist),
+    blockId: storeId(item.Cust_Blk),
+    villageId: storeId(item.Cust_Vill),
+    policeStationId: storeId(item.Cust_Police),
+    postOfficeId: storeId(item.Cust_Post),
+    presentAddress: item.Cust_Pre_Add || "",
+    presentStateId: storeId(item.Cust_Pre_State),
+    presentDistrictId: storeId(item.Cust_Pre_Dist),
+    presentBlockId: storeId(item.Cust_Pre_Blk),
+    presentVillageId: storeId(item.Cusr_Pre_Vill ?? item.Cust_Pre_Vill),
+    presentPoliceStationId: storeId(item.Cust_Pre_Police),
+    presentPostOfficeId: storeId(item.Cust_Pre_Post),
+    sameAsPermanent: isSameAddress ? "Y" : "N",
+  };
+};
 
 const buildFormValues = (item, orgId, branchId) => {
   const type = item.Customer_Type?.toString();
@@ -611,12 +626,13 @@ export const useKycApproval = () => {
         inst_off_police: data.presentPoliceStationId,
         inst_off_post: data.presentPostOfficeId,
         same_as_reg:
-          sameId(data.stateId, data.presentStateId) &&
-          sameId(data.districtId, data.presentDistrictId) &&
-          sameId(data.blockId, data.presentBlockId) &&
-          sameId(data.villageId, data.presentVillageId) &&
-          String(data.inst_add || "").trim() ===
-            String(data.presentAddress || "").trim()
+          data.sameAsPermanent === "Y" ||
+          (sameId(data.stateId, data.presentStateId) &&
+            sameId(data.districtId, data.presentDistrictId) &&
+            sameId(data.blockId, data.presentBlockId) &&
+            sameId(data.villageId, data.presentVillageId) &&
+            String(data.inst_add || "").trim() ===
+              String(data.presentAddress || "").trim())
             ? "Y"
             : "N",
         inst_ben: data.inst_ben,
@@ -653,6 +669,16 @@ export const useKycApproval = () => {
         mem_pres_village: data.presentVillageId,
         mem_pres_police: data.presentPoliceStationId,
         mem_pres_post: data.presentPostOfficeId,
+        same_as_per:
+          data.sameAsPermanent === "Y" ||
+          (sameId(data.stateId, data.presentStateId) &&
+            sameId(data.districtId, data.presentDistrictId) &&
+            sameId(data.blockId, data.presentBlockId) &&
+            sameId(data.villageId, data.presentVillageId) &&
+            String(data.address || "").trim() ===
+              String(data.presentAddress || "").trim())
+            ? "Y"
+            : "N",
         org_id: currentOrgId,
         mem_mob: data.mobile,
         mem_mail: data.email,

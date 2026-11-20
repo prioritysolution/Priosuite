@@ -108,6 +108,14 @@ export const endPoints = {
   updateDepositProduct: `${createApi}Org/MasterSetup/UpdateDepositProduct`,
   getDepositProductList: (orgId, page = 1, limit = 10) =>
     `${createApi}Org/MasterSetup/GetDepositProductList?org_id=${orgId}&page=${page}&limit=${limit}`,
+  getDepositTypeByPrdType: (orgId, prdType) =>
+    `${createApi}Org/MasterSetup/GetDepositType?org_id=${orgId}&prd_type=${prdType}`,
+  getDepositMemberType: (orgId) =>
+    `${createApi}Org/MasterSetup/GetDepositMemType?org_id=${orgId}`,
+  getDepositInttType: (orgId) =>
+    `${createApi}Org/MasterSetup/GetDepositInttType?org_id=${orgId}`,
+  getDepositChargeType: (orgId) =>
+    `${createApi}Org/MasterSetup/GetDepChargeType?org_id=${orgId}`,
   addLoanProduct: `${createApi}Org/MasterSetup/AddLoanProduct`,
   updateLoanProduct: `${createApi}Org/MasterSetup/UpdateLoanProduct`,
   getLoanProductList: (orgId, page = 1, limit = 10) =>

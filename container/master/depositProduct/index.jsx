@@ -17,6 +17,7 @@ const DepositProductContainer = () => {
     editData,
     handleEditData,
     getDepositProductListApiCall,
+    getDepositTypeApiCall,
     loadMasterDropdowns,
     currentPage,
     setCurrentPage,
@@ -24,15 +25,16 @@ const DepositProductContainer = () => {
     pageLimit,
   } = useDepositProduct();
 
-  // Read cookies inside effects so SSR null values don't skip the fetch
+  // Load master dropdowns once on mount (cached via masterLoadedRef in Hooks)
   useEffect(() => {
     const token = getCookieData("prioBankClientToken");
     const orgId = getCookieData("orgId");
     if (token && orgId) {
       loadMasterDropdowns(orgId);
     }
-  }, []);
+  }, [loadMasterDropdowns]);
 
+  // Load product list on mount & page/limit change
   useEffect(() => {
     const token = getCookieData("prioBankClientToken");
     const orgId = getCookieData("orgId");
@@ -40,16 +42,6 @@ const DepositProductContainer = () => {
       getDepositProductListApiCall(orgId, currentPage, pageLimit);
     }
   }, [currentPage, pageLimit]);
-
-  // Refresh masters when opening add/edit so dropdowns always have data
-  useEffect(() => {
-    if (!openDialouge) return;
-    const token = getCookieData("prioBankClientToken");
-    const orgId = getCookieData("orgId");
-    if (token && orgId) {
-      loadMasterDropdowns(orgId);
-    }
-  }, [openDialouge]);
 
   return (
     <DepositProduct
@@ -62,6 +54,7 @@ const DepositProductContainer = () => {
       handleSubmit={handleSubmit}
       editData={editData}
       handleEditData={handleEditData}
+      getDepositTypeApiCall={getDepositTypeApiCall}
       currentPage={currentPage}
       setCurrentPage={setCurrentPage}
       lastPage={lastPage}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,20 +9,28 @@ import getCookieData from "@/utils/getCookieData";
 import { useDispatch } from "react-redux";
 import { maxTwoDecimalPlaces } from "@/utils/validationRegex";
 import {
+  getDepositChargeTypeAPI,
   getDepositDurationUnitAPI,
+  getDepositInterestTypeAPI,
   getDepositProductLedgerAPI,
   getDepositProductLedgerHeadAPI,
   getDepositProductListAPI,
   getDepositProductMemberTypeAPI,
+  getDepositProductPayoutModeAPI,
   getDepositProductTypeAPI,
+  getDepositTypeAPI,
   postDepositProductAPI,
   updateDepositProductAPI,
 } from "./DepositProductApis";
 import {
   getDepositProductListData,
+  getDepTypeData,
   getDurationUnitData,
+  getFineOnData,
+  getInterestTypeData,
   getLedgerData,
   getMemberTypeData,
+  getPayoutModeData,
   getProductTypeData,
 } from "./DepositProductReducer";
 
@@ -136,13 +144,10 @@ const defaultFormValues = {
   prdShName: "",
   interestType: "",
   minAmt: "",
-  maxAmt: "",
   roi: "",
   minDur: "",
-  maxDur: "",
   durUnit: "",
   lockDays: "",
-  passbookFees: "",
   defaultFine: "",
   fineOn: "",
   inOperMonth: "",
@@ -152,6 +157,11 @@ const defaultFormValues = {
   inttLedg: "",
   provLedg: "",
   fineLedg: "",
+  withdrawalAllocated: false,
+  noOfWithdrawalInYear: "",
+  interestPayout: false,
+  payoutMode: "",
+  agentAllocated: false,
 };
 
 export const useDepositProduct = () => {
@@ -177,30 +187,52 @@ export const useDepositProduct = () => {
       .max(10, "Short name must be at most 10 characters"),
     interestType: yup.string().required("Interest type is required"),
     minAmt: requiredPositiveDecimal("Minimum amount"),
-    maxAmt: requiredPositiveDecimal("Maximum amount").test(
-      "max-gte-min",
-      "Maximum amount must be greater than or equal to minimum amount",
-      function (value) {
-        const { minAmt } = this.parent;
-        if (!value || !minAmt) return true;
-        return parseFloat(value) >= parseFloat(minAmt);
-      },
-    ),
     roi: requiredPositiveDecimal("Rate of interest"),
     minDur: optionalInteger("Minimum duration"),
-    maxDur: optionalInteger("Maximum duration"),
     durUnit: optionalNumber(),
     lockDays: optionalInteger("Lock-in days"),
-    passbookFees: optionalDecimal("Passbook fees"),
     defaultFine: optionalDecimal("Default fine"),
-    fineOn: optionalInteger("Fine on"),
+    fineOn: optionalNumber(),
     inOperMonth: optionalInteger("Inoperative months"),
     inDorMonth: optionalInteger("Dormant months"),
     memberType: optionalNumber(),
     prnLedg: yup.string().required("Principal ledger is required"),
     inttLedg: yup.string().required("Interest ledger is required"),
     provLedg: yup.string().required("Provision ledger is required"),
-    fineLedg: yup.string().required("Fine ledger is required"),
+    fineLedg: yup.string().when("depType", {
+      is: (val) => String(val) !== "1" && String(val) !== "2" && String(val) !== "5" && val !== "" && val !== undefined && val !== null,
+      then: (schema) => schema.nullable().notRequired(),
+      otherwise: (schema) =>
+        yup.string().when("depType", {
+          is: (val) => String(val) === "1",
+          then: (s) => s.nullable().notRequired(),
+          otherwise: (s) => s.required("Fine ledger is required"),
+        }),
+    }),
+    withdrawalAllocated: yup.boolean(),
+    noOfWithdrawalInYear: yup.string().when("withdrawalAllocated", {
+      is: true,
+      then: (schema) =>
+        schema
+          .required("No. of withdrawals in a year is required")
+          .test(
+            "is-positive-integer",
+            "No. of withdrawals in a year must be greater than 0",
+            (value) => {
+              if (!value || value.trim() === "") return false;
+              const n = Number(value);
+              return Number.isInteger(n) && n > 0;
+            },
+          ),
+      otherwise: (schema) => optionalInteger("No. of withdrawals in a year"),
+    }),
+    interestPayout: yup.boolean(),
+    payoutMode: yup.string().when("interestPayout", {
+      is: true,
+      then: (schema) => schema.required("Payout mode is required"),
+      otherwise: (schema) => optionalNumber(),
+    }),
+    agentAllocated: yup.boolean(),
   });
 
   const form = useForm({
@@ -230,7 +262,7 @@ export const useDepositProduct = () => {
       prd_sh_name: item.prdShName || "",
       interest_type: Number(item.interestType),
       min_amt: Number(item.minAmt),
-      max_amt: Number(item.maxAmt),
+      max_amt: toApiNumberOrNull(item.maxAmt),
       roi: Number(item.roi),
       min_dur: toApiNumberOrNull(item.minDur),
       max_dur: toApiNumberOrNull(item.maxDur),
@@ -245,7 +277,26 @@ export const useDepositProduct = () => {
       prn_ledg: Number(item.prnLedg),
       intt_ledg: Number(item.inttLedg),
       prov_ledg: Number(item.provLedg),
-      fine_ledg: Number(item.fineLedg),
+      fine_ledg: toApiNumberOrNull(item.fineLedg),
+      // New fields: withdrawal allocation & payout mode & agent allocation
+      is_withdrawal: item.withdrawalAllocated ? 1 : 0,
+      withdrawal_allocated: item.withdrawalAllocated ? 1 : 0,
+      no_withdrawal: item.withdrawalAllocated
+        ? toApiNumberOrNull(item.noOfWithdrawalInYear)
+        : null,
+      no_of_withdrawal: item.withdrawalAllocated
+        ? toApiNumberOrNull(item.noOfWithdrawalInYear)
+        : null,
+      is_int_payout: item.interestPayout ? 1 : 0,
+      interest_payout: item.interestPayout ? 1 : 0,
+      payout_mode: item.interestPayout
+        ? toApiNumberOrNull(item.payoutMode)
+        : null,
+      pay_mode: item.interestPayout
+        ? toApiNumberOrNull(item.payoutMode)
+        : null,
+      is_agent: item.agentAllocated ? 1 : 0,
+      agent_allocated: item.agentAllocated ? 1 : 0,
     };
 
     if (prodId) {
@@ -355,13 +406,36 @@ export const useDepositProduct = () => {
     }
   };
 
+  const depositTypeCacheRef = useRef({});
+
+  const getDepositTypeApiCall = useCallback(async (orgId, prdType, force = false) => {
+    if (!orgId || !prdType) {
+      dispatch(getDepTypeData([]));
+      return [];
+    }
+    const cacheKey = `${orgId}_${prdType}`;
+    if (!force && depositTypeCacheRef.current[cacheKey]) {
+      dispatch(getDepTypeData(depositTypeCacheRef.current[cacheKey]));
+      return depositTypeCacheRef.current[cacheKey];
+    }
+    try {
+      const res = await getDepositTypeAPI(orgId, prdType);
+      const list = normalizeOptionRows(extractList(res));
+      depositTypeCacheRef.current[cacheKey] = list;
+      dispatch(getDepTypeData(list));
+      return list;
+    } catch (error) {
+      console.error(error);
+      dispatch(getDepTypeData([]));
+      return [];
+    }
+  }, [dispatch]);
+
   const getDurationUnitDataApiCall = async (orgId) => {
     if (!orgId) return;
     try {
-      // Same endpoint as Open Deposit / Deposit Interest Master
       const res = await getDepositDurationUnitAPI(orgId);
       const list = normalizeOptionRows(extractList(res));
-      // Reducer applies DURATION_UNIT_OPTIONS fallback when list is empty
       dispatch(getDurationUnitData(list));
     } catch (error) {
       console.error(error);
@@ -372,7 +446,6 @@ export const useDepositProduct = () => {
   const getMemberTypeDataApiCall = async (orgId) => {
     if (!orgId) return;
     try {
-      // Same endpoint as Share Product
       const res = await getDepositProductMemberTypeAPI(orgId);
       const list = normalizeOptionRows(extractList(res), [
         "Option_Value",
@@ -426,15 +499,73 @@ export const useDepositProduct = () => {
     }
   };
 
-  const loadMasterDropdowns = async (orgId) => {
+  const getInterestTypeDataApiCall = async (orgId) => {
     if (!orgId) return;
-    await Promise.all([
-      getProductTypeDataApiCall(orgId),
-      getDurationUnitDataApiCall(orgId),
-      getMemberTypeDataApiCall(orgId),
-      getLedgerDataApiCall(orgId),
-    ]);
+    try {
+      const res = await getDepositInterestTypeAPI(orgId);
+      const list = normalizeOptionRows(extractList(res));
+      dispatch(getInterestTypeData(list));
+    } catch (error) {
+      console.error(error);
+      dispatch(getInterestTypeData([]));
+    }
   };
+
+  const getFineOnDataApiCall = async (orgId) => {
+    if (!orgId) return;
+    try {
+      const res = await getDepositChargeTypeAPI(orgId);
+      const list = normalizeOptionRows(extractList(res));
+      dispatch(getFineOnData(list));
+    } catch (error) {
+      console.error(error);
+      dispatch(getFineOnData([]));
+    }
+  };
+
+  const getPayoutModeDataApiCall = async (orgId) => {
+    if (!orgId) return;
+    try {
+      const res = await getDepositProductPayoutModeAPI(orgId);
+      const list = normalizeOptionRows(extractList(res));
+      dispatch(getPayoutModeData(list));
+    } catch (error) {
+      console.error(error);
+      dispatch(getPayoutModeData([]));
+    }
+  };
+
+  const masterLoadedRef = useRef(false);
+  const loadingMastersPromiseRef = useRef(null);
+
+  const loadMasterDropdowns = useCallback(
+    async (targetOrgId = orgId, force = false) => {
+      if (!targetOrgId) return;
+      if (!force && masterLoadedRef.current) return;
+      if (loadingMastersPromiseRef.current) {
+        return loadingMastersPromiseRef.current;
+      }
+
+      loadingMastersPromiseRef.current = Promise.all([
+        getProductTypeDataApiCall(targetOrgId),
+        getInterestTypeDataApiCall(targetOrgId),
+        getDurationUnitDataApiCall(targetOrgId),
+        getMemberTypeDataApiCall(targetOrgId),
+        getLedgerDataApiCall(targetOrgId),
+        getPayoutModeDataApiCall(targetOrgId),
+        getFineOnDataApiCall(targetOrgId),
+      ])
+        .then(() => {
+          masterLoadedRef.current = true;
+        })
+        .finally(() => {
+          loadingMastersPromiseRef.current = null;
+        });
+
+      return loadingMastersPromiseRef.current;
+    },
+    [orgId],
+  );
 
   useEffect(() => {
     if (editData && Object.keys(editData).length > 0) {
@@ -461,6 +592,49 @@ export const useDepositProduct = () => {
         inttLedg: editData.Intt_Ledg?.toString() || "",
         provLedg: editData.Prov_Ledg?.toString() || "",
         fineLedg: editData.Fine_Ledg?.toString() || "",
+        withdrawalAllocated: Boolean(
+          Number(
+            editData.Is_Withdrawal ??
+              editData.Withdrawal_Allocated ??
+              editData.withdrawal_allocated ??
+              editData.is_withdrawal ??
+              0,
+          ) === 1,
+        ),
+        noOfWithdrawalInYear:
+          (
+            editData.No_Withdrawal ??
+            editData.No_Of_Withdrawal ??
+            editData.no_withdrawal ??
+            editData.no_of_withdrawal ??
+            ""
+          )?.toString() || "",
+        interestPayout: Boolean(
+          Number(
+            editData.Is_Int_Payout ??
+              editData.Interest_Payout ??
+              editData.is_int_payout ??
+              editData.interest_payout ??
+              0,
+          ) === 1,
+        ),
+        payoutMode:
+          (
+            editData.Payout_Mode ??
+            editData.Pay_Mode ??
+            editData.payout_mode ??
+            editData.pay_mode ??
+            ""
+          )?.toString() || "",
+        agentAllocated: Boolean(
+          Number(
+            editData.Is_Agent ??
+              editData.Agent_Allocated ??
+              editData.is_agent ??
+              editData.agent_allocated ??
+              0,
+          ) === 1,
+        ),
       });
     } else {
       form.reset(defaultFormValues);
@@ -471,8 +645,9 @@ export const useDepositProduct = () => {
     if (!openDialouge) {
       setEditData(null);
       form.reset(defaultFormValues);
+      dispatch(getDepTypeData([]));
     }
-  }, [openDialouge]);
+  }, [openDialouge, dispatch]);
 
   return {
     getLoading,
@@ -486,9 +661,13 @@ export const useDepositProduct = () => {
     handleEditData,
     getDepositProductListApiCall,
     getProductTypeDataApiCall,
+    getDepositTypeApiCall,
+    getInterestTypeDataApiCall,
     getDurationUnitDataApiCall,
     getMemberTypeDataApiCall,
     getLedgerDataApiCall,
+    getPayoutModeDataApiCall,
+    getFineOnDataApiCall,
     loadMasterDropdowns,
     currentPage,
     setCurrentPage,

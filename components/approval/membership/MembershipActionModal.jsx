@@ -134,14 +134,31 @@ const MembershipActionModal = ({
 
   const modeKey = (() => {
     const raw = String(
-      firstValue(data, ["Pay_Mode", "Payment_Mode", "Trans_Mode", "Mode", "Vouch_Mode"]),
+      firstValue(data, [
+        "Transaction_Mode",
+        "Pay_Mode",
+        "Payment_Mode",
+        "Trans_Mode",
+        "Mode",
+        "Vouch_Mode",
+        "Vouch_Type",
+      ]),
     ).toLowerCase();
     if (raw.includes("sav")) return "savings";
     if (raw.includes("bank")) return "bank";
     if (raw.includes("cash")) return "cash";
     if (raw.includes("trf") || raw.includes("transfer")) return "transfer";
     if (transfers.length) return "transfer";
-    if (firstValue(data, ["Sb_Id", "Sb_Ac_No", "Savings_Ac_No", "Sb_Account_No"])) {
+    if (
+      firstValue(data, [
+        "Savings_Acct_Id",
+        "Savings_Account_No",
+        "Sb_Id",
+        "Sb_Ac_No",
+        "Savings_Ac_No",
+        "Sb_Account_No",
+      ])
+    ) {
       return "savings";
     }
     if (firstValue(data, ["Bank_Id", "Bank_Ac_No", "Bank_Account_No"])) return "bank";
@@ -151,11 +168,13 @@ const MembershipActionModal = ({
   const shareCount = firstValue(data, ["No_Share", "No_Of_Share", "no_of_share"]);
   const shareRate = firstValue(data, ["Share_Rate", "Rate_Per_Share"]);
   const shareAmount =
-    firstValue(data, ["Share_Amt", "Share_Amount"]) ||
+    firstValue(data, ["Share_Amount", "Share_Amt"]) ||
     (shareCount !== "" && shareRate !== ""
       ? Number(shareCount) * Number(shareRate)
       : "");
   const paymentAmount = firstValue(data, [
+    "Total_Amount",
+    "Share_Amount",
     "Pay_Amt",
     "Payment_Amount",
     "Payment_Amt",
@@ -211,20 +230,33 @@ const MembershipActionModal = ({
     );
   };
 
+  const memberName =
+    firstValue(data, ["Full_Name", "Member_Name", "Savings_Account_Holder"]) ||
+    (() => {
+      const part = firstValue(data, ["Particular", "Particulars"]);
+      const match = part?.match(/(?:To|For)\s+([A-Za-z\s.]+)/i);
+      return match ? match[1].trim() : "";
+    })();
+
   const overview = (
     <Section title={t("membershipApproval.transactionOverview")}>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Field
           label={t("membershipApproval.particulars")}
           value={firstValue(data, ["Particular", "Particulars"])}
         />
         <Field
           label={t("membershipApproval.transactionType")}
-          value={firstValue(data, ["Trans_Type", "Transaction_Type"])}
+          value={firstValue(data, ["Trans_Type", "Transaction_Type", "Trans_Source_Name"])}
         />
         <Field
           label={t("membershipApproval.transactionDate")}
           value={dateText(firstValue(data, ["Trans_Date", "Transaction_Date"]))}
+        />
+        <Field
+          label={t("membershipApproval.totalAmount")}
+          value={paymentAmount}
+          money
         />
       </div>
     </Section>
@@ -235,7 +267,7 @@ const MembershipActionModal = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Field
           label={t("membershipApproval.fullName")}
-          value={firstValue(data, ["Full_Name", "Member_Name"])}
+          value={memberName}
         />
         <Field
           label={t("membershipApproval.admissionNo")}
@@ -259,14 +291,27 @@ const MembershipActionModal = ({
     </Section>
   );
 
+  const isTransfer =
+    modeKey === "transfer" ||
+    modeKey === "savings" ||
+    String(firstValue(data, ["Vouch_Type"])).toLowerCase().includes("transfer") ||
+    String(firstValue(data, ["Transaction_Mode"])).toLowerCase().includes("sav") ||
+    Boolean(firstValue(data, ["Trf_On"]));
+
   const payment = (
-    <Section title={t("membershipApproval.paymentDetails")}>
+    <Section title={t("membershipApproval.transferDetails", "Transfer Details")}>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Field label={t("membershipApproval.paymentMode")}>
+        <Field label={t("membershipApproval.transferMode", "Transfer Mode")}>
           <div className="min-h-10 px-3 py-2 rounded-md border border-slate-200 bg-slate-50 flex items-center">
-            <ModeBadge mode={modeKey === "transfer" ? "cash" : modeKey} />
+            <ModeBadge mode={modeKey === "cash" && isTransfer ? "transfer" : modeKey} />
           </div>
         </Field>
+        {firstValue(data, ["Trf_On"]) && (
+          <Field
+            label={t("membershipApproval.transferOn", "Transfer On")}
+            value={firstValue(data, ["Trf_On"])}
+          />
+        )}
         {modeKey === "bank" && (
           <>
             <Field
@@ -287,21 +332,40 @@ const MembershipActionModal = ({
           <>
             <Field
               label={t("membershipApproval.accountNo")}
-              value={firstValue(data, ["Sb_Ac_No", "Savings_Ac_No", "Sb_Account_No", "Account_No"])}
+              value={firstValue(data, [
+                "Savings_Account_No",
+                "Sb_Ac_No",
+                "Savings_Ac_No",
+                "Sb_Account_No",
+                "Account_No",
+              ])}
             />
             <Field
               label={t("membershipApproval.accountHolder")}
-              value={firstValue(data, ["Ac_Holder", "Account_Holder", "Holder_Name", "Sb_Holder", "Full_Name"])}
+              value={firstValue(data, [
+                "Savings_Account_Holder",
+                "Ac_Holder",
+                "Account_Holder",
+                "Holder_Name",
+                "Sb_Holder",
+                "Full_Name",
+              ])}
             />
             <Field
               label={t("membershipApproval.closingBalance")}
-              value={firstValue(data, ["Closing_Bal", "Close_Bal", "Avail_Balance", "Sb_Balance"])}
+              value={firstValue(data, [
+                "Savings_Balance",
+                "Closing_Bal",
+                "Close_Bal",
+                "Avail_Balance",
+                "Sb_Balance",
+              ])}
               money
             />
           </>
         )}
         <Field
-          label={t("membershipApproval.paymentAmount")}
+          label={t("membershipApproval.transferAmount", "Transfer Amount")}
           value={paymentAmount}
           money
         />
@@ -345,11 +409,11 @@ const MembershipActionModal = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field
             label={t("membershipApproval.nomineeName")}
-            value={firstValue(data, ["Nom_Name", "Nominee_Name"])}
+            value={firstValue(data, ["Nomine_Name", "Nom_Name", "Nominee_Name"])}
           />
           <Field
             label={t("membershipApproval.relation")}
-            value={firstValue(data, ["Nom_Rel", "Nom_Relation", "Nominee_Relation"])}
+            value={firstValue(data, ["Nom_Rel_Name", "Nom_Rel", "Nom_Relation", "Nominee_Relation"])}
           />
           <Field
             label={t("membershipApproval.age")}
@@ -357,7 +421,7 @@ const MembershipActionModal = ({
           />
           <Field
             label={t("membershipApproval.address")}
-            value={firstValue(data, ["Nom_Add", "Nom_Address", "Nominee_Address"])}
+            value={firstValue(data, ["Nom_Address", "Nom_Add", "Nominee_Address"])}
           />
         </div>
       </Section>
@@ -482,12 +546,15 @@ const MembershipActionModal = ({
   else if (source === 2) body = shareIssue;
   else if (source === 19) body = shareRefund;
   else if (source === 3) {
-    body = modeKey === "transfer" ? withdrawalTransfer : withdrawalPayment;
+    body = modeKey === "transfer" || isTransfer ? withdrawalTransfer : withdrawalPayment;
   }
 
   const voucherType = String(firstValue(data, ["Vouch_Type"]) || "");
-  const voucherStyle = voucherType.toLowerCase().includes("payment")
+  const voucherLower = voucherType.toLowerCase();
+  const voucherStyle = voucherLower.includes("payment")
     ? "bg-red-100 text-red-700"
+    : voucherLower.includes("transfer")
+    ? "bg-blue-100 text-blue-700"
     : "bg-green-100 text-green-700";
 
   return (

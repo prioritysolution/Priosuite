@@ -656,7 +656,12 @@ const en = {
           principalLedger: "Principal Ledger",
           interestLedger: "Interest Ledger",
           provisionLedger: "Provision Ledger",
-          fineLedger: "Fine Ledger"
+          fineLedger: "Fine Ledger",
+          withdrawalAllocated: "Withdrawal Allocated",
+          noOfWithdrawalInYear: "No. of Withdrawal in a Year",
+          interestPayout: "Interest Payout",
+          payoutMode: "Payout Mode",
+          agentAllocated: "Agent Allocated"
         },
         placeholders: {
           productType: "Select product type",
@@ -686,7 +691,10 @@ const en = {
           interestLedger: "Select interest ledger",
           provisionLedger: "Select provision ledger",
           fineLedger: "Select fine ledger",
-          searchLedger: "Search ledger..."
+          searchLedger: "Search ledger...",
+          noOfWithdrawalInYear: "Enter no. of withdrawals in a year",
+          payoutMode: "Select payout mode",
+          searchPayoutMode: "Search payout mode..."
         },
         table: {
           productName: "Product Name",
@@ -3358,6 +3366,10 @@ const en = {
       locationDetails: "Location Details",
       permanentAddress: "Permanent Address",
       presentAddress: "Present Address",
+      registerAddress: "Register Address",
+      officeAddress: "Office Address",
+      sameAsPermanent: "Same as Permanent Address",
+      sameAsRegister: "Same as Register Address",
       identityDocuments: "Identity Documents",
       noChangesDetected: "No changes detected. Please modify at least one field before updating.",
       pleaseEnterRejectionRemarks: "Please enter remarks for rejection.",
@@ -3445,8 +3457,11 @@ const en = {
       shareDetails: "Share Details",
       shareAmount: "Share Amount",
       paymentDetails: "Payment Details",
+      transferDetails: "Transfer Details",
       paymentMode: "Payment Mode",
+      transferMode: "Transfer Mode",
       paymentAmount: "Payment Amount",
+      transferAmount: "Transfer Amount",
       accountName: "Account Name",
       accountNo: "Account No",
       accountHolder: "Account Holder",
