@@ -392,13 +392,10 @@ const DepositProductForm = ({
             {/* Additional Features Section */}
             {(showWithdrawalAllocated || showInterestPayout) && (
               <div className="col-span-full border-t border-[#e8eef5] pt-4 mt-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-4">
-                  {/* 1) Withdrawal allocated group */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-4 items-end">
+                  {/* 1) Withdrawal allocated checkbox */}
                   {showWithdrawalAllocated && (
-                    <div className="flex flex-col gap-2">
-                      <FormLabel className="text-sm font-medium text-foreground invisible select-none">
-                        Withdrawal
-                      </FormLabel>
+                    <div className="flex flex-col justify-end h-full">
                       <FormField
                         control={form.control}
                         name="withdrawalAllocated"
@@ -418,7 +415,7 @@ const DepositProductForm = ({
                             <FormLabel className="text-sm font-medium text-slate-700 cursor-pointer select-none">
                               {t(
                                 "master.depositProduct.fields.withdrawalAllocated",
-                                "Withdrawal Allocated",
+                                "Withdrawal Allow",
                               )}
                             </FormLabel>
                           </FormItem>
@@ -427,39 +424,27 @@ const DepositProductForm = ({
                     </div>
                   )}
 
-                  {/* 2) No. of withdrawal in a year */}
-                  {showWithdrawalAllocated && (
-                    watchedWithdrawalAllocated ? (
-                      <InputField
-                        control={form.control}
-                        name="noOfWithdrawalInYear"
-                        label={t(
-                          "master.depositProduct.fields.noOfWithdrawalInYear",
-                          "No. of withdrawal in a year",
-                        )}
-                        placeholder={t(
-                          "master.depositProduct.placeholders.noOfWithdrawalInYear",
-                          "Enter no. of withdrawals",
-                        )}
-                        type="number"
-                        isRequired
-                      />
-                    ) : (
-                      <div className="hidden lg:block" />
-                    )
-                  )}
+                  {/* 2) No. of withdrawal in a year (shows when withdrawal allocated is checked) */}
+                  {showWithdrawalAllocated && watchedWithdrawalAllocated ? (
+                    <InputField
+                      control={form.control}
+                      name="noOfWithdrawalInYear"
+                      label={t(
+                        "master.depositProduct.fields.noOfWithdrawalInYear",
+                        "No. of withdrawal in a year",
+                      )}
+                      placeholder={t(
+                        "master.depositProduct.placeholders.noOfWithdrawalInYear",
+                        "Enter no. of withdrawals",
+                      )}
+                      type="number"
+                      isRequired
+                    />
+                  ) : null}
 
-                  {/* Spacer for 3-column row alignment if only 1 item visible */}
-                  {showWithdrawalAllocated && !watchedWithdrawalAllocated && (
-                    <div className="hidden lg:block" />
-                  )}
-
-                  {/* 3) Interest Payout group */}
+                  {/* 3) Interest Payout checkbox */}
                   {showInterestPayout && (
-                    <div className="flex flex-col gap-2">
-                      <FormLabel className="text-sm font-medium text-foreground invisible select-none">
-                        Interest
-                      </FormLabel>
+                    <div className="flex flex-col justify-end h-full">
                       <FormField
                         control={form.control}
                         name="interestPayout"
@@ -488,45 +473,36 @@ const DepositProductForm = ({
                     </div>
                   )}
 
-                  {/* 4) Payout Mode */}
-                  {showInterestPayout && (
-                    watchedInterestPayout ? (
-                      <DropdownField
-                        control={form.control}
-                        name="payoutMode"
-                        label={t(
-                          "master.depositProduct.fields.payoutMode",
-                          "Payout Mode",
-                        )}
-                        options={payoutModeData || []}
-                        optionLabelKey="Option_Value"
-                        placeholder={t(
-                          "master.depositProduct.placeholders.payoutMode",
-                          "Select payout mode",
-                        )}
-                        searchPlaceholder={t(
-                          "master.depositProduct.placeholders.searchPayoutMode",
-                          "Search payout mode...",
-                        )}
-                        isRequired
-                      />
-                    ) : (
-                      <div className="hidden lg:block" />
-                    )
-                  )}
-
-                  {/* Spacer for 3-column row alignment if only 1 item visible */}
-                  {showInterestPayout && !watchedInterestPayout && (
-                    <div className="hidden lg:block" />
-                  )}
+                  {/* 4) Payout Mode (shows when interest payout is checked) */}
+                  {showInterestPayout && watchedInterestPayout ? (
+                    <DropdownField
+                      control={form.control}
+                      name="payoutMode"
+                      label={t(
+                        "master.depositProduct.fields.payoutMode",
+                        "Payout Mode",
+                      )}
+                      options={payoutModeData || []}
+                      optionLabelKey="Option_Value"
+                      placeholder={t(
+                        "master.depositProduct.placeholders.payoutMode",
+                        "Select payout mode",
+                      )}
+                      searchPlaceholder={t(
+                        "master.depositProduct.placeholders.searchPayoutMode",
+                        "Search payout mode...",
+                      )}
+                      isRequired
+                    />
+                  ) : null}
                 </div>
               </div>
             )}
 
             {/* Agent Allocated */}
             <div className="col-span-full border-t border-[#e8eef5] pt-4 mt-2">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-4">
-                <div className="flex flex-col justify-start">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-4 items-end">
+                <div className="flex flex-col justify-end h-full">
                   <FormField
                     control={form.control}
                     name="agentAllocated"
@@ -541,7 +517,7 @@ const DepositProductForm = ({
                         <FormLabel className="text-sm font-medium text-slate-700 cursor-pointer select-none">
                           {t(
                             "master.depositProduct.fields.agentAllocated",
-                            "Agent Allocated",
+                            "Agent Allow",
                           )}
                         </FormLabel>
                       </FormItem>

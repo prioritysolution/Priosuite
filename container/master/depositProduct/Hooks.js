@@ -254,56 +254,96 @@ export const useDepositProduct = () => {
   };
 
   const buildPayload = (orgId, item, prodId = null) => {
-    const payload = {
-      org_id: Number(orgId),
-      prd_type: Number(item.prdType),
-      dep_type: Number(item.depType),
+    const orgIdNum = Number(orgId);
+    const prdTypeNum = Number(item.prdType);
+    const depTypeNum = Number(item.depType);
+    const interestTypeNum = Number(item.interestType);
+    const minAmtNum = Number(item.minAmt);
+    const roiNum = Number(item.roi);
+    const minDurNum = toApiNumberOrNull(item.minDur);
+    const durUnitNum = toApiNumberOrNull(item.durUnit);
+    const lockDaysNum = toApiNumberOrNull(item.lockDays);
+    const defaultFineNum = toApiNumberOrNull(item.defaultFine);
+    const fineOnNum = toApiNumberOrNull(item.fineOn);
+    const inOperMonthNum = toApiNumberOrNull(item.inOperMonth);
+    const inDorMonthNum = toApiNumberOrNull(item.inDorMonth);
+    const memberTypeNum = toApiNumberOrNull(item.memberType);
+    const isWithNum = item.withdrawalAllocated ? 1 : 0;
+    const maxWithNoNum = item.withdrawalAllocated
+      ? toApiNumberOrNull(item.noOfWithdrawalInYear)
+      : null;
+    const isInttPayNum = item.interestPayout ? 1 : 0;
+    const inttPayModeNum = item.interestPayout
+      ? toApiNumberOrNull(item.payoutMode)
+      : null;
+    const isAgentCollNum = item.agentAllocated ? 1 : 0;
+    const prnLedgNum = toApiNumberOrNull(item.prnLedg);
+    const inttLedgNum = toApiNumberOrNull(item.inttLedg);
+    const provLedgNum = toApiNumberOrNull(item.provLedg);
+    const fineLedgNum =
+      toApiNumberOrNull(item.fineLedg) ??
+      toApiNumberOrNull(item.inttLedg) ??
+      toApiNumberOrNull(item.prnLedg) ??
+      0;
+    const prodIdNum = prodId ? Number(prodId) : null;
+
+    return {
+      // Lowercase snake_case keys (required by backend validator: org_id, prd_type, dep_type, etc.)
+      org_id: orgIdNum,
+      prd_type: prdTypeNum,
+      dep_type: depTypeNum,
       product_name: item.productName || "",
       prd_sh_name: item.prdShName || "",
-      interest_type: Number(item.interestType),
-      min_amt: Number(item.minAmt),
-      max_amt: toApiNumberOrNull(item.maxAmt),
-      roi: Number(item.roi),
-      min_dur: toApiNumberOrNull(item.minDur),
-      max_dur: toApiNumberOrNull(item.maxDur),
-      dur_unit: toApiNumberOrNull(item.durUnit),
-      lock_days: toApiNumberOrNull(item.lockDays),
-      passbook_fees: toApiNumberOrNull(item.passbookFees),
-      default_fine: toApiNumberOrNull(item.defaultFine),
-      fine_on: toApiNumberOrNull(item.fineOn),
-      in_oper_month: toApiNumberOrNull(item.inOperMonth),
-      in_dor_month: toApiNumberOrNull(item.inDorMonth),
-      member_type: toApiNumberOrNull(item.memberType),
-      prn_ledg: Number(item.prnLedg),
-      intt_ledg: Number(item.inttLedg),
-      prov_ledg: Number(item.provLedg),
-      fine_ledg: toApiNumberOrNull(item.fineLedg),
-      // New fields: withdrawal allocation & payout mode & agent allocation
-      is_withdrawal: item.withdrawalAllocated ? 1 : 0,
-      withdrawal_allocated: item.withdrawalAllocated ? 1 : 0,
-      no_withdrawal: item.withdrawalAllocated
-        ? toApiNumberOrNull(item.noOfWithdrawalInYear)
-        : null,
-      no_of_withdrawal: item.withdrawalAllocated
-        ? toApiNumberOrNull(item.noOfWithdrawalInYear)
-        : null,
-      is_int_payout: item.interestPayout ? 1 : 0,
-      interest_payout: item.interestPayout ? 1 : 0,
-      payout_mode: item.interestPayout
-        ? toApiNumberOrNull(item.payoutMode)
-        : null,
-      pay_mode: item.interestPayout
-        ? toApiNumberOrNull(item.payoutMode)
-        : null,
-      is_agent: item.agentAllocated ? 1 : 0,
-      agent_allocated: item.agentAllocated ? 1 : 0,
-    };
+      interest_type: interestTypeNum,
+      min_amt: minAmtNum,
+      roi: roiNum,
+      min_dur: minDurNum,
+      dur_unit: durUnitNum,
+      lock_days: lockDaysNum,
+      default_fine: defaultFineNum,
+      fine_on: fineOnNum,
+      in_oper_month: inOperMonthNum,
+      in_dor_month: inDorMonthNum,
+      member_type: memberTypeNum,
+      is_with: isWithNum,
+      max_with_no: maxWithNoNum,
+      is_intt_pay: isInttPayNum,
+      intt_pay_mode: inttPayModeNum,
+      is_agent_coll: isAgentCollNum,
+      prn_ledg: prnLedgNum,
+      intt_ledg: inttLedgNum,
+      prov_ledg: provLedgNum,
+      fine_ledg: fineLedgNum,
+      prod_id: prodIdNum,
 
-    if (prodId) {
-      payload.prod_id = Number(prodId);
-    }
-
-    return payload;
+      // PascalCase keys for backward compatibility
+      Org_id: orgIdNum,
+      Prd_type: prdTypeNum,
+      Dep_type: depTypeNum,
+      Product_name: item.productName || "",
+      Prd_sh_name: item.prdShName || "",
+      Interest_type: interestTypeNum,
+      Min_amt: minAmtNum,
+      Roi: roiNum,
+      Min_dur: minDurNum,
+      Dur_unit: durUnitNum,
+      Lock_days: lockDaysNum,
+      Default_fine: defaultFineNum,
+      Fine_on: fineOnNum,
+      In_oper_month: inOperMonthNum,
+      In_dor_month: inDorMonthNum,
+      Member_type: memberTypeNum,
+      Is_with: isWithNum,
+      Max_with_no: maxWithNoNum,
+      Is_intt_pay: isInttPayNum,
+      Intt_pay_mode: inttPayModeNum,
+      Is_agent_coll: isAgentCollNum,
+      Prn_ledg: prnLedgNum,
+      Intt_ledg: inttLedgNum,
+      Prov_ledg: provLedgNum,
+      Fine_ledg: fineLedgNum,
+      Prod_id: prodIdNum,
+     };
   };
 
   const postDepositProductApiCall = async (orgId, item) => {
@@ -594,7 +634,9 @@ export const useDepositProduct = () => {
         fineLedg: editData.Fine_Ledg?.toString() || "",
         withdrawalAllocated: Boolean(
           Number(
-            editData.Is_Withdrawal ??
+            editData.Is_with ??
+              editData.is_with ??
+              editData.Is_Withdrawal ??
               editData.Withdrawal_Allocated ??
               editData.withdrawal_allocated ??
               editData.is_withdrawal ??
@@ -603,6 +645,8 @@ export const useDepositProduct = () => {
         ),
         noOfWithdrawalInYear:
           (
+            editData.Max_with_no ??
+            editData.max_with_no ??
             editData.No_Withdrawal ??
             editData.No_Of_Withdrawal ??
             editData.no_withdrawal ??
@@ -611,7 +655,9 @@ export const useDepositProduct = () => {
           )?.toString() || "",
         interestPayout: Boolean(
           Number(
-            editData.Is_Int_Payout ??
+            editData.Is_intt_pay ??
+              editData.is_intt_pay ??
+              editData.Is_Int_Payout ??
               editData.Interest_Payout ??
               editData.is_int_payout ??
               editData.interest_payout ??
@@ -620,6 +666,8 @@ export const useDepositProduct = () => {
         ),
         payoutMode:
           (
+            editData.Intt_pay_mode ??
+            editData.intt_pay_mode ??
             editData.Payout_Mode ??
             editData.Pay_Mode ??
             editData.payout_mode ??
@@ -628,7 +676,9 @@ export const useDepositProduct = () => {
           )?.toString() || "",
         agentAllocated: Boolean(
           Number(
-            editData.Is_Agent ??
+            editData.Is_agent_coll ??
+              editData.is_agent_coll ??
+              editData.Is_Agent ??
               editData.Agent_Allocated ??
               editData.is_agent ??
               editData.agent_allocated ??

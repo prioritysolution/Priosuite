@@ -657,11 +657,11 @@ const en = {
           interestLedger: "Interest Ledger",
           provisionLedger: "Provision Ledger",
           fineLedger: "Fine Ledger",
-          withdrawalAllocated: "Withdrawal Allocated",
+          withdrawalAllocated: "Withdrawal Allow",
           noOfWithdrawalInYear: "No. of Withdrawal in a Year",
           interestPayout: "Interest Payout",
           payoutMode: "Payout Mode",
-          agentAllocated: "Agent Allocated"
+          agentAllocated: "Agent Allow"
         },
         placeholders: {
           productType: "Select product type",
