@@ -32,6 +32,13 @@ const GroupProfileContainer = () => {
     getMemberDataLoading,
     handleMemberFormSubmit,
     isLoadingMemberData,
+    agentList,
+    agentLoading,
+    agentLoadingMore,
+    agentHasMore,
+    getDepositAgentListApiCall,
+    handleLoadMoreAgents,
+    handleSearchAgents,
   } = useGroupProfile();
 
   const {
@@ -59,6 +66,7 @@ const GroupProfileContainer = () => {
   useEffect(() => {
     if (token) {
       getGroupTypeDataApiCall();
+      getDepositAgentListApiCall(1, false);
     }
   }, [token]);
 
@@ -157,6 +165,12 @@ const GroupProfileContainer = () => {
       resetTrigger={resetTrigger}
       getMemberDataLoading={getMemberDataLoading}
       handleMemberFormSubmit={handleMemberFormSubmit}
+      agentList={agentList}
+      agentLoading={agentLoading}
+      agentLoadingMore={agentLoadingMore}
+      agentHasMore={agentHasMore}
+      handleLoadMoreAgents={handleLoadMoreAgents}
+      handleSearchAgents={handleSearchAgents}
     />
   );
 };

@@ -41,6 +41,13 @@ const InstitutionProfileContainer = () => {
     officeGetVillageLoading,
     officeGetPoliceStationLoading,
     officeGetPostOfficeLoading,
+    agentList,
+    agentLoading,
+    agentLoadingMore,
+    agentHasMore,
+    getDepositAgentListApiCall,
+    handleLoadMoreAgents,
+    handleSearchAgents,
   } = useInstitutionProfile();
 
   const {
@@ -65,11 +72,11 @@ const InstitutionProfileContainer = () => {
     lastUnitPage,
   } = useOperationalArea();
 
-  // useEffect(() => {
-  //   if (token) {
-  //     getGroupTypeDataApiCall();
-  //   }
-  // }, [token]);
+  useEffect(() => {
+    if (token) {
+      getDepositAgentListApiCall(1, false);
+    }
+  }, [token]);
 
   useEffect(() => {
     if (token && orgId && !isLoadingMemberData) {
@@ -177,6 +184,12 @@ const InstitutionProfileContainer = () => {
       officeGetVillageLoading={officeGetVillageLoading}
       officeGetPoliceStationLoading={officeGetPoliceStationLoading}
       officeGetPostOfficeLoading={officeGetPostOfficeLoading}
+      agentList={agentList}
+      agentLoading={agentLoading}
+      agentLoadingMore={agentLoadingMore}
+      agentHasMore={agentHasMore}
+      handleLoadMoreAgents={handleLoadMoreAgents}
+      handleSearchAgents={handleSearchAgents}
     />
   );
 };

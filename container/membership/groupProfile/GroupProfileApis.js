@@ -101,5 +101,27 @@ export const getGroupTypeDataApi = async (orgId) => {
   return res;
 };
 
+export const getDepositAgentListAPI = async (
+  orgId,
+  branchId,
+  pageNo = 1,
+  keyword = null,
+  agentId = null,
+  pageSize = 25,
+) => {
+  let data = {
+    url: endPoints.getDepositAgentList(
+      orgId,
+      branchId,
+      pageNo,
+      keyword,
+      agentId,
+      pageSize,
+    ),
+  };
+  let res = await doGetApiCall(data);
+  return res;
+};
+
 
 

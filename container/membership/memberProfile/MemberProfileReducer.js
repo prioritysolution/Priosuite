@@ -5,6 +5,7 @@ export const initialState = {
   genderData: [],
   casteData: [],
   religionData: [],
+  agentListData: [],
 };
 const MemberProfileSlice = createSlice({
   name: "memberProfile",
@@ -22,6 +23,9 @@ const MemberProfileSlice = createSlice({
     getReligionData: (state, action) => {
       state.religionData = action.payload;
     },
+    getAgentListData: (state, action) => {
+      state.agentListData = action.payload;
+    },
   },
 });
 export const {
@@ -29,5 +33,6 @@ export const {
   getGenderData,
   getCasteData,
   getReligionData,
+  getAgentListData,
 } = MemberProfileSlice.actions;
 export default MemberProfileSlice.reducer;

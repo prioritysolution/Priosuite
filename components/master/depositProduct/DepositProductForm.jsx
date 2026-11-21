@@ -47,6 +47,15 @@ const DepositProductForm = ({
     (state) => state?.depositProduct?.memberTypeData,
   );
   const ledgerData = useSelector((state) => state?.depositProduct?.ledgerData);
+  const principalLedgerData = useSelector(
+    (state) => state?.depositProduct?.principalLedgerData,
+  );
+  const interestLedgerData = useSelector(
+    (state) => state?.depositProduct?.interestLedgerData,
+  );
+  const provisionLedgerData = useSelector(
+    (state) => state?.depositProduct?.provisionLedgerData,
+  );
   const payoutModeData = useSelector(
     (state) => state?.depositProduct?.payoutModeData,
   );
@@ -87,6 +96,7 @@ const DepositProductForm = ({
   const isDepType2or5 = depTypeStr === "2" || depTypeStr === "5";
   const isDepTypeOther = depTypeStr !== "" && !isDepType1 && !isDepType2or5;
 
+  const showMinDur = !isDepType1;
   const showDurationUnit = !isDepType1;
   const showLockDays = !isDepType1;
   const showDefaultFine = !isDepType1 && !isDepTypeOther;
@@ -236,13 +246,15 @@ const DepositProductForm = ({
               isRequired
             />
 
-            <InputField
-              control={form.control}
-              name="minDur"
-              label={t("master.depositProduct.fields.minDuration")}
-              placeholder={t("master.depositProduct.placeholders.minDuration")}
-              type="number"
-            />
+            {showMinDur && (
+              <InputField
+                control={form.control}
+                name="minDur"
+                label={t("master.depositProduct.fields.minDuration")}
+                placeholder={t("master.depositProduct.placeholders.minDuration")}
+                type="number"
+              />
+            )}
 
             {showDurationUnit && (
               <DropdownField
@@ -333,7 +345,7 @@ const DepositProductForm = ({
               control={form.control}
               name="prnLedg"
               label={t("master.depositProduct.fields.principalLedger")}
-              options={ledgerData || []}
+              options={principalLedgerData || []}
               optionLabelKey="Ledger_Name"
               placeholder={t(
                 "master.depositProduct.placeholders.principalLedger",
@@ -348,7 +360,7 @@ const DepositProductForm = ({
               control={form.control}
               name="inttLedg"
               label={t("master.depositProduct.fields.interestLedger")}
-              options={ledgerData || []}
+              options={interestLedgerData || []}
               optionLabelKey="Ledger_Name"
               placeholder={t(
                 "master.depositProduct.placeholders.interestLedger",
@@ -363,7 +375,7 @@ const DepositProductForm = ({
               control={form.control}
               name="provLedg"
               label={t("master.depositProduct.fields.provisionLedger")}
-              options={ledgerData || []}
+              options={provisionLedgerData || []}
               optionLabelKey="Ledger_Name"
               placeholder={t(
                 "master.depositProduct.placeholders.provisionLedger",
@@ -390,7 +402,7 @@ const DepositProductForm = ({
             )}
 
             {/* Additional Features Section */}
-            {(showWithdrawalAllocated || showInterestPayout) && (
+            {(showWithdrawalAllocated || showInterestPayout || true) && (
               <div className="col-span-full border-t border-[#e8eef5] pt-4 mt-2">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-4 items-end">
                   {/* 1) Withdrawal allocated checkbox */}
@@ -495,37 +507,33 @@ const DepositProductForm = ({
                       isRequired
                     />
                   ) : null}
+
+                  {/* 5) Agent Allow checkbox */}
+                  <div className="flex flex-col justify-end h-full">
+                    <FormField
+                      control={form.control}
+                      name="agentAllocated"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center gap-2.5 space-y-0 rounded-md border border-slate-200 bg-slate-50/60 p-3 h-10">
+                          <FormControl>
+                            <Checkbox
+                              checked={Boolean(field.value)}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-medium text-slate-700 cursor-pointer select-none">
+                            {t(
+                              "master.depositProduct.fields.agentAllocated",
+                              "Agent Allow",
+                            )}
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
             )}
-
-            {/* Agent Allocated */}
-            <div className="col-span-full border-t border-[#e8eef5] pt-4 mt-2">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-4 items-end">
-                <div className="flex flex-col justify-end h-full">
-                  <FormField
-                    control={form.control}
-                    name="agentAllocated"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center gap-2.5 space-y-0 rounded-md border border-slate-200 bg-slate-50/60 p-3 h-10">
-                        <FormControl>
-                          <Checkbox
-                            checked={Boolean(field.value)}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormLabel className="text-sm font-medium text-slate-700 cursor-pointer select-none">
-                          {t(
-                            "master.depositProduct.fields.agentAllocated",
-                            "Agent Allow",
-                          )}
-                        </FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 

@@ -83,6 +83,7 @@ const MemberSearchForm = ({
   showDateFix = false,
   disableNextButton = false,
   anableRadio = "",
+  extraButtons = null,
 }) => {
   const { t } = useTranslation();
 
@@ -361,6 +362,8 @@ const MemberSearchForm = ({
                     t("memberSearch.next")
                   )}
                 </Button>
+
+                {extraButtons}
 
                 {showLedger && (
                   <TooltipProvider>

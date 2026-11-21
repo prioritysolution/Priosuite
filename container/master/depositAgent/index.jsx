@@ -7,6 +7,7 @@ import { useDepositAgent } from "./Hooks";
 
 const DepositAgentContainer = () => {
   const orgId = getCookieData("orgId");
+  const branchId = getCookieData("userBranchId");
 
   const {
     form,
@@ -14,13 +15,28 @@ const DepositAgentContainer = () => {
     handleMemberFormSubmit,
     loading,
     getMemberDataLoading,
+    getAgentListLoading,
     visibleBlock,
     resetTrigger,
+    openAgentListModal,
+    setOpenAgentListModal,
+    editingAgent,
+    handleEditAgent,
+    handleCancelEdit,
+    getDepositAgentListApiCall,
+    agentCurrentPage,
+    setAgentCurrentPage,
+    agentLastPage,
+    agentPageLimit,
+    agentSearchKeyword,
+    handleSearchAgentList,
     getPaymentTypeDataApiCall,
   } = useDepositAgent();
 
   useEffect(() => {
-    if (orgId) getPaymentTypeDataApiCall(orgId);
+    if (orgId) {
+      getPaymentTypeDataApiCall(orgId);
+    }
   }, [orgId]);
 
   return (
@@ -30,8 +46,23 @@ const DepositAgentContainer = () => {
       handleMemberFormSubmit={handleMemberFormSubmit}
       loading={loading}
       getMemberDataLoading={getMemberDataLoading}
+      getAgentListLoading={getAgentListLoading}
       visibleBlock={visibleBlock}
       resetTrigger={resetTrigger}
+      openAgentListModal={openAgentListModal}
+      setOpenAgentListModal={setOpenAgentListModal}
+      editingAgent={editingAgent}
+      handleEditAgent={handleEditAgent}
+      handleCancelEdit={handleCancelEdit}
+      getDepositAgentListApiCall={getDepositAgentListApiCall}
+      agentCurrentPage={agentCurrentPage}
+      setAgentCurrentPage={setAgentCurrentPage}
+      agentLastPage={agentLastPage}
+      agentPageLimit={agentPageLimit}
+      agentSearchKeyword={agentSearchKeyword}
+      handleSearchAgentList={handleSearchAgentList}
+      orgId={orgId}
+      branchId={branchId}
     />
   );
 };

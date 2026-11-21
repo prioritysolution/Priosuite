@@ -439,6 +439,11 @@ const en = {
           maximumDeposit: "Maximum Deposit",
           paymentType: "Payment Type",
           payoutAmount: "Payout Amount",
+          securityAmount: "Security Amount",
+          maxCollectionAmount: "Max Collection Amount",
+          maxAllowDay: "Max Allow Day",
+          depositCollection: "Deposit Collection",
+          loanCollection: "Loan Collection",
         },
         placeholders: {
           agentName: "Enter agent name",
@@ -451,6 +456,9 @@ const en = {
           paymentType: "Select payment type",
           searchPaymentType: "Search payment type...",
           payoutAmount: "Enter payout amount",
+          securityAmount: "Enter security amount",
+          maxCollectionAmount: "Enter max collection amount",
+          maxAllowDay: "Enter max allow day (max 2 digits)",
         },
         buttons: {
           add: "Add",

@@ -51,6 +51,13 @@ const MemberProfileContainer = () => {
     presentGetVillageLoading,
     presentGetPoliceStationLoading,
     presentGetPostOfficeLoading,
+    agentList,
+    agentLoading,
+    agentLoadingMore,
+    agentHasMore,
+    getDepositAgentListApiCall,
+    handleLoadMoreAgents,
+    handleSearchAgents,
   } = useMemberProfile();
 
   const {
@@ -83,6 +90,7 @@ const MemberProfileContainer = () => {
       getReligionDataApiCall();
 
       getMemberTypeApiCall();
+      getDepositAgentListApiCall(1, false);
     }
   }, [token]);
 
@@ -203,6 +211,12 @@ const MemberProfileContainer = () => {
       presentGetVillageLoading={presentGetVillageLoading}
       presentGetPoliceStationLoading={presentGetPoliceStationLoading}
       presentGetPostOfficeLoading={presentGetPostOfficeLoading}
+      agentList={agentList}
+      agentLoading={agentLoading}
+      agentLoadingMore={agentLoadingMore}
+      agentHasMore={agentHasMore}
+      handleLoadMoreAgents={handleLoadMoreAgents}
+      handleSearchAgents={handleSearchAgents}
     />
   );
 };

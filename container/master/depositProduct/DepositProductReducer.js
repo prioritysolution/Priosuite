@@ -6,6 +6,9 @@ export const initialState = {
   durationUnitData: [],
   memberTypeData: [],
   ledgerData: [],
+  principalLedgerData: [],
+  interestLedgerData: [],
+  provisionLedgerData: [],
   payoutModeData: [],
   depTypeData: [],
   interestTypeData: [],
@@ -40,6 +43,15 @@ const DepositProductSlice = createSlice({
     getLedgerData: (state, action) => {
       state.ledgerData = action.payload;
     },
+    getPrincipalLedgerData: (state, action) => {
+      state.principalLedgerData = action.payload || [];
+    },
+    getInterestLedgerData: (state, action) => {
+      state.interestLedgerData = action.payload || [];
+    },
+    getProvisionLedgerData: (state, action) => {
+      state.provisionLedgerData = action.payload || [];
+    },
     getPayoutModeData: (state, action) => {
       state.payoutModeData = action.payload || [];
     },
@@ -55,6 +67,9 @@ export const {
   getDurationUnitData,
   getMemberTypeData,
   getLedgerData,
+  getPrincipalLedgerData,
+  getInterestLedgerData,
+  getProvisionLedgerData,
   getPayoutModeData,
 } = DepositProductSlice.actions;
 

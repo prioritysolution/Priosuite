@@ -103,6 +103,7 @@ export const endPoints = {
     `${createApi}Org/MasterSetup/GetReligion?org_id=${orgId}`,
   getAgentPayout: (orgId) =>
     `${createApi}Org/MasterSetup/GetAgentPayout?org_id=${orgId}`,
+  
   addDepositAgent: `${createApi}Org/MasterSetup/AddDepositAgent`,
   addDepositProduct: `${createApi}Org/MasterSetup/AddDepositProduct`,
   updateDepositProduct: `${createApi}Org/MasterSetup/UpdateDepositProduct`,
@@ -116,11 +117,24 @@ export const endPoints = {
     `${createApi}Org/MasterSetup/GetDepositInttType?org_id=${orgId}`,
   getDepositChargeType: (orgId) =>
     `${createApi}Org/MasterSetup/GetDepChargeType?org_id=${orgId}`,
+  getDepositMasterLedger: (orgId, ledgType) =>
+    `${createApi}Org/MasterSetup/GetDepMasterLedger?org_id=${orgId}&ledg_type=${ledgType}`,
   addLoanProduct: `${createApi}Org/MasterSetup/AddLoanProduct`,
   updateLoanProduct: `${createApi}Org/MasterSetup/UpdateLoanProduct`,
   getLoanProductList: (orgId, page = 1, limit = 10) =>
     `${createApi}Org/MasterSetup/GetLoanProductList?org_id=${orgId}&page=${page}&limit=${limit}`,
   addDepositInterestSetup: `${createApi}Org/MasterSetup/DepositIntSlab`,
+  getDepositIntSlabList: (orgId, prodId = 0, page = 1, pageSize = 25) => {
+    const validProdId =
+      prodId !== null &&
+      prodId !== undefined &&
+      prodId !== "" &&
+      !Number.isNaN(Number(prodId))
+        ? Number(prodId)
+        : 0;
+    return `${createApi}Org/MasterSetup/GetDepositIntSlab?org_id=${orgId}&prod_id=${validProdId}&page_no=${page}&page_size=${pageSize}`;
+  },
+  updateDepositIntSlab: `${createApi}Org/MasterSetup/UpdateDepositIntSlab`,
   getPassbookModule: (orgId) =>
     `${createApi}Org/MasterSetup/GetModuleActive?org_id=${orgId}`,
   getPassbookConfig: (orgId, moduleId) =>
@@ -238,6 +252,47 @@ export const endPoints = {
     `${createApi}Org/ProcessDeposit/GetPayoutAmount?prod_id=${productId}&type_id=${typeId}&amount=${amount}&roi=${roi}&org_id=${orgId}`,
   getDepositAgentData: (orgId) =>
     `${createApi}Org/MasterSetup/GetDepositAgent?org_id=${orgId}`,
+  getDepositAgentList: (
+    orgId,
+    branchId,
+    pageNo = 1,
+    keyword = null,
+    agentId = null,
+    pageSize = 25,
+  ) => {
+    // If caller accidentally passed pageSize as 4th argument (number) instead of keyword
+    let effectiveKeyword = keyword;
+    let effectiveAgentId = agentId;
+    let effectivePageSize = pageSize;
+
+    if (typeof keyword === "number" && (agentId === null || agentId === undefined) && pageSize === 25) {
+      // 4th param was pageSize: getDepositAgentList(orgId, branchId, pageNo, pageSize)
+      effectivePageSize = keyword;
+      effectiveKeyword = null;
+      effectiveAgentId = null;
+    }
+
+    let url = `${createApi}Org/MasterSetup/GetDepositAgent?org_id=${orgId}&branch_id=${branchId}&page_no=${pageNo}&page_size=${effectivePageSize}`;
+    if (
+      effectiveKeyword !== null &&
+      effectiveKeyword !== undefined &&
+      effectiveKeyword !== "" &&
+      effectiveKeyword !== "null"
+    ) {
+      url += `&keyword=${encodeURIComponent(effectiveKeyword)}`;
+    }
+    if (
+      effectiveAgentId !== null &&
+      effectiveAgentId !== undefined &&
+      effectiveAgentId !== "" &&
+      effectiveAgentId !== "null" &&
+      !Number.isNaN(Number(effectiveAgentId))
+    ) {
+      url += `&agent_id=${Number(effectiveAgentId)}`;
+    }
+    return url;
+  },
+  updateDepositAgent: `${createApi}Org/MasterSetup/UpdateDepositAgent`,
   getDepositEcsAccount: (orgId, memberId) =>
     `${createApi}Org/ProcessDeposit/GetEcsAccount?org_id=${orgId}&memb_id=${memberId}`,
   addDepositAccount: `${createApi}Org/ProcessDeposit/AddDepositAccount`,

@@ -10,11 +10,12 @@ import {
   postGroupProfileAPI,
   updateGroupProfileAPI,
   updateTheGroupProfile,
+  getDepositAgentListAPI,
 } from "./GroupProfileApis";
-import { getGroupTypeData } from "./GroupProfileReducer";
+import { getGroupTypeData, getAgentListData } from "./GroupProfileReducer";
 import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import getCookieData from "../../../utils/getCookieData";
 import toast from "react-hot-toast";
 import {
@@ -58,6 +59,14 @@ export const useGroupProfile = () => {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  // Agent infinite-scroll states
+  const [agentList, setAgentList] = useState([]);
+  const [agentPage, setAgentPage] = useState(1);
+  const [agentLastPage, setAgentLastPage] = useState(1);
+  const [agentLoading, setAgentLoading] = useState(false);
+  const [agentLoadingMore, setAgentLoadingMore] = useState(false);
+  const [agentHasMore, setAgentHasMore] = useState(false);
 
   // Get data from Redux state
   const groupTypeData = useSelector(
@@ -137,6 +146,7 @@ export const useGroupProfile = () => {
     grp_post: yup.string().nullable(),
     branch_id: yup.string().required("Branch is required"),
     org_id: yup.string().required("Organization is required"),
+    agent_id: yup.string().nullable(),
   });
 
   const form = useForm({
@@ -158,6 +168,7 @@ export const useGroupProfile = () => {
       branch_id: getCookieData("userBranchId") || "",
       org_id: getCookieData("orgId") || "",
       grp_mob: "",
+      agent_id: "",
     },
   });
 
@@ -234,6 +245,8 @@ export const useGroupProfile = () => {
       grp_village: item.villageId,
       grp_police: item.policeStationId,
       grp_post: item.postOfficeId,
+      agent_id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
+      Agent_Id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
       branch_id: item.branch_id,
       org_id: item.org_id,
     };
@@ -277,6 +290,8 @@ export const useGroupProfile = () => {
       grp_police: item.policeStationId || updateMemberData.Group_Police,
       grp_post: item.postOfficeId || updateMemberData.Group_Post,
       group_unit: item.unitId || updateMemberData.Group_Unit,
+      agent_id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
+      Agent_Id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
       fin_id: finId,
       org_id: orgId,
       branch_id: item.branch_id,
@@ -323,6 +338,13 @@ export const useGroupProfile = () => {
           res.details[0].Cust_DOB ? new Date(res.details[0].Cust_DOB) : null,
         );
         form.setValue("cust_type", res.details[0].Customer_Type);
+        form.setValue(
+          "agent_id",
+          res.details[0].Agent_Id?.toString() ||
+            res.details[0].agent_id?.toString() ||
+            res.details[0].Under_Agent?.toString() ||
+            "",
+        );
 
         // Handle cascading location fields
         const stateId = data.Cust_State;
@@ -418,6 +440,7 @@ export const useGroupProfile = () => {
       form.setValue("noOfBeneficiary", "");
       form.setValue("mobile", "");
       form.setValue("address", "");
+      form.setValue("agent_id", "");
     } finally {
       setGetMemberDataLoading(false);
       setIsLoadingMemberData(false);
@@ -443,6 +466,144 @@ export const useGroupProfile = () => {
     }
   };
 
+  const branchId = getCookieData("userBranchId");
+  const [agentSearchKeyword, setAgentSearchKeyword] = useState(null);
+  const agentSearchKeywordRef = useRef(null);
+  useEffect(() => {
+    agentSearchKeywordRef.current = agentSearchKeyword;
+  }, [agentSearchKeyword]);
+
+  const getDepositAgentListApiCall = useCallback(
+    async (
+      pageNo = 1,
+      isLoadMore = false,
+      keyword = agentSearchKeywordRef.current,
+      agentIdParam = null,
+    ) => {
+      if (!orgId) return;
+      const cookieBranchId = branchId ?? getCookieData("userBranchId");
+
+      if (isLoadMore) {
+        setAgentLoadingMore(true);
+      } else {
+        setAgentLoading(true);
+      }
+
+      try {
+        const res = await getDepositAgentListAPI(
+          orgId,
+          cookieBranchId || 0,
+          pageNo,
+          keyword,
+          agentIdParam,
+          25,
+        );
+        if (res.message === "Data Found" || res.message === "Success") {
+          const list = Array.isArray(res.details)
+            ? res.details
+            : Array.isArray(res.details?.data)
+            ? res.details.data
+            : Array.isArray(res.Data)
+            ? res.Data
+            : Array.isArray(res.data)
+            ? res.data
+            : [];
+
+          const totalPages =
+            Number(res.pagination?.total_pages) ||
+            Number(res.details?.last_page) ||
+            Number(res.last_page) ||
+            1;
+
+          const totalRecords =
+            Number(res.pagination?.total_records) ||
+            Number(res.details?.total) ||
+            0;
+
+          const hasNext =
+            res.pagination?.has_next !== undefined
+              ? Boolean(res.pagination.has_next)
+              : totalRecords > 0
+              ? pageNo * 25 < totalRecords
+              : pageNo < totalPages;
+
+          if (isLoadMore) {
+            setAgentList((prev) => {
+              const existingIds = new Set(
+                prev.map((item) =>
+                  String(item.Agent_Id ?? item.agent_id ?? item.Id ?? item.id),
+                ),
+              );
+              const newItems = list.filter(
+                (item) =>
+                  !existingIds.has(
+                    String(item.Agent_Id ?? item.agent_id ?? item.Id ?? item.id),
+                  ),
+              );
+              const combined = [...prev, ...newItems];
+              dispatch(getAgentListData(combined));
+              return combined;
+            });
+          } else {
+            setAgentList(list);
+            dispatch(getAgentListData(list));
+          }
+
+          setAgentPage(pageNo);
+          setAgentLastPage(totalPages);
+          setAgentHasMore(hasNext && list.length > 0);
+        } else {
+          if (!isLoadMore) {
+            setAgentList([]);
+            dispatch(getAgentListData([]));
+          }
+          setAgentHasMore(false);
+        }
+      } catch (error) {
+        console.error(error);
+        if (!isLoadMore) {
+          setAgentList([]);
+          dispatch(getAgentListData([]));
+        }
+        setAgentHasMore(false);
+      } finally {
+        if (isLoadMore) {
+          setAgentLoadingMore(false);
+        } else {
+          setAgentLoading(false);
+        }
+      }
+    },
+    [orgId, branchId, dispatch],
+  );
+
+  const handleLoadMoreAgents = useCallback(() => {
+    if (!agentHasMore || agentLoadingMore || agentLoading) return;
+    getDepositAgentListApiCall(
+      agentPage + 1,
+      true,
+      agentSearchKeywordRef.current,
+      null,
+    );
+  }, [
+    agentHasMore,
+    agentLoadingMore,
+    agentLoading,
+    agentPage,
+    getDepositAgentListApiCall,
+  ]);
+
+  const handleSearchAgents = useCallback(
+    (keyword) => {
+      const trimmed =
+        keyword && keyword.trim() !== "" ? keyword.trim() : null;
+      setAgentSearchKeyword(trimmed);
+      agentSearchKeywordRef.current = trimmed;
+      getDepositAgentListApiCall(1, false, trimmed, null);
+    },
+    [getDepositAgentListApiCall],
+  );
+
   return {
     stateId,
     districtId,
@@ -463,5 +624,12 @@ export const useGroupProfile = () => {
     getMemberDataLoading,
     handleMemberFormSubmit,
     isLoadingMemberData,
+    agentList,
+    agentLoading,
+    agentLoadingMore,
+    agentHasMore,
+    getDepositAgentListApiCall,
+    handleLoadMoreAgents,
+    handleSearchAgents,
   };
 };

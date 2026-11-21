@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import SuccessMessage from "../../../common/dialog/SuccessMessage";
 import { DatePickerField } from "../../../common/formFields/DatePickerField";
 import DropdownField from "../../../common/formFields/DropdownField";
+import InfiniteDropdownField from "../../../common/formFields/InfiniteDropdownField";
 import RadioField from "../../../common/formFields/RadioField";
 import MemberSearchForm from "../../../common/forms/MemberSearchForm";
 import { Button } from "../../ui/button";
@@ -203,6 +204,12 @@ const InstitutionProfile = ({
   officeGetVillageLoading,
   officeGetPoliceStationLoading,
   officeGetPostOfficeLoading,
+  agentList = [],
+  agentLoading = false,
+  agentLoadingMore = false,
+  agentHasMore = false,
+  handleLoadMoreAgents,
+  handleSearchAgents,
 }) => {
   const { t } = useTranslation();
   const stateData = useSelector((state) => state?.operationalArea?.stateData);
@@ -347,6 +354,25 @@ const InstitutionProfile = ({
                     label={t("membership.institutionProfile.fields.regDocumentNo")}
                     placeholder={t("membership.institutionProfile.placeholders.regDocumentNo")}
                     isRequired={true}
+                  />
+
+                  <InfiniteDropdownField
+                    control={form.control}
+                    name="agent_id"
+                    label={t("membership.institutionProfile.fields.underAgent", "Under Agent")}
+                    placeholder={t(
+                      "membership.institutionProfile.placeholders.underAgent",
+                      "Select under agent",
+                    )}
+                    searchPlaceholder="Search agent by name / CIF / mobile..."
+                    options={agentList}
+                    optionLabelKey="Full_Name"
+                    optionValueKey="Agent_Id"
+                    loading={agentLoading}
+                    loadingMore={agentLoadingMore}
+                    hasMore={agentHasMore}
+                    onLoadMore={handleLoadMoreAgents}
+                    onSearch={handleSearchAgents}
                   />
                 </div>
               </div>

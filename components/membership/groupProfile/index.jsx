@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import SuccessMessage from "../../../common/dialog/SuccessMessage";
 import { DatePickerField } from "../../../common/formFields/DatePickerField";
 import DropdownField from "../../../common/formFields/DropdownField";
+import InfiniteDropdownField from "../../../common/formFields/InfiniteDropdownField";
 import RadioField from "../../../common/formFields/RadioField";
 
 import MemberSearchForm from "../../../common/forms/MemberSearchForm";
@@ -49,6 +50,12 @@ const GroupProfile = ({
   resetTrigger,
   getMemberDataLoading,
   handleMemberFormSubmit,
+  agentList = [],
+  agentLoading = false,
+  agentLoadingMore = false,
+  agentHasMore = false,
+  handleLoadMoreAgents,
+  handleSearchAgents,
 }) => {
   const { t } = useTranslation();
 
@@ -323,6 +330,25 @@ const GroupProfile = ({
                       !form.getValues("districtId") ||
                       getPostOfficeLoading
                     }
+                  />
+
+                  <InfiniteDropdownField
+                    control={form.control}
+                    name="agent_id"
+                    label={t("membership.groupProfile.fields.underAgent", "Under Agent")}
+                    placeholder={t(
+                      "membership.groupProfile.placeholders.underAgent",
+                      "Select under agent",
+                    )}
+                    searchPlaceholder="Search agent by name / CIF / mobile..."
+                    options={agentList}
+                    optionLabelKey="Full_Name"
+                    optionValueKey="Agent_Id"
+                    loading={agentLoading}
+                    loadingMore={agentLoadingMore}
+                    hasMore={agentHasMore}
+                    onLoadMore={handleLoadMoreAgents}
+                    onSearch={handleSearchAgents}
                   />
                 </div>
               </div>

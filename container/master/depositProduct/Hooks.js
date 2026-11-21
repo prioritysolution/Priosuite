@@ -12,6 +12,7 @@ import {
   getDepositChargeTypeAPI,
   getDepositDurationUnitAPI,
   getDepositInterestTypeAPI,
+  getDepositMasterLedgerAPI,
   getDepositProductLedgerAPI,
   getDepositProductLedgerHeadAPI,
   getDepositProductListAPI,
@@ -27,11 +28,14 @@ import {
   getDepTypeData,
   getDurationUnitData,
   getFineOnData,
+  getInterestLedgerData,
   getInterestTypeData,
   getLedgerData,
   getMemberTypeData,
   getPayoutModeData,
+  getPrincipalLedgerData,
   getProductTypeData,
+  getProvisionLedgerData,
 } from "./DepositProductReducer";
 
 /** Pull list payload from varied API response shapes used across the portal */
@@ -503,7 +507,7 @@ export const useDepositProduct = () => {
   const getLedgerDataApiCall = async (orgId) => {
     if (!orgId) return;
     try {
-      // Same endpoint as Account Ledger report
+      // Same endpoint as Account Ledger report (for Fine Ledger)
       const res = await getDepositProductLedgerAPI(orgId);
       let list = normalizeOptionRows(extractList(res), [
         "Ledger_Name",
@@ -536,6 +540,54 @@ export const useDepositProduct = () => {
         console.error(fallbackError);
         dispatch(getLedgerData([]));
       }
+    }
+  };
+
+  const getPrincipalLedgerDataApiCall = async (orgId) => {
+    if (!orgId) return;
+    try {
+      const res = await getDepositMasterLedgerAPI(orgId, 1);
+      const list = normalizeOptionRows(extractList(res), [
+        "Ledger_Name",
+        "Option_Value",
+        "Name",
+      ]);
+      dispatch(getPrincipalLedgerData(list));
+    } catch (error) {
+      console.error(error);
+      dispatch(getPrincipalLedgerData([]));
+    }
+  };
+
+  const getInterestLedgerDataApiCall = async (orgId) => {
+    if (!orgId) return;
+    try {
+      const res = await getDepositMasterLedgerAPI(orgId, 2);
+      const list = normalizeOptionRows(extractList(res), [
+        "Ledger_Name",
+        "Option_Value",
+        "Name",
+      ]);
+      dispatch(getInterestLedgerData(list));
+    } catch (error) {
+      console.error(error);
+      dispatch(getInterestLedgerData([]));
+    }
+  };
+
+  const getProvisionLedgerDataApiCall = async (orgId) => {
+    if (!orgId) return;
+    try {
+      const res = await getDepositMasterLedgerAPI(orgId, 3);
+      const list = normalizeOptionRows(extractList(res), [
+        "Ledger_Name",
+        "Option_Value",
+        "Name",
+      ]);
+      dispatch(getProvisionLedgerData(list));
+    } catch (error) {
+      console.error(error);
+      dispatch(getProvisionLedgerData([]));
     }
   };
 
@@ -592,6 +644,9 @@ export const useDepositProduct = () => {
         getDurationUnitDataApiCall(targetOrgId),
         getMemberTypeDataApiCall(targetOrgId),
         getLedgerDataApiCall(targetOrgId),
+        getPrincipalLedgerDataApiCall(targetOrgId),
+        getInterestLedgerDataApiCall(targetOrgId),
+        getProvisionLedgerDataApiCall(targetOrgId),
         getPayoutModeDataApiCall(targetOrgId),
         getFineOnDataApiCall(targetOrgId),
       ])
@@ -716,6 +771,9 @@ export const useDepositProduct = () => {
     getDurationUnitDataApiCall,
     getMemberTypeDataApiCall,
     getLedgerDataApiCall,
+    getPrincipalLedgerDataApiCall,
+    getInterestLedgerDataApiCall,
+    getProvisionLedgerDataApiCall,
     getPayoutModeDataApiCall,
     getFineOnDataApiCall,
     loadMasterDropdowns,

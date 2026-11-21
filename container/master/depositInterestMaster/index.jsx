@@ -15,6 +15,21 @@ const DepositInterestMasterContainer = () => {
     getDepositInterestProductApiCall,
     handleSubmit,
     handleAddTableData,
+    handleRemoveTableData,
+    handleFormAction,
+    openSlabListModal,
+    setOpenSlabListModal,
+    getSlabListLoading,
+    editingSlab,
+    handleEditSlab,
+    handleCancelEdit,
+    getDepositIntSlabListApiCall,
+    slabCurrentPage,
+    setSlabCurrentPage,
+    slabLastPage,
+    slabPageLimit,
+    filterProductId,
+    setFilterProductId,
     form,
     tableData,
   } = useDepositInterestSetup();
@@ -33,8 +48,24 @@ const DepositInterestMasterContainer = () => {
       loading={loading}
       handleSubmit={handleSubmit}
       handleAddTableData={handleAddTableData}
+      handleRemoveTableData={handleRemoveTableData}
+      handleFormAction={handleFormAction}
+      openSlabListModal={openSlabListModal}
+      setOpenSlabListModal={setOpenSlabListModal}
+      getSlabListLoading={getSlabListLoading}
+      editingSlab={editingSlab}
+      handleEditSlab={handleEditSlab}
+      handleCancelEdit={handleCancelEdit}
+      getDepositIntSlabListApiCall={getDepositIntSlabListApiCall}
+      slabCurrentPage={slabCurrentPage}
+      setSlabCurrentPage={setSlabCurrentPage}
+      slabLastPage={slabLastPage}
+      slabPageLimit={slabPageLimit}
+      filterProductId={filterProductId}
+      setFilterProductId={setFilterProductId}
       form={form}
       tableData={tableData}
+      orgId={orgId}
     />
   );
 };

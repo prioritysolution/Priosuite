@@ -436,6 +436,11 @@ const bn = {
           maximumDeposit: "সর্বোচ্চ ডিপোজিট",
           paymentType: "পেমেন্টের ধরন",
           payoutAmount: "পেআউট পরিমাণ",
+          securityAmount: "নিরাপত্তা পরিমাণ",
+          maxCollectionAmount: "সর্বোচ্চ সংগ্রহের পরিমাণ",
+          maxAllowDay: "সর্বোচ্চ অনুমোদিত দিন",
+          depositCollection: "ডিপোজিট সংগ্রহ",
+          loanCollection: "ঋণ সংগ্রহ",
         },
         placeholders: {
           agentName: "এজেন্টের নাম লিখুন",
@@ -448,6 +453,9 @@ const bn = {
           paymentType: "পেমেন্টের ধরন নির্বাচন করুন",
           searchPaymentType: "পেমেন্টের ধরন অনুসন্ধান করুন...",
           payoutAmount: "পেআউট পরিমাণ লিখুন",
+          securityAmount: "নিরাপত্তা পরিমাণ লিখুন",
+          maxCollectionAmount: "সর্বোচ্চ সংগ্রহের পরিমাণ লিখুন",
+          maxAllowDay: "সর্বোচ্চ দিন লিখুন (সর্বোচ্চ ২ সংখ্যা)",
         },
         buttons: {
           add: "যোগ করুন",

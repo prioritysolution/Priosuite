@@ -3,6 +3,7 @@
 import { useDispatch } from "react-redux";
 import * as yup from "yup";
 import {
+  getDepositAgentListAPI,
   getMemberProfileAPI,
   getMemberTypeAPI,
   getMemberTypeDataAPI,
@@ -18,6 +19,7 @@ import {
   getMasterVillageUnderBlockAPI,
 } from "@/container/master/operationalArea/OperationalAreaApis";
 import {
+  getAgentListData,
   getCasteData,
   getGenderData,
   getRelationTypeData,
@@ -32,7 +34,7 @@ import {
 } from "@/container/master/operationalArea/OperationalAreaReducer";
 import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import getCookieData from "@/utils/getCookieData";
 import toast from "react-hot-toast";
 import {
@@ -110,6 +112,14 @@ export const useMemberProfile = () => {
   const [getMemberTypeLoading, setGetMemberTypeLoading] = useState(false);
   const [getMemberTypeDataLoading, setGetMemberTypeDataLoading] =
     useState(false);
+
+  // Agent infinite-scroll states
+  const [agentList, setAgentList] = useState([]);
+  const [agentPage, setAgentPage] = useState(1);
+  const [agentLastPage, setAgentLastPage] = useState(1);
+  const [agentLoading, setAgentLoading] = useState(false);
+  const [agentLoadingMore, setAgentLoadingMore] = useState(false);
+  const [agentHasMore, setAgentHasMore] = useState(false);
 
   // Get data from Redux state
   const memberType = useSelector((state) => state?.shareProduct?.memberType);
@@ -255,6 +265,7 @@ export const useMemberProfile = () => {
         "Please enter a valid PAN No.",
         (value) => !value || panRegex.test(value), // Only check if value is provided
       ),
+    agent_id: yup.string().nullable(),
   });
 
   const form = useForm({
@@ -293,6 +304,7 @@ export const useMemberProfile = () => {
       voterId: "",
       rationNo: "",
       panNo: "",
+      agent_id: "",
     },
   });
 
@@ -508,6 +520,8 @@ export const useMemberProfile = () => {
       mem_voter: item.voterId,
       mem_ration: item.rationNo,
       mem_pan: item.panNo,
+      agent_id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
+      Agent_Id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
       fin_id: finId,
       org_id: orgId,
       branch_id: branchId,
@@ -580,6 +594,8 @@ export const useMemberProfile = () => {
       mem_voter: item.voterId,
       mem_ration: item.rationNo,
       mem_pan: item.panNo,
+      agent_id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
+      Agent_Id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
       fin_id: finId,
       org_id: orgId,
       cust_type: item.memberType,
@@ -634,6 +650,13 @@ export const useMemberProfile = () => {
         form.setValue("voterId", memberData.Cust_Voter || "");
         form.setValue("rationNo", memberData.Cust_Ration || "");
         form.setValue("panNo", memberData.Cust_Pan || "");
+        form.setValue(
+          "agent_id",
+          memberData.Agent_Id?.toString() ||
+            memberData.agent_id?.toString() ||
+            memberData.Under_Agent?.toString() ||
+            "",
+        );
         form.setValue("memberType", memberData.Customer_Type.toString() || "");
 
         // Handle cascading location fields
@@ -778,6 +801,7 @@ export const useMemberProfile = () => {
         form.setValue("voterId", "");
         form.setValue("rationNo", "");
         form.setValue("panNo", "");
+        form.setValue("agent_id", "");
         toast.error(res.details);
       }
     } catch (error) {
@@ -801,6 +825,7 @@ export const useMemberProfile = () => {
       form.setValue("voterId", "");
       form.setValue("rationNo", "");
       form.setValue("panNo", "");
+      form.setValue("agent_id", "");
     } finally {
       setGetMemberDataLoading(false);
       setIsLoadingMemberData(false);
@@ -914,7 +939,144 @@ export const useMemberProfile = () => {
     } finally {
       setGetMemberTypeLoading(false);
     }
-  };
+ };
+
+  const [agentSearchKeyword, setAgentSearchKeyword] = useState(null);
+  const agentSearchKeywordRef = useRef(null);
+  useEffect(() => {
+    agentSearchKeywordRef.current = agentSearchKeyword;
+  }, [agentSearchKeyword]);
+
+  const getDepositAgentListApiCall = useCallback(
+    async (
+      pageNo = 1,
+      isLoadMore = false,
+      keyword = agentSearchKeywordRef.current,
+      agentIdParam = null,
+    ) => {
+      if (!orgId) return;
+      const cookieBranchId = branchId ?? getCookieData("userBranchId");
+
+      if (isLoadMore) {
+        setAgentLoadingMore(true);
+      } else {
+        setAgentLoading(true);
+      }
+
+      try {
+        const res = await getDepositAgentListAPI(
+          orgId,
+          cookieBranchId || 0,
+          pageNo,
+          keyword,
+          agentIdParam,
+          25,
+        );
+        if (res.message === "Data Found" || res.message === "Success") {
+          const list = Array.isArray(res.details)
+            ? res.details
+            : Array.isArray(res.details?.data)
+            ? res.details.data
+            : Array.isArray(res.Data)
+            ? res.Data
+            : Array.isArray(res.data)
+            ? res.data
+            : [];
+
+          const totalPages =
+            Number(res.pagination?.total_pages) ||
+            Number(res.details?.last_page) ||
+            Number(res.last_page) ||
+            1;
+
+          const totalRecords =
+            Number(res.pagination?.total_records) ||
+            Number(res.details?.total) ||
+            0;
+
+          const hasNext =
+            res.pagination?.has_next !== undefined
+              ? Boolean(res.pagination.has_next)
+              : totalRecords > 0
+              ? pageNo * 25 < totalRecords
+              : pageNo < totalPages;
+
+          if (isLoadMore) {
+            setAgentList((prev) => {
+              const existingIds = new Set(
+                prev.map((item) =>
+                  String(item.Agent_Id ?? item.agent_id ?? item.Id ?? item.id),
+                ),
+              );
+              const newItems = list.filter(
+                (item) =>
+                  !existingIds.has(
+                    String(item.Agent_Id ?? item.agent_id ?? item.Id ?? item.id),
+                  ),
+              );
+              const combined = [...prev, ...newItems];
+              dispatch(getAgentListData(combined));
+              return combined;
+            });
+          } else {
+            setAgentList(list);
+            dispatch(getAgentListData(list));
+          }
+
+          setAgentPage(pageNo);
+          setAgentLastPage(totalPages);
+          setAgentHasMore(hasNext && list.length > 0);
+        } else {
+          if (!isLoadMore) {
+            setAgentList([]);
+            dispatch(getAgentListData([]));
+          }
+          setAgentHasMore(false);
+        }
+      } catch (error) {
+        console.error(error);
+        if (!isLoadMore) {
+          setAgentList([]);
+          dispatch(getAgentListData([]));
+        }
+        setAgentHasMore(false);
+      } finally {
+        if (isLoadMore) {
+          setAgentLoadingMore(false);
+        } else {
+          setAgentLoading(false);
+        }
+      }
+    },
+    [orgId, branchId, dispatch],
+  );
+
+  const handleLoadMoreAgents = useCallback(() => {
+    if (!agentHasMore || agentLoadingMore || agentLoading) return;
+    getDepositAgentListApiCall(
+      agentPage + 1,
+      true,
+      agentSearchKeywordRef.current,
+      null,
+    );
+  }, [
+    agentHasMore,
+    agentLoadingMore,
+    agentLoading,
+    agentPage,
+    getDepositAgentListApiCall,
+  ]);
+
+  const handleSearchAgents = useCallback(
+    (keyword) => {
+      const trimmed =
+        keyword && keyword.trim() !== "" ? keyword.trim() : null;
+      setAgentSearchKeyword(trimmed);
+      agentSearchKeywordRef.current = trimmed;
+      getDepositAgentListApiCall(1, false, trimmed, null);
+    },
+    [getDepositAgentListApiCall],
+  );
 
   return {
     stateId,
@@ -959,5 +1121,12 @@ export const useMemberProfile = () => {
     presentGetVillageLoading,
     presentGetPoliceStationLoading,
     presentGetPostOfficeLoading,
+    agentList,
+    agentLoading,
+    agentLoadingMore,
+    agentHasMore,
+    getDepositAgentListApiCall,
+    handleLoadMoreAgents,
+    handleSearchAgents,
   };
 };

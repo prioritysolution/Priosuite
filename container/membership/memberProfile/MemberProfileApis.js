@@ -78,3 +78,23 @@ export const getMemberTypeAPI = async (orgId) => {
   let res = await doGetApiCall(data);
   return res;
 };
+
+export const getDepositAgentListAPI = async (
+  orgId,
+  branchId = 0,
+  pageNo = 1,
+  keyword = null,
+  agentId = null,
+  pageSize = 25,
+) => {
+  return await doGetApiCall({
+    url: endPoints.getDepositAgentList(
+      orgId,
+      branchId,
+      pageNo,
+      keyword,
+      agentId,
+      pageSize,
+    ),
+  });
+};

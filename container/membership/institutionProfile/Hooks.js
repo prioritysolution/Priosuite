@@ -9,11 +9,12 @@ import {
   postInstitutionProfileAPI,
   updateInstitutionProfile,
   updateInstitutionProfileAPI,
+  getDepositAgentListAPI,
 } from "./institutionProfileApis";
 
 import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import getCookieData from "../../../utils/getCookieData";
 import toast from "react-hot-toast";
 import {
@@ -90,6 +91,14 @@ export const useInstitutionProfile = () => {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  // Agent infinite-scroll states
+  const [agentList, setAgentList] = useState([]);
+  const [agentPage, setAgentPage] = useState(1);
+  const [agentLastPage, setAgentLastPage] = useState(1);
+  const [agentLoading, setAgentLoading] = useState(false);
+  const [agentLoadingMore, setAgentLoadingMore] = useState(false);
+  const [agentHasMore, setAgentHasMore] = useState(false);
 
   // Get data from Redux state
   const groupTypeData = useSelector(
@@ -202,6 +211,7 @@ export const useInstitutionProfile = () => {
     branch_id: yup.string().required("Branch is required"),
     org_id: yup.string().required("Organization is required"),
     int_doc: yup.string().required("Registration / Document No is required"),
+    agent_id: yup.string().nullable(),
   });
 
   const form = useForm({
@@ -231,6 +241,7 @@ export const useInstitutionProfile = () => {
       org_id: getCookieData("orgId") || "",
       inst_mob: "",
       int_doc: "",
+      agent_id: "",
     },
   });
 
@@ -443,6 +454,8 @@ export const useInstitutionProfile = () => {
       branch_id: item.branch_id,
       org_id: item.org_id,
       doc_no: item.int_doc,
+      agent_id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
+      Agent_Id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
     };
     console.log("postInstitutionProfileAPI data=", data);
 
@@ -526,6 +539,8 @@ export const useInstitutionProfile = () => {
       org_id: item.org_id,
       inst_mob: item.inst_mob,
       doc_no: item.int_doc,
+      agent_id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
+      Agent_Id: item.agent_id ? Number(item.agent_id) || item.agent_id : null,
     };
     console.log("updateInstitutionProfileApiCall data=", data);
     setLoading(true);
@@ -568,6 +583,13 @@ export const useInstitutionProfile = () => {
         form.setValue("inst_mob", data.Cust_Mob || "");
         form.setValue("inst_add", data.Cust_Add || "");
         form.setValue("int_doc", data.Cust_Voter || "");
+        form.setValue(
+          "agent_id",
+          data.Agent_Id?.toString() ||
+            data.agent_id?.toString() ||
+            data.Under_Agent?.toString() ||
+            "",
+        );
 
         // Handle cascading location fields
         const stateId = data.Cust_State;
@@ -700,11 +722,145 @@ export const useInstitutionProfile = () => {
       form.setValue("inst_ben", "");
       form.setValue("inst_mob", "");
       form.setValue("inst_add", "");
+      form.setValue("agent_id", "");
     } finally {
       setGetInstitutionLoading(false);
       setIsLoadingMemberData(false);
     }
   };
+
+  const branchId = getCookieData("userBranchId");
+  const [agentSearchKeyword, setAgentSearchKeyword] = useState(null);
+  const agentSearchKeywordRef = useRef(null);
+  useEffect(() => {
+    agentSearchKeywordRef.current = agentSearchKeyword;
+  }, [agentSearchKeyword]);
+
+  const getDepositAgentListApiCall = useCallback(
+    async (
+      pageNo = 1,
+      isLoadMore = false,
+      keyword = agentSearchKeywordRef.current,
+      agentIdParam = null,
+    ) => {
+      if (!orgId) return;
+      const cookieBranchId = branchId ?? getCookieData("userBranchId");
+
+      if (isLoadMore) {
+        setAgentLoadingMore(true);
+      } else {
+        setAgentLoading(true);
+      }
+
+      try {
+        const res = await getDepositAgentListAPI(
+          orgId,
+          cookieBranchId || 0,
+          pageNo,
+          keyword,
+          agentIdParam,
+          25,
+        );
+        if (res.message === "Data Found" || res.message === "Success") {
+          const list = Array.isArray(res.details)
+            ? res.details
+            : Array.isArray(res.details?.data)
+            ? res.details.data
+            : Array.isArray(res.Data)
+            ? res.Data
+            : Array.isArray(res.data)
+            ? res.data
+            : [];
+
+          const totalPages =
+            Number(res.pagination?.total_pages) ||
+            Number(res.details?.last_page) ||
+            Number(res.last_page) ||
+            1;
+
+          const totalRecords =
+            Number(res.pagination?.total_records) ||
+            Number(res.details?.total) ||
+            0;
+
+          const hasNext =
+            res.pagination?.has_next !== undefined
+              ? Boolean(res.pagination.has_next)
+              : totalRecords > 0
+              ? pageNo * 25 < totalRecords
+              : pageNo < totalPages;
+
+          if (isLoadMore) {
+            setAgentList((prev) => {
+              const existingIds = new Set(
+                prev.map((item) =>
+                  String(item.Agent_Id ?? item.agent_id ?? item.Id ?? item.id),
+                ),
+              );
+              const newItems = list.filter(
+                (item) =>
+                  !existingIds.has(
+                    String(item.Agent_Id ?? item.agent_id ?? item.Id ?? item.id),
+                  ),
+              );
+              return [...prev, ...newItems];
+            });
+          } else {
+            setAgentList(list);
+          }
+
+          setAgentPage(pageNo);
+          setAgentLastPage(totalPages);
+          setAgentHasMore(hasNext && list.length > 0);
+        } else {
+          if (!isLoadMore) {
+            setAgentList([]);
+          }
+          setAgentHasMore(false);
+        }
+      } catch (error) {
+        console.error(error);
+        if (!isLoadMore) {
+          setAgentList([]);
+        }
+        setAgentHasMore(false);
+      } finally {
+        if (isLoadMore) {
+          setAgentLoadingMore(false);
+        } else {
+          setAgentLoading(false);
+        }
+      }
+    },
+    [orgId, branchId],
+  );
+
+  const handleLoadMoreAgents = useCallback(() => {
+    if (!agentHasMore || agentLoadingMore || agentLoading) return;
+    getDepositAgentListApiCall(
+      agentPage + 1,
+      true,
+      agentSearchKeywordRef.current,
+      null,
+    );
+  }, [
+    agentHasMore,
+    agentLoadingMore,
+    agentLoading,
+    agentPage,
+    getDepositAgentListApiCall,
+  ]);
+
+  const handleSearchAgents = useCallback(
+    (keyword) => {
+      const trimmed =
+        keyword && keyword.trim() !== "" ? keyword.trim() : null;
+      setAgentSearchKeyword(trimmed);
+      agentSearchKeywordRef.current = trimmed;
+      getDepositAgentListApiCall(1, false, trimmed, null);
+    },
+    [getDepositAgentListApiCall],
+  );
 
   return {
     stateId,
@@ -733,5 +889,12 @@ export const useInstitutionProfile = () => {
     officeGetVillageLoading,
     officeGetPoliceStationLoading,
     officeGetPostOfficeLoading,
+    agentList,
+    agentLoading,
+    agentLoadingMore,
+    agentHasMore,
+    getDepositAgentListApiCall,
+    handleLoadMoreAgents,
+    handleSearchAgents,
   };
 };

@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useTranslation } from "react-i18next";
 import React from "react";
 
@@ -276,10 +275,7 @@ const OpenDepositAccount = ({
     if (!file) return false;
     const type = String(file.type || "").toLowerCase();
     const name = String(file.name || "").toLowerCase();
-    return (
-      type.startsWith("image/") ||
-      /\.(jpe?g|png|jp2|j2k)$/i.test(name)
-    );
+    return type.startsWith("image/") || /\.(jpe?g|png|jp2|j2k)$/i.test(name);
   };
 
   const setPreviewFromFile = (file, setPreview) => {
@@ -605,8 +601,12 @@ const OpenDepositAccount = ({
                         label={t("deposit.fields.accountType")}
                         options={accountTypeData}
                         optionLabelKey="Option_Value"
-                        placeholder={t("deposit.placeholders.selectAccountType")}
-                        searchPlaceholder={t("deposit.placeholders.searchAccountType")}
+                        placeholder={t(
+                          "deposit.placeholders.selectAccountType",
+                        )}
+                        searchPlaceholder={t(
+                          "deposit.placeholders.searchAccountType",
+                        )}
                         isRequired
                       />
 
@@ -671,6 +671,7 @@ const OpenDepositAccount = ({
                       <InputField
                         control={form.control}
                         name="openingAmount"
+                        isBlurUpdate={true}
                         label={`${
                           productData.find(
                             (item) => item.Id === Number(depositProduct),
@@ -699,8 +700,12 @@ const OpenDepositAccount = ({
                             label={t("deposit.fields.durationUnit")}
                             options={durationTypeData}
                             optionLabelKey="Option_Value"
-                            placeholder={t("deposit.placeholders.selectDurationUnit")}
-                            searchPlaceholder={t("deposit.placeholders.searchDurationUnit")}
+                            placeholder={t(
+                              "deposit.placeholders.selectDurationUnit",
+                            )}
+                            searchPlaceholder={t(
+                              "deposit.placeholders.searchDurationUnit",
+                            )}
                             disabled={
                               checkDepositAmountDisable || !allowProcessDeposit
                             }
@@ -722,7 +727,9 @@ const OpenDepositAccount = ({
                             control={form.control}
                             name="rateOfInterest"
                             label={t("deposit.fields.rateOfInterest")}
-                            placeholder={t("deposit.placeholders.rateOfInterest")}
+                            placeholder={t(
+                              "deposit.placeholders.rateOfInterest",
+                            )}
                             readOnly
                           />
 
@@ -737,7 +744,9 @@ const OpenDepositAccount = ({
                             control={form.control}
                             name="maturityAmount"
                             label={t("deposit.fields.maturityAmount")}
-                            placeholder={t("deposit.placeholders.maturityAmount")}
+                            placeholder={t(
+                              "deposit.placeholders.maturityAmount",
+                            )}
                             readOnly
                           />
                           <DropdownField
@@ -746,8 +755,12 @@ const OpenDepositAccount = ({
                             label={t("deposit.fields.maturityInstruction")}
                             options={maturityInstructionData}
                             optionLabelKey="Option_Value"
-                            placeholder={t("deposit.placeholders.selectMaturityInstruction")}
-                            searchPlaceholder={t("deposit.placeholders.searchMaturityInstruction")}
+                            placeholder={t(
+                              "deposit.placeholders.selectMaturityInstruction",
+                            )}
+                            searchPlaceholder={t(
+                              "deposit.placeholders.searchMaturityInstruction",
+                            )}
                             disabled={
                               checkDepositAmountDisable || !allowProcessDeposit
                             }
@@ -835,8 +848,12 @@ const OpenDepositAccount = ({
                                     : payoutModeData
                                 }
                                 optionLabelKey="Option_Value"
-                                placeholder={t("deposit.placeholders.selectPayoutMode")}
-                                searchPlaceholder={t("deposit.placeholders.searchPayoutMode")}
+                                placeholder={t(
+                                  "deposit.placeholders.selectPayoutMode",
+                                )}
+                                searchPlaceholder={t(
+                                  "deposit.placeholders.searchPayoutMode",
+                                )}
                                 disabled={
                                   !isPayoutInterest || !allowProcessDeposit
                                 }
@@ -846,7 +863,9 @@ const OpenDepositAccount = ({
                                 control={form.control}
                                 name="payoutAmount"
                                 label={t("deposit.fields.payoutAmount")}
-                                placeholder={t("deposit.placeholders.payoutAmount")}
+                                placeholder={t(
+                                  "deposit.placeholders.payoutAmount",
+                                )}
                                 readOnly
                               />
                             </>
@@ -865,7 +884,9 @@ const OpenDepositAccount = ({
                         options={agentData}
                         optionLabelKey="Agent_Name"
                         placeholder={t("deposit.placeholders.selectAgent")}
-                        searchPlaceholder={t("deposit.placeholders.searchAgent")}
+                        searchPlaceholder={t(
+                          "deposit.placeholders.searchAgent",
+                        )}
                         disabled={
                           checkDepositAmountDisable || !allowProcessDeposit
                         }
@@ -897,8 +918,12 @@ const OpenDepositAccount = ({
                               onChange={field.onChange}
                               options={filteredOptions}
                               optionLabelKey="Option_Value"
-                              placeholder={t("deposit.placeholders.selectOperationMode")}
-                              searchPlaceholder={t("deposit.placeholders.searchOperationMode")}
+                              placeholder={t(
+                                "deposit.placeholders.selectOperationMode",
+                              )}
+                              searchPlaceholder={t(
+                                "deposit.placeholders.searchOperationMode",
+                              )}
                               disabled={
                                 checkDepositAmountDisable ||
                                 !allowProcessDeposit
@@ -1080,8 +1105,12 @@ const OpenDepositAccount = ({
                                     <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left min-w-[120px] sm:min-w-[150px]">
                                       {t("deposit.common.fullName")}
                                     </TableHead>
-                                    <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left hidden lg:table-cell min-w-[100px]">{t("deposit.fields.relation")}</TableHead>
-                                    <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center sm:text-right">{t("deposit.common.action")}</TableHead>
+                                    <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left hidden lg:table-cell min-w-[100px]">
+                                      {t("deposit.fields.relation")}
+                                    </TableHead>
+                                    <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center sm:text-right">
+                                      {t("deposit.common.action")}
+                                    </TableHead>
                                   </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -1170,7 +1199,9 @@ const OpenDepositAccount = ({
                                                     </svg>
                                                   </div>
                                                   <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">
-                                                    {t("deposit.buttons.removeJointHolder")}
+                                                    {t(
+                                                      "deposit.buttons.removeJointHolder",
+                                                    )}
                                                   </h3>
                                                   <p className="text-sm text-muted-foreground break-words">
                                                     Are you sure you want to
@@ -1268,8 +1299,12 @@ const OpenDepositAccount = ({
                             label={t("deposit.fields.relation")}
                             options={relationTypeData}
                             optionLabelKey="Option_Value"
-                            placeholder={t("deposit.placeholders.selectRelation")}
-                            searchPlaceholder={t("deposit.placeholders.searchRelation")}
+                            placeholder={t(
+                              "deposit.placeholders.selectRelation",
+                            )}
+                            searchPlaceholder={t(
+                              "deposit.placeholders.searchRelation",
+                            )}
                             className="h-10"
                           />
 
@@ -1277,7 +1312,9 @@ const OpenDepositAccount = ({
                             control={form.control}
                             name="nomineeAddress"
                             label={t("deposit.fields.nomineeAddress")}
-                            placeholder={t("deposit.placeholders.nomineeAddress")}
+                            placeholder={t(
+                              "deposit.placeholders.nomineeAddress",
+                            )}
                             className="h-10 transition-all focus:ring-2 focus:ring-primary/20"
                           />
 
@@ -1419,14 +1456,24 @@ const OpenDepositAccount = ({
                                 <Table>
                                   <TableHeader className="bg-muted/50">
                                     <TableRow>
-                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left">{t("deposit.common.name")}</TableHead>
-                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left hidden sm:table-cell">{t("deposit.fields.relation")}</TableHead>
+                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left">
+                                        {t("deposit.common.name")}
+                                      </TableHead>
+                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left hidden sm:table-cell">
+                                        {t("deposit.fields.relation")}
+                                      </TableHead>
                                       <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left hidden md:table-cell">
                                         {t("deposit.sections.address")}
                                       </TableHead>
-                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left">{t("deposit.common.age")}</TableHead>
-                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left">{t("deposit.common.percentage")}</TableHead>
-                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center sm:text-right">{t("deposit.common.action")}</TableHead>
+                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left">
+                                        {t("deposit.common.age")}
+                                      </TableHead>
+                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left">
+                                        {t("deposit.common.percentage")}
+                                      </TableHead>
+                                      <TableHead className="font-semibold text-xs sm:text-sm px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center sm:text-right">
+                                        {t("deposit.common.action")}
+                                      </TableHead>
                                     </TableRow>
                                   </TableHeader>
                                   <TableBody>
@@ -1501,7 +1548,7 @@ const OpenDepositAccount = ({
                     )}
                   </div>
                 )}
-                  {/* Specimen Signature and Photo */}
+                {/* Specimen Signature and Photo */}
                 {visibleBlock && (
                   <div className="w-full flex flex-col border border-primary rounded-lg p-3 sm:p-5 gap-4">
                     <div className="w-full bg-[#d7e6f4] rounded-md py-1.5 px-3">
@@ -1512,10 +1559,7 @@ const OpenDepositAccount = ({
                     {getOpenDepositLoading ? (
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
                         {[0, 1].map((idx) => (
-                          <div
-                            key={idx}
-                            className="w-full flex flex-col gap-2"
-                          >
+                          <div key={idx} className="w-full flex flex-col gap-2">
                             <Skeleton className="h-5 w-24 rounded-none bg-secondary" />
                             <Skeleton className="w-full h-40 sm:h-48 rounded-xl bg-secondary" />
                           </div>
@@ -1555,10 +1599,16 @@ const OpenDepositAccount = ({
                                     setPhotoDragOver(false);
                                   }}
                                   onDrop={(e) =>
-                                    handleSpecimenDrop(e, "photo", field.onChange)
+                                    handleSpecimenDrop(
+                                      e,
+                                      "photo",
+                                      field.onChange,
+                                    )
                                   }
                                   className={`relative w-full min-h-[160px] sm:min-h-[200px] rounded-xl border-2 bg-white px-4 py-5 sm:py-6 flex flex-col items-center justify-center gap-2 sm:gap-3 text-center transition-colors cursor-pointer ${
-                                    photoPreview ? "border-solid border-primary/25" : "border-dashed"
+                                    photoPreview
+                                      ? "border-solid border-primary/25"
+                                      : "border-dashed"
                                   } ${
                                     photoDragOver
                                       ? "border-primary bg-primary/5"
@@ -1580,11 +1630,16 @@ const OpenDepositAccount = ({
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors" />
                                         <button
                                           type="button"
-                                          aria-label={t("deposit.uploadSpecimen.removeImage")}
+                                          aria-label={t(
+                                            "deposit.uploadSpecimen.removeImage",
+                                          )}
                                           className="absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-destructive shadow-sm border border-slate-200 hover:bg-destructive hover:text-white transition-colors"
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            clearSpecimenFile("photo", field.onChange);
+                                            clearSpecimenFile(
+                                              "photo",
+                                              field.onChange,
+                                            );
                                           }}
                                         >
                                           <Trash2 className="h-3.5 w-3.5" />
@@ -1602,7 +1657,9 @@ const OpenDepositAccount = ({
                                           }}
                                         >
                                           <RefreshCw className="h-3.5 w-3.5" />
-                                          {t("deposit.uploadSpecimen.changeImage")}
+                                          {t(
+                                            "deposit.uploadSpecimen.changeImage",
+                                          )}
                                         </Button>
                                         <Button
                                           type="button"
@@ -1611,11 +1668,16 @@ const OpenDepositAccount = ({
                                           className="h-9 gap-1.5 border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground"
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            clearSpecimenFile("photo", field.onChange);
+                                            clearSpecimenFile(
+                                              "photo",
+                                              field.onChange,
+                                            );
                                           }}
                                         >
                                           <Trash2 className="h-3.5 w-3.5" />
-                                          {t("deposit.uploadSpecimen.removeImage")}
+                                          {t(
+                                            "deposit.uploadSpecimen.removeImage",
+                                          )}
                                         </Button>
                                       </div>
                                     </div>
@@ -1625,13 +1687,17 @@ const OpenDepositAccount = ({
                                         <ImageIcon className="h-6 w-6 sm:h-7 sm:w-7" />
                                       </div>
                                       <p className="text-sm sm:text-base text-slate-700">
-                                        {t("deposit.uploadSpecimen.dropImageHere")}{" "}
+                                        {t(
+                                          "deposit.uploadSpecimen.dropImageHere",
+                                        )}{" "}
                                         <span className="font-semibold text-sky-600">
                                           {t("deposit.uploadSpecimen.browse")}
                                         </span>
                                       </p>
                                       <p className="text-xs sm:text-sm text-slate-400">
-                                        {t("deposit.uploadSpecimen.supportsFormats")}
+                                        {t(
+                                          "deposit.uploadSpecimen.supportsFormats",
+                                        )}
                                       </p>
                                     </>
                                   )}
@@ -1717,7 +1783,9 @@ const OpenDepositAccount = ({
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors" />
                                         <button
                                           type="button"
-                                          aria-label={t("deposit.uploadSpecimen.removeImage")}
+                                          aria-label={t(
+                                            "deposit.uploadSpecimen.removeImage",
+                                          )}
                                           className="absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-destructive shadow-sm border border-slate-200 hover:bg-destructive hover:text-white transition-colors"
                                           onClick={(e) => {
                                             e.stopPropagation();
@@ -1742,7 +1810,9 @@ const OpenDepositAccount = ({
                                           }}
                                         >
                                           <RefreshCw className="h-3.5 w-3.5" />
-                                          {t("deposit.uploadSpecimen.changeImage")}
+                                          {t(
+                                            "deposit.uploadSpecimen.changeImage",
+                                          )}
                                         </Button>
                                         <Button
                                           type="button"
@@ -1758,7 +1828,9 @@ const OpenDepositAccount = ({
                                           }}
                                         >
                                           <Trash2 className="h-3.5 w-3.5" />
-                                          {t("deposit.uploadSpecimen.removeImage")}
+                                          {t(
+                                            "deposit.uploadSpecimen.removeImage",
+                                          )}
                                         </Button>
                                       </div>
                                     </div>
@@ -1768,13 +1840,17 @@ const OpenDepositAccount = ({
                                         <ImageIcon className="h-6 w-6 sm:h-7 sm:w-7" />
                                       </div>
                                       <p className="text-sm sm:text-base text-slate-700">
-                                        {t("deposit.uploadSpecimen.dropImageHere")}{" "}
+                                        {t(
+                                          "deposit.uploadSpecimen.dropImageHere",
+                                        )}{" "}
                                         <span className="font-semibold text-sky-600">
                                           {t("deposit.uploadSpecimen.browse")}
                                         </span>
                                       </p>
                                       <p className="text-xs sm:text-sm text-slate-400">
-                                        {t("deposit.uploadSpecimen.supportsFormats")}
+                                        {t(
+                                          "deposit.uploadSpecimen.supportsFormats",
+                                        )}
                                       </p>
                                     </>
                                   )}
@@ -1822,7 +1898,8 @@ const OpenDepositAccount = ({
                           render={({ field }) => (
                             <FormItem className="flex flex-col lg:flex-row items-center space-y-0 gap-x-10 gap-y-5   border border-input rounded-md px-3 pr-10 py-3 w-full lg:w-fit">
                               <FormLabel>
-                                {t("deposit.common.selectTransanctionMode")}{"  "}
+                                {t("deposit.common.selectTransanctionMode")}
+                                {"  "}
                                 <span className="text-red-500">*</span>
                               </FormLabel>
                               <FormControl>
@@ -1906,8 +1983,12 @@ const OpenDepositAccount = ({
                                   onChange={field.onChange}
                                   options={bankAccountData}
                                   optionLabelKey="Bank_Name"
-                                  placeholder={t("deposit.placeholders.selectBank")}
-                                  searchPlaceholder={t("deposit.placeholders.searchBank")}
+                                  placeholder={t(
+                                    "deposit.placeholders.selectBank",
+                                  )}
+                                  searchPlaceholder={t(
+                                    "deposit.placeholders.searchBank",
+                                  )}
                                   isRequired
                                 />
                               )}
@@ -1924,8 +2005,12 @@ const OpenDepositAccount = ({
                                     onChange={field.onChange}
                                     options={ecsAccountData}
                                     optionLabelKey="Account_No" // Specify the key for label
-                                    placeholder={t("deposit.placeholders.selectSavings")}
-                                    searchPlaceholder={t("deposit.placeholders.searchSavings")}
+                                    placeholder={t(
+                                      "deposit.placeholders.selectSavings",
+                                    )}
+                                    searchPlaceholder={t(
+                                      "deposit.placeholders.searchSavings",
+                                    )}
                                   />
                                 )}
                               />
@@ -1933,14 +2018,18 @@ const OpenDepositAccount = ({
                                 control={form.control}
                                 name="savingsName"
                                 label={t("deposit.fields.accountHolderName")}
-                                placeholder={t("deposit.placeholders.memberName")}
+                                placeholder={t(
+                                  "deposit.placeholders.memberName",
+                                )}
                                 readOnly
                               />
                               <InputField
                                 control={form.control}
                                 name="savingsBalance"
                                 label={t("deposit.fields.availableBalance")}
-                                placeholder={t("deposit.placeholders.availableBalance")}
+                                placeholder={t(
+                                  "deposit.placeholders.availableBalance",
+                                )}
                                 readOnly
                               />
                             </>
@@ -2052,15 +2141,21 @@ const OpenDepositAccount = ({
                       <TableHead className="whitespace-nowrap">
                         {t("deposit.common.memberNoShort")}
                       </TableHead>
-                      <TableHead className="whitespace-nowrap">{t("deposit.common.cifNoShort")}</TableHead>
+                      <TableHead className="whitespace-nowrap">
+                        {t("deposit.common.cifNoShort")}
+                      </TableHead>
                       <TableHead className="whitespace-nowrap">
                         {t("deposit.common.fullName")}
                       </TableHead>
-                      <TableHead className="whitespace-nowrap">{t("deposit.fields.relationName")}</TableHead>
+                      <TableHead className="whitespace-nowrap">
+                        {t("deposit.fields.relationName")}
+                      </TableHead>
                       <TableHead className="whitespace-nowrap">
                         {t("deposit.sections.address")}
                       </TableHead>
-                      <TableHead className="text-right whitespace-nowrap">{t("deposit.common.action")}</TableHead>
+                      <TableHead className="text-right whitespace-nowrap">
+                        {t("deposit.common.action")}
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

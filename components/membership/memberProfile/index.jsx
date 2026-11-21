@@ -7,6 +7,7 @@ import { DatePickerField } from "@/common/formFields/DatePickerField";
 import DropdownField from "@/common/formFields/DropdownField";
 import RadioField from "@/common/formFields/RadioField";
 import SearchDropdownField from "@/common/formFields/SearchDropdownField";
+import InfiniteDropdownField from "@/common/formFields/InfiniteDropdownField";
 import MemberSearchForm from "@/common/forms/MemberSearchForm";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -222,6 +223,12 @@ const MemberProfile = ({
   presentGetVillageLoading,
   presentGetPoliceStationLoading,
   presentGetPostOfficeLoading,
+  agentList = [],
+  agentLoading = false,
+  agentLoadingMore = false,
+  agentHasMore = false,
+  handleLoadMoreAgents,
+  handleSearchAgents,
 }) => {
   const { t } = useTranslation();
 
@@ -664,6 +671,25 @@ const MemberProfile = ({
                         shouldDirty: true,
                       });
                     }}
+                  />
+
+                  <InfiniteDropdownField
+                    control={form.control}
+                    name="agent_id"
+                    label={t("membership.memberProfile.fields.underAgent", "Under Agent")}
+                    placeholder={t(
+                      "membership.memberProfile.placeholders.underAgent",
+                      "Select under agent",
+                    )}
+                    searchPlaceholder="Search agent by name / CIF / mobile..."
+                    options={agentList}
+                    optionLabelKey="Full_Name"
+                    optionValueKey="Agent_Id"
+                    loading={agentLoading}
+                    loadingMore={agentLoadingMore}
+                    hasMore={agentHasMore}
+                    onLoadMore={handleLoadMoreAgents}
+                    onSearch={handleSearchAgents}
                   />
                 </div>
               </div>

@@ -84,6 +84,15 @@ export const getDepositChargeTypeAPI = async (orgId) => {
   return res;
 };
 
+export const getDepositMasterLedgerAPI = async (orgId, ledgType) => {
+  let data = {
+    url: endPoints.getDepositMasterLedger(orgId, ledgType),
+  };
+
+  let res = await doGetApiCall(data);
+  return res;
+};
+
 export const getDepositProductLedgerAPI = async (orgId) => {
   // Same source used by Account Ledger report
   let data = {
